@@ -1,0 +1,45 @@
+{
+  "name": "kafka-assets",
+  "version": "1.0.0",
+  "description": "teraslice asset for kafka operations",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint *.js",
+    "lint:fix": "eslint --fix *.js",
+    "test": "nyc -x spec/ --reporter=text-summary jasmine && nyc report --reporter=html",
+    "report-coverage": "nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov"
+  },
+  "nyc": {
+    "cache": true,
+    "all": true,
+    "include": [
+      "*.js"
+    ],
+    "reporter": [
+      "text-summary",
+      "html",
+      "lcov",
+      "json"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/terascope/kafka-assets.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/terascope/kafka-assets/issues"
+  },
+  "homepage": "https://github.com/terascope/kafka-assets#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.0.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jasmine": "^2.10.1",
+    "jasmine": "^3.1.0",
+    "jasmine-spec-reporter": "^4.2.1",
+    "nyc": "^12.0.2"
+  }
+}
