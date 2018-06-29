@@ -3,45 +3,63 @@
 const Promise = require('bluebird');
 
 function newProcessor(context, opConfig) {
-    let producerReady = false;
-
     const bufferSize = 5 * opConfig.size;
+    const logger = context.apis.foundation.makeLogger({ module: 'kafka_sender' });
 
-    const producer = context.foundation.getConnection({
-        type: 'kafka',
-        endpoint: opConfig.connection,
-        options: {
-            type: 'producer'
-        },
-        rdkafka_options: {
-            'compression.codec': opConfig.compression,
-            'queue.buffering.max.messages': bufferSize,
-            'queue.buffering.max.ms': opConfig.wait,
-            'batch.num.messages': opConfig.size,
-            'topic.metadata.refresh.interval.ms': opConfig.metadata_refresh,
-            'log.connection.close': false
-        }
-    }).client;
+    // Note that on startup, if this does not connect in time no workers will connect to the
+    // execution_controller thus will shutdown the exectuion according timeout set there
+    function initialize() {
+        return new Promise((resolve, reject) => {
+            const producer = context.foundation.getConnection({
+                type: 'kafka',
+                endpoint: opConfig.connection,
+                options: {
+                    type: 'producer'
+                },
+                rdkafka_options: {
+                    'compression.codec': opConfig.compression,
+                    'queue.buffering.max.messages': bufferSize,
+                    'queue.buffering.max.ms': opConfig.wait,
+                    'batch.num.messages': opConfig.size,
+                    'topic.metadata.refresh.interval.ms': opConfig.metadata_refresh,
+                    'log.connection.close': false
+                },
+                autoconnect: false
+            }).client;
 
-    producer.on('ready', () => {
-        producerReady = true;
-    });
+            const warning = setInterval(() => {
+                logger.warn(`Attempting to connect to kafka endpoint ${opConfig.connection}`);
+            }, 5000);
 
-    return data => new Promise(((resolve, reject) => {
-        function error(err) {
-            reject(err);
-        }
+            producer.connect((err) => {
+                if (err) {
+                    context.logger.error('could not initialize kafka client', err);
+                    reject(err);
+                }
+            });
 
-        function batch(start) {
-            let end = start + bufferSize;
-            if (end > data.length) end = data.length;
+            producer.on('ready', () => {
+                clearInterval(warning);
+                resolve(producer);
+            });
+        });
+    }
 
-            if (end === 0) {
-                resolve(data);
-                return;
+    function makeProcessor(producer) {
+        return data => new Promise(((resolve, reject) => {
+            function error(err) {
+                reject(err);
             }
 
-            if (producerReady) {
+            function batch(start) {
+                let end = start + bufferSize;
+                if (end > data.length) end = data.length;
+
+                if (end === 0) {
+                    resolve(data);
+                    return;
+                }
+
                 for (let i = start; i < end; i += 1) {
                     const record = data[i];
 
@@ -65,7 +83,7 @@ function newProcessor(context, opConfig) {
                         // This is the partition. There may be use cases where
                         // we'll need to control this.
                         null,
-                        new Buffer(JSON.stringify(record)),
+                        Buffer.from(JSON.stringify(record)),
                         key,
                         timestamp
                     );
@@ -75,7 +93,6 @@ function newProcessor(context, opConfig) {
                 producer.flush(60000, (err) => {
                     // Remove the error listener so they don't accrue across slices.
                     producer.removeListener('event.error', error);
-
                     if (err) {
                         reject(err);
                         return;
@@ -88,15 +105,18 @@ function newProcessor(context, opConfig) {
 
                     batch(end);
                 });
-            } else {
-                setTimeout(() => batch(start), 20);
             }
-        }
 
-        producer.on('event.error', error);
+            producer.on('event.error', error);
 
-        batch(0);
-    }));
+            batch(0);
+        }));
+    }
+
+    return Promise.resolve()
+        .then(() => initialize())
+        .then(makeProcessor)
+        .catch(err => Promise.reject(`Could not initialize kafka sender error: ${err.stack}`));
 }
 
 
