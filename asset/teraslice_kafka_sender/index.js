@@ -10,7 +10,7 @@ function newProcessor(context, opConfig) {
     // execution_controller thus will shutdown the exectuion according timeout set there
     function initialize() {
         return new Promise((resolve, reject) => {
-            const producer = context.foundation.getConnection({
+            const clientConfig = {
                 type: 'kafka',
                 endpoint: opConfig.connection,
                 options: {
@@ -25,7 +25,11 @@ function newProcessor(context, opConfig) {
                     'log.connection.close': false
                 },
                 autoconnect: false
-            }).client;
+            };
+
+            if (opConfig.debug) clientConfig.rdkafka_options.debug = opConfig.debug;
+            
+            const producer = context.foundation.getConnection(clientConfig).client;
 
             const warning = setInterval(() => {
                 logger.warn(`Attempting to connect to kafka endpoint ${opConfig.connection}`);
@@ -166,6 +170,12 @@ function schema() {
             doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
             default: 300000,
             format: Number
+        },
+        debug: {
+            default: null,
+            format: (val) => {
+                if (val && typeof val !== 'string') throw new Error('parameter debug for kafka must be a string if set')
+            }
         }
     };
 }

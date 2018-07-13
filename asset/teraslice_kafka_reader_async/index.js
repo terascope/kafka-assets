@@ -134,10 +134,26 @@ function newReader(context, opConfig) {
         return Promise.resolve(true);
     }
 
+    function callProcessSlice(data) {
+        return new Promise((resolve) => {
+            if (readyToProcess) {
+                resolve(processSlice(data)); 
+              } else {
+                  const canRun = setInterval(() => {
+                      if (readyToProcess) {
+                          clearInterval(canRun)
+                          resolve(processSlice(data));
+                      }
+                  }, 50)
+              }
+
+        })
+    }
+
     function processor(data, sliceLogger) {
         logger = sliceLogger;
         return watchdog()
-            .then(() => processSlice(data));
+            .then(() => callProcessSlice(data));
     }
 
     function processSlice(data) {
@@ -148,7 +164,7 @@ function newReader(context, opConfig) {
     
             const startingOffsets = {};
             const endingOffsets = {};
-    
+
             // Listeners are registered on each slice and cleared at the end.
             function clearPrimaryListeners() {
                 clearInterval(consuming);
@@ -157,6 +173,8 @@ function newReader(context, opConfig) {
             }
     
             function clearSliceListeners() {
+                logger.info('clearSliceListeners is called', process.pid)
+
                 // These can't be called in clearPrimaryListners as they
                 // must exist after processing of the slice is complete.
                 events.removeListener('slice:success', commit);
@@ -172,8 +190,9 @@ function newReader(context, opConfig) {
             // slice:success is called so we need to tell the handler we're
             // shuttingdown.
             function shutdown() {
-                completeSlice();
+                logger.error('i am shuttingdown', process.pid)
                 shuttingdown = true;
+                completeSlice();
             }
     
             // Called when slice processing is completed.
@@ -205,9 +224,10 @@ function newReader(context, opConfig) {
                 // If we're blocking we don't want to complete or read
                 // data until unblocked.
                 if (!readyToProcess) return;
-    
+                
                 if (((Date.now() - iterationStart) > opConfig.wait) ||
                     (slice.length >= opConfig.size)) {
+                        if (((Date.now() - iterationStart) > opConfig.wait)) logger.warn('completedSlice because of time issues', process.pid)
                     completeSlice();
                 } else {
                     // We only want one consume call active at any given time
@@ -253,8 +273,9 @@ function newReader(context, opConfig) {
             function _retryFn(fn, dataSet) {
                 const retryTimer = { start: retryStart, limit: retryLimit };
         
-                return (_data) => {
-                    const args = _data || dataSet;
+                return (err) => {
+                    logger.warn('i am retrying', err, process.pid)
+                    const args = dataSet;
                     const timer = Math.floor((Math.random() * (retryTimer.limit - retryTimer.start)) + retryTimer.start);
         
                     if (retryTimer.limit < 60000) {
@@ -278,45 +299,19 @@ function newReader(context, opConfig) {
             }
            
             function makeCommit() {
+                const commitData = [];
                 _.forOwn(endingOffsets, (offset, partition) => {
-                    consumer.commitSync({
+                    commitData.push({
                         partition: parseInt(partition, 10),
                         offset,
                         topic: opConfig.topic
                     });
                 });
-            }
-
-            function isAlive(query) {
-                return new Promise((resolve, reject) => {
-                    consumer.getMetadata(query, (err, resp) => {
-                        if (err) return reject(err);
-                        return resolve(resp);
-                    });
-                });
-            }
-
-            function checkAvailability() {
-                return new Promise((resolve) => {
-                    const query = { topic: opConfig.topic, timeout: 5000 };
-                    const retry = _retryFn(checkIfAlive, query);
-                    function checkIfAlive(_query) {
-                        Promise.resolve()
-                            .then(() => isAlive(_query))
-                            .then(resp => resolve(resp))
-                            .catch((err) => {
-                                logger.error(`error while checking availability of topic ${opConfig.topic}`, err);
-                                retry();
-                            });
-                    }
-
-                    checkIfAlive(query);
-                });
+                consumer.commit(commitData);
             }
 
             function commitOffsets() {
                 return Promise.resolve()
-                    .then(() => checkAvailability())
                     .then(() => makeCommit())
                     .then(() => finishCommit())
                     .catch((err) => {
@@ -340,7 +335,7 @@ function newReader(context, opConfig) {
                 function _commit() {
                     return Promise.resolve()
                         .then(() => commitOffsets())
-                        .catch(() => retry());
+                        .catch((err) => retry(err));
                 }
 
                 _commit();
