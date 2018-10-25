@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "8"
+jobs:
+  include:
+    - stage: GitHub Build Release
+      script: yarn build
+      deploy:
+        provider: releases
+        api_key:
+          secure: m8cSQLY4HyByqiIw9LXw1P2IgfsQLmBtXZRM406va8ofi6UTk5GBK/yPXfxMqV51dOJy4n4KZ3o8evI5QZE9CAs3VMqgzqQte1l+uU5LEauh2b3oQt6s5IzN1+LE22ptcgB7gkfGaSBvQPrxXlXlOlb9gRdcHmf5E1j7i4b6Nqe+gUfCx1r7uoJzB7L22pttDqcni7lXpdgYMftNunDs1FMC5b+x6MiTZLmQeWgtYbdC8aBzn6HfY7RRy55pTZTZRphXRwAjek2mAEw+h2W5s+sX+ej9st2zHRsofIQYJ8PcLtbD9/tYo4abkjJhw1dvVuPbifns316RKfY3BH4BBzC84Xi/TDJW3JDdkLMydkLPT823Ce+HhYixX/y1RQMio9BZI0bwuArMTtpK8I0rTmTJ7yvXlrJke+ElPp0riPvay5m9QeAl1FdAqMhZ8p7hsSJRt3BERmjfi4+CSodQRv+37GYWq2+AarhaEFTvN0JcIZQt3A47xVtTsa6jJF4jlkHrx+4C62WW+OYNJ17v/bI4cEh/yMSzT55JQadwlE7CJQrGOXRJTyjERCXcvY1OxhTItnGlehBI9KWP6Av8IeiHBQNGTUhmTrOiG8HFPpcwPi5jnx4Syhw1qs7jzaK1qUI0uWbMVNEiJSC3zW8ueVhs2LTqs7eGX4WqXQXfC/0=
+        file_glob: true
+        file: builds/*.zip
+        skip_cleanup: true
+        on:
+          tags: true
