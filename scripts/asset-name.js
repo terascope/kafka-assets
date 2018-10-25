@@ -2,4 +2,5 @@
 
 const asset = require('../asset/asset');
 
-console.log(`${asset.name}-v${asset.version}-node-${process.version.split('.')[0].substr(1)}-${process.platform}-${process.arch}.zip`);
+const nodeVersion = process.version.split('.')[0].substr(1);
+console.log(`${asset.name}-v${asset.version}-node-${nodeVersion}-${process.platform}-${process.arch}.zip`);
