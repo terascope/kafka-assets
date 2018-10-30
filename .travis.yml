@@ -4,6 +4,7 @@ node_js:
 jobs:
   include:
     - stage: GitHub Build Release
+      if: tag IS present AND branch = master AND type != pull_request
       script: yarn build
       deploy:
         provider: releases
@@ -11,5 +12,3 @@ jobs:
         file_glob: true
         file: builds/*.zip
         skip_cleanup: true
-        on:
-          tags: true
