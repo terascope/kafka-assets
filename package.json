@@ -8,7 +8,7 @@
     "lint": "eslint *.js",
     "lint:fix": "eslint --fix *.js",
     "test": "jest",
-    "postinstall" : "cd asset && yarn --prod --silent --no-progress"
+    "postinstall" : "yarn --cwd ./asset --prod --silent --no-progress"
   },
   "repository": {
     "type": "git",
