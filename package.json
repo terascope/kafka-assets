@@ -7,13 +7,14 @@
     "build": "scripts/build.sh",
     "lint": "eslint *.js",
     "lint:fix": "eslint --fix *.js",
-    "test": "jest"
+    "test": "jest",
+    "postinstall" : "cd asset && yarn --prod --silent --no-progress"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/terascope/kafka-assets.git"
   },
-  "author": "",
+  "author": "Terascope, LLC <info@terascope.io>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/terascope/kafka-assets/issues"
