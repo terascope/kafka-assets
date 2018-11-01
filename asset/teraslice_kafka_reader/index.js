@@ -142,29 +142,29 @@ function newReader(context, opConfig) {
             const slice = [];
             const iterationStart = Date.now();
             const consuming = setInterval(consume, opConfig.interval);
-    
+
             const startingOffsets = {};
             const endingOffsets = {};
-    
+
             // Listeners are registered on each slice and cleared at the end.
             function clearPrimaryListeners() {
                 clearInterval(consuming);
                 consumer.removeListener('error', error);
                 events.removeListener('worker:shutdown', shutdown);
             }
-    
+
             function clearSliceListeners() {
                 // These can't be called in clearPrimaryListners as they
                 // must exist after processing of the slice is complete.
                 events.removeListener('slice:success', commit);
                 events.removeListener('slice:finalize', finalize);
-    
+
                 // This can be registared to different functions depending
                 // on configuration.
                 events.removeListener('slice:retry', rollback);
                 events.removeListener('slice:retry', commit);
             }
-    
+
             // Called when the job is shutting down but this occurs before
             // slice:success is called so we need to tell the handler we're
             // shuttingdown.
@@ -172,39 +172,39 @@ function newReader(context, opConfig) {
                 completeSlice();
                 shuttingdown = true;
             }
-    
+
             // Called when slice processing is completed.
             function completeSlice() {
                 clearPrimaryListeners();
                 logger.info(`Resolving with ${slice.length} results`);
-    
+
                 // Keep track of consecutive 0 record slices.
                 if (slice.length === 0) {
                     watchdogCount += 1;
                 } else {
                     watchdogCount = 0;
                 }
-    
+
                 // We keep track of where we start reading for each slice.
                 // If there is an error we'll rewind the consumer and read
                 // the slice again.
                 rollbackOffsets = startingOffsets;
                 resolveSlice(slice);
             }
-    
+
             function error(err) {
                 logger.error('whatzzzz teh errorroror', err);
                 clearPrimaryListeners();
                 rejectSlice(err);
             }
-    
+
             function consume() {
                 // If we're blocking we don't want to complete or read
                 // data until unblocked.
                 if (!readyToProcess) return;
-    
-                if (((Date.now() - iterationStart) > opConfig.wait) ||
-                    (slice.length >= opConfig.size)) {
+
+                if (((Date.now() - iterationStart) > opConfig.wait)
+                    || (slice.length >= opConfig.size)) {
                     completeSlice();
                 } else {
                     // We only want one consume call active at any given time
@@ -219,22 +219,22 @@ function newReader(context, opConfig) {
                                 rejectSlice(err);
                             }
                         }
-    
+
                         messages.forEach((message) => {
                             // We want to track the first offset we receive so
                             // we can rewind if there is an error.
                             if (!startingOffsets[message.partition]) {
                                 startingOffsets[message.partition] = message.offset;
                             }
-    
+
                             // We record the last offset we see for each
                             // partition so that if the slice is successfull
                             // they can be committed.
                             endingOffsets[message.partition] = message.offset + 1;
-    
+
                             slice.push(message.value);
                         });
-    
+
                         if (slice.length >= opConfig.size) {
                             completeSlice();
                         } else {
@@ -246,11 +246,13 @@ function newReader(context, opConfig) {
 
             function _retryFn(fn, dataSet) {
                 const retryTimer = { start: retryStart, limit: retryLimit };
-        
+
                 return (_data) => {
                     const args = _data || dataSet;
-                    const timer = Math.floor((Math.random() * (retryTimer.limit - retryTimer.start)) + retryTimer.start);
-        
+                    const timer = Math.floor(
+                        (Math.random() * (retryTimer.limit - retryTimer.start)) + retryTimer.start
+                    );
+
                     if (retryTimer.limit < 60000) {
                         retryTimer.limit += retryLimit;
                     }
@@ -270,7 +272,7 @@ function newReader(context, opConfig) {
                     readyToProcess = true;
                 }
             }
-           
+
             function makeCommit() {
                 _.forOwn(endingOffsets, (offset, partition) => {
                     consumer.commitSync({
@@ -325,7 +327,7 @@ function newReader(context, opConfig) {
                         return Promise.reject(err);
                     });
             }
-    
+
             // We only want to move offsets if the slice is successful.
             function commit() {
                 readyToProcess = false;
@@ -339,7 +341,7 @@ function newReader(context, opConfig) {
 
                 _commit();
             }
-    
+
             // If processing the slice fails we need to roll back to the
             // previous state.
 
@@ -384,7 +386,7 @@ function newReader(context, opConfig) {
                     readyToProcess = true;
                     return;
                 }
-    
+
                 _.forOwn(rollbackOffsets, (offset, partition) => {
                     allRollbacks.push(rollbackPartition({ offset, partition }));
                 });
@@ -394,17 +396,18 @@ function newReader(context, opConfig) {
                         readyToProcess = true;
                     });
             }
-            // There could be a race condition and set readyToProcess to true before commit or rollback executes
+            // There could be a race condition and set readyToProcess to true
+            // before commit or rollback executes
             function finalize() {
                 clearSliceListeners();
             }
-            
+
             consumer.on('error', error);
 
             events.on('worker:shutdown', shutdown);
             events.on('slice:success', commit);
             events.on('slice:finalize', finalize);
-    
+
             if (opConfig.rollback_on_failure) {
                 events.on('slice:retry', rollback);
             } else {
@@ -418,7 +421,7 @@ function newReader(context, opConfig) {
                 // cases but in general is a bad idea.
                 events.on('slice:retry', commit);
             }
-    
+
             // Kick off initial processing.
             consume();
         });

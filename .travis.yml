@@ -1,16 +1,20 @@
 language: node_js
 node_js:
   - "8"
-jobs:
-  include:
-    - stage: GitHub Build Release
-      if: tag IS present
-      script: yarn build
-      deploy:
-        provider: releases
-        api_key: $GITHUB_TOKEN
-        file_glob: true
-        file: builds/*.zip
-        skip_cleanup: true
-        on:
-          tags: true
+  - "10"
+os:
+  - linux
+  - osx
+branches:
+  only:
+  - master
+  - /^v\d+\.\d+\.\d+/
+before_deploy: yarn build
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: builds/*.zip
+  skip_cleanup: true
+  on:
+    tags: true
