@@ -5,6 +5,10 @@ node_js:
 os:
   - linux
   - osx
+branches:
+  only:
+  - master
+  - /^v\d+\.\d+\.\d+/
 before_deploy: yarn build
 deploy:
   provider: releases
