@@ -137,7 +137,7 @@ function newReader(context, opConfig) {
             .then(() => processSlice(data));
     }
 
-    function processSlice(data) {
+    function processSlice() {
         return new Promise((resolveSlice, rejectSlice) => {
             const slice = [];
             const iterationStart = Date.now();
@@ -217,6 +217,7 @@ function newReader(context, opConfig) {
                             if (!(errorDict[err.code] || errorDict[err])) {
                                 readyToProcess = true;
                                 rejectSlice(err);
+                                return;
                             }
                         }
 
