@@ -1,7 +1,8 @@
 'use strict';
 
-const Promise = require('bluebird');
 const _ = require('lodash');
+const Promise = require('bluebird');
+const { DataEntity } = require('@terascope/job-components');
 
 const KAFKA_NO_OFFSET_STORED = -168;
 const ERR__WAIT_COORD = -180;
@@ -193,7 +194,7 @@ function newReader(context, opConfig) {
             }
 
             function error(err) {
-                logger.error('whatzzzz teh errorroror', err);
+                logger.error('kafka slice error', err);
                 clearPrimaryListeners();
                 rejectSlice(err);
             }
@@ -233,7 +234,13 @@ function newReader(context, opConfig) {
                             // they can be committed.
                             endingOffsets[message.partition] = message.offset + 1;
 
-                            slice.push(message.value);
+                            const metadata = {
+                                partition: message.partition,
+                                offset: message.offset,
+                                topic: message.topic,
+                            };
+
+                            slice.push(DataEntity.fromBuffer(message.value, opConfig, metadata));
                         });
 
                         if (slice.length >= opConfig.size) {
