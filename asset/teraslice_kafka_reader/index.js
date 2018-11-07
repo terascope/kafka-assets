@@ -496,9 +496,18 @@ function schema() {
     };
 }
 
+function crossValidation(job) {
+    const secondOp = job.operations[1] && job.operations[1]._op;
+
+    if (secondOp === 'json_protocol') {
+        throw new Error('Kafka Reader handles json serialization, please remove "json_protocol"');
+    }
+}
+
 module.exports = {
     newReader,
     newSlicer,
     schema,
+    crossValidation,
     slicerQueueLength
 };
