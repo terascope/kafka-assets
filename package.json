@@ -1,14 +1,14 @@
 {
   "name": "kafka-assets",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "teraslice asset for kafka operations",
   "main": "index.js",
   "scripts": {
     "build": "scripts/build.sh",
-    "lint": "eslint *.js",
-    "lint:fix": "eslint --fix *.js",
+    "lint": "eslint asset/**/*.js test/**/*.js",
+    "lint:fix": "yarn lint -- fix",
     "test": "jest",
-    "postinstall" : "yarn --cwd ./asset --prod --silent --no-progress"
+    "postinstall": "yarn --cwd ./asset --prod --silent --no-progress"
   },
   "repository": {
     "type": "git",
@@ -22,10 +22,9 @@
   "homepage": "https://github.com/terascope/kafka-assets#readme",
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^5.0.1",
-    "eslint-config-airbnb": "^17.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-jasmine": "^2.10.1",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
     "jest": "^23.6.0",
     "jest-extended": "^0.11.0"
   }

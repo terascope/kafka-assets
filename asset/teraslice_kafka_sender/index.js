@@ -1,6 +1,7 @@
 'use strict';
 
 const Promise = require('bluebird');
+const { DataEntity } = require('@terascope/job-components');
 
 function newProcessor(context, opConfig) {
     const bufferSize = 5 * opConfig.size;
@@ -45,6 +46,13 @@ function newProcessor(context, opConfig) {
         });
     }
 
+    function toBuffer(record) {
+        if (DataEntity.isDataEntity(record)) {
+            return record.toBuffer(opConfig);
+        }
+        return Buffer.from(JSON.stringify(record));
+    }
+
     function makeProcessor(producer) {
         return data => new Promise(((resolve, reject) => {
             function error(err) {
@@ -83,7 +91,7 @@ function newProcessor(context, opConfig) {
                         // This is the partition. There may be use cases where
                         // we'll need to control this.
                         null,
-                        Buffer.from(JSON.stringify(record)),
+                        toBuffer(record),
                         key,
                         timestamp
                     );

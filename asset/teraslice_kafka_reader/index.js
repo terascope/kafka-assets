@@ -1,7 +1,8 @@
 'use strict';
 
-const Promise = require('bluebird');
 const _ = require('lodash');
+const Promise = require('bluebird');
+const { DataEntity } = require('@terascope/job-components');
 
 const KAFKA_NO_OFFSET_STORED = -168;
 const ERR__WAIT_COORD = -180;
@@ -137,7 +138,7 @@ function newReader(context, opConfig) {
             .then(() => processSlice(data));
     }
 
-    function processSlice(data) {
+    function processSlice() {
         return new Promise((resolveSlice, rejectSlice) => {
             const slice = [];
             const iterationStart = Date.now();
@@ -193,7 +194,7 @@ function newReader(context, opConfig) {
             }
 
             function error(err) {
-                logger.error('whatzzzz teh errorroror', err);
+                logger.error('kafka slice error', err);
                 clearPrimaryListeners();
                 rejectSlice(err);
             }
@@ -217,6 +218,7 @@ function newReader(context, opConfig) {
                             if (!(errorDict[err.code] || errorDict[err])) {
                                 readyToProcess = true;
                                 rejectSlice(err);
+                                return;
                             }
                         }
 
@@ -232,7 +234,13 @@ function newReader(context, opConfig) {
                             // they can be committed.
                             endingOffsets[message.partition] = message.offset + 1;
 
-                            slice.push(message.value);
+                            const metadata = {
+                                partition: message.partition,
+                                offset: message.offset,
+                                topic: message.topic,
+                            };
+
+                            slice.push(DataEntity.fromBuffer(message.value, opConfig, metadata));
                         });
 
                         if (slice.length >= opConfig.size) {
@@ -488,9 +496,22 @@ function schema() {
     };
 }
 
+/**
+ * This is a temporary fix until this reader is changed
+ * to use the new Job APIs.
+*/
+function crossValidation(job) {
+    const secondOp = job.operations[1] && job.operations[1]._op;
+
+    if (secondOp === 'json_protocol') {
+        throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
+    }
+}
+
 module.exports = {
     newReader,
     newSlicer,
     schema,
+    crossValidation,
     slicerQueueLength
 };
