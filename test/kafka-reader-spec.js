@@ -29,7 +29,7 @@ describe('Kafka Reader', () => {
 
         expect(() => {
             reader.crossValidation(job);
-        }).toThrowError('Kafka Reader handles json serialization, please remove "json_protocol"');
+        }).toThrowError('Kafka Reader handles serialization, please remove "json_protocol"');
     });
 
     it('crossValidation should not throw an error if there is no json_protocol', () => {

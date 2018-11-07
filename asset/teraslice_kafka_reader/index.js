@@ -496,11 +496,15 @@ function schema() {
     };
 }
 
+/**
+ * This is a temporary fix until this reader is changed
+ * to use the new Job APIs.
+*/
 function crossValidation(job) {
     const secondOp = job.operations[1] && job.operations[1]._op;
 
     if (secondOp === 'json_protocol') {
-        throw new Error('Kafka Reader handles json serialization, please remove "json_protocol"');
+        throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
     }
 }
 
