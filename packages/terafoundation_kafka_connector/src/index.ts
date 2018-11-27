@@ -1,5 +1,4 @@
-// @ts-ignore
-import bunyan from '@types/bunyan';
+import { Logger } from '@terascope/job-components';
 import { KafkaConsumer, Producer } from 'node-rdkafka';
 import {
     KafkaConnectorConfig,
@@ -31,9 +30,9 @@ import {
  */
 
 class KafakConnector {
-    create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaConsumerSettings): KafkaConsumerResult;
-    create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaProducerSettings): KafkaProducerResult;
-    create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaConsumerSettings|KafkaProducerSettings): KafkaConsumerResult|KafkaProducerResult {
+    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings): KafkaConsumerResult;
+    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaProducerSettings): KafkaProducerResult;
+    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings|KafkaProducerSettings): KafkaConsumerResult|KafkaProducerResult {
         const clientType = getClientType(settings.options.type);
 
         if (isConsumerSettings(settings)) {
@@ -74,7 +73,7 @@ class KafakConnector {
         };
     }
 
-    private _autoconnect(client: Producer|KafkaConsumer, logger: bunyan, autoconnect: boolean = true) {
+    private _autoconnect(client: Producer|KafkaConsumer, logger: Logger, autoconnect: boolean = true) {
         if (!autoconnect) return;
 
         // Default to autoconnecting but can be disabled.

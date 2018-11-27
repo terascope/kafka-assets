@@ -56,13 +56,6 @@
   resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.4.tgz#52db805f09403579478ede0e041f76c176c6e766"
   integrity sha512-ZH8/q1vx8CPYhfamzCRErj1HUvdN8rQbV3uvyAQ7PLKh2+CrN5HX6J8lCa1TVDlb1RTXkCGzOXnJ2b+AJP3lRg==
 
-"@types/bunyan@^1.8.5":
-  version "1.8.5"
-  resolved "https://registry.yarnpkg.com/@types/bunyan/-/bunyan-1.8.5.tgz#d992adbce8ed20cde634764bd8f269f29f703647"
-  integrity sha512-7n8ANtxh2c5A/NfCuv8cVtWcgSLdq76MQbtmbInpzXuPw4TSAReUJ+MGHK4m67I4zI3ynCJoABfaeHYJaYSeRg==
-  dependencies:
-    "@types/node" "*"
-
 "@types/convict@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@types/convict/-/convict-4.2.0.tgz#87ec9c10bfae801f79bf9dfa0f603c064e2fa5fa"
@@ -73,7 +66,7 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.9.tgz#c16b55186ee73ae65e001fbee69d392c51337ad1"
   integrity sha512-wNMwXSUcwyYajtbayfPp55tSayuDVU6PfY5gzvRSj80UvxdXEJOVPnUVajaOp7NgXLm+1e2ZDLULmpsU9vDvQw==
 
-"@types/node@*", "@types/node@^10.12.8":
+"@types/node@^10.12.8":
   version "10.12.10"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.10.tgz#4fa76e6598b7de3f0cb6ec3abacc4f59e5b3a2ce"
   integrity sha512-8xZEYckCbUVgK8Eg7lf5Iy4COKJ5uXlnIOnePN0WUwSQggy9tolM+tDJf7wMOnT/JT/W9xDYIaYggt3mRV2O5w==

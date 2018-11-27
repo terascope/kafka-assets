@@ -1,13 +1,11 @@
 
 // @ts-ignore
-import bunyan from '@types/bunyan';
 import convict from 'convict';
 import { debugLogger } from '@terascope/job-components';
 import connector from '../src';
 import { KafkaConsumerSettings } from '../src/interfaces';
 
-// @ts-ignore
-const logger = debugLogger('terafoundation-kafka-connector') as bunyan;
+const logger = debugLogger('terafoundation-kafka-connector');
 
 jest.setTimeout(3000);
 

@@ -17,6 +17,8 @@ module.exports = {
             tsConfig: './tsconfig.json',
             diagnostics: true,
             pretty: true,
-        }
+        },
+        ignoreDirectories: ['dist'],
+        availableExtensions: ['.js', '.ts']
     }
 };

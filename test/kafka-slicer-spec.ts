@@ -8,9 +8,7 @@ jest.mock('../packages/terafoundation_kafka_connector/node_modules/node-rdkafka'
 describe('KafkaSlicer', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
-        endpoint: 'default',
         create(config: any, logger: Logger, settings: any) {
-            // @ts-ignore
             return Connector.create(config, logger, settings);
         }
     };
@@ -36,7 +34,7 @@ describe('KafkaSlicer', () => {
         jest.restoreAllMocks();
 
         harness = new SlicerTestHarness(job, {
-            clients
+            clients,
         });
 
         await harness.initialize();
@@ -49,6 +47,11 @@ describe('KafkaSlicer', () => {
 
     it('should return empty slices', async () => {
         const slices = await harness.createSlices();
-        expect(slices).toEqual([null]);
+        expect(slices).toEqual([{}]);
+    });
+
+    it('should have a maxQueueLength of workers * 2', () => {
+        harness.setWorkers(5);
+        expect(harness.slicer.maxQueueLength()).toEqual(10);
     });
 });
