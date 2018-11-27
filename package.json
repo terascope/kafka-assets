@@ -1,31 +1,32 @@
 {
-  "name": "kafka-assets",
-  "version": "1.2.0",
-  "description": "teraslice asset for kafka operations",
-  "main": "index.js",
-  "scripts": {
-    "build": "scripts/build.sh",
-    "lint": "eslint asset/**/*.js test/**/*.js",
-    "lint:fix": "yarn lint -- fix",
-    "test": "jest",
-    "postinstall": "yarn --cwd ./asset --prod --silent --no-progress"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/terascope/kafka-assets.git"
-  },
-  "author": "Terascope, LLC <info@terascope.io>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/terascope/kafka-assets/issues"
-  },
-  "homepage": "https://github.com/terascope/kafka-assets#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "eslint": "^5.8.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "jest": "^23.6.0",
-    "jest-extended": "^0.11.0"
-  }
+    "name": "kafka-asset-bundle",
+    "version": "2.0.0",
+    "description": "Teraslice asset for kafka operations",
+    "private": true,
+    "scripts": {
+        "lint": "tslint --project tsconfig.json --format verbose",
+        "lint:fix": "yarn lint --fix",
+        "prepare": "yarn build",
+        "build": "tsc --project tsconfig.json --pretty",
+        "build:watch": "yarn build --watch",
+        "test": "jest",
+        "test:watch": "jest --coverage=false --notify --watch --onlyChanged",
+        "test:debug": "env DEBUG='*teraslice*' jest --detectOpenHandles --coverage=false --runInBand"
+    },
+    "repository": "git@github.com:terascope/kafka-assets.git",
+    "author": "Terascope, LLC <info@terascope.io>",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^23.3.9",
+        "@types/node": "^10.12.8",
+        "jest": "^23.6.0",
+        "jest-extended": "^0.11.0",
+        "ts-jest": "^23.10.4",
+        "tslint": "^5.11.0",
+        "tslint-config-airbnb": "^5.11.1",
+        "typescript": "^3.1.6"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    }
 }

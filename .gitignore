@@ -62,3 +62,8 @@ typings/
 
 # Ignore teraslice asset builds
 builds/
+
+asset/dist
+
+# @TODO REMOVE NEXT LINE
+asset/**/_old.js
