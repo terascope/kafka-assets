@@ -1,7 +1,21 @@
 // @ts-ignore
 import bunyan from '@types/bunyan';
 import { KafkaConsumer, Producer } from 'node-rdkafka';
-import { KafkaConnectorConfig, KafkaClientSettings } from './interfaces';
+import {
+    KafkaConnectorConfig,
+    KafkaConsumerSettings,
+    KafkaProducerSettings,
+    KafkaConsumerResult,
+    KafkaProducerResult,
+    ClientType,
+} from './interfaces';
+import {
+    RDKafkaConsumerOptions,
+    RDKafkaConsumerTopicOptions,
+    RDKafkaProducerOptions,
+    RDKafkaProducerTopicOptions
+} from './rdkafka-options';
+
 /**
  * settings contains a list of options to configure on the client.
  *
@@ -15,67 +29,58 @@ import { KafkaConnectorConfig, KafkaClientSettings } from './interfaces';
  *
  * rdkafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
  */
-function create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaClientSettings) {
-    let client;
-    const clientType = settings.options.type.toLowerCase();
 
-    if (clientType === 'consumer') {
-        // Group can be passed in when the connection is requested by the
-        // application or configured in terafoundation config.
-        let group = settings.options.group;
-        if (!group) group = config.group;
+class KafakConnector {
+    create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaConsumerSettings): KafkaConsumerResult;
+    create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaProducerSettings): KafkaProducerResult;
+    create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaConsumerSettings|KafkaProducerSettings): KafkaConsumerResult|KafkaProducerResult {
+        const clientType = getClientType(settings.options.type);
 
-        // Default settings for the client. This uses the options we defined
-        // before exposing all the settings available to rdkafka
-        let clientOptions = {
-            'group.id': group,
-            'metadata.broker.list': config.brokers,
-        };
+        if (isConsumerSettings(settings)) {
 
-        // Topic specific options as defined by librdkafka
-        let topicOptions = {
-            'auto.offset.reset': 'smallest'
-        };
+            const { topicOptions, clientOptions, group } = this._getConsumerOptions(config, settings);
 
-        topicOptions = Object.assign(topicOptions, settings.topic_options);
+            logger.info(`Creating a Kafka consumer for group: ${group}`);
+            const client = new KafkaConsumer(clientOptions, topicOptions);
 
-        // Merge in any librdkafka options passed in by the user.
-        clientOptions = Object.assign(clientOptions, settings.rdkafka_options);
+            this._autoconnect(client, logger, settings.autoconnect);
+            return {
+                client,
+            };
+        }
 
-        logger.info(`Creating a Kafka consumer for group: ${group}`);
-        client = new KafkaConsumer(clientOptions, topicOptions);
-    } else if (clientType === 'producer') {
-        // Default settings for the client. This uses the options we defined
-        // before exposing all the settings available to rdkafka
-        let clientOptions = {
-            'metadata.broker.list': config.brokers,
-            'queue.buffering.max.messages': 500000,
-            'queue.buffering.max.ms': 1000,
-            'batch.num.messages': 100000,
-        };
+        if (isProducerSettings(settings)) {
+            const { topicOptions, clientOptions, pollInterval } = this._getProducerOptions(config, settings);
 
-        // Topic specific options as defined by librdkafka
-        let topicOptions = {};
+            const client = new Producer(clientOptions, topicOptions);
+            client.setPollInterval(pollInterval);
 
-        topicOptions = Object.assign(topicOptions, settings.topic_options);
+            this._autoconnect(client, logger, settings.autoconnect);
+            return {
+                client,
+            };
+        }
 
-        // Merge in any librdkafka options passed in by the user.
-        clientOptions = Object.assign(clientOptions, settings.rdkafka_options);
-
-        client = new Producer(clientOptions, topicOptions);
-
-        let pollInterval = 100;
-        if (settings.options.poll_interval) pollInterval = settings.options.poll_interval;
-        client.setPollInterval(pollInterval);
-    } else {
         throw new Error(`Unsupport client type of ${clientType}`);
     }
 
-    // Default to autoconnecting but can be disabled.
-    if (settings.autoconnect || settings.autoconnect == null) {
+    config_schema() {
+        return {
+            brokers: {
+                doc: 'List of seed brokers for the kafka environment',
+                default: ['localhost:9092'],
+                format: Array
+            }
+        };
+    }
+
+    private _autoconnect(client: Producer|KafkaConsumer, logger: bunyan, autoconnect: boolean = true) {
+        if (!autoconnect) return;
+
+        // Default to autoconnecting but can be disabled.
         client.connect({}, (err) => {
             if (err) {
-                logger.error(`Error connecting to Kafka: ${err}`);
+                logger.error('Error connecting to Kafka', err);
                 throw err;
             } else {
                 logger.info('Kafka connection initialized.');
@@ -83,22 +88,64 @@ function create(config: KafkaConnectorConfig, logger: bunyan, settings: KafkaCli
         });
     }
 
-    return {
-        client
-    };
+    private _getConsumerOptions(config: KafkaConnectorConfig, settings: KafkaConsumerSettings) {
+        // Group can be passed in when the connection is requested by the
+        // application or configured in terafoundation config.
+        const group = settings.options.group || config.group;
+
+        // Default settings for the client. This uses the options we defined
+        // before exposing all the settings available to rdkafka
+        const clientOptions: RDKafkaConsumerOptions = Object.assign({
+            'group.id': group,
+            'metadata.broker.list': config.brokers,
+        }, settings.rdkafka_options);
+
+        // Topic specific options as defined by librdkafka
+        const topicOptions: RDKafkaConsumerTopicOptions = Object.assign({
+            'auto.offset.reset': 'smallest'
+        }, settings.topic_options);
+
+        return {
+            // Topic specific options as defined by librdkafka
+            topicOptions,
+            clientOptions,
+            group
+        };
+    }
+
+    private _getProducerOptions(config: KafkaConnectorConfig, settings: KafkaProducerSettings) {
+        // Default settings for the client. This uses the options we defined
+        // before exposing all the settings available to rdkafka
+        const clientOptions: RDKafkaProducerOptions = Object.assign({
+            'metadata.broker.list': config.brokers,
+            'queue.buffering.max.messages': 500000,
+            'queue.buffering.max.ms': 1000,
+            'batch.num.messages': 100000,
+        }, settings.rdkafka_options);
+
+        // Topic specific options as defined by librdkafka
+        const topicOptions: RDKafkaProducerTopicOptions = Object.assign({}, settings.topic_options);
+
+        const { poll_interval = 100 } = settings.options;
+
+        return {
+            topicOptions,
+            clientOptions,
+            pollInterval: poll_interval,
+        };
+    }
 }
 
-function configSchema() {
-    return {
-        brokers: {
-            doc: 'List of seed brokers for the kafka environment',
-            default: ['localhost:9092'],
-            format: Array
-        }
-    };
+function getClientType(input: string) {
+    return input && input.toLowerCase() as ClientType;
 }
 
-export = {
-    create,
-    config_schema: configSchema
-};
+function isConsumerSettings(settings: any): settings is KafkaConsumerSettings {
+    return getClientType(settings.options.type) === 'consumer';
+}
+
+function isProducerSettings(settings: any): settings is KafkaProducerSettings {
+    return getClientType(settings.options.type) === 'producer';
+}
+
+export = new KafakConnector();
