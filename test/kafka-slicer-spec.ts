@@ -3,9 +3,7 @@ import { TestClientConfig, Logger } from '@terascope/job-components';
 import { SlicerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from '../packages/terafoundation_kafka_connector';
 
-jest.mock('node-rdkafka');
-
-describe('KafkaSlicer', () => {
+describe('Kafka Slicer', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
         create(config: any, logger: Logger, settings: any) {
@@ -53,5 +51,8 @@ describe('KafkaSlicer', () => {
     it('should have a maxQueueLength of workers * 2', () => {
         harness.setWorkers(5);
         expect(harness.slicer.maxQueueLength()).toEqual(10);
+
+        harness.setWorkers(2);
+        expect(harness.slicer.maxQueueLength()).toEqual(4);
     });
 });

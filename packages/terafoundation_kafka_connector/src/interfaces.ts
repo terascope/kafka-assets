@@ -29,7 +29,6 @@ export interface KafkaProducerSettings extends KafkaClientSettings {
 
 export interface KafkaClientOptions {
     type: ClientType;
-    connection?: string;
 }
 
 export interface KafkaProducerOptions extends KafkaClientOptions {

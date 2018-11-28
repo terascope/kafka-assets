@@ -50,6 +50,11 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 doc: 'Number of consecutive zero record slices allowed before the consumer will automatically re-initialize. This is to guard against bugs in librdkafka.',
                 default: -1,
                 format: Number
+            },
+            bad_record_action: {
+                doc: 'How to handle bad records, defaults to doing nothing',
+                default: 'none',
+                format: ['none', 'throw', 'log']
             }
         };
     }

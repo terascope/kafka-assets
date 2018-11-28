@@ -1,16 +1,30 @@
 import { KafkaReaderConfig } from './interfaces';
-import { KafkaClient } from '../helpers/interfaces';
-import { Fetcher, SliceRequest } from '@terascope/job-components';
+import {
+    Fetcher,
+    SliceRequest,
+    WorkerContext,
+    ExecutionConfig
+} from '@terascope/job-components';
+import Consumer from './consumer';
 
 export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
-    client: KafkaClient;
+    private consumer: Consumer;
 
-    // @ts-ignore
-    constructor(...args) {
-        // @ts-ignore
-        super(...args);
+    constructor(context: WorkerContext, opConfig: KafkaReaderConfig, executionConfig: ExecutionConfig) {
+        super(context, opConfig, executionConfig);
 
-        this.client = this.context.apis.op_runner.getClient({}, 'kafka');
+        this.consumer = new Consumer(context, opConfig);
+    }
+
+    async initialize() {
+        await super.initialize();
+        await this.consumer.connect();
+        this.logger.info('Connected to Kafka');
+    }
+
+    async shutdown() {
+        await this.consumer.disconnect();
+        await super.shutdown();
     }
 
     async fetch(request: SliceRequest) {

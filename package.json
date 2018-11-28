@@ -9,9 +9,9 @@
         "prepare": "yarn workspaces run build",
         "build": "tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
-        "test": "jest",
-        "test:watch": "jest --coverage=false --notify --watch --onlyChanged",
-        "test:debug": "env DEBUG='*teraslice*' jest --detectOpenHandles --coverage=false --runInBand"
+        "test": "jest --forceExit=true",
+        "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
+        "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand"
     },
     "repository": "git@github.com:terascope/kafka-assets.git",
     "author": "Terascope, LLC <info@terascope.io>",
@@ -19,13 +19,16 @@
     "devDependencies": {
         "@types/jest": "^23.3.10",
         "@types/node": "^10.12.8",
+        "@types/uuid": "^3.4.4",
         "jest": "^23.6.0",
         "jest-extended": "^0.11.0",
+        "kafka-tools": "^1.1.0",
         "teraslice-test-harness": "^0.2.1",
         "ts-jest": "^23.10.4",
         "tslint": "^5.11.0",
         "tslint-config-airbnb": "^5.11.1",
-        "typescript": "^3.1.6"
+        "typescript": "^3.1.6",
+        "uuid": "^3.3.2"
     },
     "engines": {
         "node": ">=8.0.0"
