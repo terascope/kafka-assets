@@ -6,7 +6,7 @@
     "scripts": {
         "lint": "tslint --project tsconfig.json --format verbose",
         "lint:fix": "yarn lint --fix",
-        "prepare": "yarn workspaces run build; yarn build",
+        "prepare": "yarn workspaces run build",
         "build": "tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
         "test": "jest",
@@ -17,11 +17,11 @@
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT",
     "devDependencies": {
-        "@types/jest": "^23.3.9",
+        "@types/jest": "^23.3.10",
         "@types/node": "^10.12.8",
         "jest": "^23.6.0",
         "jest-extended": "^0.11.0",
-        "teraslice-test-harness": "^0.2.0",
+        "teraslice-test-harness": "^0.2.1",
         "ts-jest": "^23.10.4",
         "tslint": "^5.11.0",
         "tslint-config-airbnb": "^5.11.1",
@@ -32,10 +32,11 @@
     },
     "workspaces": {
         "packages": [
-            "packages/*"
+            "packages/*",
+            "."
         ],
         "nohoist": [
             "asset"
         ]
-      }
+    }
 }
