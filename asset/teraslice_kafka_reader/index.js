@@ -199,6 +199,44 @@ function newReader(context, opConfig) {
                 rejectSlice(err);
             }
 
+            function handleMessage(message) {
+                // We want to track the first offset we receive so
+                // we can rewind if there is an error.
+                if (!startingOffsets[message.partition]) {
+                    startingOffsets[message.partition] = message.offset;
+                }
+
+                // We record the last offset we see for each
+                // partition so that if the slice is successfull
+                // they can be committed.
+                endingOffsets[message.partition] = message.offset + 1;
+
+                /**
+                 * Kafka DataEntity Metadata
+                 * @typedef {object} metadata
+                 * @property {string} topic - the topic name
+                 * @property {number} partition - the partition on the topic the
+                 * message was on
+                 * @property {number} offset - the offset of the message
+                 * @property {string} key - the message key
+                 * @property {number} size - message size, in bytes.
+                 * @property {number} timestamp - message timestamp
+                */
+                const metadata = _.omit(message, 'value');
+
+                try {
+                    return DataEntity.fromBuffer(
+                        message.value,
+                        opConfig,
+                        metadata
+                    );
+                } catch (err) {
+                    logger.error('Bad record', message);
+                    logger.error(err);
+                    return null;
+                }
+            }
+
             function consume() {
                 // If we're blocking we don't want to complete or read
                 // data until unblocked.
@@ -222,26 +260,12 @@ function newReader(context, opConfig) {
                             }
                         }
 
-                        messages.forEach((message) => {
-                            // We want to track the first offset we receive so
-                            // we can rewind if there is an error.
-                            if (!startingOffsets[message.partition]) {
-                                startingOffsets[message.partition] = message.offset;
+                        for (const message of messages) {
+                            const entity = handleMessage(message);
+                            if (entity != null) {
+                                slice.push(entity);
                             }
-
-                            // We record the last offset we see for each
-                            // partition so that if the slice is successfull
-                            // they can be committed.
-                            endingOffsets[message.partition] = message.offset + 1;
-
-                            const metadata = {
-                                partition: message.partition,
-                                offset: message.offset,
-                                topic: message.topic,
-                            };
-
-                            slice.push(DataEntity.fromBuffer(message.value, opConfig, metadata));
-                        });
+                        }
 
                         if (slice.length >= opConfig.size) {
                             completeSlice();

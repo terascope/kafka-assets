@@ -2,15 +2,17 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.9.0.tgz#cb9290c686ccc03a915582feb78a6bfc25c9aa10"
-  integrity sha512-jilSIdM+0rVlYbnM2r5Ev6Z14iYoxdUDwOZpcWfHaZIEHds0/qvTbOI7Z9nMyJNnsL0d5Rwaec6b8RAJSj4c9g==
+"@terascope/job-components@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.11.0.tgz#d726fe0c436fcf4b2393220213b93a17c126317a"
+  integrity sha512-nnoDtLjd9+VVX75Nr+z8p7CbWkzgwgMax/9Q9rjxc5T00kKN80AERc0httONeRgPm5lu1UAYG6LMU3hhDOQV/g==
   dependencies:
     "@terascope/queue" "^1.1.4"
     convict "^4.4.0"
     datemath-parser "^1.0.6"
     debug "^4.1.0"
+    is-plain-object "^2.0.4"
+    kind-of "^6.0.2"
     lodash.clonedeep "^4.5.0"
     uuid "^3.3.2"
 
@@ -60,12 +62,29 @@ depd@1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
 
+is-plain-object@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.4.tgz#2c163b3fafb1b606d9d17928f05c2a1c38e07677"
+  integrity sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==
+  dependencies:
+    isobject "^3.0.1"
+
+isobject@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
+  integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
+
 json5@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
   integrity sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==
   dependencies:
     minimist "^1.2.0"
+
+kind-of@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
+  integrity sha512-s5kLOcnH0XqDO+FvuaLX8DDjZ18CGFk7VygH40QoKPUQhW4e2rvM0rwUq0t8IQDOwYSeLK01U90OjzBTme2QqA==
 
 lodash.clonedeep@4.5.0, lodash.clonedeep@^4.5.0:
   version "4.5.0"
