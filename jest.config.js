@@ -11,6 +11,10 @@ module.exports = {
         '<rootDir>/test/**/*-spec.{ts,js}',
         '<rootDir>/test/*-spec.{ts,js}',
     ],
+    projects: [
+        'packages/*',
+        '.'
+    ],
     preset: 'ts-jest',
     globals: {
         'test-jest': {

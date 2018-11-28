@@ -6,7 +6,7 @@
     "scripts": {
         "lint": "tslint --project tsconfig.json --format verbose",
         "lint:fix": "yarn lint --fix",
-        "prepare": "yarn build",
+        "prepare": "yarn workspaces run build; yarn build",
         "build": "tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
         "test": "jest",
@@ -29,5 +29,13 @@
     },
     "engines": {
         "node": ">=8.0.0"
-    }
+    },
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ],
+        "nohoist": [
+            "asset"
+        ]
+      }
 }

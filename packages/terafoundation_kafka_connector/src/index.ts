@@ -36,8 +36,11 @@ class KafakConnector {
         const clientType = getClientType(settings.options.type);
 
         if (isConsumerSettings(settings)) {
-
-            const { topicOptions, clientOptions, group } = this._getConsumerOptions(config, settings);
+            const {
+                topicOptions,
+                clientOptions,
+                group
+            } = this._getConsumerOptions(config, settings);
 
             logger.info(`Creating a Kafka consumer for group: ${group}`);
             const client = new KafkaConsumer(clientOptions, topicOptions);
@@ -49,7 +52,11 @@ class KafakConnector {
         }
 
         if (isProducerSettings(settings)) {
-            const { topicOptions, clientOptions, pollInterval } = this._getProducerOptions(config, settings);
+            const {
+                topicOptions,
+                clientOptions,
+                pollInterval
+            } = this._getProducerOptions(config, settings);
 
             const client = new Producer(clientOptions, topicOptions);
             client.setPollInterval(pollInterval);
