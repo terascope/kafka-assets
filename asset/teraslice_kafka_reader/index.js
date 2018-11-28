@@ -19,6 +19,9 @@ function newReader(context, opConfig) {
     const events = context.foundation.getEventEmitter();
     const retryStart = 5000;
     const retryLimit = 10000;
+
+    const badRecordAction = opConfig.bad_record_action;
+
     let { logger } = context;
     // We keep track of consecutive 0 record slices in order to defend against
     // the consumer failing to read data.
@@ -231,8 +234,13 @@ function newReader(context, opConfig) {
                         metadata
                     );
                 } catch (err) {
-                    logger.error('Bad record', message);
-                    logger.error(err);
+                    if (badRecordAction === 'log') {
+                        logger.error('Bad record', message);
+                        logger.error(err);
+                    } else if (badRecordAction === 'throw') {
+                        throw err;
+                    }
+
                     return null;
                 }
             }
@@ -516,6 +524,11 @@ function schema() {
             doc: 'Number of consecutive zero record slices allowed before the consumer will automatically re-initialize. This is to guard against bugs in librdkafka.',
             default: -1,
             format: Number
+        },
+        bad_record_action: {
+            doc: 'How to handle bad records, defaults to doing nothing',
+            default: 'none',
+            format: ['none', 'throw', 'log']
         }
     };
 }
