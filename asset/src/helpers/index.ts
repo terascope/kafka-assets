@@ -63,7 +63,7 @@ function isKafkaError(err: any): err is KafkaError {
     return err && err.code;
 }
 
-export function isOkayError(err: AnyKafkaError) {
+export function isOkayConsumeError(err: AnyKafkaError) {
     if (isKafkaError(err)) {
         return okErrors[err.code];
     }

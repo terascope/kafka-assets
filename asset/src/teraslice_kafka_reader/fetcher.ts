@@ -14,7 +14,15 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
     constructor(context: WorkerContext, opConfig: KafkaReaderConfig, executionConfig: ExecutionConfig) {
         super(context, opConfig, executionConfig);
 
-        this.consumer = new ConsumerClient(this.createClient(), this.logger, this.opConfig);
+        this.consumer = new ConsumerClient(this.createClient(), {
+            logger: this.logger,
+            topic: this.opConfig.topic,
+            encoding: {
+                _op: this.opConfig._op,
+                _encoding: this.opConfig._encoding,
+            },
+            bad_record_action: this.opConfig.bad_record_action
+        });
     }
 
     async initialize() {
@@ -29,8 +37,20 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
     }
 
     async fetch() {
-        const result = await this.consumer.consume();
+        const result = await this.consumer.consume(this.opConfig);
         return result;
+    }
+
+    async onSliceSuccess() {
+        await this.consumer.commit();
+    }
+
+    async onSliceRetry() {
+        if (this.opConfig.rollback_on_failure) {
+            await this.consumer.rollback();
+        } else {
+            await this.consumer.commit();
+        }
     }
 
     private clientConfig() {

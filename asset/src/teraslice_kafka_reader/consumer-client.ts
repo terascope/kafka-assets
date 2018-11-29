@@ -1,24 +1,86 @@
 import omit from 'lodash.omit';
 import { Logger, DataEntity } from '@terascope/job-components';
+import * as kafka from 'node-rdkafka';
 import {
     wrapError,
     AnyKafkaError,
     KafkaMessage,
-    isOkayError,
+    isOkayConsumeError,
     KafkaMessageMetadata
 } from '../helpers';
-import * as kafka from 'node-rdkafka';
-import { KafkaReaderConfig } from './interfaces';
+import {
+    TrackedOffsets,
+    TopicPartition,
+    ConsumerClientConfig,
+    OffsetByPartition
+} from './interfaces';
 
 export default class ConsumerClient {
     private logger: Logger;
     private client: kafka.KafkaConsumer;
-    private opConfig: KafkaReaderConfig;
+    private config: ConsumerClientConfig;
+    private offsets: TrackedOffsets = {
+        started: {},
+        ended: {}
+    };
 
-    constructor(client: kafka.KafkaConsumer, logger: Logger, opConfig: KafkaReaderConfig) {
-        this.logger = logger;
+    constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
+        this.logger = config.logger;
         this.client = client;
-        this.opConfig = opConfig;
+        this.config = config;
+    }
+
+    async commit() {
+        const partitions = this._flushOffsets('ending');
+        for (const partition of partitions) {
+            this.client.commitSync(partition);
+        }
+    }
+
+    committedPartitions(timeout = 1000): Promise<TopicPartition[]> {
+        return new Promise((resolve, reject) => {
+            this.client.committed(null, timeout, (err: AnyKafkaError, committed: TopicPartition[]) => {
+                if (err) {
+                    reject(wrapError('Failure to get committed offsets', err));
+                    return;
+                }
+
+                resolve(committed);
+            });
+        });
+    }
+
+    async rollback() {
+        const partitions = this._flushOffsets('started');
+
+        const promises = partitions.map((par) => {
+            return this.seek(par);
+        });
+
+        await Promise.all(promises);
+    }
+
+    seek(topic: { partition: number, offset: number }): Promise<void> {
+        const { partition, offset } = topic;
+
+        return new Promise((resolve, reject) => {
+            this.client.seek({
+                partition,
+                offset,
+                topic: this.config.topic
+            }, 1000, (err: AnyKafkaError) => {
+                if (err) {
+                    reject(wrapError('Failue to seek', err));
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    }
+
+    topicPositions(): TopicPartition[] {
+        return this.client.position(null);
     }
 
     async connect(): Promise<void> {
@@ -30,12 +92,12 @@ export default class ConsumerClient {
         await this._connect();
     }
 
-    async consume(): Promise<DataEntity[]> {
-        const endAt = Date.now() + this.opConfig.wait;
+    async consume(max: { size: number, wait: number }): Promise<DataEntity[]> {
+        const endAt = Date.now() + max.wait;
         let results: DataEntity[] = [];
 
-        while (results.length < this.opConfig.size && endAt > Date.now()) {
-            const remaining = this.opConfig.size - results.length;
+        while (results.length < max.size && endAt > Date.now()) {
+            const remaining = max.size - results.length;
             const remainingMs = endAt - Date.now();
             const timeout = remainingMs > 0 ? remainingMs : 0;
 
@@ -65,10 +127,9 @@ export default class ConsumerClient {
         return new Promise((resolve, reject) => {
             const results: DataEntity[] = [];
 
-            this.logger.info(`Consuming count ${count}`);
             this.client.consume(count, (err: AnyKafkaError, messages: KafkaMessage[]) => {
                 if (err) {
-                    if (!isOkayError(err)) {
+                    if (!isOkayConsumeError(err)) {
                         reject(err);
                         return;
                     }
@@ -89,24 +150,58 @@ export default class ConsumerClient {
     }
 
     private _handleMessage(message: KafkaMessage): DataEntity|null {
+        this._trackOffsets(message);
+
         const metadata: KafkaMessageMetadata = omit(message, 'value');
 
         try {
             return DataEntity.fromBuffer(
                 message.value,
-                this.opConfig,
+                this.config.encoding,
                 metadata
             );
         } catch (err) {
-            if (this.opConfig.bad_record_action === 'log') {
+            const action = this.config.bad_record_action;
+            if (action === 'log') {
                 this.logger.error('Bad record', message.value.toString('utf8'), metadata);
                 this.logger.error(err);
-            } else if (this.opConfig.bad_record_action === 'throw') {
+            } else if (action === 'throw') {
                 throw err;
             }
 
             return null;
         }
+    }
+
+    private _flushOffsets(key: 'ending'|'started') {
+        const offsets = Object.entries(this.offsets[key] as OffsetByPartition);
+
+        const partitions: TopicPartition[] = [];
+        for (const [partition, offset] of offsets) {
+            partitions.push({
+                partition: parseInt(partition, 10),
+                topic: this.config.topic,
+                offset,
+            });
+        }
+
+        this.offsets.ended = {};
+        this.offsets.started = {};
+        return partitions;
+    }
+
+    private _trackOffsets({ partition, offset }: KafkaMessage) {
+        // We want to track the first offset we receive so
+        // we can rewind if there is an error.
+        if (this.offsets.started[partition] == null) {
+            this.logger.trace(`partition ${partition} started at offset ${offset}`);
+            this.offsets.started[partition] = offset;
+        }
+
+        // We record the last offset we see for each
+        // partition so that if the slice is successfull
+        // they can be committed.
+        this.offsets.ended[partition] = offset + 1;
     }
 
     private _connect(): Promise<void> {
@@ -125,7 +220,7 @@ export default class ConsumerClient {
     private _onReady() {
         this.client.on('ready', () => {
             this.logger.info('Consumer ready');
-            this.client.subscribe([this.opConfig.topic]);
+            this.client.subscribe([this.config.topic]);
 
             // for debug logs.
             this.client.on('event.log', (event) => {

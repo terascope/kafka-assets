@@ -1,4 +1,4 @@
-import { OpConfig } from '@terascope/job-components';
+import { OpConfig, Logger, DataEncoding } from '@terascope/job-components';
 
 export interface KafkaReaderConfig extends OpConfig {
     /**
@@ -55,4 +55,26 @@ export interface KafkaReaderConfig extends OpConfig {
      * How to handle bad records, defaults to doing nothing
     */
     bad_record_action: 'none'|'throw'|'log';
+}
+
+export interface OffsetByPartition {
+    [partition: number]: number;
+}
+
+export interface TrackedOffsets {
+    started: OffsetByPartition;
+    ended: OffsetByPartition;
+}
+
+export interface TopicPartition {
+    partition: number;
+    offset: number;
+    topic: string;
+}
+
+export interface ConsumerClientConfig {
+    topic: string;
+    encoding: { _encoding?: DataEncoding, _op?: string };
+    bad_record_action: 'none'|'throw'|'log';
+    logger: Logger;
 }

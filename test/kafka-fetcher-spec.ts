@@ -22,31 +22,44 @@ describe('Kafka Reader', () => {
     const group = uuidv4();
 
     const clients = [clientConfig];
-    const size = 100;
 
-    const job = newTestJobConfig();
-    job.operations = [
-        {
-            _op: 'teraslice_kafka_reader',
-            topic,
-            group,
-            size,
-            wait: 500,
-            bad_record_action: 'log'
-        },
-        {
-            _op: 'noop'
-        }
-    ];
+    // @ts-ignore
+    const job = newTestJobConfig({
+        max_retries: 1,
+        operations: [
+            {
+                _op: 'teraslice_kafka_reader',
+                topic,
+                group,
+                size: 100,
+                wait: 2000,
+                bad_record_action: 'log'
+            },
+            {
+                _op: 'noop'
+            }
+        ],
+    });
 
     const harness = new WorkerTestHarness(job, {
         clients,
     });
 
+    harness.processors[0].onBatch = jest.fn(async (data) => {
+        return data;
+    });
+
     let exampleData: object[];
-    let results: DataEntity[];
+    let results: DataEntity[] = [];
 
     const kafkaAdmin = new KafkaAdmin();
+
+    async function runTest() {
+        await harness.initialize();
+
+        results = results.concat(await harness.runSlice({}));
+        results = results.concat(await harness.runSlice({}));
+    }
 
     beforeAll(async () => {
         jest.restoreAllMocks();
@@ -58,12 +71,11 @@ describe('Kafka Reader', () => {
 
         const [data] = await Promise.all([
             loadData(topic, 'example-data.txt'),
-            harness.initialize()
+            runTest(),
         ]);
 
         exampleData = data;
 
-        results = await harness.runSlice({});
     });
 
     afterAll(async () => {
@@ -79,15 +91,62 @@ describe('Kafka Reader', () => {
     });
 
     it('should return a list of records', () => {
-        expect(results).toBeArrayOfSize(size);
+        expect(results).toBeArrayOfSize(exampleData.length);
         expect(DataEntity.isDataEntityArray(results)).toBeTrue();
 
-        for (let i = 0; i < size; i++) {
+        for (let i = 0; i < exampleData.length; i++) {
             const actual = results[i];
             const expected = exampleData[i];
 
             expect(DataEntity.isDataEntity(actual)).toBeTrue();
             expect(actual).toEqual(expected);
         }
+    });
+
+    it('should have committed the results', async () => {
+        const result = await harness.fetcher.consumer.topicPositions();
+        expect(result).toEqual([
+            {
+                topic,
+                // I think it is set to length + 1 because
+                // when it restarts with that offset it returns
+                // the length + 1 entity
+                offset: results.length + 1,
+                partition: 0,
+            }
+        ]);
+    });
+
+    describe('when resetting back to zero', () => {
+        beforeAll(async () => {
+            await harness.fetcher.consumer.seek({
+                partition: 0,
+                offset: 0,
+            });
+        });
+
+        describe('when a processor throws on the second run', () => {
+            const err = new Error('Failure is part of life');
+            const onSliceRetry = jest.fn();
+            harness.events.on('slice:retry', onSliceRetry);
+
+            beforeAll(async () => {
+                harness.processors[0].onBatch
+                    .mockImplementationOnce(async (data: DataEntity[]) => data)
+                    .mockRejectedValueOnce(err);
+            });
+
+            it('should not fail the first time', () => {
+                return expect(harness.runSlice({})).resolves.not.toBeNil();
+            });
+
+            it('should fail when called again', () => {
+                return expect(harness.runSlice({})).rejects.toThrowError('Failure is part of life');
+            });
+
+            xit('should have called onSliceRetry', () => {
+                expect(onSliceRetry).toHaveBeenCalled();
+            });
+        });
     });
 });
