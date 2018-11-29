@@ -7,6 +7,15 @@ module.exports = {
     collectCoverage: true,
     coverageReporters: ['json', 'lcov', 'text', 'html'],
     coverageDirectory: 'coverage',
+    collectCoverageFrom: [
+        '<rootDir>/asset/**/*.ts',
+        '<rootDir>/packages/*/**/*.ts',
+        '!<rootDir>/packages/*/test/**',
+        '!<rootDir>/**/coverage/**',
+        '!<rootDir>/**/*.d.ts',
+        '!<rootDir>/**/dist/**',
+        '!<rootDir>/**/coverage/**'
+    ],
     testMatch: [
         '<rootDir>/test/**/*-spec.{ts,js}',
         '<rootDir>/test/*-spec.{ts,js}',

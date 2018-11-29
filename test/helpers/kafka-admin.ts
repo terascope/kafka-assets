@@ -2,8 +2,11 @@ import uuidv4 from 'uuid/v4';
 import { promisify } from 'util';
 // @ts-ignore
 import { kafka } from 'kafka-tools';
+import { debugLogger } from '@terascope/job-components';
 
 const delay = promisify(setTimeout);
+
+const logger = debugLogger('test-kafka-admin');
 
 export default class KafkaAdmin {
     // @ts-ignore
@@ -20,11 +23,14 @@ export default class KafkaAdmin {
     async ensureTopic(topic: string) {
         try {
             await this.deleteTopic(topic);
+            logger.info(`deleted topic ${topic}`);
         } catch (err) {
+            logger.warn('got okay error when deleting topic', err);
         }
 
-        await delay(500);
+        await delay(100);
         await this.createTopic(topic);
+        logger.info(`created topic ${topic}`);
     }
 
     createTopic(topic: string): Promise < void > {

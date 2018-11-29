@@ -1,19 +1,20 @@
 import { KafkaReaderConfig } from './interfaces';
 import {
     Fetcher,
-    SliceRequest,
     WorkerContext,
-    ExecutionConfig
+    ExecutionConfig,
+    ConnectionConfig
 } from '@terascope/job-components';
-import Consumer from './consumer';
+import ConsumerClient from './consumer-client';
+import { KafkaConsumer } from 'node-rdkafka';
 
 export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
-    private consumer: Consumer;
+    private consumer: ConsumerClient;
 
     constructor(context: WorkerContext, opConfig: KafkaReaderConfig, executionConfig: ExecutionConfig) {
         super(context, opConfig, executionConfig);
 
-        this.consumer = new Consumer(context, opConfig);
+        this.consumer = new ConsumerClient(this.createClient(), this.logger, this.opConfig);
     }
 
     async initialize() {
@@ -27,7 +28,34 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
         await super.shutdown();
     }
 
-    async fetch(request: SliceRequest) {
-        return [request];
+    async fetch() {
+        const result = await this.consumer.consume();
+        return result;
+    }
+
+    private clientConfig() {
+        return {
+            type: 'kafka',
+            endpoint: this.opConfig.connection,
+            options: {
+                type: 'consumer',
+                group: this.opConfig.group
+            },
+            topic_options: {
+                'auto.offset.reset': this.opConfig.offset_reset
+            },
+            rdkafka_options: {
+                // We want to explicitly manage offset commits.
+                'enable.auto.commit': false,
+                'enable.auto.offset.store': false,
+                'queued.min.messages': 2 * this.opConfig.size
+            },
+            autoconnect: false
+        } as ConnectionConfig;
+    }
+
+    private createClient(): KafkaConsumer {
+        const connection = this.context.foundation.getConnection(this.clientConfig());
+        return connection.client;
     }
 }

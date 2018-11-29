@@ -18,6 +18,7 @@
     "license": "MIT",
     "devDependencies": {
         "@types/jest": "^23.3.10",
+        "@types/lodash.omit": "^4.5.4",
         "@types/node": "^10.12.8",
         "@types/uuid": "^3.4.4",
         "jest": "^23.6.0",

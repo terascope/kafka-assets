@@ -37,3 +37,10 @@ export interface KafkaSenderConfig {
     */
     metadata_refresh: number;
 }
+
+export interface ProduceMessage {
+    topic: string;
+    data: Buffer;
+    key: string|null;
+    timestamp: number;
+}
