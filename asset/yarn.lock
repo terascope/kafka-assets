@@ -3,9 +3,9 @@
 
 
 "@terascope/job-components@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.11.1.tgz#89f488b4f5b39319ecebd0fe4af57470c1cb8314"
-  integrity sha512-bBBPybNaizlwYKnBpkLD5G3tTE6dIxqdv8KvQX/C4PwhzQ4niQab7iURv81W3GtVlv1UwF9yURN5BaYLMZSSrw==
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.11.2.tgz#7f8f23a3ed10d87868760e7b9402292180041800"
+  integrity sha512-FujQvH7ptYbE/0yhHR86Ifp2kqVagnhEW8Esj6olug+hiR/dNrbH7j2+mU9hIqhU8I8TSyISgClAfxQ2lfu/yQ==
   dependencies:
     "@terascope/queue" "^1.1.4"
     convict "^4.4.0"

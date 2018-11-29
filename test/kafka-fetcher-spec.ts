@@ -11,10 +11,11 @@ describe('Kafka Reader', () => {
 
     const clientConfig: TestClientConfig = {
         type: 'kafka',
+        config: {
+            brokers: ['localhost:9092'],
+        },
         create(config: any, logger: Logger, settings: any) {
-            return Connector.create(Object.assign(config, {
-                brokers: ['localhost:9092'],
-            }), logger, settings);
+            return Connector.create(config, logger, settings);
         }
     };
 
@@ -25,7 +26,7 @@ describe('Kafka Reader', () => {
 
     // @ts-ignore
     const job = newTestJobConfig({
-        max_retries: 1,
+        max_retries: 3,
         operations: [
             {
                 _op: 'teraslice_kafka_reader',
@@ -33,7 +34,8 @@ describe('Kafka Reader', () => {
                 group,
                 size: 100,
                 wait: 2000,
-                bad_record_action: 'log'
+                bad_record_action: 'log',
+                rollback_on_failure: true
             },
             {
                 _op: 'noop'
@@ -125,27 +127,47 @@ describe('Kafka Reader', () => {
             });
         });
 
-        describe('when a processor throws on the second run', () => {
+        describe('when a processor fails once', () => {
             const err = new Error('Failure is part of life');
             const onSliceRetry = jest.fn();
             harness.events.on('slice:retry', onSliceRetry);
 
+            let retryResults: DataEntity[] = [];
+
             beforeAll(async () => {
                 harness.processors[0].onBatch
-                    .mockImplementationOnce(async (data: DataEntity[]) => data)
                     .mockRejectedValueOnce(err);
+
+                retryResults = retryResults.concat(await harness.runSlice({}));
+                retryResults = retryResults.concat(await harness.runSlice({}));
             });
 
-            it('should not fail the first time', () => {
-                return expect(harness.runSlice({})).resolves.not.toBeNil();
-            });
-
-            it('should fail when called again', () => {
-                return expect(harness.runSlice({})).rejects.toThrowError('Failure is part of life');
-            });
-
-            xit('should have called onSliceRetry', () => {
+            it('should have called onSliceRetry', async () => {
                 expect(onSliceRetry).toHaveBeenCalled();
+            });
+
+            it('should return the correct list of records', () => {
+                expect(retryResults).toBeArrayOfSize(exampleData.length);
+                expect(DataEntity.isDataEntityArray(retryResults)).toBeTrue();
+
+                for (let i = 0; i < exampleData.length; i++) {
+                    const actual = retryResults[i];
+                    const expected = exampleData[i];
+
+                    expect(DataEntity.isDataEntity(actual)).toBeTrue();
+                    expect(actual).toEqual(expected);
+                }
+            });
+
+            it('should have committed the results', async () => {
+                const result = await harness.fetcher.consumer.topicPositions();
+                expect(result).toEqual([
+                    {
+                        topic,
+                        offset: results.length + 1,
+                        partition: 0,
+                    }
+                ]);
             });
         });
     });

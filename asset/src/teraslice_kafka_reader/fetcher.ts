@@ -14,8 +14,16 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
     constructor(context: WorkerContext, opConfig: KafkaReaderConfig, executionConfig: ExecutionConfig) {
         super(context, opConfig, executionConfig);
 
+        const logger = context.apis.foundation.makeLogger({
+            module: 'kafka-consumer',
+            opName: opConfig._op,
+            jobName: executionConfig.name,
+            jobId: executionConfig.job_id,
+            exId: executionConfig.ex_id,
+        });
+
         this.consumer = new ConsumerClient(this.createClient(), {
-            logger: this.logger,
+            logger,
             topic: this.opConfig.topic,
             encoding: {
                 _op: this.opConfig._op,
@@ -49,6 +57,7 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
         if (this.opConfig.rollback_on_failure) {
             await this.consumer.rollback();
         } else {
+            this.logger.warn('committing kafka offsets on slice retry - THIS MAY CAUSE DATA LOSS');
             await this.consumer.commit();
         }
     }
