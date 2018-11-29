@@ -17,7 +17,9 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     const messages: ProduceMessage[] = exampleData.trim()
         .split('\n')
         .map((d) => {
-            data.push(JSON.parse(d));
+            try {
+                data.push(JSON.parse(d));
+            } catch (err) {}
             const message: ProduceMessage = {
                 topic,
                 key: null,

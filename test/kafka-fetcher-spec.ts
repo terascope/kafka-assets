@@ -32,6 +32,7 @@ describe('Kafka Reader', () => {
             group,
             size,
             wait: 500,
+            bad_record_action: 'log'
         },
         {
             _op: 'noop'
@@ -52,6 +53,9 @@ describe('Kafka Reader', () => {
 
         await kafkaAdmin.ensureTopic(topic);
 
+        // it should be able to call connect
+        await harness.fetcher.consumer.connect();
+
         const [data] = await Promise.all([
             loadData(topic, 'example-data.txt'),
             harness.initialize()
@@ -65,9 +69,11 @@ describe('Kafka Reader', () => {
     afterAll(async () => {
         jest.resetAllMocks();
 
+        // it should be able to disconnect twice
+        await harness.fetcher.consumer.disconnect();
+
         await Promise.all([
             harness.shutdown(),
-            // kafkaAdmin.deleteTopic(topic),
             kafkaAdmin.close(),
         ]);
     });

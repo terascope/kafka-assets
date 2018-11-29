@@ -99,7 +99,7 @@ export default class ConsumerClient {
             );
         } catch (err) {
             if (this.opConfig.bad_record_action === 'log') {
-                this.logger.error('Bad record', message);
+                this.logger.error('Bad record', message.value.toString('utf8'), metadata);
                 this.logger.error(err);
             } else if (this.opConfig.bad_record_action === 'throw') {
                 throw err;
