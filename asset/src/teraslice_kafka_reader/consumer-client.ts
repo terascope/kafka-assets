@@ -7,6 +7,7 @@ import {
     AnyKafkaError,
     KafkaMessage,
     isOkayError,
+    isError,
     KafkaMessageMetadata
 } from '../helpers';
 import {
@@ -133,17 +134,21 @@ export default class ConsumerClient {
         return results;
     }
 
-    disconnect(): Promise<void> {
+    async disconnect(): Promise<void> {
         if (!this._client.isConnected()) {
             return Promise.resolve();
         }
 
-        return new Promise((resolve, reject) => {
+        const onDisconnect = this._onceWithTimeout('client:disconnect', true);
+
+        await new Promise((resolve, reject) => {
             this._client.disconnect((err: AnyKafkaError) => {
                 if (err) reject(wrapError('Failed to disconnect', err));
                 else resolve();
             });
         });
+
+        await onDisconnect;
     }
 
     private _consume(count: number): Promise<DataEntity[]> {
@@ -264,7 +269,12 @@ export default class ConsumerClient {
         });
 
         this._client.on('disconnected', (msg) => {
-            this._logger.warn('kafka consumer disconnected', msg);
+            if (isError(msg)) {
+                this._logger.warn('kafka consumer disconnected with error', msg);
+            } else {
+                this._logger.debug('kafka consumer disconnected');
+            }
+            this._events.emit('client:disconnected', msg);
         });
 
         this._client.on('exit', (msg) => {
@@ -295,6 +305,33 @@ export default class ConsumerClient {
 
         this._client.on('connection.failure', (msg) => {
             this._logger.warn('kafka consumer connection failure', msg);
+        });
+    }
+
+    private _onceWithTimeout(event: string, hardTimeout: boolean, timeoutMs = 5000): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this._events.once(event, handler);
+
+            const off = () => {
+                this._events.removeListener(event, handler);
+            };
+
+            const timeout = setTimeout(() => {
+                if (hardTimeout) {
+                    handler(new Error(`Timeout waiting for ${event}`));
+                } else {
+                    handler(null);
+                }
+            }, timeoutMs);
+
+            function handler(arg: any) {
+                clearTimeout(timeout);
+                off();
+                if (isError(arg)) {
+                    reject(arg);
+                }
+                resolve(arg);
+            }
         });
     }
 }
