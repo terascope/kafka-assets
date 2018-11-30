@@ -1,4 +1,6 @@
-export interface KafkaSenderConfig {
+import { DataEncoding, Logger, OpConfig } from '@terascope/job-components';
+
+export interface KafkaSenderConfig extends OpConfig {
     /**
      Name of the Kafka topic to send data to
     */
@@ -43,4 +45,10 @@ export interface ProduceMessage {
     data: Buffer;
     key: string|null;
     timestamp: number;
+}
+
+export interface ProducerClientConfig {
+    topic: string;
+    encoding: { _encoding?: DataEncoding, _op?: string };
+    logger: Logger;
 }

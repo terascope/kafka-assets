@@ -20,7 +20,7 @@ export default class KafkaAdmin {
         });
     }
 
-    async ensureTopic(topic: string) {
+    async ensureTopic(topic: string, partitions = 1) {
         try {
             await this.deleteTopic(topic);
             logger.info(`deleted topic ${topic}`);
@@ -29,13 +29,13 @@ export default class KafkaAdmin {
         }
 
         await delay(500);
-        await this.createTopic(topic);
+        await this.createTopic(topic, partitions);
         logger.info(`created topic ${topic}`);
     }
 
-    createTopic(topic: string): Promise < void > {
+    createTopic(topic: string, partitions = 1): Promise <void> {
         return new Promise((resolve, reject) => {
-            this.client.zk.createTopic(topic, 1, 1, {}, (err: any) => {
+            this.client.zk.createTopic(topic, partitions, 1, {}, (err: any) => {
                 if (err) reject(err);
                 else resolve();
             });

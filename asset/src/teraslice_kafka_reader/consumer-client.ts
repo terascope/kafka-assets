@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import omit from 'lodash.omit';
 import { Logger, DataEntity } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
@@ -10,23 +9,24 @@ import {
     isError,
     KafkaMessageMetadata
 } from '../helpers';
+import BaseClient from '../helpers/base-client';
 import {
     TrackedOffsets,
     TopicPartition,
     ConsumerClientConfig,
 } from './interfaces';
 
-export default class ConsumerClient {
+export default class ConsumerClient extends BaseClient {
     private _logger: Logger;
     private _client: kafka.KafkaConsumer;
     private _config: ConsumerClientConfig;
-    private _events = new EventEmitter();
     private _offsets: TrackedOffsets = {
         started: {},
         ended: {}
     };
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
+        super();
         this._logger = config.logger;
         this._client = client;
         this._config = config;
@@ -110,7 +110,7 @@ export default class ConsumerClient {
 
     async connect(): Promise<void> {
         if (this._client.isConnected()) {
-            return Promise.resolve();
+            return;
         }
 
         await this._connect();
@@ -136,7 +136,7 @@ export default class ConsumerClient {
 
     async disconnect(): Promise<void> {
         if (!this._client.isConnected()) {
-            return Promise.resolve();
+            return;
         }
 
         const onDisconnect = this._onceWithTimeout('client:disconnect', true);
@@ -305,33 +305,6 @@ export default class ConsumerClient {
 
         this._client.on('connection.failure', (msg) => {
             this._logger.warn('kafka consumer connection failure', msg);
-        });
-    }
-
-    private _onceWithTimeout(event: string, hardTimeout: boolean, timeoutMs = 5000): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this._events.once(event, handler);
-
-            const off = () => {
-                this._events.removeListener(event, handler);
-            };
-
-            const timeout = setTimeout(() => {
-                if (hardTimeout) {
-                    handler(new Error(`Timeout waiting for ${event}`));
-                } else {
-                    handler(null);
-                }
-            }, timeoutMs);
-
-            function handler(arg: any) {
-                clearTimeout(timeout);
-                off();
-                if (isError(arg)) {
-                    reject(arg);
-                }
-                resolve(arg);
-            }
         });
     }
 }

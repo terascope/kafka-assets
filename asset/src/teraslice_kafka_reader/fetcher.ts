@@ -6,7 +6,7 @@ import {
     ConnectionConfig
 } from '@terascope/job-components';
 import ConsumerClient from './consumer-client';
-import { KafkaConsumer } from 'node-rdkafka';
+import * as kafka from 'node-rdkafka';
 
 export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
     private consumer: ConsumerClient;
@@ -36,7 +36,6 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
     async initialize() {
         await super.initialize();
         await this.consumer.connect();
-        this.logger.info('Connected to Kafka');
     }
 
     async shutdown() {
@@ -86,7 +85,7 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
         } as ConnectionConfig;
     }
 
-    private createClient(): KafkaConsumer {
+    private createClient(): kafka.KafkaConsumer {
         const connection = this.context.foundation.getConnection(this.clientConfig());
         return connection.client;
     }

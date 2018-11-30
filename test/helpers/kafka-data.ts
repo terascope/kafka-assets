@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { debugLogger } from '@terascope/job-components';
+import { debugLogger, DataEncoding } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import ProducerClient from '../../asset/src/teraslice_kafka_sender/producer-client';
 import { ProduceMessage } from '../../asset/src/teraslice_kafka_sender/interfaces';
@@ -39,7 +39,12 @@ export async function loadData(topic: string, fileName: string): Promise<object[
         'metadata.broker.list': ['localhost:9092'],
     }, {});
 
-    const client = new ProducerClient(producer, logger);
+    const client = new ProducerClient(producer, {
+        logger,
+        topic,
+        encoding: { },
+    });
+
     await client.connect();
 
     logger.debug(`loading ${messages.length} into topic: ${topic}...`);
