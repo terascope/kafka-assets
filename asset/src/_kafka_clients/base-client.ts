@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { isError } from '.';
+import { isError } from '../_kafka_helpers';
 
 export default class BaseClient {
     protected _events = new EventEmitter();

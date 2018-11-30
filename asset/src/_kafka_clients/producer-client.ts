@@ -1,8 +1,8 @@
 import { Logger } from '@terascope/job-components';
 import { ProduceMessage, ProducerClientConfig } from './interfaces';
-import { wrapError, AnyKafkaError, isError } from '../helpers';
+import { wrapError, AnyKafkaError } from '../_kafka_helpers';
 import * as kafka from 'node-rdkafka';
-import BaseClient from '../helpers/base-client';
+import BaseClient from './base-client';
 
 export default class ProducerClient extends BaseClient {
     private _logger: Logger;
@@ -19,7 +19,6 @@ export default class ProducerClient extends BaseClient {
             return;
         }
 
-        this._clientEvents();
         await new Promise((resolve, reject) => {
             this._client.connect({}, (err: AnyKafkaError) => {
                 if (err) {
@@ -37,16 +36,12 @@ export default class ProducerClient extends BaseClient {
             return;
         }
 
-        const onDisconnect = this._onceWithTimeout('client:disconnect', true);
-
         await new Promise((resolve, reject) => {
             this._client.disconnect((err: AnyKafkaError) => {
                 if (err) reject(wrapError('Failed to disconnect', err));
                 else resolve();
             });
         });
-
-        await onDisconnect;
     }
 
     produce(messages: ProduceMessage[], flushTimeout = 60000): Promise<void> {
@@ -70,17 +65,6 @@ export default class ProducerClient extends BaseClient {
                 }
                 resolve();
             });
-        });
-    }
-
-    private _clientEvents() {
-        this._client.on('disconnected', (msg) => {
-            if (isError(msg)) {
-                this._logger.warn('kafka producer disconnected with error', msg);
-            } else {
-                this._logger.debug('kafka producer disconnected');
-            }
-            this._events.emit('client:disconnected', msg);
         });
     }
 }

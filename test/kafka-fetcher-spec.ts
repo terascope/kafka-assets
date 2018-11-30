@@ -66,7 +66,7 @@ describe('Kafka Reader', () => {
     beforeAll(async () => {
         jest.restoreAllMocks();
 
-        await kafkaAdmin.ensureTopic(topic, 2);
+        await kafkaAdmin.ensureTopic(topic);
 
         // it should be able to call connect
         await harness.fetcher.consumer.connect();

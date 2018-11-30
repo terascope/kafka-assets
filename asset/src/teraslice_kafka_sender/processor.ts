@@ -6,7 +6,7 @@ import {
     ConnectionConfig,
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
-import ProducerClient from './producer-client';
+import { ProducerClient } from '../_kafka_clients';
 import * as kafka from 'node-rdkafka';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {

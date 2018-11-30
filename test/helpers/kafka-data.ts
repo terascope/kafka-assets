@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { debugLogger, DataEncoding } from '@terascope/job-components';
+import { debugLogger } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
-import ProducerClient from '../../asset/src/teraslice_kafka_sender/producer-client';
-import { ProduceMessage } from '../../asset/src/teraslice_kafka_sender/interfaces';
+import {
+    ProducerClient,
+    ProduceMessage
+} from '../../asset/src/_kafka_clients';
 
 export async function loadData(topic: string, fileName: string): Promise<object[]> {
-
     const logger = debugLogger('load-test-data');
 
     const filePath = path.join(__dirname, '..', 'fixtures', fileName);

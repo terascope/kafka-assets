@@ -9,7 +9,7 @@
         "prepare": "yarn workspaces run build",
         "build": "tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
-        "test": "jest --forceExit=true",
+        "test": "jest --forceExit=true --runInBand",
         "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
         "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand"
     },

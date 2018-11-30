@@ -8,8 +8,8 @@ import {
     isOkayError,
     isError,
     KafkaMessageMetadata
-} from '../helpers';
-import BaseClient from '../helpers/base-client';
+} from '../_kafka_helpers';
+import BaseClient from './base-client';
 import {
     TrackedOffsets,
     TopicPartition,

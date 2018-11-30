@@ -5,7 +5,7 @@ import {
     ExecutionConfig,
     ConnectionConfig
 } from '@terascope/job-components';
-import ConsumerClient from './consumer-client';
+import { ConsumerClient } from '../_kafka_clients';
 import * as kafka from 'node-rdkafka';
 
 export default class KafkaReader extends Fetcher<KafkaReaderConfig> {

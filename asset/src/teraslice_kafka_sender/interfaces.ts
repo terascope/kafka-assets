@@ -1,4 +1,4 @@
-import { DataEncoding, Logger, OpConfig } from '@terascope/job-components';
+import { OpConfig } from '@terascope/job-components';
 
 export interface KafkaSenderConfig extends OpConfig {
     /**
@@ -38,17 +38,4 @@ export interface KafkaSenderConfig extends OpConfig {
      Set to -1 to disable polling.
     */
     metadata_refresh: number;
-}
-
-export interface ProduceMessage {
-    topic: string;
-    data: Buffer;
-    key: string|null;
-    timestamp: number;
-}
-
-export interface ProducerClientConfig {
-    topic: string;
-    encoding: { _encoding?: DataEncoding, _op?: string };
-    logger: Logger;
 }
