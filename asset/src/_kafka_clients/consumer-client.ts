@@ -15,12 +15,18 @@ import {
     ConsumerClientConfig,
     BadRecordAction,
 } from './interfaces';
+import {
+    ERR__ASSIGN_PARTITIONS,
+    ERR__REVOKE_PARTITIONS,
+} from '../_kafka_helpers/error-codes';
 
 export default class ConsumerClient extends BaseClient {
     private _logger: Logger;
     private _client: kafka.KafkaConsumer;
     private _topic: string;
     private _badRecordAction: BadRecordAction;
+    private _rebalancing = true;
+    private _closed = false;
     private _offsets: TrackedOffsets = {
         started: {},
         ended: {}
@@ -35,6 +41,8 @@ export default class ConsumerClient extends BaseClient {
     }
 
     async commit() {
+        await this._checkState();
+
         const offsets = this._flushOffsets('ended');
 
         for (const offset of offsets) {
@@ -67,6 +75,8 @@ export default class ConsumerClient extends BaseClient {
     }
 
     async rollback() {
+        await this._checkState();
+
         const partitions = this._flushOffsets('started');
 
         this._logger.warn('rolling back partitions', partitions);
@@ -78,7 +88,9 @@ export default class ConsumerClient extends BaseClient {
         await Promise.all(promises);
     }
 
-    seek(topic: { partition: number, offset: number }): Promise<void> {
+    async seek(topic: { partition: number, offset: number }): Promise<void> {
+        await this._checkState();
+
         const { partition, offset } = topic;
 
         return new Promise((resolve, reject) => {
@@ -102,7 +114,9 @@ export default class ConsumerClient extends BaseClient {
         });
     }
 
-    topicPositions(): TopicPartition[] {
+    async topicPositions(): Promise<TopicPartition[]> {
+        await this._checkState();
+
         try {
             return this._client.position(null);
         } catch (err) {
@@ -115,10 +129,14 @@ export default class ConsumerClient extends BaseClient {
             return;
         }
 
+        const connectError = this._onceWithTimeout('connect:error', false, 1000);
         await this._connect();
+        await connectError;
     }
 
     async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
+        await this._checkState();
+
         const endAt = Date.now() + max.wait;
         let results: T[] = [];
 
@@ -129,7 +147,11 @@ export default class ConsumerClient extends BaseClient {
 
             this._client.setDefaultConsumeTimeout(timeout);
 
-            const consumed = await this._consume(remaining, map);
+            const [consumed] = await Promise.all([
+                this._consume(remaining, map),
+                this._onceWithTimeout('client:error', false, remainingMs),
+            ]);
+
             results = results.concat(consumed);
         }
 
@@ -137,11 +159,13 @@ export default class ConsumerClient extends BaseClient {
     }
 
     async disconnect(): Promise<void> {
+        this._closed = true;
+
         if (!this._client.isConnected()) {
             return;
         }
 
-        const onDisconnect = this._onceWithTimeout('client:disconnect', true);
+        const onDisconnect = this._onceWithTimeout('client:disconnect', false);
 
         await new Promise((resolve, reject) => {
             this._client.disconnect((err: AnyKafkaError) => {
@@ -256,6 +280,8 @@ export default class ConsumerClient extends BaseClient {
         this._client.on('ready', () => {
             this._logger.info('kafka consumer is ready');
             this._client.subscribe([this._topic]);
+            this._rebalancing = false;
+            this._events.emit('client:ready');
         });
 
         // for debug logs.
@@ -284,22 +310,56 @@ export default class ConsumerClient extends BaseClient {
             this._logger.debug('kafka consumer closed', msg);
         });
 
+        let rebalanceTimeout: NodeJS.Timeout;
+
         // @ts-ignore because the type definition don't work right
         this._client.on('rebalance', (err, assignment) => {
-            this._logger.debug('kafka consumer rebalance', { err, assignment });
+            if (this._closed) return;
+
+            this._logger.debug('kafka consumer rebalance', err && err.message, assignment);
+
+            if (err && (err.code[ERR__ASSIGN_PARTITIONS] || err.code[ERR__REVOKE_PARTITIONS])) {
+                this._rebalancing = true;
+                this._events.emit('rebalance:start', assignment);
+
+                clearTimeout(rebalanceTimeout);
+                rebalanceTimeout = setTimeout(() => {
+                    this._rebalancing = false;
+                    this._events.emit('rebalance:end');
+                // this timeout should be configurable?
+                }, 100);
+            }
         });
 
         // @ts-ignore because the event doesn't exist in the typedefinitions
         this._client.on('rebalance.error', (err) => {
             this._logger.warn('kafka consumer rebalance error', err);
+            this._events.emit('rebalance:end', err);
         });
 
         this._client.on('unsubscribed', (msg) => {
             this._logger.debug('kafka consumer unsubscribed', msg);
         });
 
-        this._client.on('connection.failure', (msg) => {
-            this._logger.warn('kafka consumer connection failure', msg);
+        this._client.on('connection.failure', (err) => {
+            this._logger.warn('kafka consumer connection failure', err);
+            this._events.emit('connect:error', err);
         });
+    }
+
+    private async _checkState(): Promise<void> {
+        if (this._closed) {
+            throw new Error('Client is closed');
+        }
+
+        if (!this._client.isConnected()) {
+            this._logger.debug('waiting for client to connect');
+            await this.connect();
+        }
+
+        if (this._rebalancing) {
+            this._logger.debug('waiting for rebalance');
+            await this._onceWithTimeout('rebalance:end', true, 30 * 60 * 1000);
+        }
     }
 }

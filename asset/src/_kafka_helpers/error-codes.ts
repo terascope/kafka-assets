@@ -73,10 +73,12 @@ export const codeToMessage = {
     31: 'Cluster authorization failed'
 };
 
-const KAFKA_NO_OFFSET_STORED = -168;
-const ERR__WAIT_COORD = -180;
-const ERR_NOT_COORDINATOR_FOR_GROUP = 16;
-const ERR__TIMED_OUT_QUEUE = -166;
+export const KAFKA_NO_OFFSET_STORED = -168;
+export const ERR__WAIT_COORD = -180;
+export const ERR_NOT_COORDINATOR_FOR_GROUP = 16;
+export const ERR__TIMED_OUT_QUEUE = -166;
+export const ERR__ASSIGN_PARTITIONS = -175;
+export const ERR__REVOKE_PARTITIONS = -174;
 
 export interface OkErrorSet {
     [prop: number]: boolean;

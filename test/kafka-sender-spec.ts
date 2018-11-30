@@ -3,6 +3,7 @@ import path from 'path';
 import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaAdmin from './helpers/kafka-admin';
+import { readData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 
 describe('Kafka Sender', () => {
@@ -44,6 +45,7 @@ describe('Kafka Sender', () => {
     });
 
     let results: DataEntity[] = [];
+    let consumed: object[] = [];
 
     const kafkaAdmin = new KafkaAdmin();
 
@@ -55,8 +57,8 @@ describe('Kafka Sender', () => {
 
         // it should be able to call connect
         await harness.processors[0].producer.connect();
-
         results = await harness.runSlice({});
+        consumed = await readData(topic, results.length);
     });
 
     afterAll(async () => {
@@ -71,14 +73,15 @@ describe('Kafka Sender', () => {
         ]);
     });
 
-    it('should return a list of records', () => {
-        // TODO
-        expect(results).toBeArrayOfSize(results.length);
+    it('should have produced the correct records', () => {
+        expect(consumed).toBeArrayOfSize(results.length);
         expect(DataEntity.isDataEntityArray(results)).toBeTrue();
-    });
 
-    it('should have produced the results', async () => {
-        // TODO
-        expect(true).toBeTrue();
+        for (let i = 0; i < results.length; i++) {
+            const actual = consumed[i];
+            const expected = results[i];
+
+            expect(actual).toEqual(expected);
+        }
     });
 });
