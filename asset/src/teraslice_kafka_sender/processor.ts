@@ -6,8 +6,9 @@ import {
     ConnectionConfig,
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
-import { ProducerClient } from '../_kafka_clients';
+import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 import * as kafka from 'node-rdkafka';
+import { getValidDate } from '../_kafka_helpers';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     private producer: ProducerClient;
@@ -28,11 +29,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
         this.producer = new ProducerClient(this.createClient(), {
             logger,
-            topic: this.opConfig.topic,
-            encoding: {
-                _op: this.opConfig._op,
-                _encoding: this.opConfig._encoding,
-            },
+            topic: this.opConfig.topic
         });
     }
 
@@ -47,7 +44,41 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     async onBatch(data: DataEntity[]) {
+        const map = (msg: DataEntity): ProduceMessage => {
+            const key = this.getKey(msg);
+            const timestamp = this.getTimestamp(msg);
+            const data = msg.toBuffer();
+
+            return { timestamp, key, data };
+        };
+
+        await this.producer.produce(data, map);
         return data;
+    }
+
+    private getKey(msg: DataEntity): string|null {
+        if (!this.opConfig.id_field) return null;
+
+        const key = msg[this.opConfig.id_field];
+        if (key && typeof key === 'string') return key;
+
+        // TODO we should probably do something like bad_record_action
+        this.logger.error(`invalid id_field on record ${this.opConfig.id_field}`);
+        return null;
+    }
+
+    private getTimestamp(msg: DataEntity): number|null {
+        if (this.opConfig.timestamp_field) {
+            const date = getValidDate(msg[this.opConfig.timestamp_field]);
+            if (date) return date.getTime();
+
+            // TODO we should probably do something like bad_record_action
+            this.logger.error(`invalid timestamp_field on record ${this.opConfig.timestamp_field}`);
+        } else if (msg.timestamp_now) {
+            return Date.now();
+        }
+
+        return null;
     }
 
     private clientConfig() {

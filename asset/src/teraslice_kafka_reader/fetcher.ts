@@ -1,12 +1,18 @@
+import omit from 'lodash.omit';
 import { KafkaReaderConfig } from './interfaces';
 import {
     Fetcher,
     WorkerContext,
     ExecutionConfig,
-    ConnectionConfig
+    ConnectionConfig,
+    DataEntity
 } from '@terascope/job-components';
 import { ConsumerClient } from '../_kafka_clients';
 import * as kafka from 'node-rdkafka';
+import {
+    KafkaMessage,
+    KafkaMessageMetadata
+} from '../_kafka_helpers';
 
 export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
     private consumer: ConsumerClient;
@@ -25,10 +31,6 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
         this.consumer = new ConsumerClient(this.createClient(), {
             logger,
             topic: this.opConfig.topic,
-            encoding: {
-                _op: this.opConfig._op,
-                _encoding: this.opConfig._encoding,
-            },
             bad_record_action: this.opConfig.bad_record_action
         });
     }
@@ -44,7 +46,16 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
     }
 
     async fetch() {
-        const result = await this.consumer.consume(this.opConfig);
+        const map = (msg: KafkaMessage): DataEntity => {
+            const metadata: KafkaMessageMetadata = omit(msg, 'value');
+            return DataEntity.fromBuffer(
+                msg.value,
+                this.opConfig,
+                metadata
+            );
+        };
+
+        const result = await this.consumer.consume(map, this.opConfig);
         return result;
     }
 

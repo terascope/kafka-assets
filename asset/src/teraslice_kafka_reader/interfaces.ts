@@ -54,5 +54,7 @@ export interface KafkaReaderConfig extends OpConfig {
     /**
      * How to handle bad records, defaults to doing nothing
     */
-    bad_record_action: 'none'|'throw'|'log';
+    bad_record_action: BadRecordAction;
 }
+
+export type BadRecordAction = 'none'|'throw'|'log';

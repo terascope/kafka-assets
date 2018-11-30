@@ -1,4 +1,5 @@
-import { Logger, DataEncoding } from '@terascope/job-components';
+import { Logger } from '@terascope/job-components';
+import { BadRecordAction } from '../teraslice_kafka_reader/interfaces';
 
 export interface OffsetByPartition {
     [partition: number]: number;
@@ -17,20 +18,19 @@ export interface TopicPartition {
 
 export interface ConsumerClientConfig {
     topic: string;
-    encoding: { _encoding?: DataEncoding, _op?: string };
-    bad_record_action: 'none'|'throw'|'log';
+    bad_record_action: BadRecordAction;
     logger: Logger;
 }
 
 export interface ProduceMessage {
-    topic: string;
     data: Buffer;
     key: string|null;
-    timestamp: number;
+    timestamp: number|null;
 }
 
 export interface ProducerClientConfig {
     topic: string;
-    encoding: { _encoding?: DataEncoding, _op?: string };
     logger: Logger;
 }
+
+export { BadRecordAction };

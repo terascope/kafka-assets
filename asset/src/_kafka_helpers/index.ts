@@ -74,3 +74,10 @@ export function isOkayError(err: AnyKafkaError, action: keyof OkErrors) {
 
     return err && okErrors[action][err as number];
 }
+
+/** A simplified implemation of moment(new Date(val)).isValid() */
+export function getValidDate(val: any): Date|false {
+    const d = new Date(val);
+    // @ts-ignore
+    return d instanceof Date && !isNaN(d) && d;
+}

@@ -7,9 +7,11 @@ import BaseClient from './base-client';
 export default class ProducerClient extends BaseClient {
     private _logger: Logger;
     private _client: kafka.Producer;
+    private _topic: string;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
         super();
+        this._topic = config.topic;
         this._logger = config.logger;
         this._client = client;
     }
@@ -44,10 +46,12 @@ export default class ProducerClient extends BaseClient {
         });
     }
 
-    produce(messages: ProduceMessage[], flushTimeout = 60000): Promise<void> {
-        for (const message of messages) {
+    produce<T>(messages: T[], map: (msg: T) => ProduceMessage, flushTimeout = 60000): Promise<void> {
+        for (const msg of messages) {
+            const message = map(msg);
+
             this._client.produce(
-                message.topic,
+                this._topic,
                 // This is the partition. There may be use cases where
                 // we'll need to control this.
                 null,

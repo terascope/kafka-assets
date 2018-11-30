@@ -1,5 +1,5 @@
-import omit from 'lodash.omit';
-import { Logger, DataEntity } from '@terascope/job-components';
+
+import { Logger } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import {
     wrapError,
@@ -7,19 +7,20 @@ import {
     KafkaMessage,
     isOkayError,
     isError,
-    KafkaMessageMetadata
 } from '../_kafka_helpers';
 import BaseClient from './base-client';
 import {
     TrackedOffsets,
     TopicPartition,
     ConsumerClientConfig,
+    BadRecordAction,
 } from './interfaces';
 
 export default class ConsumerClient extends BaseClient {
     private _logger: Logger;
     private _client: kafka.KafkaConsumer;
-    private _config: ConsumerClientConfig;
+    private _topic: string;
+    private _badRecordAction: BadRecordAction;
     private _offsets: TrackedOffsets = {
         started: {},
         ended: {}
@@ -29,7 +30,8 @@ export default class ConsumerClient extends BaseClient {
         super();
         this._logger = config.logger;
         this._client = client;
-        this._config = config;
+        this._topic = config.topic;
+        this._badRecordAction = config.bad_record_action;
     }
 
     async commit() {
@@ -83,7 +85,7 @@ export default class ConsumerClient extends BaseClient {
             this._client.seek({
                 partition,
                 offset,
-                topic: this._config.topic
+                topic: this._topic
             }, 1000, (err: AnyKafkaError) => {
                 if (err) {
                     const message = `Failure to seek partition ${partition} to offset ${offset}`;
@@ -116,9 +118,9 @@ export default class ConsumerClient extends BaseClient {
         await this._connect();
     }
 
-    async consume(max: { size: number, wait: number }): Promise<DataEntity[]> {
+    async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
         const endAt = Date.now() + max.wait;
-        let results: DataEntity[] = [];
+        let results: T[] = [];
 
         while (results.length < max.size && endAt > Date.now()) {
             const remaining = max.size - results.length;
@@ -127,7 +129,7 @@ export default class ConsumerClient extends BaseClient {
 
             this._client.setDefaultConsumeTimeout(timeout);
 
-            const consumed = await this._consume(remaining);
+            const consumed = await this._consume(remaining, map);
             results = results.concat(consumed);
         }
 
@@ -151,9 +153,9 @@ export default class ConsumerClient extends BaseClient {
         await onDisconnect;
     }
 
-    private _consume(count: number): Promise<DataEntity[]> {
+    private _consume<T>(count: number, map: (msg: KafkaMessage) => T): Promise<T[]> {
         return new Promise((resolve, reject) => {
-            const results: DataEntity[] = [];
+            const results: T[] = [];
 
             this._client.consume(count, (_err: AnyKafkaError, messages: KafkaMessage[]) => {
                 if (_err) {
@@ -169,7 +171,7 @@ export default class ConsumerClient extends BaseClient {
 
                 this._logger.trace(`consumed ${messages.length} messages`);
                 for (const message of messages) {
-                    const entity = this._handleMessage(message);
+                    const entity = this._handleMessage(message, map);
                     if (entity != null) {
                         results.push(entity);
                     }
@@ -180,22 +182,15 @@ export default class ConsumerClient extends BaseClient {
         });
     }
 
-    private _handleMessage(message: KafkaMessage): DataEntity|null {
+    private _handleMessage<T>(message: KafkaMessage, map: (msg: KafkaMessage) => T): T|null {
         this._trackOffsets(message);
 
-        const metadata: KafkaMessageMetadata = omit(message, 'value');
-
         try {
-            return DataEntity.fromBuffer(
-                message.value,
-                this._config.encoding,
-                metadata
-            );
+            return map(message);
         } catch (err) {
-            const action = this._config.bad_record_action;
-            if (action === 'log') {
-                this._logger.error('Bad record', message.value.toString('utf8'), metadata, err);
-            } else if (action === 'throw') {
+            if (this._badRecordAction === 'log') {
+                this._logger.error('Bad record', message.value.toString('utf8'), err);
+            } else if (this._badRecordAction === 'throw') {
                 throw err;
             }
 
@@ -210,7 +205,7 @@ export default class ConsumerClient extends BaseClient {
 
             partitions.push({
                 partition: parseInt(partition, 10),
-                topic: this._config.topic,
+                topic: this._topic,
                 offset,
             });
         }
@@ -260,7 +255,7 @@ export default class ConsumerClient extends BaseClient {
 
         this._client.on('ready', () => {
             this._logger.info('kafka consumer is ready');
-            this._client.subscribe([this._config.topic]);
+            this._client.subscribe([this._topic]);
         });
 
         // for debug logs.

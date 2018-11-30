@@ -2,10 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { debugLogger } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
-import {
-    ProducerClient,
-    ProduceMessage
-} from '../../asset/src/_kafka_clients';
+import { ProducerClient } from '../../asset/src/_kafka_clients';
 
 export async function loadData(topic: string, fileName: string): Promise<object[]> {
     const logger = debugLogger('load-test-data');
@@ -15,19 +12,13 @@ export async function loadData(topic: string, fileName: string): Promise<object[
 
     const data: object[] = [];
 
-    const messages: ProduceMessage[] = exampleData.trim()
+    const messages = exampleData.trim()
         .split('\n')
         .map((d) => {
             try {
                 data.push(JSON.parse(d));
             } catch (err) {}
-            const message: ProduceMessage = {
-                topic,
-                key: null,
-                data: Buffer.from(d),
-                timestamp: Date.now()
-            };
-            return message;
+            return Buffer.from(d);
         });
 
     const producer = new kafka.Producer({
@@ -43,14 +34,20 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     const client = new ProducerClient(producer, {
         logger,
         topic,
-        encoding: { },
     });
 
     await client.connect();
 
     logger.debug(`loading ${messages.length} into topic: ${topic}...`);
 
-    await client.produce(messages, 5000);
+    await client.produce(messages, (data) => {
+        return {
+            topic,
+            key: null,
+            data,
+            timestamp: Date.now()
+        };
+    }, 5000);
 
     logger.debug('DONE loading messages');
 
