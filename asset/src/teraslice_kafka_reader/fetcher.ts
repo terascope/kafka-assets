@@ -77,7 +77,10 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
                 // We want to explicitly manage offset commits.
                 'enable.auto.commit': false,
                 'enable.auto.offset.store': false,
-                'queued.min.messages': 2 * this.opConfig.size
+                'queued.min.messages': 2 * this.opConfig.size,
+                // we want to capture the rebalance so we can handle
+                // them better
+                rebalance_cb: true,
             },
             autoconnect: false
         } as ConnectionConfig;

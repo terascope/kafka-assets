@@ -28,7 +28,7 @@ export default class KafkaAdmin {
             logger.warn('got okay error when deleting topic', err);
         }
 
-        await delay(100);
+        await delay(500);
         await this.createTopic(topic);
         logger.info(`created topic ${topic}`);
     }

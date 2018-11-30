@@ -78,8 +78,26 @@ const ERR__WAIT_COORD = -180;
 const ERR_NOT_COORDINATOR_FOR_GROUP = 16;
 const ERR__TIMED_OUT_QUEUE = -166;
 
-export const okErrors = {};
-okErrors[KAFKA_NO_OFFSET_STORED] = true;
-okErrors[ERR__WAIT_COORD] = true;
-okErrors[ERR_NOT_COORDINATOR_FOR_GROUP] = true;
-okErrors[ERR__TIMED_OUT_QUEUE] = true;
+export interface OkErrorSet {
+    [prop: number]: boolean;
+}
+
+export interface OkErrors {
+    consume: OkErrorSet;
+    commit: OkErrorSet;
+}
+
+export const okErrors: OkErrors = {
+    consume: {},
+    commit: {},
+};
+
+okErrors.consume[KAFKA_NO_OFFSET_STORED] = true;
+okErrors.consume[ERR__WAIT_COORD] = true;
+okErrors.consume[ERR_NOT_COORDINATOR_FOR_GROUP] = true;
+okErrors.consume[ERR__TIMED_OUT_QUEUE] = true;
+
+// If this is the first slice and the slice is Empty
+// there may be no offsets stored which is not really
+// an error.
+okErrors.commit[KAFKA_NO_OFFSET_STORED] = true;

@@ -6,7 +6,7 @@ import {
     wrapError,
     AnyKafkaError,
     KafkaMessage,
-    isOkayConsumeError,
+    isOkayError,
     KafkaMessageMetadata
 } from '../helpers';
 import {
@@ -32,9 +32,21 @@ export default class ConsumerClient {
     }
 
     async commit() {
-        const partitions = this._flushOffsets('ended');
-        for (const partition of partitions) {
-            this._client.commitSync(partition);
+        const offsets = this._flushOffsets('ended');
+
+        for (const offset of offsets) {
+            try {
+                this._client.commitSync(offset);
+            } catch (_err) {
+                const { partition } = offset;
+                const err = wrapError(`Failure to commit to ${partition}`, _err);
+
+                if (!isOkayError(_err, 'commit')) {
+                    throw err;
+                } else {
+                    this._logger.warn('got recoverable error when committing', err);
+                }
+            }
         }
     }
 
@@ -73,7 +85,8 @@ export default class ConsumerClient {
                 topic: this._config.topic
             }, 1000, (err: AnyKafkaError) => {
                 if (err) {
-                    reject(wrapError('Failure to seek', err));
+                    const message = `Failure to seek partition ${partition} to offset ${offset}`;
+                    reject(wrapError(message, err));
                     return;
                 }
 
@@ -87,7 +100,11 @@ export default class ConsumerClient {
     }
 
     topicPositions(): TopicPartition[] {
-        return this._client.position(null);
+        try {
+            return this._client.position(null);
+        } catch (err) {
+            throw wrapError('Failed to get topic partitions', err);
+        }
     }
 
     async connect(): Promise<void> {
@@ -133,11 +150,14 @@ export default class ConsumerClient {
         return new Promise((resolve, reject) => {
             const results: DataEntity[] = [];
 
-            this._client.consume(count, (err: AnyKafkaError, messages: KafkaMessage[]) => {
-                if (err) {
-                    if (!isOkayConsumeError(err)) {
+            this._client.consume(count, (_err: AnyKafkaError, messages: KafkaMessage[]) => {
+                if (_err) {
+                    const err = wrapError(`Failure to consume ${count} messages`, _err);
+                    if (!isOkayError(_err, 'consume')) {
                         reject(err);
-                        return;
+                    } else {
+                        this._logger.warn('got recoverable error when consuming', err);
+                        resolve([]);
                     }
                     return;
                 }
@@ -234,7 +254,7 @@ export default class ConsumerClient {
         });
 
         this._client.on('ready', () => {
-            this._logger.info('Consumer ready');
+            this._logger.info('kafka consumer is ready');
             this._client.subscribe([this._config.topic]);
         });
 
@@ -259,8 +279,14 @@ export default class ConsumerClient {
             this._logger.debug('kafka consumer closed', msg);
         });
 
-        this._client.on('rebalance', (msg) => {
-            this._logger.debug('kafka consumer rebalance', msg);
+        // @ts-ignore because the type definition don't work right
+        this._client.on('rebalance', (err, assignment) => {
+            this._logger.debug('kafka consumer rebalance', { err, assignment });
+        });
+
+        // @ts-ignore because the event doesn't exist in the typedefinitions
+        this._client.on('rebalance.error', (err) => {
+            this._logger.warn('kafka consumer rebalance error', err);
         });
 
         this._client.on('unsubscribed', (msg) => {

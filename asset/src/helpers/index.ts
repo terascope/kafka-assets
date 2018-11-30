@@ -1,4 +1,4 @@
-import { codeToMessage, okErrors } from './error-codes';
+import { codeToMessage, okErrors, OkErrors } from './error-codes';
 
 export type AnyKafkaError = Error|KafkaError|number|null;
 
@@ -24,9 +24,9 @@ function getErrorCause(err: any): string {
     message += typeof err === 'object' ? err.message : toString(err);
 
     if (isKafkaError(err)) {
-        message = `code: ${err.code}`;
+        message += `, code: ${err.code}`;
         if (codeToMessage[err.code]) {
-            message += `desc: ${codeToMessage[err.code]}`;
+            message += `, desc: "${codeToMessage[err.code]}"`;
         }
     }
 
@@ -63,10 +63,10 @@ function isKafkaError(err: any): err is KafkaError {
     return err && err.code;
 }
 
-export function isOkayConsumeError(err: AnyKafkaError) {
+export function isOkayError(err: AnyKafkaError, action: keyof OkErrors) {
     if (isKafkaError(err)) {
-        return okErrors[err.code];
+        return okErrors[action][err.code];
     }
-    // @ts-ignore
-    return err && okErrors[err];
+
+    return err && okErrors[action][err as number];
 }
