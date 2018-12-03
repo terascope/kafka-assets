@@ -2,6 +2,7 @@ import 'jest-extended';
 import path from 'path';
 import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
+import KafkaSender from '../asset/src/kafka_sender/processor';
 import KafkaAdmin from './helpers/kafka-admin';
 import { readData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
@@ -44,6 +45,8 @@ describe('Kafka Sender', () => {
         clients,
     });
 
+    const sender = harness.getOperation<KafkaSender>('kafka_sender');
+
     let results: DataEntity[] = [];
     let consumed: object[] = [];
 
@@ -56,7 +59,7 @@ describe('Kafka Sender', () => {
         await harness.initialize();
 
         // it should be able to call connect
-        await harness.processors[0].producer.connect();
+        await sender.producer.connect();
         results = await harness.runSlice({});
         consumed = await readData(topic, results.length);
     });
@@ -65,7 +68,7 @@ describe('Kafka Sender', () => {
         jest.resetAllMocks();
 
         // it should be able to disconnect twice
-        await harness.processors[0].producer.disconnect();
+        await sender.producer.disconnect();
 
         await Promise.all([
             harness.shutdown(),

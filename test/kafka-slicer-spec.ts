@@ -13,18 +13,19 @@ describe('Kafka Slicer', () => {
 
     const clients = [clientConfig];
 
-    const job = newTestJobConfig();
-    job.operations = [
-        {
-            _op: 'kafka_reader',
-            topic: 'test-123',
-            group: 'test-456',
-            connection: 'default'
-        },
-        {
-            _op: 'noop'
-        }
-    ];
+    const job = newTestJobConfig({
+        operations: [
+            {
+                _op: 'kafka_reader',
+                topic: 'test-123',
+                group: 'test-456',
+                connection: 'default'
+            },
+            {
+                _op: 'noop'
+            }
+        ]
+    });
 
     let harness: SlicerTestHarness;
 
@@ -49,10 +50,11 @@ describe('Kafka Slicer', () => {
     });
 
     it('should have a maxQueueLength of workers * 2', () => {
+        const slicer = harness.slicer();
         harness.setWorkers(5);
-        expect(harness.slicer.maxQueueLength()).toEqual(10);
+        expect(slicer.maxQueueLength()).toEqual(10);
 
         harness.setWorkers(2);
-        expect(harness.slicer.maxQueueLength()).toEqual(4);
+        expect(slicer.maxQueueLength()).toEqual(4);
     });
 });

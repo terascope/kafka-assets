@@ -11,7 +11,7 @@ import * as kafka from 'node-rdkafka';
 import { getValidDate } from '../_kafka_helpers';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
-    private producer: ProducerClient;
+    producer: ProducerClient;
     private bufferSize: number;
 
     constructor(context: WorkerContext, opConfig: KafkaSenderConfig, executionConfig: ExecutionConfig) {

@@ -14,8 +14,8 @@ import {
     KafkaMessageMetadata
 } from '../_kafka_helpers';
 
-export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
-    private consumer: ConsumerClient;
+export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
+    consumer: ConsumerClient;
 
     constructor(context: WorkerContext, opConfig: KafkaReaderConfig, executionConfig: ExecutionConfig) {
         super(context, opConfig, executionConfig);

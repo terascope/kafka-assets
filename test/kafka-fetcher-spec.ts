@@ -1,12 +1,13 @@
 import 'jest-extended';
 import uuidv4 from 'uuid/v4';
-import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
+import { TestClientConfig, Logger, DataEntity, NoopProcessor } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
+import KafkaFetcher from '../asset/src/kafka_reader/fetcher';
 import KafkaAdmin from './helpers/kafka-admin';
 import { loadData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 
-describe('Kafka Reader', () => {
+describe('Kafka Fetcher', () => {
     jest.setTimeout(15 * 1000);
 
     const clientConfig: TestClientConfig = {
@@ -24,7 +25,6 @@ describe('Kafka Reader', () => {
 
     const clients = [clientConfig];
 
-    // @ts-ignore
     const job = newTestJobConfig({
         max_retries: 3,
         operations: [
@@ -47,7 +47,10 @@ describe('Kafka Reader', () => {
         clients,
     });
 
-    harness.processors[0].onBatch = jest.fn(async (data) => {
+    const fetcher = harness.fetcher<KafkaFetcher>();
+    const noop = harness.getOperation<NoopProcessor>('noop');
+
+    noop.onBatch = jest.fn(async (data) => {
         return data;
     });
 
@@ -69,7 +72,7 @@ describe('Kafka Reader', () => {
         await kafkaAdmin.ensureTopic(topic);
 
         // it should be able to call connect
-        await harness.fetcher.consumer.connect();
+        await fetcher.consumer.connect();
 
         const [data] = await Promise.all([
             loadData(topic, 'example-data.txt'),
@@ -84,7 +87,7 @@ describe('Kafka Reader', () => {
         jest.resetAllMocks();
 
         // it should be able to disconnect twice
-        await harness.fetcher.consumer.disconnect();
+        await fetcher.consumer.disconnect();
 
         await Promise.all([
             harness.shutdown(),
@@ -106,7 +109,7 @@ describe('Kafka Reader', () => {
     });
 
     it('should have committed the results', async () => {
-        const result = await harness.fetcher.consumer.topicPositions();
+        const result = await fetcher.consumer.topicPositions();
         expect(result).toEqual([
             {
                 topic,
@@ -121,7 +124,7 @@ describe('Kafka Reader', () => {
 
     describe('when resetting back to zero', () => {
         beforeAll(async () => {
-            await harness.fetcher.consumer.seek({
+            await fetcher.consumer.seek({
                 partition: 0,
                 offset: 0,
             });
@@ -135,8 +138,8 @@ describe('Kafka Reader', () => {
             let retryResults: DataEntity[] = [];
 
             beforeAll(async () => {
-                harness.processors[0].onBatch
-                    .mockRejectedValueOnce(err);
+                // @ts-ignore
+                noop.onBatch.mockRejectedValueOnce(err);
 
                 retryResults = retryResults.concat(await harness.runSlice({}));
                 retryResults = retryResults.concat(await harness.runSlice({}));
@@ -160,7 +163,7 @@ describe('Kafka Reader', () => {
             });
 
             it('should have committed the results', async () => {
-                const result = await harness.fetcher.consumer.topicPositions();
+                const result = await fetcher.consumer.topicPositions();
                 expect(result).toEqual([
                     {
                         topic,
