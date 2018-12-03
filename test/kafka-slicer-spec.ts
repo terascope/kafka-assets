@@ -16,7 +16,7 @@ describe('Kafka Slicer', () => {
     const job = newTestJobConfig();
     job.operations = [
         {
-            _op: 'teraslice_kafka_reader',
+            _op: 'kafka_reader',
             topic: 'test-123',
             group: 'test-456',
             connection: 'default'

@@ -34,7 +34,7 @@ describe('Kafka Sender', () => {
                 fetcherDataFilePath,
             },
             {
-                _op: 'teraslice_kafka_sender',
+                _op: 'kafka_sender',
                 topic,
             }
         ],

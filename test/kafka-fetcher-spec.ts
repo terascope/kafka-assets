@@ -29,7 +29,7 @@ describe('Kafka Reader', () => {
         max_retries: 3,
         operations: [
             {
-                _op: 'teraslice_kafka_reader',
+                _op: 'kafka_reader',
                 topic,
                 group,
                 size: 100,

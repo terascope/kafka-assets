@@ -1,5 +1,5 @@
 import { Logger } from '@terascope/job-components';
-import { BadRecordAction } from '../teraslice_kafka_reader/interfaces';
+import { BadRecordAction } from '../kafka_reader/interfaces';
 
 export interface OffsetByPartition {
     [partition: number]: number;
