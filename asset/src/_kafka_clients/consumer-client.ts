@@ -61,19 +61,6 @@ export default class ConsumerClient extends BaseClient {
         }
     }
 
-    committedPartitions(timeout = 1000): Promise<TopicPartition[]> {
-        return new Promise((resolve, reject) => {
-            this._client.committed(null, timeout, (err: AnyKafkaError, committed: TopicPartition[]) => {
-                if (err) {
-                    reject(wrapError('Failure to get committed offsets', err));
-                    return;
-                }
-
-                resolve(committed);
-            });
-        });
-    }
-
     async rollback() {
         await this._checkState();
 
@@ -296,18 +283,6 @@ export default class ConsumerClient extends BaseClient {
                 this._logger.debug('kafka consumer disconnected');
             }
             this._events.emit('client:disconnected', msg);
-        });
-
-        this._client.on('exit', (msg) => {
-            this._logger.warn('kafka consumer exited', msg);
-        });
-
-        this._client.on('end', (msg) => {
-            this._logger.debug('kafka consumer ended', msg);
-        });
-
-        this._client.on('close', (msg) => {
-            this._logger.debug('kafka consumer closed', msg);
         });
 
         let rebalanceTimeout: NodeJS.Timeout;

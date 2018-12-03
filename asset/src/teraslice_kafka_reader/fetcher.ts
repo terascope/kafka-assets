@@ -59,7 +59,7 @@ export default class KafkaReader extends Fetcher<KafkaReaderConfig> {
         return result;
     }
 
-    async onSliceSuccess() {
+    async onSliceFinalizing() {
         await this.consumer.commit();
     }
 

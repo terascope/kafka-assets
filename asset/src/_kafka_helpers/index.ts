@@ -8,7 +8,7 @@ export interface KafkaError extends Error {
 
 export function wrapError(message: string, err: AnyKafkaError): KafkaError {
     const cause = getErrorCause(err);
-    const error = new Error(`${message}, ${cause}`) as KafkaError;
+    const error = new Error(`${message}${cause}`) as KafkaError;
 
     if (isKafkaError(err)) error.code = err.code;
 
@@ -17,16 +17,24 @@ export function wrapError(message: string, err: AnyKafkaError): KafkaError {
 }
 
 function getErrorCause(err: any): string {
-    if (err == null) return 'caused by, unknown error';
-    if (typeof err === 'string') return `caused by, ${err}`;
+    if (err == null) return '';
+    if (typeof err === 'string') return `, caused by, ${err}`;
 
-    let message = 'caused by error: ';
+    let message = ', caused by error: ';
     message += typeof err === 'object' ? err.message : toString(err);
 
+    let code: number|null = null;
+
     if (isKafkaError(err)) {
-        message += `, code: ${err.code}`;
-        if (codeToMessage[err.code]) {
-            message += `, desc: "${codeToMessage[err.code]}"`;
+        code = err.code;
+    } else if (Number.isInteger(err)) {
+        code = err;
+    }
+
+    if (code != null) {
+        message += `, code: ${code}`;
+        if (codeToMessage[code]) {
+            message += `, desc: "${codeToMessage[code]}"`;
         }
     }
 
