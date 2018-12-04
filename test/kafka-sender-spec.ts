@@ -1,5 +1,4 @@
 import 'jest-extended';
-import path from 'path';
 import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaSender from '../asset/src/kafka_sender/processor';
@@ -24,15 +23,11 @@ describe('Kafka Sender', () => {
 
     const clients = [clientConfig];
 
-    const fetcherDataFilePath = path.join(__dirname, 'fixtures', 'test-reader-data.json');
-
-    // @ts-ignore
     const job = newTestJobConfig({
         max_retries: 3,
         operations: [
             {
                 _op: 'test-reader',
-                fetcherDataFilePath,
             },
             {
                 _op: 'kafka_sender',
