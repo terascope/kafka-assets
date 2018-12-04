@@ -11,10 +11,6 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             return op._op === opName;
         });
 
-        if (kafkaSender == null) {
-            throw new Error('Kafka Sender does not exist in job');
-        }
-
         getCollectConfig(job.operations, kafkaSender as KafkaSenderConfig);
     }
 

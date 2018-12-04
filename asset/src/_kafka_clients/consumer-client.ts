@@ -1,12 +1,10 @@
 
-import { Logger } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import {
     wrapError,
     AnyKafkaError,
     KafkaMessage,
     isOkayError,
-    isError,
 } from '../_kafka_helpers';
 import BaseClient from './base-client';
 import {
@@ -21,20 +19,17 @@ import {
 } from '../_kafka_helpers/error-codes';
 
 export default class ConsumerClient extends BaseClient {
-    private _logger: Logger;
     private _client: kafka.KafkaConsumer;
     private _topic: string;
     private _badRecordAction: BadRecordAction;
     private _rebalancing = true;
-    private _closed = false;
     private _offsets: TrackedOffsets = {
         started: {},
         ended: {}
     };
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
-        super();
-        this._logger = config.logger;
+        super(config.logger);
         this._client = client;
         this._topic = config.topic;
         this._badRecordAction = config.bad_record_action;
@@ -146,22 +141,21 @@ export default class ConsumerClient extends BaseClient {
     }
 
     async disconnect(): Promise<void> {
-        this._closed = true;
+        if (this._client.isConnected()) {
+            const onDisconnect = this._onceWithTimeout('client:disconnect', false);
 
-        if (!this._client.isConnected()) {
-            return;
+            await new Promise((resolve, reject) => {
+                this._client.disconnect((err: AnyKafkaError) => {
+                    if (err) reject(wrapError('Failed to disconnect', err));
+                    else resolve();
+                });
+            });
+
+            await onDisconnect;
         }
 
-        const onDisconnect = this._onceWithTimeout('client:disconnect', false);
-
-        await new Promise((resolve, reject) => {
-            this._client.disconnect((err: AnyKafkaError) => {
-                if (err) reject(wrapError('Failed to disconnect', err));
-                else resolve();
-            });
-        });
-
-        await onDisconnect;
+        this._client.removeAllListeners();
+        super.close();
     }
 
     private _consume<T>(count: number, map: (msg: KafkaMessage) => T): Promise<T[]> {
@@ -257,11 +251,7 @@ export default class ConsumerClient extends BaseClient {
 
     private _clientEvents() {
         this._client.on('error', (err) => {
-            if (this._events.listenerCount('client:error')) {
-                this._events.emit('client:error', err);
-            } else {
-                this._logger.error('kafka client error', err);
-            }
+            this._logOrEmit('client:error', err);
         });
 
         this._client.on('ready', () => {
@@ -272,17 +262,17 @@ export default class ConsumerClient extends BaseClient {
         });
 
         // for debug logs.
-        this._client.on('event.log', (event) => {
-            this._logger.info(event);
+        this._client.on('event.log', (msg) => {
+            this._logger.info(msg);
+        });
+
+        // for event error logs.
+        this._client.on('event.error', (err) => {
+            this._logOrEmit('client:error', err);
         });
 
         this._client.on('disconnected', (msg) => {
-            if (isError(msg)) {
-                this._logger.warn('kafka consumer disconnected with error', msg);
-            } else {
-                this._logger.debug('kafka consumer disconnected');
-            }
-            this._events.emit('client:disconnected', msg);
+            this._logOrEmit('client:disconnected', msg);
         });
 
         let rebalanceTimeout: NodeJS.Timeout;
@@ -308,17 +298,15 @@ export default class ConsumerClient extends BaseClient {
 
         // @ts-ignore because the event doesn't exist in the typedefinitions
         this._client.on('rebalance.error', (err) => {
-            this._logger.warn('kafka consumer rebalance error', err);
-            this._events.emit('rebalance:end', err);
+            this._logOrEmit('rebalance:end', err);
         });
 
-        this._client.on('unsubscribed', (msg) => {
-            this._logger.debug('kafka consumer unsubscribed', msg);
+        this._client.on('unsubscribed', (...args: any[]) => {
+            this._logOrEmit('client:unsubscribed', ...args);
         });
 
-        this._client.on('connection.failure', (err) => {
-            this._logger.warn('kafka consumer connection failure', err);
-            this._events.emit('connect:error', err);
+        this._client.on('connection.failure', (...args: any[]) => {
+            this._logOrEmit('connection:failure', ...args);
         });
     }
 

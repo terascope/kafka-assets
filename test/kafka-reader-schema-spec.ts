@@ -6,6 +6,10 @@ describe('Kafka Reader Schema', () => {
     const context = new TestContext('kafka-reader');
     const schema = new Schema(context);
 
+    afterAll(() => {
+        context.apis.foundation.getSystemEvents().removeAllListeners();
+    });
+
     describe('when validating the job', () => {
         it('should throw an error if including json_protocol', () => {
             const job = newTestJobConfig({

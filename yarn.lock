@@ -89,6 +89,13 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.once@^4.1.4":
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/@types/lodash.once/-/lodash.once-4.1.4.tgz#ef61c5f28edc2435db79fa5e82e15e9d18cddda6"
+  integrity sha512-+dhfw8oHWOEen1+sDCCnUO8chXUYVFlGzaVeEavrGcCaigSBy6jWzYx8Fqbi+OjYiHnJxVjDod6t1mB9xAZgHA==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash@*", "@types/lodash@^4.14.118":
   version "4.14.118"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.118.tgz#247bab39bfcc6d910d4927c6e06cbc70ec376f27"

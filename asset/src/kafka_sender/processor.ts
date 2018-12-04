@@ -4,11 +4,12 @@ import {
     WorkerContext,
     ExecutionConfig,
     ConnectionConfig,
+    getValidDate,
+    isString,
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 import * as kafka from 'node-rdkafka';
-import { getValidDate } from '../_kafka_helpers';
 import { getCollectConfig } from './utils';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
@@ -61,7 +62,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         if (!this.opConfig.id_field) return null;
 
         const key = msg[this.opConfig.id_field];
-        if (key && typeof key === 'string') return key;
+        if (key && isString(key)) return key;
 
         // TODO we should probably do something like bad_record_action
         this.logger.error(`invalid id_field on record ${this.opConfig.id_field}`);
@@ -75,7 +76,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
             // TODO we should probably do something like bad_record_action
             this.logger.error(`invalid timestamp_field on record ${this.opConfig.timestamp_field}`);
-        } else if (msg.timestamp_now) {
+        } else if (this.opConfig.timestamp_now) {
             return Date.now();
         }
 

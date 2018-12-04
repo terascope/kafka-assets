@@ -1,18 +1,15 @@
-import { Logger } from '@terascope/job-components';
 import { ProduceMessage, ProducerClientConfig } from './interfaces';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers';
 import * as kafka from 'node-rdkafka';
 import BaseClient from './base-client';
 
 export default class ProducerClient extends BaseClient {
-    private _logger: Logger;
     private _client: kafka.Producer;
     private _topic: string;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
-        super();
+        super(config.logger);
         this._topic = config.topic;
-        this._logger = config.logger;
         this._client = client;
     }
 
@@ -20,6 +17,8 @@ export default class ProducerClient extends BaseClient {
         if (this._client.isConnected()) {
             return;
         }
+
+        this._clientEvents();
 
         await new Promise((resolve, reject) => {
             this._client.connect({}, (err: AnyKafkaError) => {
@@ -38,12 +37,17 @@ export default class ProducerClient extends BaseClient {
             return;
         }
 
-        await new Promise((resolve, reject) => {
-            this._client.disconnect((err: AnyKafkaError) => {
-                if (err) reject(wrapError('Failed to disconnect', err));
-                else resolve();
+        if (this._client.isConnected()) {
+            await new Promise((resolve, reject) => {
+                this._client.disconnect((err: AnyKafkaError) => {
+                    if (err) reject(wrapError('Failed to disconnect', err));
+                    else resolve();
+                });
             });
-        });
+        }
+
+        this._client.removeAllListeners();
+        super.close();
     }
 
     produce<T>(messages: T[], map: (msg: T) => ProduceMessage, flushTimeout = 60000): Promise<void> {
@@ -69,6 +73,18 @@ export default class ProducerClient extends BaseClient {
                 }
                 resolve();
             });
+        });
+    }
+
+    private _clientEvents() {
+        // for client event error logs.
+        this._client.on('error', (err) => {
+            this._logOrEmit('client:error', err);
+        });
+
+        // for event error logs.
+        this._client.on('event.error', (err) => {
+            this._logOrEmit('client:error', err);
         });
     }
 }

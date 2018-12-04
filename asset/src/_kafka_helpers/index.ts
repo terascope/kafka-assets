@@ -1,6 +1,7 @@
+import { toString, isString } from '@terascope/job-components';
 import { codeToMessage, okErrors, OkErrors } from './error-codes';
 
-export type AnyKafkaError = Error|KafkaError|number|null;
+export type AnyKafkaError = Error|KafkaError|number|string|null;
 
 export interface KafkaError extends Error {
     code: number;
@@ -18,7 +19,7 @@ export function wrapError(message: string, err: AnyKafkaError): KafkaError {
 
 function getErrorCause(err: any): string {
     if (err == null) return '';
-    if (typeof err === 'string') return `, caused by, ${err}`;
+    if (isString(err)) return `, caused by, ${err}`;
 
     let message = ', caused by error: ';
     message += typeof err === 'object' ? err.message : toString(err);
@@ -39,12 +40,6 @@ function getErrorCause(err: any): string {
     }
 
     return message;
-}
-
-export function toString(val: any): string {
-    if (val == null) return '';
-    if (typeof val.toString === 'function') return val.toString();
-    return JSON.stringify(val);
 }
 
 export interface KafkaMessageMetadata {
@@ -71,21 +66,11 @@ function isKafkaError(err: any): err is KafkaError {
     return err && err.code;
 }
 
-export function isError(err: any): err is Error {
-    return err && err.stack && err.message;
-}
-
-export function isOkayError(err: AnyKafkaError, action: keyof OkErrors) {
+export function isOkayError(err: AnyKafkaError, action: keyof OkErrors): boolean {
+    if (err == null) return false;
     if (isKafkaError(err)) {
-        return okErrors[action][err.code];
+        return okErrors[action][err.code] != null;
     }
 
-    return err && okErrors[action][err as number];
-}
-
-/** A simplified implemation of moment(new Date(val)).isValid() */
-export function getValidDate(val: any): Date|false {
-    const d = new Date(val);
-    // @ts-ignore
-    return d instanceof Date && !isNaN(d) && d;
+    return okErrors[action][err as number] != null;
 }

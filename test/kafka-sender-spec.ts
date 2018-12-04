@@ -87,4 +87,215 @@ describe('Kafka Sender', () => {
             expect(actual).toEqual(expected);
         }
     });
+
+    describe('->getKey', () => {
+        describe('when id_field is set', () => {
+            // @ts-ignore
+            const ogIdField = sender.opConfig.id_field;
+            beforeAll(() => {
+                // @ts-ignore
+                sender.opConfig.id_field = 'ip';
+            });
+
+            afterAll(() => {
+                // @ts-ignore
+                sender.opConfig.id_field = ogIdField;
+            });
+
+            it('should return the key if the field exists', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
+                });
+
+                // @ts-ignore
+                const key = sender.getKey(entity);
+
+                expect(key).toEqual(entity.ip);
+            });
+
+            it('should return null if the key does not exist', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
+                });
+
+                // @ts-ignore
+                const key = sender.getKey(entity);
+
+                expect(key).toBeNull();
+            });
+
+            it('should return null if the key exists but is not a string', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: 123,
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
+                });
+
+                // @ts-ignore
+                const key = sender.getKey(entity);
+
+                expect(key).toBeNull();
+            });
+        });
+
+        describe('when id_field is not set', () => {
+            // @ts-ignore
+            const ogIdField = sender.opConfig.id_field;
+            beforeAll(() => {
+                // @ts-ignore
+                sender.opConfig.id_field = '';
+            });
+
+            afterAll(() => {
+                // @ts-ignore
+                sender.opConfig.id_field = ogIdField;
+            });
+
+            it('should return null', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
+                });
+
+                // @ts-ignore
+                const key = sender.getKey(entity);
+
+                expect(key).toBeNull();
+            });
+        });
+    });
+
+    describe('->getTimestamp', () => {
+        describe('when timestamp_field is set', () => {
+            // @ts-ignore
+            const ogTimestampField = sender.opConfig.timestamp_field;
+            beforeAll(() => {
+                // @ts-ignore
+                sender.opConfig.timestamp_field = 'created';
+            });
+
+            afterAll(() => {
+                // @ts-ignore
+                sender.opConfig.timestamp_field = ogTimestampField;
+            });
+
+            it('should return the key if the field exists', () => {
+                const date = new Date();
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: date.toISOString()
+                });
+
+                // @ts-ignore
+                const time = sender.getTimestamp(entity);
+
+                expect(time).toEqual(date.getTime());
+            });
+
+            it('should return null if the key does not exist', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                });
+
+                // @ts-ignore
+                const time = sender.getTimestamp(entity);
+
+                expect(time).toBeNull();
+            });
+
+            it('should return null if the key exists but is not a Date', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'INVALID DATE'
+                });
+
+                // @ts-ignore
+                const time = sender.getTimestamp(entity);
+
+                expect(time).toBeNull();
+            });
+        });
+
+        describe('when timestamp_field is not set', () => {
+            // @ts-ignore
+            const ogTimestampField = sender.opConfig.timestamp_field;
+            beforeAll(() => {
+                // @ts-ignore
+                sender.opConfig.timestamp_field = '';
+            });
+
+            afterAll(() => {
+                // @ts-ignore
+                sender.opConfig.timestamp_field = ogTimestampField;
+            });
+
+            it('should return null', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: new Date().toISOString()
+                });
+
+                // @ts-ignore
+                const time = sender.getTimestamp(entity);
+
+                expect(time).toBeNull();
+            });
+        });
+
+        describe('when timestamp_now is set', () => {
+            // @ts-ignore
+            const ogTimestampNow = sender.opConfig.timestamp_now;
+            beforeAll(() => {
+                // @ts-ignore
+                sender.opConfig.timestamp_now = true;
+            });
+
+            afterAll(() => {
+                // @ts-ignore
+                sender.opConfig.timestamp_now = ogTimestampNow;
+            });
+
+            it('should return the key if the field exists', () => {
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
+                });
+
+                // @ts-ignore
+                const time = sender.getTimestamp(entity);
+
+                const now = Date.now();
+                const start = now - 1000;
+                const end = now + 1000;
+                expect(time).toBeWithin(start, end);
+            });
+        });
+    });
 });

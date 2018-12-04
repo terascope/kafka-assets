@@ -20,6 +20,7 @@
         "@types/jest": "^23.3.10",
         "@types/lodash.isequal": "^4.5.3",
         "@types/lodash.omit": "^4.5.4",
+        "@types/lodash.once": "^4.1.4",
         "@types/node": "^10.12.12",
         "@types/uuid": "^3.4.4",
         "jest": "^23.6.0",

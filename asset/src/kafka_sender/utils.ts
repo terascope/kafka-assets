@@ -2,7 +2,7 @@ import { OpConfig } from '@terascope/job-components';
 import { KafkaSenderConfig, CollectConfig } from './interfaces';
 import isEqual from 'lodash.isequal';
 
-export function getCollectConfig(operations: OpConfig[], opConfig: KafkaSenderConfig): CollectConfig {
+export function getCollectConfig(operations: OpConfig[], opConfig?: KafkaSenderConfig): CollectConfig {
     let index = operations.findIndex((op) => {
         return isEqual(op, opConfig);
     });
@@ -12,7 +12,7 @@ export function getCollectConfig(operations: OpConfig[], opConfig: KafkaSenderCo
     }
 
     while (index > 0) {
-        const op = operations[--index] ;
+        const op = operations[--index];
         if (isCollectConfig(op)) {
             if (op.wait == null || op.size == null) {
                 throw new Error('Collect is not configured collectly');

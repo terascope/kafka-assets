@@ -9,7 +9,7 @@ module.exports = {
     coverageDirectory: 'coverage',
     collectCoverageFrom: [
         '<rootDir>/asset/**/*.ts',
-        '!<rootDir>/asset/src/teraslice_kafka_*/index.ts',
+        '!<rootDir>/asset/src/kafka_*/index.ts',
         '<rootDir>/packages/*/**/*.ts',
         '!<rootDir>/packages/*/test/**',
         '!<rootDir>/**/coverage/**',
