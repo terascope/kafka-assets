@@ -30,13 +30,10 @@ describe('Kafka Sender', () => {
                 _op: 'test-reader',
             },
             {
-                _op: 'collect',
-                wait: 100,
-                size: 100
-            },
-            {
                 _op: 'kafka_sender',
                 topic,
+                wait: 100,
+                size: 100
             }
         ],
     });

@@ -16,7 +16,7 @@ export interface KafkaSenderConfig extends OpConfig {
     /**
      Set to true to have a timestamp generated as records are added to the topic
     */
-    timestamp_now: boolean|string;
+    timestamp_now: boolean;
     /**
      The Kafka producer connection to use
     */
@@ -24,7 +24,15 @@ export interface KafkaSenderConfig extends OpConfig {
     /**
      Type of compression to use
     */
-    compression: 'none'|'gzip'|'snappy'|'lz4';
+    compression: 'none'|'gzip'|'snappy'|'lz4'|'inherit';
+    /**
+     How long to wait for `size` messages to become available on the producer
+    */
+    wait: number;
+    /**
+     How many messages will be batched and sent to kafka together
+    */
+    size: number;
     /**
      How often the producer will poll the broker for metadata information.
      Set to -1 to disable polling.

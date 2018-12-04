@@ -1,19 +1,7 @@
-import path from 'path';
-import { ConvictSchema, JobConfig } from '@terascope/job-components';
+import { ConvictSchema } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
-import { getCollectConfig } from './utils';
 
 export default class Schema extends ConvictSchema<KafkaSenderConfig> {
-    validateJob(job: JobConfig) {
-        const opName = path.basename(__dirname);
-
-        const kafkaSender = job.operations.find((op) => {
-            return op._op === opName;
-        });
-
-        getCollectConfig(job.operations, kafkaSender as KafkaSenderConfig);
-    }
-
     build() {
         return {
             topic: {
@@ -33,8 +21,8 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             },
             timestamp_now: {
                 doc: 'Set to true to have a timestamp generated as records are added to the topic',
-                default: '',
-                format: String
+                default: false,
+                format: Boolean
             },
             connection: {
                 doc: 'The Kafka producer connection to use.',
@@ -44,7 +32,17 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             compression: {
                 doc: 'Type of compression to use',
                 default: 'gzip',
-                format: ['none', 'gzip', 'snappy', 'lz4']
+                format: ['none', 'gzip', 'snappy', 'lz4', 'inherit']
+            },
+            wait: {
+                doc: 'How long to wait for `size` messages to become available on the producer.',
+                default: 20,
+                format: Number
+            },
+            size: {
+                doc: 'How many messages will be batched and sent to kafka together.',
+                default: 10000,
+                format: Number
             },
             metadata_refresh: {
                 doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
