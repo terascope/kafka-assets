@@ -29,7 +29,7 @@
         "@terascope/job-components": "^0.11.1",
         "@types/convict": "^4.2.0",
         "@types/jest": "^23.3.10",
-        "@types/node": "^10.12.8",
+        "@types/node": "^10.12.12",
         "convict": "^4.4.0",
         "jest": "^23.6.0",
         "jest-extended": "^0.11.0",
