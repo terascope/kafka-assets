@@ -111,9 +111,9 @@ export default class ConsumerClient extends BaseClient {
             return;
         }
 
-        const connectError = this._onceWithTimeout('connect:error', false, 1000);
+        const connectError = this._onceWithTimeout('connect:error', false);
         await this._connect();
-        await connectError;
+        await connectError();
     }
 
     async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
@@ -151,7 +151,7 @@ export default class ConsumerClient extends BaseClient {
                 });
             });
 
-            await onDisconnect;
+            await onDisconnect();
         }
 
         this._client.removeAllListeners();
@@ -322,7 +322,8 @@ export default class ConsumerClient extends BaseClient {
 
         if (this._rebalancing) {
             this._logger.debug('waiting for rebalance');
-            await this._onceWithTimeout('rebalance:end', true, 30 * 60 * 1000);
+            const rebalance = this._onceWithTimeout('rebalance:end', true);
+            await rebalance(true);
         }
     }
 }

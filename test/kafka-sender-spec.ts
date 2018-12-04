@@ -22,6 +22,7 @@ describe('Kafka Sender', () => {
     const topic = 'example-sender-data-set';
 
     const clients = [clientConfig];
+    const batchSize = 200;
 
     const job = newTestJobConfig({
         max_retries: 3,
@@ -32,8 +33,8 @@ describe('Kafka Sender', () => {
             {
                 _op: 'kafka_sender',
                 topic,
-                wait: 100,
-                size: 100
+                wait: 1000,
+                size: batchSize
             }
         ],
     });
@@ -46,6 +47,7 @@ describe('Kafka Sender', () => {
 
     let results: DataEntity[] = [];
     let consumed: object[] = [];
+    let runs = 0;
 
     const kafkaAdmin = new KafkaAdmin();
 
@@ -57,7 +59,15 @@ describe('Kafka Sender', () => {
 
         // it should be able to call connect
         await sender.producer.connect();
-        results = await harness.runSlice({});
+
+        while (results.length !== batchSize) {
+            if (++runs > 5) {
+                throw new Error(`Expected to resolve a batch size of ${batchSize}, got ${results.length}`);
+            }
+            const batch = await harness.runSlice({});
+            results = results.concat(batch);
+        }
+
         consumed = await readData(topic, results.length);
     });
 
@@ -76,6 +86,8 @@ describe('Kafka Sender', () => {
     it('should have produced the correct records', () => {
         expect(consumed).toBeArrayOfSize(results.length);
         expect(DataEntity.isDataEntityArray(results)).toBeTrue();
+        expect(results).toBeArrayOfSize(batchSize);
+        expect(runs).toBe(2);
 
         for (let i = 0; i < results.length; i++) {
             const actual = consumed[i];

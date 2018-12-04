@@ -50,7 +50,9 @@ export default class ProducerClient extends BaseClient {
         super.close();
     }
 
-    produce<T>(messages: T[], map: (msg: T) => ProduceMessage, flushTimeout = 60000): Promise<void> {
+    async produce<T>(messages: T[], map: (msg: T) => ProduceMessage, flushTimeout = 60000): Promise<void> {
+        const onClientError = this._onceWithTimeout('client:error', false);
+
         for (const msg of messages) {
             const message = map(msg);
 
@@ -64,6 +66,8 @@ export default class ProducerClient extends BaseClient {
                 message.timestamp
             );
         }
+
+        await onClientError();
 
         return new Promise((resolve, reject) => {
             this._client.flush(flushTimeout, (err: AnyKafkaError) => {

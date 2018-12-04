@@ -6,6 +6,7 @@ import {
     ConnectionConfig,
     getValidDate,
     isString,
+    Collector,
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
@@ -13,6 +14,7 @@ import * as kafka from 'node-rdkafka';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     producer: ProducerClient;
+    collector: Collector<DataEntity>;
     private bufferSize: number;
 
     constructor(context: WorkerContext, opConfig: KafkaSenderConfig, executionConfig: ExecutionConfig) {
@@ -26,6 +28,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             logger,
             topic: this.opConfig.topic
         });
+
+        this.collector = new Collector(opConfig);
     }
 
     async initialize() {
@@ -34,21 +38,22 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     async shutdown() {
+        const records = this.collector.flushAll();
+        if (records.length > 0) {
+            this.logger.warn(`shutting down but ${records.length} records are still in memory, flushing...`);
+            await this.producer.produce(records, this.mapFn());
+        }
         await this.producer.disconnect();
         await super.shutdown();
     }
 
-    async onBatch(data: DataEntity[]) {
-        const map = (msg: DataEntity): ProduceMessage => {
-            const key = this.getKey(msg);
-            const timestamp = this.getTimestamp(msg);
-            const data = msg.toBuffer();
+    async onBatch(batch: DataEntity[]) {
+        this.collector.add(batch);
+        const records = this.collector.getBatch();
+        if (records == null) return [];
 
-            return { timestamp, key, data };
-        };
-
-        await this.producer.produce(data, map);
-        return data;
+        await this.producer.produce(records, this.mapFn());
+        return records;
     }
 
     private getKey(msg: DataEntity): string|null {
@@ -74,6 +79,16 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         }
 
         return null;
+    }
+
+    private mapFn() {
+        return (msg: DataEntity): ProduceMessage => {
+            const key = this.getKey(msg);
+            const timestamp = this.getTimestamp(msg);
+            const data = msg.toBuffer();
+
+            return { timestamp, key, data };
+        };
     }
 
     private clientConfig() {

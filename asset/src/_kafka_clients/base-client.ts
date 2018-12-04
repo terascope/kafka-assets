@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import once from 'lodash.once';
 import { Logger, isError } from '@terascope/job-components';
+import { setInterval } from 'timers';
 
 export default class BaseClient {
     protected _closed: boolean = false;
@@ -25,42 +26,70 @@ export default class BaseClient {
     }
 
      /**
-     * A safe way to do a once without timeout
+     * A safe way to wait for an event will doing something else
      */
-    protected _onceWithTimeout(event: string, hardTimeout: boolean, timeoutMs = 5000): Promise<any> {
-        return new Promise((resolve, reject) => {
-            const eventOff = this._safeEventListener(event, (arg: any) => {
-                timerOff();
-                if (isError(arg)) reject(arg);
-                else resolve(arg);
-            });
+    protected _onceWithTimeout(event: string, hardTimeout: boolean, timeoutMs = 30 * 60 * 1000) {
+        let arg: Error|any|null = null;
+        let timedout = false;
+        let finished = false;
 
-            const timerOff = this._safeTimeout(() => {
-                eventOff();
-                if (hardTimeout) reject(new Error(`Timeout waiting for ${event}`));
-                else resolve(null);
-            }, timeoutMs);
+        const eventOff = this._safeEventListener(event, (_arg: any) => {
+            timerOff();
+            finished = true;
+            arg = _arg;
         });
+
+        const timerOff = this._safeTimeout((didTimeout) => {
+            eventOff();
+            finished = true;
+            timedout = didTimeout;
+        }, timeoutMs);
+
+        return async (block = false) => {
+            if (block && !finished) {
+                await new Promise((resolve) => {
+                    const interval = setInterval(() => {
+                        if (finished) {
+                            clearInterval(interval);
+                            resolve();
+                        }
+                    }, 10);
+                });
+            }
+
+            timerOff();
+            eventOff();
+
+            if (timedout && hardTimeout) {
+                throw new Error(`Timeout waiting for ${event}`);
+            }
+
+            if (isError(arg)) {
+                throw arg;
+            }
+
+            return arg;
+        };
     }
 
     /**
      * Make sure the timeout gets called and cleaned up
      */
-    protected _safeTimeout(fn: (...args: any[]) => void, timeout: number) {
+    protected _safeTimeout(fn: (timedout: boolean) => void, timeout: number) {
         const done = once(fn);
-        const handler = (...args: any[]) => {
-            done(...args);
+        const handler = (timedout: boolean) => {
+            done(timedout);
             cleanup();
         };
 
         const timer = setTimeout(handler, timeout);
-        const cleanup = () => {
-            done(null);
+        const cleanup = once(() => {
+            done(false);
             clearTimeout(timer);
             this._cleanup = this._cleanup.filter((f) => {
                 return f === cleanup;
             });
-        };
+        });
 
         this._cleanup.push(cleanup);
         return cleanup;
@@ -77,13 +106,13 @@ export default class BaseClient {
         };
 
         this._events.once(event, handler);
-        const cleanup = () => {
+        const cleanup = once(() => {
             done(null);
             this._events.removeListener(event, handler);
             this._cleanup = this._cleanup.filter((f) => {
                 return f === cleanup;
             });
-        };
+        });
 
         this._cleanup.push(cleanup);
         return cleanup;
