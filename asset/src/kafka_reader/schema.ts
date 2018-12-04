@@ -1,7 +1,15 @@
-import { ConvictSchema } from '@terascope/job-components';
+import { ConvictSchema, JobConfig } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
 export default class Schema extends ConvictSchema<KafkaReaderConfig> {
+    validateJob(job: JobConfig) {
+        const secondOp = job.operations[1] && job.operations[1]._op;
+
+        if (secondOp === 'json_protocol') {
+            throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
+        }
+    }
+
     build() {
         return {
             topic: {
@@ -45,11 +53,6 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                     NOTE: This currently defaults to "false" due to the side effects of the behavior, at some point in the future it is expected this will default to "true".`,
                 default: false,
                 format: Boolean
-            },
-            watchdog_count: {
-                doc: 'Number of consecutive zero record slices allowed before the consumer will automatically re-initialize. This is to guard against bugs in librdkafka.',
-                default: -1,
-                format: Number
             },
             bad_record_action: {
                 doc: 'How to handle bad records, defaults to doing nothing',

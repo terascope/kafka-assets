@@ -9,23 +9,24 @@ import { KafkaSenderConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 import * as kafka from 'node-rdkafka';
 import { getValidDate } from '../_kafka_helpers';
+import { getCollectConfig } from './utils';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     producer: ProducerClient;
     private bufferSize: number;
+    private size: number;
+    private wait: number;
 
     constructor(context: WorkerContext, opConfig: KafkaSenderConfig, executionConfig: ExecutionConfig) {
         super(context, opConfig, executionConfig);
 
-        const logger = context.apis.foundation.makeLogger({
-            module: 'kafka-producer',
-            opName: opConfig._op,
-            jobName: executionConfig.name,
-            jobId: executionConfig.job_id,
-            exId: executionConfig.ex_id,
-        });
+        const logger = this.logger.child({ module: 'kafka-producer' });
 
-        this.bufferSize = opConfig.size * 5;
+        const { size, wait } = getCollectConfig(executionConfig.operations, opConfig);
+
+        this.bufferSize = size * 5;
+        this.size = size;
+        this.wait = wait;
 
         this.producer = new ProducerClient(this.createClient(), {
             logger,
@@ -91,8 +92,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             rdkafka_options: {
                 'compression.codec': this.opConfig.compression,
                 'queue.buffering.max.messages': this.bufferSize,
-                'queue.buffering.max.ms': this.opConfig.wait,
-                'batch.num.messages': this.opConfig.size,
+                'queue.buffering.max.ms': this.wait,
+                'batch.num.messages': this.size,
                 'topic.metadata.refresh.interval.ms': this.opConfig.metadata_refresh,
                 'log.connection.close': false
             },

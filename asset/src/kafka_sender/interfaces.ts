@@ -26,16 +26,13 @@ export interface KafkaSenderConfig extends OpConfig {
     */
     compression: 'none'|'gzip'|'snappy'|'lz4';
     /**
-     How long to wait for `size` messages to become available on the producer
-    */
-    wait: number;
-    /**
-     How many messages will be batched and sent to kafka together
-    */
-    size: number;
-    /**
      How often the producer will poll the broker for metadata information.
      Set to -1 to disable polling.
     */
     metadata_refresh: number;
+}
+
+export interface CollectConfig extends OpConfig {
+    wait: number;
+    size: number;
 }

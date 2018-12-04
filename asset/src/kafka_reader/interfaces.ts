@@ -46,12 +46,6 @@ export interface KafkaReaderConfig extends OpConfig {
     rollback_on_failure: boolean;
 
     /**
-     Number of consecutive zero record slices allowed before the consumer will automatically re-initialize.
-     This is to guard against bugs in librdkafka.
-    */
-    watchdog_count: number;
-
-    /**
      * How to handle bad records, defaults to doing nothing
     */
     bad_record_action: BadRecordAction;

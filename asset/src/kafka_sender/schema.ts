@@ -1,7 +1,23 @@
-import { ConvictSchema } from '@terascope/job-components';
+import path from 'path';
+import { ConvictSchema, JobConfig } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
+import { getCollectConfig } from './utils';
 
 export default class Schema extends ConvictSchema<KafkaSenderConfig> {
+    validateJob(job: JobConfig) {
+        const opName = path.basename(__dirname);
+
+        const kafkaSender = job.operations.find((op) => {
+            return op._op === opName;
+        });
+
+        if (kafkaSender == null) {
+            throw new Error('Kafka Sender does not exist in job');
+        }
+
+        getCollectConfig(job.operations, kafkaSender as KafkaSenderConfig);
+    }
+
     build() {
         return {
             topic: {
@@ -33,16 +49,6 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
                 doc: 'Type of compression to use',
                 default: 'gzip',
                 format: ['none', 'gzip', 'snappy', 'lz4']
-            },
-            wait: {
-                doc: 'How long to wait for `size` messages to become available on the producer.',
-                default: 20,
-                format: Number
-            },
-            size: {
-                doc: 'How many messages will be batched and sent to kafka together.',
-                default: 10000,
-                format: Number
             },
             metadata_refresh: {
                 doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',

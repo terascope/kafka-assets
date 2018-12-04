@@ -20,13 +20,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     constructor(context: WorkerContext, opConfig: KafkaReaderConfig, executionConfig: ExecutionConfig) {
         super(context, opConfig, executionConfig);
 
-        const logger = context.apis.foundation.makeLogger({
-            module: 'kafka-consumer',
-            opName: opConfig._op,
-            jobName: executionConfig.name,
-            jobId: executionConfig.job_id,
-            exId: executionConfig.ex_id,
-        });
+        const logger = this.logger.child({ module: 'kafka-consumer' });
 
         this.consumer = new ConsumerClient(this.createClient(), {
             logger,
