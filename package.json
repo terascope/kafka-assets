@@ -7,6 +7,7 @@
         "lint": "tslint --project tsconfig.json --format verbose",
         "lint:fix": "yarn lint --fix",
         "prepare": "yarn workspaces run build",
+        "postinstall": "yarn --cwd ./asset --prod install",
         "build": "tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
         "test": "jest",
