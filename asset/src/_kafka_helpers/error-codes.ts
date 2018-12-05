@@ -1,3 +1,4 @@
+// see https://github.com/Blizzard/node-rdkafka/blob/master/lib/error.js
 
 export const codeToMessage = {
     '-200': 'Begin internal error codes',
@@ -79,6 +80,16 @@ export const ERR_NOT_COORDINATOR_FOR_GROUP = 16;
 export const ERR__TIMED_OUT_QUEUE = -166;
 export const ERR__ASSIGN_PARTITIONS = -175;
 export const ERR__REVOKE_PARTITIONS = -174;
+export const ERR__PREV_IN_PROGRESS = -177;
+export const ERR__TRANSPORT = -195;
+export const ERR__MSG_TIMED_OUT = -192;
+export const ERR__PARTITION_EOF = -191;
+export const ERR__WAIT_CACHE = -164;
+export const ERR__TIMED_OUT = -185;
+export const ERR__QUEUE_FULL = -184;
+export const ERR_NO_ERROR = 0;
+export const ERR_REQUEST_TIMED_OUT = 7;
+export const ERR__RESOLVE = -193;
 
 export interface OkErrorSet {
     [prop: number]: boolean;
@@ -87,11 +98,17 @@ export interface OkErrorSet {
 export interface OkErrors {
     consume: OkErrorSet;
     commit: OkErrorSet;
+    produce: OkErrorSet;
+    retryable: OkErrorSet;
+    any: OkErrorSet;
 }
 
 export const okErrors: OkErrors = {
     consume: {},
     commit: {},
+    produce: {},
+    retryable: {},
+    any: {},
 };
 
 okErrors.consume[KAFKA_NO_OFFSET_STORED] = true;
@@ -103,3 +120,14 @@ okErrors.consume[ERR__TIMED_OUT_QUEUE] = true;
 // there may be no offsets stored which is not really
 // an error.
 okErrors.commit[KAFKA_NO_OFFSET_STORED] = true;
+
+okErrors.produce[ERR__MSG_TIMED_OUT] = true;
+
+okErrors.retryable[ERR__TIMED_OUT] = true;
+okErrors.retryable[ERR__TRANSPORT] = true;
+okErrors.retryable[ERR__WAIT_CACHE] = true;
+okErrors.retryable[ERR__QUEUE_FULL] = true;
+okErrors.retryable[ERR__RESOLVE] = true;
+
+okErrors.any[ERR__PARTITION_EOF] = true;
+okErrors.any[ERR_NO_ERROR] = true;

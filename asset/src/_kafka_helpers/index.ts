@@ -66,11 +66,8 @@ function isKafkaError(err: any): err is KafkaError {
     return err && err.code;
 }
 
-export function isOkayError(err: AnyKafkaError, action: keyof OkErrors): boolean {
+export function isOkayError(err: AnyKafkaError, action: keyof OkErrors = 'any'): boolean {
     if (err == null) return false;
-    if (isKafkaError(err)) {
-        return okErrors[action][err.code] != null;
-    }
-
-    return okErrors[action][err as number] != null;
+    const code = isKafkaError(err) ? err.code : err as number;
+    return okErrors[action][code] != null || okErrors.any[code] != null;
 }

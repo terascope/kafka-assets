@@ -314,7 +314,7 @@ export default class ConsumerClient extends BaseClient {
                     this._rebalancing = false;
                     this._events.emit('rebalance:end');
                 // this timeout should be configurable?
-                }, 100);
+                }, 1000);
             }
         });
 

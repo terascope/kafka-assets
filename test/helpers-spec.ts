@@ -1,5 +1,6 @@
 import 'jest-extended';
 import { wrapError, KafkaError, isOkayError } from '../asset/src/_kafka_helpers';
+import * as codes from '../asset/src/_kafka_helpers/error-codes';
 
 describe('wrapError helper', () => {
     describe('when given a Error', () => {
@@ -42,11 +43,15 @@ describe('wrapError helper', () => {
 });
 
 describe('isOkayError helper', () => {
+    const alwaysOk = Object.keys(codes.okErrors.any);
+    const alwaysBad = [123, -67, 2, -100];
+
     describe.each([
-        -168,
-        -180,
-        16,
-        -166
+        codes.KAFKA_NO_OFFSET_STORED,
+        codes.ERR__WAIT_COORD,
+        codes.ERR_NOT_COORDINATOR_FOR_GROUP,
+        codes.ERR__TIMED_OUT_QUEUE,
+        ...alwaysOk
     ])('when consuming and checking error code %s', (code) => {
         it('should return true', () => {
             const err = new Error('Uh oh') as KafkaError;
@@ -57,12 +62,7 @@ describe('isOkayError helper', () => {
         });
     });
 
-    describe.each([
-        123,
-        -67,
-        2,
-        -100
-    ])('when consuming and checking error code %s', (code) => {
+    describe.each(alwaysBad)('when consuming and checking error code %s', (code) => {
         it('should return false', () => {
             const err = new Error('Uh oh') as KafkaError;
             err.code = code;
@@ -79,7 +79,8 @@ describe('isOkayError helper', () => {
     });
 
     describe.each([
-        -168,
+        codes.KAFKA_NO_OFFSET_STORED,
+        ...alwaysOk
     ])('when committing and checking error code %s', (code) => {
         it('should return true', () => {
             const err = new Error('Uh oh') as KafkaError;
@@ -91,24 +92,15 @@ describe('isOkayError helper', () => {
     });
 
     describe.each([
-        123,
-        -67,
-        2,
-        -100
-    ])('when committing and checking error code %s', (code) => {
-        it('should return false', () => {
+        codes.ERR__MSG_TIMED_OUT,
+        ...alwaysOk
+    ])('when producing and checking error code %s', (code) => {
+        it('should return true', () => {
             const err = new Error('Uh oh') as KafkaError;
             err.code = code;
 
-            expect(isOkayError(err, 'commit')).toBeFalse();
-            expect(isOkayError(code, 'commit')).toBeFalse();
+            expect(isOkayError(err, 'produce')).toBeTrue();
+            expect(isOkayError(code, 'produce')).toBeTrue();
         });
     });
-
-    describe('when comitting and given null', () => {
-        it('should return false', () => {
-            expect(isOkayError(null, 'commit')).toBeFalse();
-        });
-    });
-
 });
