@@ -9,28 +9,31 @@ branches:
   only:
   - master
   - /^v\d+\.\d+\.\d+/
-env:
-  - KAFKA_HOME=$HOME/.kafka
 before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
   # Install Kafka
-  - mkdir -p $KAFKA_HOME
+  - export KAFKA_HOME="$HOME/.kafka"
+  - mkdir -p "$KAFKA_HOME"
   - wget https://www.apache.org/dist/kafka/1.1.1/kafka_2.11-1.1.1.tgz -O /tmp/kafka.tgz
   - tar xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1
-  # enable auto creating topics
-  - echo '' >> "$KAFKA_HOME/config/server.properties"
-  - echo "auto.create.topics.enable=true" >> "$KAFKA_HOME/config/server.properties"
-  # Run Zookeeper/Kafka on localhost (default ports for ZK, Kafka: 2181, 9092)
-  - $KAFKA_HOME/bin/zookeeper-server-start.sh "$KAFKA_HOME/config/zookeeper.properties" &
+  # add bin to path for ease of use
+  - export PATH="$KAFKA_HOME/bin:$PATH"
+  # Run Zookeeper on localhost:2181
+  - zookeeper-server-start.sh "$KAFKA_HOME/config/zookeeper.properties" > "$KAFKA_HOME/zookeeper.log" &
   - sleep 5
-  - $KAFKA_HOME/bin/kafka-server-start.sh "$KAFKA_HOME/config/server.properties" &
-  - sleep 3
+  # Run Kafka on localhost:9092
+  - kafka-server-start.sh "$KAFKA_HOME/config/server.properties" > "$KAFKA_HOME/kafka.log" &
+  - sleep 5
+  - kafka-topics.sh --zookeeper localhost:42181 --create --topic "kafka-test-fetcher" --partitions 1 --replication-factor 1
+  - kafka-topics.sh --zookeeper localhost:42181 --create --topic "kafka-test-sender" --partitions 1 --replication-factor 1
 install:
   - yarn install
 script:
-  - yarn test:all
+  - yarn test:ci
+after_failure:
+  - tail -n 1000 $KAFKA_HOME/*.log
 before_deploy:
   - yarn build
 deploy:

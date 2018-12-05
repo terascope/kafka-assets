@@ -1,10 +1,9 @@
 import 'jest-extended';
-import uuidv4 from 'uuid/v4';
 import { TestClientConfig, Logger, DataEntity, NoopProcessor } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaFetcher from '../asset/src/kafka_reader/fetcher';
 import { loadData } from './helpers/kafka-data';
-import { kafkaBrokers } from './helpers/config';
+import { kafkaBrokers, fetcherTopic, fetcherGroup } from './helpers/config';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 
 describe('Kafka Fetcher', () => {
@@ -20,8 +19,8 @@ describe('Kafka Fetcher', () => {
         }
     };
 
-    const topic = `kafka-test-fetch-${uuidv4()}`;
-    const group = uuidv4();
+    const topic = fetcherTopic;
+    const group = fetcherGroup;
 
     const clients = [clientConfig];
 

@@ -1,11 +1,10 @@
 import 'jest-extended';
-import uuidv4 from 'uuid/v4';
 import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaSender from '../asset/src/kafka_sender/processor';
 import { readData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
-import { kafkaBrokers } from './helpers/config';
+import { kafkaBrokers, senderTopic } from './helpers/config';
 
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
@@ -20,7 +19,7 @@ describe('Kafka Sender', () => {
         }
     };
 
-    const topic = `kafka-test-send-${uuidv4()}`;
+    const topic = senderTopic;
 
     const clients = [clientConfig];
     const batchSize = 200;
