@@ -12,6 +12,9 @@ branches:
 env:
   - KAFKA_HOME=$HOME/.kafka
 before_install:
+  # Install latest yarn
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
   # Install Kafka
   - mkdir -p $KAFKA_HOME
   - wget https://www.apache.org/dist/kafka/1.1.1/kafka_2.11-1.1.1.tgz -O /tmp/kafka.tgz
