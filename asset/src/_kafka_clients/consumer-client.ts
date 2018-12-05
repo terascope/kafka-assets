@@ -111,9 +111,8 @@ export default class ConsumerClient extends BaseClient {
             return;
         }
 
-        const connectError = this._onceWithTimeout('connect:error', false);
+        this._clientEvents();
         await this._connect();
-        await connectError();
     }
 
     async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
@@ -129,10 +128,7 @@ export default class ConsumerClient extends BaseClient {
 
             this._client.setDefaultConsumeTimeout(timeout);
 
-            const [consumed] = await Promise.all([
-                this._consume(remaining, map),
-                this._onceWithTimeout('client:error', false, remainingMs),
-            ]);
+            const consumed = await this._consume(remaining, map);
 
             results = results.concat(consumed);
         }
@@ -142,16 +138,19 @@ export default class ConsumerClient extends BaseClient {
 
     async disconnect(): Promise<void> {
         if (this._client.isConnected()) {
-            const onDisconnect = this._onceWithTimeout('client:disconnect', false);
-
             await new Promise((resolve, reject) => {
+                const off = this._once('client:disconnect', (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                });
+
                 this._client.disconnect((err: AnyKafkaError) => {
+                    off();
                     if (err) reject(wrapError('Failed to disconnect', err));
                     else resolve();
                 });
             });
-
-            await onDisconnect();
         }
 
         this._client.removeAllListeners();
@@ -162,15 +161,28 @@ export default class ConsumerClient extends BaseClient {
         return new Promise((resolve, reject) => {
             const results: T[] = [];
 
-            this._client.consume(count, (_err: AnyKafkaError, messages: KafkaMessage[]) => {
-                if (_err) {
-                    const err = wrapError(`Failure to consume ${count} messages`, _err);
-                    if (!isOkayError(_err, 'consume')) {
-                        reject(err);
-                    } else {
-                        this._logger.warn('got recoverable error when consuming', err);
-                        resolve([]);
-                    }
+            const handleError = (_err: AnyKafkaError) => {
+                const err = wrapError(`Failure to consume ${count} messages`, _err);
+                if (!isOkayError(_err, 'consume')) {
+                    reject(err);
+                } else {
+                    this._logger.warn('got recoverable error when consuming', err);
+                    resolve([]);
+                }
+                return;
+            };
+
+            const off = this._once('client:error', (err) => {
+                if (err) {
+                    handleError(err);
+                }
+            });
+
+            this._client.consume(count, (err: AnyKafkaError, messages: KafkaMessage[]) => {
+                off();
+
+                if (err) {
+                    handleError(err);
                     return;
                 }
 
@@ -235,10 +247,15 @@ export default class ConsumerClient extends BaseClient {
     }
 
     private _connect(): Promise<void> {
-        this._clientEvents();
-
         return new Promise((resolve, reject) => {
+            const off = this._once('connect:error', (err) => {
+                if (err) {
+                    reject(wrapError('Connect error', err));
+                }
+            });
+
             this._client.connect({}, (err: AnyKafkaError) => {
+                off();
                 if (err) {
                     reject(wrapError('Failed to connect', err));
                 } else {
@@ -306,7 +323,7 @@ export default class ConsumerClient extends BaseClient {
         });
 
         this._client.on('connection.failure', (...args: any[]) => {
-            this._logOrEmit('connection:failure', ...args);
+            this._logOrEmit('connect:error', ...args);
         });
     }
 
@@ -322,8 +339,18 @@ export default class ConsumerClient extends BaseClient {
 
         if (this._rebalancing) {
             this._logger.debug('waiting for rebalance');
-            const rebalance = this._onceWithTimeout('rebalance:end', true);
-            await rebalance(true);
+            await new Promise((resolve, reject) => {
+                const eventOff = this._once('rebalance:end', (err) => {
+                    timeoutOff();
+                    if (err) reject(err);
+                    else resolve();
+                });
+                const timeoutOff = this._timeout((err) => {
+                    eventOff();
+                    if (err) reject(err);
+                    else resolve();
+                }, 30 * 60 * 1000);
+            });
         }
     }
 }

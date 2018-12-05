@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import once from 'lodash.once';
 import { Logger, isError } from '@terascope/job-components';
-import { setInterval } from 'timers';
 
 export default class BaseClient {
     protected _closed: boolean = false;
@@ -25,97 +24,60 @@ export default class BaseClient {
         this._closed = true;
     }
 
-     /**
-     * A safe way to wait for an event will doing something else
-     */
-    protected _onceWithTimeout(event: string, hardTimeout: boolean, timeoutMs = 30 * 60 * 1000) {
-        let arg: Error|any|null = null;
-        let timedout = false;
-        let finished = false;
-
-        const eventOff = this._safeEventListener(event, (_arg: any) => {
-            timerOff();
-            finished = true;
-            arg = _arg;
-        });
-
-        const timerOff = this._safeTimeout((didTimeout) => {
-            eventOff();
-            finished = true;
-            timedout = didTimeout;
-        }, timeoutMs);
-
-        return async (block = false) => {
-            if (block && !finished) {
-                await new Promise((resolve) => {
-                    const interval = setInterval(() => {
-                        if (finished) {
-                            clearInterval(interval);
-                            resolve();
-                        }
-                    }, 10);
-                });
-            }
-
-            timerOff();
-            eventOff();
-
-            if (timedout && hardTimeout) {
-                throw new Error(`Timeout waiting for ${event}`);
-            }
-
-            if (isError(arg)) {
-                throw arg;
-            }
-
-            return arg;
-        };
-    }
-
     /**
-     * Make sure the timeout gets called and cleaned up
-     */
-    protected _safeTimeout(fn: (timedout: boolean) => void, timeout: number) {
-        const done = once(fn);
-        const handler = (timedout: boolean) => {
-            done(timedout);
-            cleanup();
-        };
-
-        const timer = setTimeout(handler, timeout);
-        const cleanup = once(() => {
-            done(false);
-            clearTimeout(timer);
-            this._cleanup = this._cleanup.filter((f) => {
-                return f === cleanup;
-            });
-        });
-
-        this._cleanup.push(cleanup);
-        return cleanup;
-    }
-
-    /**
-     * Make sure the event gets called and cleaned up
-     */
-    protected _safeEventListener(event: string, fn: (...args: any[]) => void) {
-        const done = once(fn);
-        const handler = (...args: any[]) => {
-            done(...args);
-            cleanup();
+     * A safe once event listener that will return an error first
+     * Guaranteed to call the callback at least once
+     * @returns an off function to the event listener
+    */
+    protected _once(event: string, fn: (err: Error|null, ...args: any[]) => void) {
+        const cb = once(fn);
+        const handler = (...args: any) => {
+            if (args[0] && isError(args[0])) {
+                cb(args[0]);
+                return;
+            }
+            cb(null, ...args);
         };
 
         this._events.once(event, handler);
-        const cleanup = once(() => {
-            done(null);
-            this._events.removeListener(event, handler);
-            this._cleanup = this._cleanup.filter((f) => {
-                return f === cleanup;
-            });
-        });
 
-        this._cleanup.push(cleanup);
-        return cleanup;
+        const off = () => {
+            this._events.removeListener(event, handler);
+            cb(null);
+            this._cleanup = this._cleanup.filter((f) => {
+                return f === off;
+            });
+        };
+
+        this._cleanup = [...this._cleanup, off];
+
+        return off;
+    }
+
+    /**
+     * A safe timeout, if the timeout fires the first arg will be an error
+     * Guaranteed to call the callback at least once
+     * @returns an off function to cleanup the timer
+    */
+    protected _timeout(fn: (err: Error|null) => void, timeoutMs: number) {
+        const cb = once(fn);
+        const timeout = setTimeout(() => {
+            const error = new Error(`Timeout of ${timeoutMs}ms`);
+            Error.captureStackTrace(error, this._timeout);
+            cb(error);
+        }, timeoutMs);
+
+        const off = () => {
+            clearTimeout(timeout);
+            cb(null);
+            this._cleanup = this._cleanup.filter((f) => {
+                return f === off;
+            });
+        };
+
+        this._cleanup = [...this._cleanup, off];
+
+        return off;
     }
 
     /**
