@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import uuidv4 from 'uuid/v4';
+import { kafkaBrokers } from './config';
 import { debugLogger } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients';
 
 const logger = debugLogger('kafka-data');
-const brokers = ['localhost:9092'];
 
 export async function loadData(topic: string, fileName: string): Promise<object[]> {
     const filePath = path.join(__dirname, '..', 'fixtures', fileName);
@@ -30,7 +30,7 @@ export async function loadData(topic: string, fileName: string): Promise<object[
         'batch.num.messages': messages.length,
         'topic.metadata.refresh.interval.ms': -1,
         'log.connection.close': false,
-        'metadata.broker.list': brokers,
+        'metadata.broker.list': kafkaBrokers,
     }, {});
 
     const client = new ProducerClient(producer, {
@@ -68,7 +68,7 @@ export async function readData(topic: string, size: number): Promise<object[]> {
         // them better
         rebalance_cb: true,
         'group.id': uuidv4(),
-        'metadata.broker.list': brokers,
+        'metadata.broker.list': kafkaBrokers,
     }, {
         'auto.offset.reset': 'smallest'
     });

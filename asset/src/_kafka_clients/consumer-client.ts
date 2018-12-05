@@ -23,6 +23,7 @@ export default class ConsumerClient extends BaseClient {
     private _topic: string;
     private _badRecordAction: BadRecordAction;
     private _rebalancing = true;
+    private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
         started: {},
         ended: {}
@@ -206,7 +207,8 @@ export default class ConsumerClient extends BaseClient {
             return map(message);
         } catch (err) {
             if (this._badRecordAction === 'log') {
-                this._logger.error('Bad record', message.value.toString('utf8'), err);
+                this._logger.error('Bad record', message.value.toString('utf8'));
+                this._logger.error(err);
             } else if (this._badRecordAction === 'throw') {
                 throw err;
             }
@@ -267,6 +269,9 @@ export default class ConsumerClient extends BaseClient {
     }
 
     private _clientEvents() {
+        if (this._hasClientEvents) return;
+        this._hasClientEvents = true;
+
         this._client.on('error', (err) => {
             this._logOrEmit('client:error', err);
         });
@@ -315,6 +320,8 @@ export default class ConsumerClient extends BaseClient {
 
         // @ts-ignore because the event doesn't exist in the typedefinitions
         this._client.on('rebalance.error', (err) => {
+            clearTimeout(rebalanceTimeout);
+            this._rebalancing = false;
             this._logOrEmit('rebalance:end', err);
         });
 
@@ -333,18 +340,20 @@ export default class ConsumerClient extends BaseClient {
         }
 
         if (!this._client.isConnected()) {
-            this._logger.debug('waiting for client to connect');
+            this._logger.debug('waiting for client to connect...');
             await this.connect();
         }
 
         if (this._rebalancing) {
-            this._logger.debug('waiting for rebalance');
+            this._logger.debug('waiting for rebalance...');
+
             await new Promise((resolve, reject) => {
                 const eventOff = this._once('rebalance:end', (err) => {
                     timeoutOff();
                     if (err) reject(err);
                     else resolve();
                 });
+
                 const timeoutOff = this._timeout((err) => {
                     eventOff();
                     if (err) reject(err);

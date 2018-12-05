@@ -3,8 +3,8 @@ import uuidv4 from 'uuid/v4';
 import { TestClientConfig, Logger, DataEntity, NoopProcessor } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaFetcher from '../asset/src/kafka_reader/fetcher';
-import KafkaAdmin from './helpers/kafka-admin';
 import { loadData } from './helpers/kafka-data';
+import { kafkaBrokers } from './helpers/config';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 
 describe('Kafka Fetcher', () => {
@@ -13,14 +13,14 @@ describe('Kafka Fetcher', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: ['localhost:9092'],
+            brokers: kafkaBrokers,
         },
         create(config: any, logger: Logger, settings: any) {
             return Connector.create(config, logger, settings);
         }
     };
 
-    const topic = 'example-fetcher-data-set';
+    const topic = `kafka-test-fetch-${uuidv4()}`;
     const group = uuidv4();
 
     const clients = [clientConfig];
@@ -57,30 +57,18 @@ describe('Kafka Fetcher', () => {
     let exampleData: object[];
     let results: DataEntity[] = [];
 
-    const kafkaAdmin = new KafkaAdmin();
-
-    async function runTest() {
-        await harness.initialize();
-
-        results = results.concat(await harness.runSlice({}));
-        results = results.concat(await harness.runSlice({}));
-    }
-
     beforeAll(async () => {
         jest.restoreAllMocks();
 
-        await kafkaAdmin.ensureTopic(topic);
+        await harness.initialize();
 
         // it should be able to call connect
         await fetcher.consumer.connect();
 
-        const [data] = await Promise.all([
-            loadData(topic, 'example-data.txt'),
-            runTest(),
-        ]);
+        exampleData = await loadData(topic, 'example-data.txt');
 
-        exampleData = data;
-
+        results = results.concat(await harness.runSlice({}));
+        results = results.concat(await harness.runSlice({}));
     });
 
     afterAll(async () => {
@@ -88,11 +76,7 @@ describe('Kafka Fetcher', () => {
 
         // it should be able to disconnect twice
         await fetcher.consumer.disconnect();
-
-        await Promise.all([
-            harness.shutdown(),
-            kafkaAdmin.close(),
-        ]);
+        await harness.shutdown();
     });
 
     it('should return a list of records', () => {
@@ -131,13 +115,14 @@ describe('Kafka Fetcher', () => {
         });
 
         describe('when a processor fails once', () => {
-            const err = new Error('Failure is part of life');
             const onSliceRetry = jest.fn();
-            harness.events.on('slice:retry', onSliceRetry);
 
             let retryResults: DataEntity[] = [];
 
             beforeAll(async () => {
+                const err = new Error('Failure is part of life');
+                harness.events.on('slice:retry', onSliceRetry);
+
                 // @ts-ignore
                 noop.onBatch.mockRejectedValueOnce(err);
 

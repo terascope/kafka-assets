@@ -7,7 +7,7 @@ import { KafkaConsumerSettings } from '../src/interfaces';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
-jest.setTimeout(3000);
+jest.setTimeout(5000);
 
 describe('Kafka Connector', () => {
     const config = { brokers: ['localhost:9092'] };

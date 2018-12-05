@@ -6,6 +6,7 @@ import BaseClient from './base-client';
 export default class ProducerClient extends BaseClient {
     private _client: kafka.Producer;
     private _topic: string;
+    private _hasClientEvents = false;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
         super(config.logger);
@@ -92,6 +93,9 @@ export default class ProducerClient extends BaseClient {
     }
 
     private _clientEvents() {
+        if (this._hasClientEvents) return;
+        this._hasClientEvents = true;
+
         // for client event error logs.
         this._client.on('error', (err) => {
             this._logOrEmit('client:error', err);

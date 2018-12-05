@@ -1,10 +1,11 @@
 import 'jest-extended';
+import uuidv4 from 'uuid/v4';
 import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaSender from '../asset/src/kafka_sender/processor';
-import KafkaAdmin from './helpers/kafka-admin';
 import { readData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
+import { kafkaBrokers } from './helpers/config';
 
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
@@ -12,14 +13,14 @@ describe('Kafka Sender', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: ['localhost:9092'],
+            brokers: kafkaBrokers,
         },
         create(config: any, logger: Logger, settings: any) {
             return Connector.create(config, logger, settings);
         }
     };
 
-    const topic = 'example-sender-data-set';
+    const topic = `kafka-test-send-${uuidv4()}`;
 
     const clients = [clientConfig];
     const batchSize = 200;
@@ -49,12 +50,9 @@ describe('Kafka Sender', () => {
     let consumed: object[] = [];
     let runs = 0;
 
-    const kafkaAdmin = new KafkaAdmin();
-
     beforeAll(async () => {
         jest.restoreAllMocks();
 
-        await kafkaAdmin.ensureTopic(topic);
         await harness.initialize();
 
         // it should be able to call connect
@@ -76,11 +74,7 @@ describe('Kafka Sender', () => {
 
         // it should be able to disconnect twice
         await sender.producer.disconnect();
-
-        await Promise.all([
-            harness.shutdown(),
-            kafkaAdmin.close(),
-        ]);
+        await harness.shutdown();
     });
 
     it('should have produced the correct records', () => {
