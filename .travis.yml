@@ -17,11 +17,13 @@ before_install:
   - wget https://www.apache.org/dist/kafka/1.1.1/kafka_2.11-1.1.1.tgz -O /tmp/kafka.tgz
   - tar xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1
   # enable auto creating topics
-  - echo "auto.create.topics.enable=true" >> $KAFKA_HOME/config/server.properties
+  - echo '' >> "$KAFKA_HOME/config/server.properties"
+  - echo "auto.create.topics.enable=true" >> "$KAFKA_HOME/config/server.properties"
   # Run Zookeeper/Kafka on localhost (default ports for ZK, Kafka: 2181, 9092)
-  - $KAFKA_HOME/bin/zookeeper-server-start.sh $KAFKA_HOME/config/zookeeper.properties &
+  - $KAFKA_HOME/bin/zookeeper-server-start.sh "$KAFKA_HOME/config/zookeeper.properties" &
+  - sleep 5
+  - $KAFKA_HOME/bin/kafka-server-start.sh "$KAFKA_HOME/config/server.properties" &
   - sleep 3
-  - $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
 install:
   - yarn install
 script:
