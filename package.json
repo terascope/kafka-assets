@@ -9,7 +9,8 @@
         "prepare": "yarn workspaces run build",
         "build": "tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
-        "test": "jest --forceExit=true --runInBand",
+        "test": "jest",
+        "test:all": "yarn workspaces run test",
         "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
         "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand"
     },
@@ -25,7 +26,7 @@
         "@types/uuid": "^3.4.4",
         "jest": "^23.6.0",
         "jest-extended": "^0.11.0",
-        "teraslice-test-harness": "^0.3.0",
+        "teraslice-test-harness": "^0.4.0",
         "ts-jest": "^23.10.4",
         "tslint": "^5.11.0",
         "tslint-config-airbnb": "^5.11.1",

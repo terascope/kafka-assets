@@ -10,7 +10,7 @@ module.exports = {
     collectCoverageFrom: [
         '<rootDir>/asset/**/*.ts',
         '!<rootDir>/asset/src/kafka_*/index.ts',
-        '<rootDir>/packages/*/**/*.ts',
+        '!<rootDir>/packages/*/**/*.ts',
         '!<rootDir>/packages/*/test/**',
         '!<rootDir>/**/coverage/**',
         '!<rootDir>/**/*.d.ts',
@@ -20,10 +20,6 @@ module.exports = {
     testMatch: [
         '<rootDir>/test/**/*-spec.{ts,js}',
         '<rootDir>/test/*-spec.{ts,js}',
-    ],
-    projects: [
-        'packages/*',
-        '.'
     ],
     preset: 'ts-jest',
     globals: {
