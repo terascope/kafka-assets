@@ -1,10 +1,10 @@
 language: node_js
 node_js:
   - "8"
-#   - "10"
+  - "10"
 os:
   - linux
-#   - osx
+  - osx
 branches:
   only:
   - master
@@ -36,6 +36,8 @@ script:
   - yarn test:ci
 after_failure:
   - tail -n 100 $KAFKA_HOME/*.log
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 before_deploy:
   - yarn build
 deploy:
