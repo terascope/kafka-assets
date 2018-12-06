@@ -69,5 +69,8 @@ function isKafkaError(err: any): err is KafkaError {
 export function isOkayError(err: AnyKafkaError, action: keyof OkErrors = 'any'): boolean {
     if (err == null) return false;
     const code = isKafkaError(err) ? err.code : err as number;
+    if (action === 'retryable') {
+        return okErrors[action][code] != null;
+    }
     return okErrors[action][code] != null || okErrors.any[code] != null;
 }

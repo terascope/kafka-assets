@@ -2,6 +2,8 @@ import 'jest-extended';
 import { EventEmitter } from 'events';
 import { debugLogger } from '@terascope/job-components';
 import BaseClient from '../asset/src/_kafka_clients/base-client';
+import { KafkaError } from '../asset/src/_kafka_helpers';
+import * as codes from '../asset/src/_kafka_helpers/error-codes';
 
 describe('Base Client (internal)', () => {
     const logger = debugLogger('base-client');
@@ -173,9 +175,17 @@ describe('Base Client (internal)', () => {
     });
 
     describe('_logOrEmit', () => {
+        const ogWarn = logger.warn;
+        const ogDebug = logger.debug;
+
         beforeEach(() => {
             logger.warn = jest.fn();
             logger.debug = jest.fn();
+        });
+
+        afterEach(() => {
+            logger.warn = ogWarn;
+            logger.debug = ogDebug;
         });
 
         it('should emit if there is a listener', () => {
@@ -204,6 +214,132 @@ describe('Base Client (internal)', () => {
 
             expect(logger.warn).toHaveBeenCalledTimes(1);
             expect(logger.warn).toHaveBeenCalledWith('kafka client error for event "test:log:error"', error);
+        });
+    });
+
+    describe('_try', () => {
+        describe('when it succeeds on the first attempt', () => {
+            it('should only call the fn once', async () => {
+                const fn = jest.fn(() => 'foo');
+
+                // @ts-ignore because it is private
+                const result = await client._try(async () => {
+                    return fn();
+                }, 'consume');
+
+                expect(result).toEqual('foo');
+
+                expect(fn).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        describe('when it succeeds on the second attempt', () => {
+            it('should call the fn twice', async () => {
+                const error = new Error('ERR__TIMED_OUT') as KafkaError;
+                error.code = codes.ERR__TIMED_OUT;
+
+                const fn = jest.fn(() => 'howdy').mockRejectedValueOnce(error);
+
+                // @ts-ignore because it is private
+                const result = await client._try(async () => {
+                    return fn();
+                }, 'commit');
+
+                expect(result).toEqual('howdy');
+
+                expect(fn).toHaveBeenCalledTimes(2);
+            });
+        });
+
+        describe('when it throws an okay error on the second attempt', () => {
+            it('should call the fn twice', async () => {
+                const error = new Error('ERR__TIMED_OUT') as KafkaError;
+                error.code = codes.ERR__TIMED_OUT;
+
+                const okError = new Error('KAFKA_NO_OFFSET_STORED') as KafkaError;
+                okError.code = codes.KAFKA_NO_OFFSET_STORED;
+
+                const fn = jest.fn(() => 'howdy')
+                    .mockRejectedValueOnce(error)
+                    .mockRejectedValueOnce(okError);
+
+                // @ts-ignore because it is private
+                const result = await client._try(async () => {
+                    return fn();
+                }, 'commit');
+
+                expect(result).toEqual(null);
+
+                expect(fn).toHaveBeenCalledTimes(2);
+            });
+        });
+
+        describe('when it succeeds on the third attempt', () => {
+            it('should call the fn thrice', async () => {
+                const error = new Error('ERR__RESOLVE') as KafkaError;
+                error.code = codes.ERR__RESOLVE;
+
+                const fn = jest.fn(() => 'hello')
+                    .mockRejectedValueOnce(error)
+                    .mockRejectedValueOnce(error);
+
+                // @ts-ignore because it is private
+                const result = await client._try(async () => {
+                    return fn();
+                }, 'produce');
+
+                expect(result).toEqual('hello');
+
+                expect(fn).toHaveBeenCalledTimes(3);
+            });
+        });
+
+        describe('when it fails on the third attempt when a fatal error', () => {
+            it('should call the fn thrice and throw', async () => {
+                const retryable = new Error('Uh oh') as KafkaError;
+                retryable.code = codes.ERR__WAIT_CACHE;
+
+                const error = new Error('Fatal Error');
+
+                const fn = jest.fn(() => 'hi')
+                    .mockRejectedValueOnce(retryable)
+                    .mockRejectedValueOnce(retryable)
+                    .mockRejectedValueOnce(error);
+
+                try {
+                    // @ts-ignore because it is private
+                    await client._try(async () => {
+                        return fn();
+                    }, 'any');
+                } catch (err) {
+                    expect(err.message).toStartWith('Failure, caused by error: Fatal Error');
+                }
+
+                expect(fn).toHaveBeenCalledTimes(3);
+            });
+        });
+
+        describe('when it fails on the third attempt when a retryable error', () => {
+            it('should call the fn thrice and throw', async () => {
+                const error = new Error('ERR__WAIT_CACHE') as KafkaError;
+                error.code = codes.ERR__WAIT_CACHE;
+
+                const fn = jest.fn(() => 'hi')
+                    .mockRejectedValueOnce(error)
+                    .mockRejectedValueOnce(error)
+                    .mockRejectedValueOnce(error);
+
+                try {
+                    // @ts-ignore because it is private
+                    await client._try(async () => {
+                        return fn();
+                    }, 'any');
+                } catch (err) {
+                    expect(err.message).toStartWith('Failure after retries, caused by error: ERR__WAIT_CACHE');
+                }
+
+                expect(fn).toHaveBeenCalledTimes(3);
+            });
         });
     });
 });
