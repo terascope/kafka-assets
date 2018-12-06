@@ -42,10 +42,16 @@ after_success:
 before_deploy:
   - yarn build
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file: builds/*.zip
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: script
+    before_deploy: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    skip_cleanup: true
+    script: yarn publish:changed
+    on:
+      tags: true
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file_glob: true
+    file: builds/*.zip
+    skip_cleanup: true
+    on:
+      tags: true
