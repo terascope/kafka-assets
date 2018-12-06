@@ -5,3 +5,4 @@ teraslice asset for kafka operations
 
 - [ ] Docs
 - [ ] Retryable errors
+- [ ] Produce errors

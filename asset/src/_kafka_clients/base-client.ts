@@ -18,8 +18,7 @@ export default class BaseClient {
             fn();
         }
 
-        // empty array
-        this._cleanup.length = 0;
+        this._cleanup = [];
         this._events.removeAllListeners();
         this._closed = true;
     }
@@ -34,20 +33,22 @@ export default class BaseClient {
         const handler = (...args: any) => {
             if (args[0] && isError(args[0])) {
                 cb(args[0]);
+                off();
                 return;
             }
             cb(null, ...args);
+            off();
         };
 
         this._events.once(event, handler);
 
-        const off = () => {
+        const off = once(() => {
             this._events.removeListener(event, handler);
             cb(null);
             this._cleanup = this._cleanup.filter((f) => {
-                return f === off;
+                return f !== off;
             });
-        };
+        });
 
         this._cleanup = [...this._cleanup, off];
 
@@ -65,15 +66,16 @@ export default class BaseClient {
             const error = new Error(`Timeout of ${timeoutMs}ms`);
             Error.captureStackTrace(error, this._timeout);
             cb(error);
+            off();
         }, timeoutMs);
 
-        const off = () => {
+        const off = once(() => {
             clearTimeout(timeout);
             cb(null);
             this._cleanup = this._cleanup.filter((f) => {
-                return f === off;
+                return f !== off;
             });
-        };
+        });
 
         this._cleanup = [...this._cleanup, off];
 
@@ -86,15 +88,15 @@ export default class BaseClient {
     protected _logOrEmit(event: string, ...args: any[]) {
         const hasListener = this._events.listenerCount(event) > 0;
         if (hasListener) {
-            this._logger.emit(event, ...args);
+            this._events.emit(event, ...args);
             return;
         }
 
         const [arg0] = args;
         if (arg0 && isError(arg0)) {
-            this._logger.warn('kafka client emitted an error', arg0);
+            this._logger.warn(`kafka client error for event "${event}"`, arg0);
         } else {
-            this._logger.debug(`kafka client ${event}`, ...args);
+            this._logger.debug(`kafka client debug for event "${event}"`, ...args);
         }
     }
 }
