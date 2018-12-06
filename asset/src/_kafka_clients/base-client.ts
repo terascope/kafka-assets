@@ -1,16 +1,15 @@
 import { EventEmitter } from 'events';
 import once from 'lodash.once';
 import { Logger, isError, pDelay } from '@terascope/job-components';
-import { isOkayError, wrapError } from '../_kafka_helpers';
-import { OkErrors } from '../_kafka_helpers/error-codes';
+import { isOkayError, wrapError, isKafkaError } from '../_kafka_helpers';
 
 export default class BaseClient {
     protected _closed: boolean = false;
     protected _events = new EventEmitter();
     protected _logger: Logger;
+    protected _backoff: number = defaultBackOff;
 
     private _cleanup: cleanupFn[] = [];
-    private _backoff: number = defaultBackOff;
 
     constructor(logger: Logger) {
         this._logger = logger;
@@ -29,19 +28,31 @@ export default class BaseClient {
     /**
      * Make sure the event has a handler or is logged
     */
-    protected _logOrEmit(event: string, ...args: any[]) {
-        const hasListener = this._events.listenerCount(event) > 0;
-        if (hasListener) {
-            this._events.emit(event, ...args);
-            return;
-        }
+    protected _logOrEmit(event: string, fn = () => {}) {
+        return (...args: any[]) => {
+            fn();
+            const hasListener = this._events.listenerCount(event) > 0;
+            if (hasListener) {
+                this._events.emit(event, ...args);
+                return;
+            }
 
-        const [arg0] = args;
-        if (arg0 && isError(arg0)) {
-            this._logger.warn(`kafka client error for event "${event}"`, arg0);
-        } else {
+            const [err] = args;
+
+            if (err && isError(err)) {
+                if (isOkayError(err, 'retryable')) {
+                    this._logger.warn(`kafka client warning for event "${event}"`, err);
+                    return;
+                }
+
+                if (!isKafkaError(err) || !isOkayError(err, 'any')) {
+                    this._logger.error(`kafka client error for event "${event}"`, err);
+                    return;
+                }
+            }
+
             this._logger.debug(`kafka client debug for event "${event}"`, ...args);
-        }
+        };
     }
 
     /**
@@ -103,17 +114,42 @@ export default class BaseClient {
         return off;
     }
 
+    protected async _tryWithEvent<T extends tryFn>(event: string, fn: T, action: string = 'any', retries = 2): RetryResult<T> {
+        let eventError: Error|null = null;
+
+        const off = this._once(event, (err) => {
+            eventError = err;
+        });
+
+        try {
+            return this._try(() => {
+                if (eventError) {
+                    throw eventError;
+                }
+
+                return fn();
+            }, action, retries);
+        } finally {
+            off();
+        }
+    }
+
     /**
      * Try a async fn n times and back off after each attempt
      * NOTE: It will only retry if it is a retryable kafka error
     */
-    protected async _try<T>(fn: tryFn<T>, action: keyof OkErrors = 'any', retries = 2): Promise<T|null> {
+    protected async _try<T extends tryFn>(fn: T, action: string = 'any', retries = 2): RetryResult<T>  {
+        const actionStr = action === 'any' ? '' : ` when performing ${action}`;
+        if (this._closed) {
+            this._logger.error(`Kafka client closed${actionStr}`);
+            return null;
+        }
+
         try {
             const result = await fn();
+            this._resetBackOff();
             return result;
         } catch (err) {
-            const actionStr = action === 'any' ? '' : ` when performing ${action}`;
-
             if (isOkayError(err, action)) {
                 return null;
             }
@@ -121,15 +157,14 @@ export default class BaseClient {
             const isRetryableError = isOkayError(err, 'retryable');
 
             if (retries > 0 && isRetryableError) {
-                this._backoff += getBackOff();
+                this._incBackOff();
                 await pDelay(this._backoff);
 
                 this._logger.warn(`got retryable kafka${actionStr}, will retry in ${this._backoff}ms`, err);
                 return this._try(fn, action, retries - 1);
             }
 
-            // reset the backoff interval
-            this._backoff = defaultBackOff;
+            this._resetBackOff();
 
             if (isRetryableError) {
                 throw wrapError(`Failure${actionStr} after retries`, err);
@@ -138,6 +173,14 @@ export default class BaseClient {
             throw wrapError(`Failure${actionStr}`, err);
         }
     }
+
+    protected _incBackOff() {
+        this._backoff += Math.round(defaultBackOff * getRandom(1, 5));
+    }
+
+    protected _resetBackOff() {
+        this._backoff = defaultBackOff;
+    }
 }
 
 // get random number inclusive
@@ -145,12 +188,8 @@ function getRandom(min: number, max: number) {
     return Math.random() * (max - min + 1) + min; // The maximum is inclusive and the minimum is inclusive
 }
 
-/** get a random backoff interval */
-function getBackOff() {
-    return Math.round(defaultBackOff * getRandom(1, 5));
-}
-
 const defaultBackOff = 100;
 
 type cleanupFn = () => void;
-type tryFn<T> = () => Promise<T>;
+export type tryFn = () => any;
+type RetryResult<T extends tryFn> = Promise<ReturnType<T>|null>;

@@ -1,5 +1,5 @@
-import { toString, isString } from '@terascope/job-components';
-import { codeToMessage, okErrors, OkErrors } from './error-codes';
+import { toString, isString, isError } from '@terascope/job-components';
+import { codeToMessage, okErrors } from './error-codes';
 
 export type AnyKafkaError = Error|KafkaError|number|string|null;
 
@@ -14,14 +14,23 @@ export function wrapError(message: string, err: AnyKafkaError): KafkaError {
     if (isKafkaError(err)) error.code = err.code;
 
     Error.captureStackTrace(error, wrapError);
+    // @ts-ignore
+    error._wrapped = true;
     return error;
 }
 
 function getErrorCause(err: any): string {
-    if (err == null) return '';
-    if (isString(err)) return `, caused by, ${err}`;
+    const causedBy = ', caused by error: ';
 
-    let message = ', caused by error: ';
+    if (err == null) return '';
+    if (isString(err)) return `${causedBy}${err}`;
+
+    if (err._wrapped) {
+        const parts = err.message.split(causedBy);
+        return parts.length > 1 ? `${causedBy}${parts[1]}` : err.message;
+    }
+
+    let message = causedBy;
     message += typeof err === 'object' ? err.message : toString(err);
 
     let code: number|null = null;
@@ -62,11 +71,12 @@ export interface KafkaMessage extends KafkaMessageMetadata {
     value: Buffer;
 }
 
-function isKafkaError(err: any): err is KafkaError {
-    return err && err.code;
+export function isKafkaError(err: any): err is KafkaError {
+    // @ts-ignore
+    return isError(err) && err.code != null;
 }
 
-export function isOkayError(err: AnyKafkaError, action: keyof OkErrors = 'any'): boolean {
+export function isOkayError(err: AnyKafkaError, action: string = 'any'): boolean {
     if (err == null) return false;
     const code = isKafkaError(err) ? err.code : err as number;
     if (action === 'retryable') {

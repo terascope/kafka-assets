@@ -175,17 +175,20 @@ describe('Base Client (internal)', () => {
     });
 
     describe('_logOrEmit', () => {
-        const ogWarn = logger.warn;
         const ogDebug = logger.debug;
+        const ogWarn = logger.warn;
+        const ogError = logger.error;
 
         beforeEach(() => {
-            logger.warn = jest.fn();
             logger.debug = jest.fn();
+            logger.warn = jest.fn();
+            logger.error = jest.fn();
         });
 
         afterEach(() => {
-            logger.warn = ogWarn;
             logger.debug = ogDebug;
+            logger.warn = ogWarn;
+            logger.error = ogError;
         });
 
         it('should emit if there is a listener', () => {
@@ -193,31 +196,85 @@ describe('Base Client (internal)', () => {
             events.on('test:log:event', listener);
 
             // @ts-ignore because it is private
-            client._logOrEmit('test:log:event', 'hello');
+            client._logOrEmit('test:log:event')('hello');
 
             expect(listener).toHaveBeenCalledTimes(1);
             expect(listener).toHaveBeenCalledWith('hello');
         });
 
-        it('should log to debug if there is no listener', () => {
-            // @ts-ignore because it is private
-            client._logOrEmit('test:log:debug', 'hello');
+        describe('when there is no listener', () => {
+            it('should log to debug', () => {
+                // @ts-ignore because it is private
+                client._logOrEmit('test:log:debug')('hello');
 
-            expect(logger.debug).toHaveBeenCalledTimes(1);
-            expect(logger.debug).toHaveBeenCalledWith('kafka client debug for event "test:log:debug"', 'hello');
-        });
+                expect(logger.debug).toHaveBeenCalledTimes(1);
+                expect(logger.debug).toHaveBeenCalledWith('kafka client debug for event "test:log:debug"', 'hello');
+            });
 
-        it('should log to warn if there is no listener', () => {
-            const error = new Error('Test Kafka Error');
-            // @ts-ignore because it is private
-            client._logOrEmit('test:log:error', error, 'hello');
+            it('should log to debug and there is on okay error', () => {
+                const error = new Error('Test Kafka Error') as KafkaError;
+                error.code = codes.ERR_NO_ERROR;
 
-            expect(logger.warn).toHaveBeenCalledTimes(1);
-            expect(logger.warn).toHaveBeenCalledWith('kafka client error for event "test:log:error"', error);
+                // @ts-ignore because it is private
+                client._logOrEmit('test:log:debug:error')(error);
+
+                expect(logger.debug).toHaveBeenCalledTimes(1);
+                expect(logger.debug).toHaveBeenCalledWith('kafka client debug for event "test:log:debug:error"', error);
+            });
+
+            it('should log to warn when given a retryable error', () => {
+                const error = new Error('Test Kafka Error') as KafkaError;
+                error.code = codes.ERR__TIMED_OUT;
+
+                // @ts-ignore because it is private
+                client._logOrEmit('test:log:warn')(error, 'hello');
+
+                expect(logger.warn).toHaveBeenCalledTimes(1);
+                expect(logger.warn).toHaveBeenCalledWith('kafka client warning for event "test:log:warn"', error);
+            });
+
+            it('should log to error when given a fatal error', () => {
+                const error = new Error('Test Kafka Error');
+
+                // @ts-ignore because it is private
+                client._logOrEmit('test:log:error')(error, 'hello');
+
+                expect(logger.error).toHaveBeenCalledTimes(1);
+                expect(logger.error).toHaveBeenCalledWith('kafka client error for event "test:log:error"', error);
+            });
         });
     });
 
     describe('_try', () => {
+        describe('when the client is closed', () => {
+            const ogError = logger.error;
+
+            beforeEach(() => {
+                logger.error = jest.fn();
+            });
+
+            afterEach(() => {
+                logger.error = ogError;
+            });
+
+            it('should log an error and return null', async () => {
+                const fn = jest.fn(() => 'foo');
+
+                // @ts-ignore because
+                client._closed = true;
+
+                // @ts-ignore because it is private
+                const result = await client._try(async () => {
+                    return fn();
+                });
+
+                expect(result).toBeNull();
+
+                expect(fn).toHaveBeenCalledTimes(0);
+                expect(logger.error).toHaveBeenCalled();
+            });
+        });
+
         describe('when it succeeds on the first attempt', () => {
             it('should only call the fn once', async () => {
                 const fn = jest.fn(() => 'foo');
@@ -268,7 +325,7 @@ describe('Base Client (internal)', () => {
                     return fn();
                 }, 'commit');
 
-                expect(result).toEqual(null);
+                expect(result).toBeNull();
 
                 expect(fn).toHaveBeenCalledTimes(2);
             });
@@ -339,6 +396,68 @@ describe('Base Client (internal)', () => {
                 }
 
                 expect(fn).toHaveBeenCalledTimes(3);
+            });
+        });
+    });
+
+    describe('_tryWithEvent', () => {
+        describe('when the event does not fire', () => {
+            it('should call the fn and cleanup', async () => {
+                const fn = jest.fn(() => 'bar');
+
+                // @ts-ignore because it is private
+                const result = await client._tryWithEvent('test:try', async () => {
+                    return fn();
+                });
+
+                expect(result).toEqual('bar');
+
+                // @ts-ignore
+                expect(client._cleanup.length).toBe(0);
+
+                expect(fn).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        describe('when the event does not fire an error', () => {
+            it('should call the fn and cleanup', async () => {
+                const fn = jest.fn(() => 'baz');
+
+                // @ts-ignore because it is private
+                const result = await client._tryWithEvent('test:try:no-error', async () => {
+                    events.emit('test:try:no-error', null);
+                    return fn();
+                });
+
+                expect(result).toEqual('baz');
+
+                // @ts-ignore
+                expect(client._cleanup.length).toBe(0);
+
+                expect(fn).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        describe('when the event fires with an error ', () => {
+            it('should call the fn and cleanup', async () => {
+                const error = new Error('Uh oh') as KafkaError;
+
+                const fn = jest.fn(() => 'howdy');
+
+                try {
+                    // @ts-ignore because it is private
+                    await client._tryWithEvent('test:try:error', async () => {
+                        events.emit('test:try:error', error);
+                        return fn();
+                    });
+                } catch (err) {
+                    expect(err.message).toStartWith('Failure after retries, caused by error: Uh oh');
+                }
+
+                // @ts-ignore
+                expect(client._cleanup.length).toBe(0);
+
+                expect(fn).toHaveBeenCalledTimes(1);
             });
         });
     });

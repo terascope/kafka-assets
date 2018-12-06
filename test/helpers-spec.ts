@@ -20,6 +20,17 @@ describe('wrapError helper', () => {
         });
     });
 
+    describe('when given a wrappedError', () => {
+        it('should return a correctly formatted error', () => {
+            const err = new Error('Uh oh') as KafkaError;
+            err.code = -174;
+            const wrappedError = wrapError('Failure', err);
+
+            const error = wrapError('Double Failure', wrappedError);
+            expect(error.message).toEqual('Double Failure, caused by error: Uh oh, code: -174, desc: "Revoked partitions (rebalance_cb)"');
+        });
+    });
+
     describe('when given a number', () => {
         it('should return a correctly formatted error', () => {
             const error = wrapError('Failure', -174);
@@ -30,7 +41,7 @@ describe('wrapError helper', () => {
     describe('when given a string', () => {
         it('should return a correctly formatted error', () => {
             const error = wrapError('Failure', 'bad news bears');
-            expect(error.message).toEqual('Failure, caused by, bad news bears');
+            expect(error.message).toEqual('Failure, caused by error: bad news bears');
         });
     });
 
@@ -44,7 +55,7 @@ describe('wrapError helper', () => {
 
 describe('isOkayError helper', () => {
     const alwaysOk = Object.keys(codes.okErrors.any);
-    const alwaysBad = [123, -67, 2, -100];
+    const alwaysBad = [123, -67, 2, -100, null, undefined, 'hello'];
 
     describe.each([
         codes.KAFKA_NO_OFFSET_STORED,
@@ -69,12 +80,6 @@ describe('isOkayError helper', () => {
 
             expect(isOkayError(err, 'consume')).toBeFalse();
             expect(isOkayError(code, 'consume')).toBeFalse();
-        });
-    });
-
-    describe('when consuming and given null', () => {
-        it('should return false', () => {
-            expect(isOkayError(null, 'consume')).toBeFalse();
         });
     });
 

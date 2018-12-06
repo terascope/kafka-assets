@@ -99,6 +99,7 @@ export interface OkErrors {
     consume: OkErrorSet;
     commit: OkErrorSet;
     produce: OkErrorSet;
+    connect: OkErrorSet;
     retryable: OkErrorSet;
     any: OkErrorSet;
 }
@@ -107,6 +108,7 @@ export const okErrors: OkErrors = {
     consume: {},
     commit: {},
     produce: {},
+    connect: {},
     retryable: {},
     any: {},
 };

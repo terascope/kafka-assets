@@ -1,3 +1,4 @@
+import { isError } from '@terascope/job-components';
 import { ProduceMessage, ProducerClientConfig } from './interfaces';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers';
 import * as kafka from 'node-rdkafka';
@@ -15,29 +16,15 @@ export default class ProducerClient extends BaseClient {
     }
 
     async connect(): Promise<void> {
-        if (this._client.isConnected()) {
-            return;
-        }
+        if (this._client.isConnected()) return;
 
         this._clientEvents();
+        await this._try(() => this._connect(), 'connect');
 
-        await new Promise((resolve, reject) => {
-            this._client.connect({}, (err: AnyKafkaError) => {
-                if (err) {
-                    reject(wrapError('Failed to connect', err));
-                } else {
-                    this._logger.debug('Connected to kafka as Producer');
-                    resolve();
-                }
-            });
-        });
+        this._logger.debug('Connected to kafka');
     }
 
     async disconnect(): Promise<void> {
-        if (!this._client.isConnected()) {
-            return;
-        }
-
         if (this._client.isConnected()) {
             await new Promise((resolve, reject) => {
                 this._client.disconnect((err: AnyKafkaError) => {
@@ -63,7 +50,7 @@ export default class ProducerClient extends BaseClient {
         for (const msg of messages) {
             const message = map(msg);
 
-            this._client.produce(
+            const produceErr = this._client.produce(
                 this._topic,
                 // This is the partition. There may be use cases where
                 // we'll need to control this.
@@ -72,16 +59,25 @@ export default class ProducerClient extends BaseClient {
                 message.key,
                 message.timestamp
             );
+
+            if (isError(produceErr)) {
+                error = produceErr;
+            }
         }
 
+        try {
+            await this._try(() => this._flush(flushTimeout));
+        } finally {
+            off();
+            if (error) {
+                this._logger.error(error);
+            }
+        }
+    }
+
+    private _flush(flushTimeout: number): Promise<void> {
         return new Promise((resolve, reject) => {
             this._client.flush(flushTimeout, (err: AnyKafkaError) => {
-                off();
-
-                if (error) {
-                    this._logger.error(err);
-                }
-
                 if (err) {
                     reject(wrapError('Failed to flush messages', err));
                     return;
@@ -97,13 +93,18 @@ export default class ProducerClient extends BaseClient {
         this._hasClientEvents = true;
 
         // for client event error logs.
-        this._client.on('error', (err) => {
-            this._logOrEmit('client:error', err);
-        });
+        this._client.on('error', this._logOrEmit('client:error'));
 
         // for event error logs.
-        this._client.on('event.error', (err) => {
-            this._logOrEmit('client:error', err);
+        this._client.on('event.error', this._logOrEmit('client:error'));
+    }
+
+    private _connect(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this._client.connect({}, (err: AnyKafkaError) => {
+                if (err) reject(err);
+                else resolve();
+            });
         });
     }
 }

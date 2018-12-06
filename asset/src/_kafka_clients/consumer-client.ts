@@ -4,7 +4,6 @@ import {
     wrapError,
     AnyKafkaError,
     KafkaMessage,
-    isOkayError,
 } from '../_kafka_helpers';
 import BaseClient from './base-client';
 import {
@@ -39,22 +38,14 @@ export default class ConsumerClient extends BaseClient {
     async commit() {
         await this._checkState();
 
-        const offsets = this._flushOffsets('ended');
+        const promises = this._flushOffsets('ended')
+            .map((offset) => {
+                return this._try(() => {
+                    return this._client.commitSync(offset);
+                }, 'commit');
+            });
 
-        for (const offset of offsets) {
-            try {
-                this._client.commitSync(offset);
-            } catch (_err) {
-                const { partition } = offset;
-                const err = wrapError(`Failure to commit to ${partition}`, _err);
-
-                if (!isOkayError(_err, 'commit')) {
-                    throw err;
-                } else {
-                    this._logger.warn('got recoverable error when committing', err);
-                }
-            }
-        }
+        await promises;
     }
 
     async rollback() {
@@ -65,7 +56,7 @@ export default class ConsumerClient extends BaseClient {
         this._logger.warn('rolling back partitions', partitions);
 
         const promises = partitions.map((par) => {
-            return this.seek(par);
+            return this._try(() => this._seek(par));
         });
 
         await Promise.all(promises);
@@ -74,27 +65,7 @@ export default class ConsumerClient extends BaseClient {
     async seek(topic: { partition: number, offset: number }): Promise<void> {
         await this._checkState();
 
-        const { partition, offset } = topic;
-
-        return new Promise((resolve, reject) => {
-            this._client.seek({
-                partition,
-                offset,
-                topic: this._topic
-            }, 1000, (err: AnyKafkaError) => {
-                if (err) {
-                    const message = `Failure to seek partition ${partition} to offset ${offset}`;
-                    reject(wrapError(message, err));
-                    return;
-                }
-
-                this._logger.debug(`seeked partition ${partition} to offset ${offset}`);
-                this._offsets.started[partition] = offset;
-                delete this._offsets.ended[partition];
-
-                resolve();
-            });
-        });
+        await this._try(() => this._seek(topic));
     }
 
     async topicPositions(): Promise<TopicPartition[]> {
@@ -108,12 +79,12 @@ export default class ConsumerClient extends BaseClient {
     }
 
     async connect(): Promise<void> {
-        if (this._client.isConnected()) {
-            return;
-        }
+        if (this._client.isConnected()) return;
 
         this._clientEvents();
-        await this._connect();
+
+        await this._tryWithEvent('connect:error', () => this._connect(), 'connect');
+        this._logger.debug('Connected to kafka');
     }
 
     async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
@@ -140,15 +111,8 @@ export default class ConsumerClient extends BaseClient {
     async disconnect(): Promise<void> {
         if (this._client.isConnected()) {
             await new Promise((resolve, reject) => {
-                const off = this._once('client:disconnect', (err) => {
-                    if (err) {
-                        reject(err);
-                    }
-                });
-
                 this._client.disconnect((err: AnyKafkaError) => {
-                    off();
-                    if (err) reject(wrapError('Failed to disconnect', err));
+                    if (err) reject(err);
                     else resolve();
                 });
             });
@@ -158,44 +122,32 @@ export default class ConsumerClient extends BaseClient {
         super.close();
     }
 
-    private _consume<T>(count: number, map: (msg: KafkaMessage) => T): Promise<T[]> {
+    private async _consume<T>(count: number, map: (msg: KafkaMessage) => T): Promise<T[]> {
+        const results: T[] = [];
+
+        const messages = await this._tryWithEvent('client:error', async () => {
+            return this._consumeMessages(count);
+        }, 'consume', 0);
+
+        if (messages == null) return [];
+
+        this._logger.trace(`consumed ${messages.length} messages`);
+
+        for (const message of messages) {
+            const entity = this._handleMessage(message, map);
+            if (entity != null) {
+                results.push(entity);
+            }
+        }
+
+        return results;
+    }
+
+    private _consumeMessages(count: number): Promise<KafkaMessage[]> {
         return new Promise((resolve, reject) => {
-            const results: T[] = [];
-
-            const handleError = (_err: AnyKafkaError) => {
-                const err = wrapError(`Failure to consume ${count} messages`, _err);
-                if (!isOkayError(_err, 'consume')) {
-                    reject(err);
-                } else {
-                    this._logger.warn('got recoverable error when consuming', err);
-                    resolve([]);
-                }
-                return;
-            };
-
-            const off = this._once('client:error', (err) => {
-                if (err) {
-                    handleError(err);
-                }
-            });
-
             this._client.consume(count, (err: AnyKafkaError, messages: KafkaMessage[]) => {
-                off();
-
-                if (err) {
-                    handleError(err);
-                    return;
-                }
-
-                this._logger.trace(`consumed ${messages.length} messages`);
-                for (const message of messages) {
-                    const entity = this._handleMessage(message, map);
-                    if (entity != null) {
-                        results.push(entity);
-                    }
-                }
-
-                resolve(results);
+                if (err) reject(err);
+                else resolve(messages);
             });
         });
     }
@@ -250,20 +202,32 @@ export default class ConsumerClient extends BaseClient {
 
     private _connect(): Promise<void> {
         return new Promise((resolve, reject) => {
-            const off = this._once('connect:error', (err) => {
-                if (err) {
-                    reject(wrapError('Connect error', err));
-                }
-            });
-
             this._client.connect({}, (err: AnyKafkaError) => {
-                off();
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+    }
+
+    private async _seek(topic: { partition: number, offset: number }): Promise<void> {
+        const { partition, offset } = topic;
+
+        return new Promise((resolve, reject) => {
+            this._client.seek({
+                partition,
+                offset,
+                topic: this._topic
+            }, 1000, (err: AnyKafkaError) => {
                 if (err) {
-                    reject(wrapError('Failed to connect', err));
-                } else {
-                    this._logger.debug('Connected to kafka as Consumer');
-                    resolve();
+                    const message = `Failure to seek partition ${partition} to offset ${offset}`;
+                    reject(wrapError(message, err));
+                    return;
                 }
+
+                this._logger.debug(`seeked partition ${partition} to offset ${offset}`);
+                this._offsets.started[partition] = offset;
+                delete this._offsets.ended[partition];
+                resolve();
             });
         });
     }
@@ -272,9 +236,7 @@ export default class ConsumerClient extends BaseClient {
         if (this._hasClientEvents) return;
         this._hasClientEvents = true;
 
-        this._client.on('error', (err) => {
-            this._logOrEmit('client:error', err);
-        });
+        this._client.on('error', this._logOrEmit('client:error'));
 
         this._client.on('ready', () => {
             this._logger.info('kafka consumer is ready');
@@ -283,19 +245,16 @@ export default class ConsumerClient extends BaseClient {
             this._events.emit('client:ready');
         });
 
+        /* istanbul ignore next */
         // for debug logs.
         this._client.on('event.log', (msg) => {
             this._logger.info(msg);
         });
 
         // for event error logs.
-        this._client.on('event.error', (err) => {
-            this._logOrEmit('client:error', err);
-        });
+        this._client.on('event.error', this._logOrEmit('client:error'));
 
-        this._client.on('disconnected', (msg) => {
-            this._logOrEmit('client:disconnected', msg);
-        });
+        this._client.on('disconnected', this._logOrEmit('client:disconnected'));
 
         let rebalanceTimeout: NodeJS.Timeout;
 
@@ -305,33 +264,33 @@ export default class ConsumerClient extends BaseClient {
 
             this._logger.debug('kafka consumer rebalance', err && err.message, assignment);
 
+            /* istanbul ignore if */
             if (err && (err.code[ERR__ASSIGN_PARTITIONS] || err.code[ERR__REVOKE_PARTITIONS])) {
+                this._incBackOff();
                 this._rebalancing = true;
                 this._events.emit('rebalance:start', assignment);
 
                 clearTimeout(rebalanceTimeout);
                 rebalanceTimeout = setTimeout(() => {
+                    this._resetBackOff();
+
                     this._rebalancing = false;
                     this._events.emit('rebalance:end');
                 // this timeout should be configurable?
-                }, 1000);
+                }, this._backoff);
             }
         });
 
+        /* istanbul ignore next */
         // @ts-ignore because the event doesn't exist in the typedefinitions
-        this._client.on('rebalance.error', (err) => {
+        this._client.on('rebalance.error', this._logOrEmit('rebalance:end', () => {
             clearTimeout(rebalanceTimeout);
             this._rebalancing = false;
-            this._logOrEmit('rebalance:end', err);
-        });
+        }));
 
-        this._client.on('unsubscribed', (...args: any[]) => {
-            this._logOrEmit('client:unsubscribed', ...args);
-        });
+        this._client.on('unsubscribed',  this._logOrEmit('client:unsubscribed'));
 
-        this._client.on('connection.failure', (...args: any[]) => {
-            this._logOrEmit('connect:error', ...args);
-        });
+        this._client.on('connection.failure',  this._logOrEmit('connect:error'));
     }
 
     private async _checkState(): Promise<void> {
@@ -344,20 +303,25 @@ export default class ConsumerClient extends BaseClient {
             await this.connect();
         }
 
+        /* istanbul ignore if */
         if (this._rebalancing) {
             this._logger.debug('waiting for rebalance...');
 
-            await new Promise((resolve, reject) => {
+            await new Promise((resolve) => {
                 const eventOff = this._once('rebalance:end', (err) => {
+                    if (err) {
+                        this._logger.trace('got error while rebalancing', err);
+                    }
                     timeoutOff();
-                    if (err) reject(err);
-                    else resolve();
+                    resolve();
                 });
 
                 const timeoutOff = this._timeout((err) => {
+                    if (err) {
+                        this._logger.trace('got timeout waiting rebalance to finish');
+                    }
                     eventOff();
-                    if (err) reject(err);
-                    else resolve();
+                    resolve();
                 }, 30 * 60 * 1000);
             });
         }
