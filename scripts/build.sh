@@ -37,13 +37,13 @@ rm -rf "${TMPDIR}/asset/src"
 
 # Zip up generated asset directory
 cd ..
-zip -q -r -9 "$OUTDIR/$ASSETNAME" asset
-zipinfo "$OUTDIR/$ASSETNAME" -x '*node_modules*'
+zip -q -r -9 "$TMPDIR/$ASSETNAME" asset
+zipinfo "$TMPDIR/$ASSETNAME" -x '*node_modules*'
 
 ASSET_FINAL_SIZE="$(ls -lah "$OUTDIR/$ASSETNAME" | awk '{print $5}')"
 
 echo ''
-echo "asset $ASSETNAME size $ASSET_FINAL_SIZE"
+echo "BUILT! name: \"$ASSETNAME\" size: $ASSET_FINAL_SIZE"
 
 # Cleanup
 rm -rf "$TMPDIR"
