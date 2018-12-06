@@ -25,8 +25,8 @@ export async function loadData(topic: string, fileName: string): Promise<object[
 
     const producer = new kafka.Producer({
         'compression.codec': 'gzip',
-        'queue.buffering.max.messages': messages.length,
-        'queue.buffering.max.ms': 100,
+        'queue.buffering.max.messages': messages.length * 5,
+        'queue.buffering.max.ms': 20,
         'batch.num.messages': messages.length,
         'topic.metadata.refresh.interval.ms': -1,
         'log.connection.close': false,
@@ -36,6 +36,7 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     const client = new ProducerClient(producer, {
         logger,
         topic,
+        bufferSize: messages.length * 5
     });
 
     await client.connect();

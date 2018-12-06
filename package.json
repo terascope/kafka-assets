@@ -22,6 +22,7 @@
     "license": "MIT",
     "devDependencies": {
         "@types/jest": "^23.3.10",
+        "@types/lodash.chunk": "^4.2.4",
         "@types/lodash.isequal": "^4.5.3",
         "@types/lodash.omit": "^4.5.4",
         "@types/lodash.once": "^4.1.4",

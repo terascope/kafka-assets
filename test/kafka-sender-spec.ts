@@ -1,10 +1,15 @@
 import 'jest-extended';
-import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
+import fs from 'fs';
+import path from 'path';
+import { TestClientConfig, Logger, DataEntity, parseJSON } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaSender from '../asset/src/kafka_sender/processor';
 import { readData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers, senderTopic } from './helpers/config';
+
+const testFetcherFile = path.join(__dirname, 'fixtures', 'test-fetcher-data.json');
+const testFetcherData: object[] = parseJSON(fs.readFileSync(testFetcherFile));
 
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
@@ -22,18 +27,20 @@ describe('Kafka Sender', () => {
     const topic = senderTopic;
 
     const clients = [clientConfig];
-    const batchSize = 200;
+    const batchSize = 10;
+    const targetRuns = 3;
+    const targetSize = testFetcherData.length * targetRuns;
 
     const job = newTestJobConfig({
         max_retries: 3,
         operations: [
             {
                 _op: 'test-reader',
+                fetcher_data_file_path: testFetcherFile
             },
             {
                 _op: 'kafka_sender',
                 topic,
-                wait: 1000,
                 size: batchSize
             }
         ],
@@ -57,10 +64,11 @@ describe('Kafka Sender', () => {
         // it should be able to call connect
         await sender.producer.connect();
 
-        while (results.length !== batchSize) {
-            if (++runs > 5) {
-                throw new Error(`Expected to resolve a batch size of ${batchSize}, got ${results.length}`);
+        while (results.length < targetSize) {
+            if (runs > targetRuns) {
+                return;
             }
+            runs++;
             const batch = await harness.runSlice({});
             results = results.concat(batch);
         }
@@ -76,11 +84,11 @@ describe('Kafka Sender', () => {
         await harness.shutdown();
     });
 
-    it('should have produced the correct records', () => {
+    it('should have produced the correct amount of records', () => {
         expect(consumed).toBeArrayOfSize(results.length);
         expect(DataEntity.isDataEntityArray(results)).toBeTrue();
-        expect(results).toBeArrayOfSize(batchSize);
-        expect(runs).toBe(2);
+        expect(results).toBeArrayOfSize(targetSize);
+        expect(runs).toBe(targetRuns);
 
         for (let i = 0; i < results.length; i++) {
             const actual = consumed[i];

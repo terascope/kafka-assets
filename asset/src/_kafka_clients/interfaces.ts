@@ -31,6 +31,7 @@ export interface ProduceMessage {
 export interface ProducerClientConfig {
     topic: string;
     logger: Logger;
+    bufferSize: number;
 }
 
 export { BadRecordAction };

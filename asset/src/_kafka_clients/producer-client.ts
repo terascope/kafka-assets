@@ -1,4 +1,4 @@
-import { isError } from '@terascope/job-components';
+import chunk from 'lodash.chunk';
 import { ProduceMessage, ProducerClientConfig } from './interfaces';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers';
 import * as kafka from 'node-rdkafka';
@@ -7,11 +7,13 @@ import BaseClient from './base-client';
 export default class ProducerClient extends BaseClient {
     private _client: kafka.Producer;
     private _topic: string;
+    private _bufferSize: number;
     private _hasClientEvents = false;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
         super(config.logger);
         this._topic = config.topic;
+        this._bufferSize = config.bufferSize;
         this._client = client;
     }
 
@@ -47,10 +49,23 @@ export default class ProducerClient extends BaseClient {
             }
         });
 
+        try {
+            for (const msgs of chunk(messages, this._bufferSize)) {
+                await this._produce(msgs, map, flushTimeout);
+            }
+        } finally {
+            off();
+            if (error) {
+                this._logger.error(error);
+            }
+        }
+    }
+
+    private async _produce<T>(messages: T[], map: (msg: T) => ProduceMessage, flushTimeout = 60000): Promise<void> {
         for (const msg of messages) {
             const message = map(msg);
 
-            const produceErr = this._client.produce(
+            this._client.produce(
                 this._topic,
                 // This is the partition. There may be use cases where
                 // we'll need to control this.
@@ -59,20 +74,9 @@ export default class ProducerClient extends BaseClient {
                 message.key,
                 message.timestamp
             );
-
-            if (isError(produceErr)) {
-                error = produceErr;
-            }
         }
 
-        try {
-            await this._try(() => this._flush(flushTimeout));
-        } finally {
-            off();
-            if (error) {
-                this._logger.error(error);
-            }
-        }
+        await this._try(() => this._flush(flushTimeout), 'produce', 0);
     }
 
     private _flush(flushTimeout: number): Promise<void> {
