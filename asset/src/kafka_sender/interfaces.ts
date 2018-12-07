@@ -39,8 +39,3 @@ export interface KafkaSenderConfig extends OpConfig {
     */
     metadata_refresh: number;
 }
-
-export interface CollectConfig extends OpConfig {
-    wait: number;
-    size: number;
-}

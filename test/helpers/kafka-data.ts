@@ -25,7 +25,7 @@ export async function loadData(topic: string, fileName: string): Promise<object[
 
     const producer = new kafka.Producer({
         'compression.codec': 'gzip',
-        'queue.buffering.max.messages': messages.length * 5,
+        'queue.buffering.max.messages': messages.length,
         'queue.buffering.max.ms': 20,
         'batch.num.messages': messages.length,
         'topic.metadata.refresh.interval.ms': -1,
@@ -36,13 +36,14 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     const client = new ProducerClient(producer, {
         logger,
         topic,
-        bufferSize: messages.length * 5
+        batchSize: messages.length
     });
 
     await client.connect();
 
     logger.debug(`loading ${messages.length} into topic: ${topic}...`);
 
+    client.flushTimeout = 5000;
     await client.produce(messages, (data) => {
         return {
             topic,
@@ -50,7 +51,7 @@ export async function loadData(topic: string, fileName: string): Promise<object[
             data,
             timestamp: Date.now()
         };
-    }, 5000);
+    });
 
     logger.debug('DONE loading messages');
 

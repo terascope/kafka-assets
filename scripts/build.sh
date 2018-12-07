@@ -38,7 +38,10 @@ rm -rf "${TMPDIR}/asset/src"
 # Zip up generated asset directory
 cd ..
 zip -q -r -9 "$TMPDIR/$ASSETNAME" asset
-zipinfo "$TMPDIR/$ASSETNAME" -x '*node_modules*'
+
+mv "$TMPDIR/$ASSETNAME" "$OUTDIR/$ASSETNAME"
+
+zipinfo "$OUTDIR/$ASSETNAME" | grep -v 'node_modules'
 
 ASSET_FINAL_SIZE="$(ls -lah "$OUTDIR/$ASSETNAME" | awk '{print $5}')"
 

@@ -5,15 +5,18 @@ import * as kafka from 'node-rdkafka';
 import BaseClient from './base-client';
 
 export default class ProducerClient extends BaseClient {
-    private _client: kafka.Producer;
-    private _topic: string;
-    private _bufferSize: number;
+    // one minute
+    flushTimeout = 60000;
+    private readonly _client: kafka.Producer;
+    private readonly _topic: string;
+    private readonly _batchSize: number;
     private _hasClientEvents = false;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
         super(config.logger);
+
         this._topic = config.topic;
-        this._bufferSize = config.bufferSize;
+        this._batchSize = config.batchSize;
         this._client = client;
     }
 
@@ -40,18 +43,21 @@ export default class ProducerClient extends BaseClient {
         super.close();
     }
 
-    async produce<T>(messages: T[], map: (msg: T) => ProduceMessage, flushTimeout = 60000): Promise<void> {
+    async produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void> {
         let error: Error|null = null;
 
         const off = this._once('client:error', (err) => {
-            if (err) {
-                error = wrapError('Client error while producing', err);
-            }
+            if (!err) return;
+            error = wrapError('Client error while producing', err);
         });
 
+        const chunks = chunk(messages, this._batchSize);
+        const sizes = chunks.map((c) => c.length);
+        this._logger.debug(`producing batches ${JSON.stringify(sizes)}...`);
+
         try {
-            for (const msgs of chunk(messages, this._bufferSize)) {
-                await this._produce(msgs, map, flushTimeout);
+            for (const msgs of chunks) {
+                await this._produce(msgs, map);
             }
         } finally {
             off();
@@ -61,7 +67,7 @@ export default class ProducerClient extends BaseClient {
         }
     }
 
-    private async _produce<T>(messages: T[], map: (msg: T) => ProduceMessage, flushTimeout = 60000): Promise<void> {
+    private async _produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void> {
         for (const msg of messages) {
             const message = map(msg);
 
@@ -76,12 +82,12 @@ export default class ProducerClient extends BaseClient {
             );
         }
 
-        await this._try(() => this._flush(flushTimeout), 'produce', 0);
+        await this._try(() => this._flush(), 'produce', 0);
     }
 
-    private _flush(flushTimeout: number): Promise<void> {
+    private _flush(): Promise<void> {
         return new Promise((resolve, reject) => {
-            this._client.flush(flushTimeout, (err: AnyKafkaError) => {
+            this._client.flush(this.flushTimeout, (err: AnyKafkaError) => {
                 if (err) {
                     reject(wrapError('Failed to flush messages', err));
                     return;

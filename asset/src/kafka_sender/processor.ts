@@ -13,18 +13,19 @@ import * as kafka from 'node-rdkafka';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     producer: ProducerClient;
+    private _bufferSize: number;
 
     constructor(context: WorkerContext, opConfig: KafkaSenderConfig, executionConfig: ExecutionConfig) {
         super(context, opConfig, executionConfig);
 
         const logger = this.logger.child({ module: 'kafka-producer' });
 
-        const bufferSize = this.opConfig.size * 5;
+        this._bufferSize = this.opConfig.size * 5;
 
-        this.producer = new ProducerClient(this.createClient(bufferSize), {
+        this.producer = new ProducerClient(this.createClient(), {
             logger,
             topic: this.opConfig.topic,
-            bufferSize,
+            batchSize: this._bufferSize,
         });
     }
 
@@ -78,7 +79,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         };
     }
 
-    private clientConfig(bufferSize: number) {
+    private clientConfig() {
         return {
             type: 'kafka',
             endpoint: this.opConfig.connection,
@@ -87,7 +88,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             },
             rdkafka_options: {
                 'compression.codec': this.opConfig.compression,
-                'queue.buffering.max.messages': bufferSize,
+                'queue.buffering.max.messages': this._bufferSize,
                 'queue.buffering.max.ms': this.opConfig.wait,
                 'batch.num.messages': this.opConfig.size,
                 'topic.metadata.refresh.interval.ms': this.opConfig.metadata_refresh,
@@ -97,8 +98,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         } as ConnectionConfig;
     }
 
-    private createClient(bufferSize: number): kafka.Producer {
-        const config = this.clientConfig(bufferSize);
+    private createClient(): kafka.Producer {
+        const config = this.clientConfig();
         const connection = this.context.foundation.getConnection(config);
         return connection.client;
     }
