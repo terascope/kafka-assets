@@ -37,10 +37,10 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
-"@terascope/job-components@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.12.0.tgz#2bbbedd608a4e5e6e8cca21f7adc322232a413b0"
-  integrity sha512-Lg9HpgRuzbmeU/97BC/nXYpA1P8v/UF6AA0WBDfsfNCAtRyVe/DJQfFFRgpVci4JUvadtJWgJX/CHIFNUKT0VA==
+"@terascope/job-components@^0.13.0", "@terascope/job-components@^0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.13.1.tgz#8677771dee9399791773c35274e207109a7de0c5"
+  integrity sha512-wvOM+nCP6oWoOTWu65BGcMpoi3CSq7SNl3etjfENb7laUbAAna3jTU1QJZbSLqPezJ24ARafzmftXL35JwjHOA==
   dependencies:
     "@terascope/queue" "^1.1.4"
     convict "^4.4.0"
@@ -56,12 +56,12 @@
   resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.4.tgz#52db805f09403579478ede0e041f76c176c6e766"
   integrity sha512-ZH8/q1vx8CPYhfamzCRErj1HUvdN8rQbV3uvyAQ7PLKh2+CrN5HX6J8lCa1TVDlb1RTXkCGzOXnJ2b+AJP3lRg==
 
-"@terascope/teraslice-op-test-harness@^1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.4.3.tgz#7a6e9cfd5528697e8e3d5f82b1f3a30eb9e0119c"
-  integrity sha512-qSydoRoVdTqof1p8EiGl9Ivi/1+moc+4F69WWtoMWQKW884kJLPlS4vyK4V4P19SyyN9Yf+SyZHG8T+3q5WDZg==
+"@terascope/teraslice-op-test-harness@^1.4.4":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.4.5.tgz#c6ba2a381428ae10661a1605503a69d8e1193c44"
+  integrity sha512-j4SrH6HC4Yt2AUl9No+OejRlzhN+eYL2rQrNgNrWhZmClLc3ULl6hHld7bnDVSi6mbcwQdYDNgkmUWj2qpP8zA==
   dependencies:
-    "@terascope/job-components" "^0.12.0"
+    "@terascope/job-components" "^0.13.1"
     bluebird "^3.5.3"
     lodash "^4.17.11"
 
@@ -3550,13 +3550,13 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
-teraslice-test-harness@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.4.0.tgz#c19a79a278137d4606f19b85978d33de0ee1f931"
-  integrity sha512-NPCE/7UBxk5/lB5JFtfiS6xiISCRGQdTPIlab+0qsZ4f807kGx2xnyAPg3B3JgLOBDTwadawvQooLC26XEzIXw==
+teraslice-test-harness@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.4.1.tgz#73cc788ee02984de5de3b48933979410988cafef"
+  integrity sha512-3VkhfORDZCGY4Nz1f1sbrZ1NfKvHmtt6ViZsrcdzho3sn9J6k/E3oaZndnt6I5lwPZvWrPy3V/Ob+M2chBA/Fg==
   dependencies:
-    "@terascope/job-components" "^0.12.0"
-    "@terascope/teraslice-op-test-harness" "^1.4.3"
+    "@terascope/job-components" "^0.13.0"
+    "@terascope/teraslice-op-test-harness" "^1.4.4"
     "@types/lodash" "^4.14.119"
     lodash "^4.17.11"
 
