@@ -38,7 +38,7 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 format: Number
             },
             interval: {
-                doc: 'How often to attempt to consume "size" number of records. This only comes into play if the initial consume could not get a full slice.',
+                doc: 'How often to attempt to consume `size` number of records. This only comes into play if the initial consume could not get a full slice.',
                 default: 50,
                 format: Number
             },
@@ -48,9 +48,13 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 format: 'required_String'
             },
             rollback_on_failure: {
-                doc: `Controls whether the consumer state is rolled back on failure. This will protect against data loss, however this can have an unintended
-                    side effect of blocking the job from moving if failures are minor and persistent.
-                    NOTE: This currently defaults to "false" due to the side effects of the behavior, at some point in the future it is expected this will default to "true".`,
+                doc: [
+                    'Controls whether the consumer state is rolled back on failure.',
+                    'This will protect against data loss,',
+                    'however this can have an unintended side effect of blocking the job from moving if failures are minor and persistent.',
+                    '**NOTE:** This currently defaults to `false` due to the side effects of the behavior,',
+                    'at some point in the future it is expected this will default to `true`.',
+                ].join(' '),
                 default: false,
                 format: Boolean
             },
