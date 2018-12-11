@@ -125,7 +125,7 @@ function generateConfigDocs(schemaPath) {
 
     return `**Configuration:**
 
-${table(data)}`;
+${table(data, { align: 'c' })}`;
 }
 
 function createDocForOp({ opName, opPath }) {
