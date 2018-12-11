@@ -15,7 +15,8 @@
         "test:all": "yarn workspaces run test",
         "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
         "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand",
-        "publish:changed": "./scripts/publish.sh"
+        "publish:changed": "./scripts/publish.sh",
+        "update:docs": "./scripts/doc-generator.js ./asset > README.md"
     },
     "repository": "git@github.com:terascope/kafka-assets.git",
     "author": "Terascope, LLC <info@terascope.io>",

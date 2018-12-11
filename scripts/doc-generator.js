@@ -104,6 +104,7 @@ function generateConfigDocs(schemaPath) {
     }
 
     return `**Configuration:**
+
 ${table(data)}`;
 }
 
