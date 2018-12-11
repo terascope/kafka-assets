@@ -35,39 +35,39 @@ function formatArr(arr) {
     return arr.map(v => formatVal(v)).join(', ');
 }
 
-function isPrimative(val) {
-    if (Number.isInteger(val)) return true;
-    if (val === true || val === false) return true;
-    if (val === 'true' || val === 'false') return true;
-    return false;
-}
-
-function formatVal(val, wrapString = true) {
+function formatVal(val, isType = false) {
     if (Array.isArray(val)) return formatArr(val);
-    if (val && val.name) return `${val.name}`;
+    let str;
+
     if (isString(val)) {
-        if (wrapString) return `'${val}'`;
-        if (val.indexOf('required_') === 0) {
-            return `${val.replace('required_', '')}`;
+        if (isType) {
+            if (val.indexOf('required_') === 0) {
+                str = `${val.replace('required_', '')}`;
+            }
+            if (val.indexOf('optional_') === 0) {
+                str = `${val.replace('optional_', '')}`;
+            }
+        } else {
+            str = `"${val}"`;
         }
-        if (val.indexOf('optional_') === 0) {
-            return `${val.replace('optional_', '')}`;
-        }
-        return val;
+    } else if (val && val.name) {
+        str = toString(val.name);
+    } else if (val) {
+        str = toString(val);
     }
-    if (isPrimative(val)) return `\`${val}\``;
-    return toString(val);
+
+    return `\`${str}\``;
 }
 
 function formatDefaultVal(s) {
     const val = s.default;
-    if (val == null || (isString(val) && !val)) return 'none';
+    if (val == null || (isString(val) && !val)) return 'N/A';
     return formatVal(val);
 }
 
 function formatType(s) {
     if (s.default && !s.format) return getTypeOf(s);
-    return firstToUpper(formatVal(s.format, false));
+    return firstToUpper(formatVal(s.format, true));
 }
 
 function formatName(name, suffix) {
@@ -140,9 +140,9 @@ function createDocForOp({ opName, opPath }) {
     parts.push(`**Name:** \`${opName}\``);
 
     if (isReader(opPath)) {
-        parts.push('**Type:** Reader');
+        parts.push('**Type:** `Reader`');
     } else if (isProcessor(opPath)) {
-        parts.push('**Type:** Processor');
+        parts.push('**Type:** `Processor`');
     }
 
     if (schemaPath != null) {
