@@ -26,15 +26,12 @@ before_install:
   - sleep 3
   # Run Kafka on localhost:9092
   - kafka-server-start.sh "$KAFKA_HOME/config/server.properties" > "$KAFKA_HOME/kafka.log" &
-  - sleep 3
-  - kafka-topics.sh --zookeeper localhost:2181 --create --topic "kafka-test-fetcher" --partitions 1 --replication-factor 1
-  - kafka-topics.sh --zookeeper localhost:2181 --create --topic "kafka-test-sender" --partitions 1 --replication-factor 1
   # Make it colorful
   - export FORCE_COLOR=1
 install:
   - yarn install
 script:
-  - yarn test:ci
+  - yarn test:all
 after_failure:
   - tail -n 100 $KAFKA_HOME/*.log
 after_success:

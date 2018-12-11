@@ -11,7 +11,6 @@
         "build": "rimraf asset/dist; tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
         "test": "jest",
-        "test:ci": "env FIXED_KAFKA_TOPICS=true yarn test:all",
         "test:all": "yarn workspaces run test",
         "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
         "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand",
