@@ -90,6 +90,7 @@ export const ERR__QUEUE_FULL = -184;
 export const ERR_NO_ERROR = 0;
 export const ERR_REQUEST_TIMED_OUT = 7;
 export const ERR__RESOLVE = -193;
+export const ERR_UNKNOWN_TOPIC_OR_PART = 3;
 
 export interface OkErrorSet {
     [prop: number]: boolean;

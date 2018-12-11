@@ -7,6 +7,7 @@ import KafkaSender from '../asset/src/kafka_sender/processor';
 import { readData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers, senderTopic } from './helpers/config';
+import KafkaAdmin from './helpers/kafka-admin';
 
 const testFetcherFile = path.join(__dirname, 'fixtures', 'test-fetcher-data.json');
 const testFetcherData: object[] = parseJSON(fs.readFileSync(testFetcherFile));
@@ -46,18 +47,24 @@ describe('Kafka Sender', () => {
         ],
     });
 
-    const harness = new WorkerTestHarness(job, {
-        clients,
-    });
+    const admin = new KafkaAdmin();
 
-    const sender = harness.getOperation<KafkaSender>('kafka_sender');
-
+    let harness: WorkerTestHarness;
+    let sender: KafkaSender;
     let results: DataEntity[] = [];
     let consumed: object[] = [];
     let runs = 0;
 
     beforeAll(async () => {
         jest.restoreAllMocks();
+
+        await admin.ensureTopic(topic);
+
+        harness = new WorkerTestHarness(job, {
+            clients,
+        });
+
+        sender = harness.getOperation('kafka_sender');
 
         await harness.initialize();
 
@@ -78,6 +85,8 @@ describe('Kafka Sender', () => {
 
     afterAll(async () => {
         jest.resetAllMocks();
+
+        admin.disconnect();
 
         // it should be able to disconnect twice
         await sender.producer.disconnect();
@@ -100,9 +109,11 @@ describe('Kafka Sender', () => {
 
     describe('->getKey', () => {
         describe('when id_field is set', () => {
-            // @ts-ignore
-            const ogIdField = sender.opConfig.id_field;
+            let ogIdField: string;
+
             beforeAll(() => {
+                // @ts-ignore
+                ogIdField = sender.opConfig.id_field;
                 // @ts-ignore
                 sender.opConfig.id_field = 'ip';
             });
@@ -158,9 +169,12 @@ describe('Kafka Sender', () => {
         });
 
         describe('when id_field is not set', () => {
-            // @ts-ignore
-            const ogIdField = sender.opConfig.id_field;
+            let ogIdField: string;
+
             beforeAll(() => {
+                // @ts-ignore
+                ogIdField = sender.opConfig.id_field;
+
                 // @ts-ignore
                 sender.opConfig.id_field = '';
             });
@@ -189,9 +203,12 @@ describe('Kafka Sender', () => {
 
     describe('->getTimestamp', () => {
         describe('when timestamp_field is set', () => {
-            // @ts-ignore
-            const ogTimestampField = sender.opConfig.timestamp_field;
+            let ogTimestampField: string;
+
             beforeAll(() => {
+                // @ts-ignore
+                ogTimestampField = sender.opConfig.timestamp_field;
+
                 // @ts-ignore
                 sender.opConfig.timestamp_field = 'created';
             });
@@ -248,9 +265,11 @@ describe('Kafka Sender', () => {
         });
 
         describe('when timestamp_field is not set', () => {
-            // @ts-ignore
-            const ogTimestampField = sender.opConfig.timestamp_field;
+            let ogTimestampField: string;
+
             beforeAll(() => {
+                // @ts-ignore
+                ogTimestampField = sender.opConfig.timestamp_field;
                 // @ts-ignore
                 sender.opConfig.timestamp_field = '';
             });
@@ -277,9 +296,11 @@ describe('Kafka Sender', () => {
         });
 
         describe('when timestamp_now is set', () => {
-            // @ts-ignore
-            const ogTimestampNow = sender.opConfig.timestamp_now;
+            let ogTimestampNow: boolean;
+
             beforeAll(() => {
+                // @ts-ignore
+                ogTimestampNow = sender.opConfig.timestamp_now;
                 // @ts-ignore
                 sender.opConfig.timestamp_now = true;
             });

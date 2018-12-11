@@ -5,6 +5,7 @@ import KafkaFetcher from '../asset/src/kafka_reader/fetcher';
 import { loadData } from './helpers/kafka-data';
 import { kafkaBrokers, fetcherTopic, fetcherGroup } from './helpers/config';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
+import KafkaAdmin from './helpers/kafka-admin';
 
 describe('Kafka Fetcher', () => {
     jest.setTimeout(15 * 1000);
@@ -42,22 +43,29 @@ describe('Kafka Fetcher', () => {
         ],
     });
 
-    const harness = new WorkerTestHarness(job, {
-        clients,
-    });
+    const admin = new KafkaAdmin();
 
-    const fetcher = harness.fetcher<KafkaFetcher>();
-    const noop = harness.getOperation<NoopProcessor>('noop');
-
-    noop.onBatch = jest.fn(async (data) => {
-        return data;
-    });
-
+    let harness: WorkerTestHarness;
+    let fetcher: KafkaFetcher;
+    let noop: NoopProcessor;
     let exampleData: object[];
     let results: DataEntity[] = [];
 
     beforeAll(async () => {
         jest.restoreAllMocks();
+
+        await admin.ensureTopic(topic);
+
+        harness = new WorkerTestHarness(job, {
+            clients,
+        });
+
+        fetcher = harness.fetcher();
+        noop = harness.getOperation('noop');
+
+        noop.onBatch = jest.fn(async (data) => {
+            return data;
+        });
 
         await harness.initialize();
 
@@ -73,8 +81,11 @@ describe('Kafka Fetcher', () => {
     afterAll(async () => {
         jest.resetAllMocks();
 
+        admin.disconnect();
+
         // it should be able to disconnect twice
         await fetcher.consumer.disconnect();
+
         await harness.shutdown();
     });
 
