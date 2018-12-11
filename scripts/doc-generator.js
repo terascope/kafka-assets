@@ -50,9 +50,9 @@ function formatVal(val, isType = false) {
         } else {
             str = `"${val}"`;
         }
-    } else if (val && val.name) {
-        str = toString(val.name);
-    } else if (val) {
+    } else if (val && val.name != null) {
+        str = val.name;
+    } else {
         str = toString(val);
     }
 
