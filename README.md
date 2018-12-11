@@ -1,7 +1,7 @@
 # Kafka Asset Bundle
 
-[![Build Status](https://travis-ci.org/terascope/asset.svg?branch=master)](https://travis-ci.org/terascope/asset)
-[![codecov](https://codecov.io/gh/terascope/asset/branch/master/graph/badge.svg)](https://codecov.io/gh/terascope/asset)
+[![Build Status](https://travis-ci.org/terascope/kafka-assets.svg?branch=master)](https://travis-ci.org/terascope/kafka-assets)
+[![codecov](https://codecov.io/gh/terascope/kafka-assets/branch/master/graph/badge.svg)](https://codecov.io/gh/terascope/kafka-assets)
 
 A bundle of [Kafka](https://kafka.apache.org/) operations and processors for [Teraslice](https://github.com/terascope/teraslice).
 
@@ -38,7 +38,7 @@ You can find a list of releases, changes, and pre-built asset bundles [here](htt
 
 ### Kafka Reader
 
-Read data from a kafka topic
+Read data in chunks from a kafka topic
 
 
 **Name:** `kafka_reader`
@@ -89,6 +89,9 @@ Read data from a kafka topic
 
 ### Kafka Sender
 
+Write data to a specific kafka topic
+
+
 **Name:** `kafka_sender`
 
 **Type:** Processor
@@ -105,6 +108,32 @@ Read data from a kafka topic
 | wait             | Number                                     | 20        | How long to wait for `size` messages to become available on the producer.                           |
 | size             | Number                                     | 10000     | How many messages will be batched and sent to kafka together.                                       |
 | metadata_refresh | Number                                     | 300000    | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. |
+
+**Example Job Config:**
+
+```js
+{
+    // make sure to include the asset bundle
+    // additionally you can specify the version
+    // "kafka:2.0.0"
+    "assets": [ "kafka" ],
+    // ...
+    "operations": [
+        // ...
+        // The kafka sender cannot be the first operation in the list
+        // since it is not a reader
+        {
+            "_op": "kafka_sender",
+            // the kafka topic to subscribe to
+            "topic": "d9c7ba7..."
+            // produce 10000 records at a time
+            "size": 10000
+        }
+    ]
+    // ...
+}
+```
+
 
 ## Development
 

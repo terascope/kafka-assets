@@ -17,14 +17,15 @@ const table = require('markdown-table');
 const fs = require('fs');
 const path = require('path');
 
-const assetPath = path.resolve('./asset');
+const rootDir = process.cwd();
+const assetPath = path.join(rootDir, 'asset');
 
 if (!fs.existsSync(assetPath)) {
     throw new Error(`Assets does not exist at path ${assetPath}`);
 }
 
-const docsPath = path.resolve('./docs');
-const assetName = path.basename(assetPath);
+const docsPath = path.join(rootDir, './docs');
+const assetName = path.basename(process.cwd());
 
 const context = new TestContext('operation-doc-generator');
 
