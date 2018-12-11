@@ -62,11 +62,13 @@ This connector exposes two different client implementations. One for producers `
 
 The `options` object enables setting a few properties
 
+| Name | Description | Default | Required |
+| ---- | ----------- | ------- | -------- |
 | type | What type of connector is required. "consumer" or "producer". | consumer | N |
 | group | For type = 'consumer' what consumer group to use | terafoundation_kafka_connector | N |
 | poll_interval | For type = 'producer', how often (in milliseconds) the producer connection is polled to keep it alive. | `100` | N |
 
-***Consumer connector configuration example:**
+**Consumer connector configuration example:**
 
 ```js
 {
@@ -83,7 +85,7 @@ The `options` object enables setting a few properties
 }
 ```
 
-***Producer connector configuration example:**
+**Producer connector configuration example:**
 
 ```js
 {
