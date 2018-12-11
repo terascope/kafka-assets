@@ -1,15 +1,25 @@
 # Kafka Asset Bundle
 
-A bundle of [Kafka](https://kafka.apache.org/) operations and processors for [Teraslice](https://github.com/terascope/teraslice). This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://github.com/terascope/terasliceblob/master/README.md).
+[![Build Status](https://travis-ci.org/terascope/asset.svg?branch=master)](https://travis-ci.org/terascope/asset)
+[![codecov](https://codecov.io/gh/terascope/asset/branch/master/graph/badge.svg)](https://codecov.io/gh/terascope/asset)
+
+A bundle of [Kafka](https://kafka.apache.org/) operations and processors for [Teraslice](https://github.com/terascope/teraslice).
+
+    
+
+This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://github.com/terascope/teraslice/blob/master/README.md).
+
 - [Installation](#installation)
 - [Releases](#releases)
-- [Processors](#processors)
+- [Operations](#operations)
   - [Kafka Reader](#kafka-reader)
+  - [Kafka Sender](#kafka-sender)
 - [Development](#development)
   - [Tests](#tests)
   - [Build](#build)
 - [Contributing](#contributing)
 - [License](#license)
+
 ## Installation
 
 ```bash
@@ -24,13 +34,29 @@ teraslice-cli asset deploy ...
 
 You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/terascope/kafka-assets/releases).
 
-## Processors
+## Operations
 
 ### Kafka Reader
 
+Read data from a kafka topic
+
+
 **Name:** `kafka_reader`
 
-**Description:** Read data from a kafka topic
+**Type:** Reader
+
+**Configuration:**
+| Field               | Type                                                              | Default    | Description                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------- | ----------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| topic               | required_String                                                   | none       | Name of the Kafka topic to process                                                                                                                                                                                                                                                                                                                                                      |
+| group               | required_String                                                   | none       | Name of the Kafka consumer group                                                                                                                                                                                                                                                                                                                                                        |
+| offset_reset        | "smallest", "earliest", "beginning", "largest", "latest", "error" | "smallest" | How offset resets should be handled when there are no valid offsets for the consumer group.                                                                                                                                                                                                                                                                                             |
+| size                | Number                                                            | 10000      | How many records to read before a slice is considered complete.                                                                                                                                                                                                                                                                                                                         |
+| wait                | Number                                                            | 30000      | How long to wait for a full chunk of data to be available. Specified in milliseconds.                                                                                                                                                                                                                                                                                                   |
+| interval            | Number                                                            | 50         | How often to attempt to consume `size` number of records. This only comes into play if the initial consume could not get a full slice.                                                                                                                                                                                                                                                  |
+| connection          | required_String                                                   | "default"  | The Kafka consumer connection to use.                                                                                                                                                                                                                                                                                                                                                   |
+| rollback_on_failure | Boolean                                                           | false      | Controls whether the consumer state is rolled back on failure. This will protect against data loss, however this can have an unintended side effect of blocking the job from moving if failures are minor and persistent. **NOTE:** This currently defaults to `false` due to the side effects of the behavior, at some point in the future it is expected this will default to `true`. |
+| bad_record_action   | "none", "throw", "log"                                            | "none"     | How to handle bad records, defaults to doing nothing                                                                                                                                                                                                                                                                                                                                    |
 
 **Example Job Config:**
 
@@ -60,25 +86,34 @@ You can find a list of releases, changes, and pre-built asset bundles [here](htt
 }
 ```
 
-**Configuration:**
 
-| Field               | Type                                                              | Default  | Description                                                                                                                                                                                                                                                                                                                                                                             |
-| ------------------- | ----------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| topic               | required_String                                                   | none     | Name of the Kafka topic to process                                                                                                                                                                                                                                                                                                                                                      |
-| group               | required_String                                                   | none     | Name of the Kafka consumer group                                                                                                                                                                                                                                                                                                                                                        |
-| offset_reset        | "smallest", "earliest", "beginning", "largest", "latest", "error" | smallest | How offset resets should be handled when there are no valid offsets for the consumer group.                                                                                                                                                                                                                                                                                             |
-| size                | Number                                                            | 10000    | How many records to read before a slice is considered complete.                                                                                                                                                                                                                                                                                                                         |
-| wait                | Number                                                            | 30000    | How long to wait for a full chunk of data to be available. Specified in milliseconds.                                                                                                                                                                                                                                                                                                   |
-| interval            | Number                                                            | 50       | How often to attempt to consume `size` number of records. This only comes into play if the initial consume could not get a full slice.                                                                                                                                                                                                                                                  |
-| connection          | required_String                                                   | default  | The Kafka consumer connection to use.                                                                                                                                                                                                                                                                                                                                                   |
-| rollback_on_failure | Boolean                                                           | false    | Controls whether the consumer state is rolled back on failure. This will protect against data loss, however this can have an unintended side effect of blocking the job from moving if failures are minor and persistent. **NOTE:** This currently defaults to `false` due to the side effects of the behavior, at some point in the future it is expected this will default to `true`. |
-| bad_record_action   | "none", "throw", "log"                                            | none     | How to handle bad records, defaults to doing nothing                                                                                                                                                                                                                                                                                                                                    |
+### Kafka Sender
+
+**Name:** `kafka_sender`
+
+**Type:** Processor
+
+**Configuration:**
+| Field            | Type                                       | Default   | Description                                                                                         |
+| ---------------- | ------------------------------------------ | --------- | --------------------------------------------------------------------------------------------------- |
+| topic            | required_String                            | none      | Name of the Kafka topic to send data to                                                             |
+| id_field         | String                                     | none      | Field in the incoming record that contains keys                                                     |
+| timestamp_field  | String                                     | none      | Field in the incoming record that contains a timestamp to set on the record                         |
+| timestamp_now    | Boolean                                    | false     | Set to true to have a timestamp generated as records are added to the topic                         |
+| connection       | String                                     | "default" | The Kafka producer connection to use.                                                               |
+| compression      | "none", "gzip", "snappy", "lz4", "inherit" | "gzip"    | Type of compression to use                                                                          |
+| wait             | Number                                     | 20        | How long to wait for `size` messages to become available on the producer.                           |
+| size             | Number                                     | 10000     | How many messages will be batched and sent to kafka together.                                       |
+| metadata_refresh | Number                                     | 300000    | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. |
 
 ## Development
 
 ### Tests
 
+Run the kafka tests
+
 **Requirements:**
+
 - `kafka` - A running instance of kafka
 
 **Environment:**
@@ -95,6 +130,7 @@ Build a compiled asset bundle to deploy to a teraslice cluster.
 ```bash
 ./scripts/build.sh
 ```
+
 
 ## Contributing
 
