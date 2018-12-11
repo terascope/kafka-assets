@@ -61,7 +61,7 @@ function formatVal(val, isType = false) {
 
 function formatDefaultVal(s) {
     const val = s.default;
-    if (val == null || (isString(val) && !val)) return 'N/A';
+    if (val == null || (isString(val) && !val)) return '-';
     return formatVal(val);
 }
 
