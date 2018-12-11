@@ -25,18 +25,29 @@ if (!fs.existsSync(assetPath)) {
 }
 
 const docsPath = path.join(rootDir, './docs');
-const assetName = path.basename(process.cwd());
+const repoName = path.basename(process.cwd());
+const orgName = 'terascope';
+const repo = `${orgName}/${repoName}`;
 
 const context = new TestContext('operation-doc-generator');
 
 function formatArr(arr) {
-    return arr.map(v => `"${v}"`).join(', ');
+    return arr.map(v => formatVal(v)).join(', ');
 }
 
 function formatVal(val, wrapString = true) {
     if (Array.isArray(val)) return formatArr(val);
     if (val && val.name) return `${val.name}`;
-    if (isString(val) && wrapString) return `"${val}"`;
+    if (isString(val)) {
+        if (wrapString) return `'${val}'`;
+        if (val.indexOf('required_') === 0) {
+            return `${val.replace('required_', '')} (required)`;
+        }
+        if (val.indexOf('optional_') === 0) {
+            return `${val.replace('optional_', '')} (optional)`;
+        }
+        return val;
+    }
     return toString(val);
 }
 
@@ -91,17 +102,18 @@ function generateConfigDocs(schemaPath) {
         ],
     ];
 
+    Object.keys(schema.schema)
+        .sort()
+        .forEach((field) => {
+            const s = schema.schema[field];
 
-    for (const field of Object.keys(schema.schema)) {
-        const s = schema.schema[field];
-
-        data.push([
-            field,
-            formatType(s),
-            formatDefaultVal(s),
-            s.doc.trim(),
-        ]);
-    }
+            data.push([
+                field,
+                formatType(s),
+                formatDefaultVal(s),
+                s.doc.trim(),
+            ]);
+        });
 
     return `**Configuration:**
 
@@ -196,8 +208,8 @@ function getHeader() {
     const overview = readDoc('OVERVIEW.md') || `> ${packageJSON.description}`;
     parts.push(`# ${formatName(packageJSON.name, 'Bundle')}
 
-[![Build Status](https://travis-ci.org/terascope/${assetName}.svg?branch=master)](https://travis-ci.org/terascope/${assetName})
-[![codecov](https://codecov.io/gh/terascope/${assetName}/branch/master/graph/badge.svg)](https://codecov.io/gh/terascope/${assetName})
+[![Build Status](https://travis-ci.org/${repo}.svg?branch=master)](https://travis-ci.org/${repo})
+[![codecov](https://codecov.io/gh/${repo}/branch/master/graph/badge.svg)](https://codecov.io/gh/${repo})
 
 ${overview}
     `);
@@ -218,7 +230,7 @@ teraslice-cli asset deploy ...
 
     parts.push(`## Releases
 
-You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/terascope/kafka-assets/releases).`);
+You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/${repo}/releases).`);
 
     return formatMarkdown(parts);
 }
