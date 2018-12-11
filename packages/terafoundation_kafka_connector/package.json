@@ -18,7 +18,7 @@
         "test:watch": "jest --coverage=false --notify --watch --onlyChanged",
         "test:debug": "env DEBUG='*teraslice*' jest --detectOpenHandles --coverage=false --runInBand"
     },
-    "homepage": "https://github.com/terascope/kafka-assets/tree/master/packages/terafoundation_kafka_connector#readme",
+    "homepage": "https://github.com/terascope/kafka-assets",
     "repository": "git@github.com:terascope/kafka-assets.git",
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT",

@@ -149,7 +149,7 @@ function createDocForOp({ opName, opPath }) {
         parts.push(generateConfigDocs(schemaPath));
     }
 
-    parts.push(readDoc(opName, 'EXAMPLES.md'));
+    parts.push(readDoc(opName, 'USAGE.md'));
 
     return formatMarkdown(parts);
 }
@@ -173,7 +173,7 @@ function readDoc(...parts) {
     const markdownPath = path.join(docsPath, ...parts);
     if (!fs.existsSync(markdownPath)) return '';
 
-    return fs.readFileSync(markdownPath, 'utf8');
+    return fs.readFileSync(markdownPath, 'utf8').trim();
 }
 
 function resolvePath(...parts) {
@@ -222,11 +222,16 @@ function getHeader() {
 ${overview}
     `);
 
-    parts.push('This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://github.com/terascope/teraslice/blob/master/README.md).');
-
     parts.push('[INSERT-TOC]');
 
-    parts.push(`## Installation
+    parts.push(`## Releases
+
+You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/${repo}/releases).`);
+
+
+    parts.push(`## Getting Started
+
+This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://github.com/terascope/teraslice/blob/master/README.md).
 
 \`\`\`bash
 # Step 1: make sure you have teraslice-cli installed
@@ -236,9 +241,14 @@ yarn global add teraslice-cli
 teraslice-cli asset deploy ...
 \`\`\``);
 
-    parts.push(`## Releases
+    const connectorsMd = readDoc('CONNECTORS.md');
+    if (connectorsMd) {
+        parts.push(`
+**IMPORTANT:** Additionally make sure have installed the required [connectors](#connectors).
 
-You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/${repo}/releases).`);
+## Connectors
+${connectorsMd}`);
+    }
 
     return formatMarkdown(parts);
 }
@@ -250,9 +260,10 @@ function addToc(body) {
 
 function getFooter() {
     const parts = [];
-    parts.push('## Development');
+    parts.push(readDoc('USAGE.md') || `
+## Development
 
-    parts.push(readDoc('DEVELOPMENT.md') || `### Tests
+### Tests
 
 Run the tests for the asset bundle.
 

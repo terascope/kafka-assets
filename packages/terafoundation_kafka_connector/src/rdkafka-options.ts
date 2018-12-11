@@ -1,4 +1,4 @@
-// https: // github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md
+// https:// github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md
 
 export interface RDKafkaBaseOptions {
     'client.id'?: string;
