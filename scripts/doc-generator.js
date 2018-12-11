@@ -35,19 +35,27 @@ function formatArr(arr) {
     return arr.map(v => formatVal(v)).join(', ');
 }
 
+function isPrimative(val) {
+    if (Number.isInteger(val)) return true;
+    if (val === true || val === false) return true;
+    if (val === 'true' || val === 'false') return true;
+    return false;
+}
+
 function formatVal(val, wrapString = true) {
     if (Array.isArray(val)) return formatArr(val);
     if (val && val.name) return `${val.name}`;
     if (isString(val)) {
         if (wrapString) return `'${val}'`;
         if (val.indexOf('required_') === 0) {
-            return `${val.replace('required_', '')} (required)`;
+            return `${val.replace('required_', '')}`;
         }
         if (val.indexOf('optional_') === 0) {
-            return `${val.replace('optional_', '')} (optional)`;
+            return `${val.replace('optional_', '')}`;
         }
         return val;
     }
+    if (isPrimative(val)) return `\`${val}\``;
     return toString(val);
 }
 
@@ -59,7 +67,7 @@ function formatDefaultVal(s) {
 
 function formatType(s) {
     if (s.default && !s.format) return getTypeOf(s);
-    return formatVal(s.format, false);
+    return firstToUpper(formatVal(s.format, false));
 }
 
 function formatName(name, suffix) {
@@ -108,7 +116,7 @@ function generateConfigDocs(schemaPath) {
             const s = schema.schema[field];
 
             data.push([
-                field,
+                `**${field}**`,
                 formatType(s),
                 formatDefaultVal(s),
                 s.doc.trim(),
