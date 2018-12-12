@@ -8,6 +8,7 @@
         "skipLibCheck": true,
         "experimentalDecorators": true,
         "strict": true,
+        "inlineSourceMap": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
