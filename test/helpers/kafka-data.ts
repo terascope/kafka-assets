@@ -60,7 +60,7 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     return data;
 }
 
-export async function readData(topic: string, size: number): Promise<object[]> {
+export async function readData(topic: string, size: number): Promise<any[]> {
     const consumer = new kafka.KafkaConsumer({
         // We want to explicitly manage offset commits.
         'enable.auto.commit': false,
@@ -82,8 +82,15 @@ export async function readData(topic: string, size: number): Promise<object[]> {
 
     await client.connect();
 
-    const messages = await client.consume((msg): object => {
-        return JSON.parse(msg.value.toString('utf8'));
+    const messages = await client.consume((msg): any => {
+        try {
+            return JSON.parse(msg.value.toString('utf8'));
+        } catch (err) {
+            if (Buffer.isBuffer(msg.value)) {
+                return msg.value.toString('utf8');
+            }
+            return msg.value;
+        }
     }, {
         size,
         wait: 10000

@@ -4,9 +4,7 @@ import {
     ConnectionConfig,
     OperationAPI,
     DeadLetterAPIFn,
-    toString,
     parseError,
-    isFunction,
 } from '@terascope/job-components';
 import { KafkaDeadLetterConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
@@ -43,21 +41,26 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     async createAPI(): Promise<DeadLetterAPIFn> {
         return (input: any, err: Error) => {
             this.producer.produce([input], (msg: any): ProduceMessage => {
-                let data: Buffer;
+                let record: string;
 
                 if (msg && Buffer.isBuffer(msg)) {
-                    data = msg;
-                } else if (msg && isFunction(msg.toBuffer)) {
-                    data = msg.toBuffer() as Buffer;
-                } else if (msg) {
-                    data = Buffer.from(toString(msg));
+                    record = msg.toString('utf8');
                 } else {
-                    data = Buffer.from(parseError(err, true));
+                    try {
+                        record = JSON.stringify(msg);
+                    } catch (err) {
+                        record = msg;
+                    }
                 }
+
+                const data = {
+                    record,
+                    error: parseError(err, true)
+                };
 
                 return {
                     timestamp: Date.now(),
-                    data,
+                    data: Buffer.from(JSON.stringify(data)),
                     key: null,
                 };
             });
