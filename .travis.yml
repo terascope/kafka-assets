@@ -32,12 +32,12 @@ install:
   - yarn install
 script:
   - yarn test:all
-after_failure:
-  - tail -n 100 $KAFKA_HOME/*.log
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+after_failure:
+  - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:
-  - yarn build
+  - ./scripts/build.sh
   - cp ./docs/CONNECTORS.md > packages/terafoundation_kafka_connector/README.md
 deploy:
   - provider: script
@@ -48,6 +48,7 @@ deploy:
       tags: true
   - provider: releases
     api_key: $GITHUB_TOKEN
+    prerelease: true
     file_glob: true
     file: builds/*.zip
     skip_cleanup: true

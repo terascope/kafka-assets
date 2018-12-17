@@ -22,3 +22,11 @@ Build a compiled asset bundle to deploy to a teraslice cluster.
 ```bash
 ./scripts/build.sh
 ```
+
+### Documentation
+
+To update the documentation run the following command.
+
+```bash
+./scripts/doc-generator.js > README.md
+```

@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.13.1":
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.13.1.tgz#8677771dee9399791773c35274e207109a7de0c5"
-  integrity sha512-wvOM+nCP6oWoOTWu65BGcMpoi3CSq7SNl3etjfENb7laUbAAna3jTU1QJZbSLqPezJ24ARafzmftXL35JwjHOA==
+"@terascope/job-components@^0.14.1":
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.14.1.tgz#1737c5effa9ce6eed95cb017727496b1519dd554"
+  integrity sha512-juUN50JXUSzVkj2inrI6251mu4N8OVM/8qe894uwT369BuKVwDojkFW5B+vEX05Hp7FJ3kcC5rj/XmV9RJdPmw==
   dependencies:
-    "@terascope/queue" "^1.1.4"
+    "@terascope/queue" "^1.1.5"
     convict "^4.4.0"
     datemath-parser "^1.0.6"
     debug "^4.1.0"
@@ -16,10 +16,10 @@
     lodash.clonedeep "^4.5.0"
     uuid "^3.3.2"
 
-"@terascope/queue@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.4.tgz#52db805f09403579478ede0e041f76c176c6e766"
-  integrity sha512-ZH8/q1vx8CPYhfamzCRErj1HUvdN8rQbV3uvyAQ7PLKh2+CrN5HX6J8lCa1TVDlb1RTXkCGzOXnJ2b+AJP3lRg==
+"@terascope/queue@^1.1.5":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.6.tgz#763d035cf31d2e1fd819ae827274f50874016708"
+  integrity sha512-TmLOLh49UVdksjwAUzOO6lqOQMwJIW0pHsXKibcdfzAcUgwXL3JH6BjO2l1u5njQeHjoj1SOyBk6aU1/fHd0PQ==
 
 camelcase@^4.1.0:
   version "4.1.0"

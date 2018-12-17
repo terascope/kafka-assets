@@ -1,8 +1,8 @@
-import { ConvictSchema, JobConfig } from '@terascope/job-components';
+import { ConvictSchema, ValidatedJobConfig } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
 export default class Schema extends ConvictSchema<KafkaReaderConfig> {
-    validateJob(job: JobConfig) {
+    validateJob(job: ValidatedJobConfig) {
         const secondOp = job.operations[1] && job.operations[1]._op;
 
         if (secondOp === 'json_protocol') {
