@@ -34,7 +34,6 @@ describe('Kafka Fetcher', () => {
                 group,
                 size: 100,
                 wait: 2000,
-                bad_record_action: 'log',
                 rollback_on_failure: true
             },
             {

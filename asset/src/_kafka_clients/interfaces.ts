@@ -1,5 +1,4 @@
 import { Logger } from '@terascope/job-components';
-import { BadRecordAction } from '../kafka_reader/interfaces';
 
 export interface OffsetByPartition {
     [partition: number]: number;
@@ -18,7 +17,6 @@ export interface TopicPartition {
 
 export interface ConsumerClientConfig {
     topic: string;
-    bad_record_action: BadRecordAction;
     logger: Logger;
 }
 
@@ -33,5 +31,3 @@ export interface ProducerClientConfig {
     logger: Logger;
     batchSize: number;
 }
-
-export { BadRecordAction };

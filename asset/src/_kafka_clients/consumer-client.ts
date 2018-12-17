@@ -10,7 +10,6 @@ import {
     TrackedOffsets,
     TopicPartition,
     ConsumerClientConfig,
-    BadRecordAction,
 } from './interfaces';
 import {
     ERR__ASSIGN_PARTITIONS,
@@ -20,7 +19,6 @@ import {
 export default class ConsumerClient extends BaseClient {
     private _client: kafka.KafkaConsumer;
     private _topic: string;
-    private _badRecordAction: BadRecordAction;
     private _rebalancing = true;
     private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
@@ -32,7 +30,6 @@ export default class ConsumerClient extends BaseClient {
         super(config.logger);
         this._client = client;
         this._topic = config.topic;
-        this._badRecordAction = config.bad_record_action;
     }
 
     async commit() {
@@ -134,7 +131,8 @@ export default class ConsumerClient extends BaseClient {
         this._logger.trace(`consumed ${messages.length} messages`);
 
         for (const message of messages) {
-            const entity = this._handleMessage(message, map);
+            this._trackOffsets(message);
+            const entity = map(message);
             if (entity != null) {
                 results.push(entity);
             }
@@ -150,23 +148,6 @@ export default class ConsumerClient extends BaseClient {
                 else resolve(messages);
             });
         });
-    }
-
-    private _handleMessage<T>(message: KafkaMessage, map: (msg: KafkaMessage) => T): T|null {
-        this._trackOffsets(message);
-
-        try {
-            return map(message);
-        } catch (err) {
-            if (this._badRecordAction === 'log') {
-                this._logger.error('Bad record', message.value.toString('utf8'));
-                this._logger.error(err);
-            } else if (this._badRecordAction === 'throw') {
-                throw err;
-            }
-
-            return null;
-        }
     }
 
     private _flushOffsets(key: keyof TrackedOffsets) {

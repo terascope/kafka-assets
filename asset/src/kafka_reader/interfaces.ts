@@ -44,11 +44,4 @@ export interface KafkaReaderConfig extends OpConfig {
      at some point in the future it is expected this will default to `true`.
     */
     rollback_on_failure: boolean;
-
-    /**
-     * How to handle bad records, defaults to doing nothing
-    */
-    bad_record_action: BadRecordAction;
 }
-
-export type BadRecordAction = 'none'|'throw'|'log';

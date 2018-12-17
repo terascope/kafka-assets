@@ -57,11 +57,6 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 ].join(' '),
                 default: false,
                 format: Boolean
-            },
-            bad_record_action: {
-                doc: 'How to handle bad records, defaults to doing nothing',
-                default: 'none',
-                format: ['none', 'throw', 'log']
             }
         };
     }

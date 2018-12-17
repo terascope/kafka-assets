@@ -25,7 +25,6 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         this.consumer = new ConsumerClient(this.createClient(), {
             logger,
             topic: this.opConfig.topic,
-            bad_record_action: this.opConfig.bad_record_action
         });
     }
 
@@ -40,14 +39,14 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     }
 
     async fetch() {
-        const map = (msg: KafkaMessage): DataEntity => {
+        const map = this.tryRecord((msg: KafkaMessage): DataEntity => {
             const metadata: KafkaMessageMetadata = omit(msg, 'value');
             return DataEntity.fromBuffer(
                 msg.value,
                 this.opConfig,
                 metadata
             );
-        };
+        });
 
         const result = await this.consumer.consume(map, this.opConfig);
         return result;

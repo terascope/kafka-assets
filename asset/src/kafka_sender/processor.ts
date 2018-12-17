@@ -50,8 +50,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         const key = msg[this.opConfig.id_field];
         if (key && isString(key)) return key;
 
-        // TODO we should probably do something like bad_record_action
-        this.logger.error(`invalid id_field on record ${this.opConfig.id_field}`);
+        const err = new Error(`invalid id_field on record ${this.opConfig.id_field}`);
+        this.rejectRecord(msg, err);
         return null;
     }
 
@@ -60,8 +60,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             const date = getValidDate(msg[this.opConfig.timestamp_field]);
             if (date) return date.getTime();
 
-            // TODO we should probably do something like bad_record_action
-            this.logger.error(`invalid timestamp_field on record ${this.opConfig.timestamp_field}`);
+            const err = new Error(`invalid timestamp_field on record ${this.opConfig.timestamp_field}`);
+            this.rejectRecord(msg, err);
         } else if (this.opConfig.timestamp_now) {
             return Date.now();
         }

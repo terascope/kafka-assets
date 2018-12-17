@@ -9,7 +9,8 @@ const {
     toString,
     isString,
     getTypeOf,
-    firstToUpper
+    firstToUpper,
+    opSchema
 } = require('@terascope/job-components');
 
 const generateToc = require('markdown-toc');
@@ -99,7 +100,9 @@ function generateConfigDocs(schemaPath) {
     const SchemaModule = require(schemaPath);
     const Schema = SchemaModule.default || SchemaModule;
 
-    const schema = new Schema(context);
+    if (Schema.type() !== 'convict') {
+        throw new Error('Only convict Schema classes are allowed');
+    }
 
     const data = [
         [
@@ -110,10 +113,12 @@ function generateConfigDocs(schemaPath) {
         ],
     ];
 
-    Object.keys(schema.schema)
+    const schema = Object.assign({}, opSchema, new Schema(context).schema);
+
+    Object.keys(schema)
         .sort()
         .forEach((field) => {
-            const s = schema.schema[field];
+            const s = schema[field];
 
             data.push([
                 `**${field}**`,

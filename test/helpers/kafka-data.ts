@@ -78,7 +78,6 @@ export async function readData(topic: string, size: number): Promise<object[]> {
     const client = new ConsumerClient(consumer, {
         logger,
         topic,
-        bad_record_action: 'throw'
     });
 
     await client.connect();
