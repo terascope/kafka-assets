@@ -13,7 +13,7 @@ module.exports = {
     ],
     preset: 'ts-jest',
     globals: {
-        'test-jest': {
+        'ts-jest': {
             tsConfig: './tsconfig.json',
             diagnostics: true,
             pretty: true,

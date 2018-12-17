@@ -26,6 +26,7 @@ before_install:
   - sleep 3
   # Run Kafka on localhost:9092
   - kafka-server-start.sh "$KAFKA_HOME/config/server.properties" > "$KAFKA_HOME/kafka.log" &
+  - sleep 3
   # Make it colorful
   - export FORCE_COLOR=1
 install:
