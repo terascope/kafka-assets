@@ -96,6 +96,11 @@ function formatMarkdown(parts) {
         .join('\n\n');
 }
 
+function sanatizeStr(str) {
+    if (!str) return '';
+    return str.replace(/\r?\n|\r/g, '<br>').trim();
+}
+
 function generateConfigDocs(schemaPath, opType) {
     const SchemaModule = require(schemaPath);
     const Schema = SchemaModule.default || SchemaModule;
@@ -124,7 +129,7 @@ function generateConfigDocs(schemaPath, opType) {
                 `**${field}**`,
                 formatType(s),
                 formatDefaultVal(s),
-                s.doc.trim(),
+                sanatizeStr(s.doc),
             ]);
         });
 
@@ -249,6 +254,7 @@ This asset bundle requires a running Teraslice cluster, you can find the documen
 \`\`\`bash
 # Step 1: make sure you have teraslice-cli installed
 yarn global add teraslice-cli
+
 # Step 2:
 # FIXME: this should be accurate
 teraslice-cli asset deploy ...
