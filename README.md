@@ -11,6 +11,7 @@
 - [Connectors](#connectors)
   - [Kafka Connector](#kafka-connector)
 - [Operations](#operations)
+  - [Kafka Dead Letter](#kafka-dead-letter)
   - [Kafka Reader](#kafka-reader)
   - [Kafka Sender](#kafka-sender)
 - [Development](#development)
@@ -114,6 +115,69 @@ terafoundation:
 ```
 
 ## Operations
+
+### Kafka Dead Letter
+
+> Write bad records to a kafka topic
+
+**IMPORTANT:** Requires teraslice `v0.45.0` or greater
+
+**Name:** `kafka_dead_letter`
+
+**Type:** `API`
+
+**Configuration:**
+
+|          Field          |                         Type                         |   Default   |                                                                                                                                                                                                                                         Description                                                                                                                                                                                                                                         |
+| :---------------------: | :--------------------------------------------------: | :---------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| **_dead_letter_action** |                       `String`                       |   `"none"`  | This action will specify what to do when failing to parse or transform a record. ​​​​​
+​​​​​The following builtin actions are supported: ​​​
+​​​​​  - "throw": throw the original error ​​​​​
+​​​​​  - "log": log the error and the data ​​​​​
+​​​​​  - "none": (default) skip the error entirely
+
+​​​​​If none of the actions are specified it will try and use a registered Dead Letter Queue API under that name.
+The API must be already be created by a operation before it can used.​ |
+|      **_encoding**      |                       `"json"`                       |   `"json"`  |                                                                                                                                                                                              Used for specifying the data encoding type when using `DataEntity.fromBuffer`. Defaults to `json`.                                                                                                                                                                                             |
+|         **_op**         |                       `String`                       |      -      |                                                                                                                                                                                                             Name of operation, , it must reflect the name of the file or folder                                                                                                                                                                                                             |
+|     **compression**     | `"none"`, `"gzip"`, `"snappy"`, `"lz4"`, `"inherit"` |   `"gzip"`  |                                                                                                                                                                                                                                  Type of compression to use                                                                                                                                                                                                                                 |
+|      **connection**     |                       `String`                       | `"default"` |                                                                                                                                                                                                                            The Kafka producer connection to use.                                                                                                                                                                                                                            |
+|   **metadata_refresh**  |                       `Number`                       |   `300000`  |                                                                                                                                                                                             How often the producer will poll the broker for metadata information. Set to -1 to disable polling.                                                                                                                                                                                             |
+|         **size**        |                       `Number`                       |   `10000`   |                                                                                                                                                                                                                How many messages will be batched and sent to kafka together.                                                                                                                                                                                                                |
+|        **topic**        |                       `String`                       |      -      |                                                                                                                                                                                                                           Name of the Kafka topic to send data to                                                                                                                                                                                                                           |
+|         **wait**        |                       `Number`                       |    `500`    |                                                                                                                                                                                                          How long to wait for `size` messages to become available on the producer.                                                                                                                                                                                                          |
+
+**Example Job Config:**
+
+```js
+{
+    // make sure to include the asset bundle
+    // additionally you can specify the version
+    // "kafka:2.0.0"
+    "assets": [ "kafka" ],
+    "apis": [
+        {
+            "_name": "kafka_dead_letter",
+            // Specify the topic to push the dead letter queue to
+            "topic" : "a9bs823...",
+        }
+    ],
+    // ...
+    "operations": [
+        // This example uses the kafka reader, but any processor that supports the dead letter API should be able to support the kafka dead letter queue
+        {
+            "_op": "kafka_reader",
+            // Make sure to specify the dead letter action
+            "_dead_letter_action": "kafka_dead_letter",
+            // the kafka topic to subscribe to
+            "topic": "d9c7ba7..."
+            // the kafka consumer group
+            "group": "4e69b5271-4a6..."
+        },
+    ]
+    // ...
+}
+```
 
 ### Kafka Reader
 

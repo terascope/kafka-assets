@@ -96,7 +96,7 @@ function formatMarkdown(parts) {
         .join('\n\n');
 }
 
-function generateConfigDocs(schemaPath) {
+function generateConfigDocs(schemaPath, opType) {
     const SchemaModule = require(schemaPath);
     const Schema = SchemaModule.default || SchemaModule;
 
@@ -113,7 +113,7 @@ function generateConfigDocs(schemaPath) {
         ],
     ];
 
-    const schema = Object.assign({}, opSchema, new Schema(context).schema);
+    const schema = Object.assign({}, opSchema, new Schema(context, opType).schema);
 
     Object.keys(schema)
         .sort()
@@ -144,14 +144,18 @@ function createDocForOp({ opName, opPath }) {
 
     parts.push(`**Name:** \`${opName}\``);
 
+    let opType = 'operation';
     if (isReader(opPath)) {
         parts.push('**Type:** `Reader`');
     } else if (isProcessor(opPath)) {
         parts.push('**Type:** `Processor`');
+    } else if (isAPI(opPath)) {
+        parts.push('**Type:** `API`');
+        opType = 'api';
     }
 
     if (schemaPath != null) {
-        parts.push(generateConfigDocs(schemaPath));
+        parts.push(generateConfigDocs(schemaPath, opType));
     }
 
     parts.push(readDoc(opName, 'USAGE.md'));
@@ -163,6 +167,10 @@ function isReader(opPath) {
     return resolvePath(opPath, 'fetcher') != null;
 }
 
+function isAPI(opPath) {
+    return resolvePath(opPath, 'api') != null;
+}
+
 function isProcessor(opPath) {
     return resolvePath(opPath, 'processor') != null;
 }
@@ -171,7 +179,7 @@ function isOperation(opPath) {
     const hasSchema = resolvePath(path.join(opPath, 'schema')) != null;
     if (!hasSchema) return false;
 
-    return hasSchema && (isReader(opPath) || isProcessor(opPath));
+    return hasSchema && (isReader(opPath) || isProcessor(opPath) || isAPI(opPath));
 }
 
 function readDoc(...parts) {
