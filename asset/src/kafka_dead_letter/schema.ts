@@ -21,7 +21,7 @@ export default class Schema extends ConvictSchema<KafkaDeadLetterConfig> {
             },
             wait: {
                 doc: 'How long to wait for `size` messages to become available on the producer.',
-                default: 20,
+                default: 500,
                 format: Number
             },
             size: {

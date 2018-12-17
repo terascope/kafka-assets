@@ -43,7 +43,9 @@ export default class ProducerClient extends BaseClient {
         super.close();
     }
 
-    async produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void> {
+    async produce(messages: ProduceMessage[]): Promise<void>;
+    async produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void>;
+    async produce<T>(messages: T[], map?: (msg: T) => ProduceMessage): Promise<void> {
         let error: Error|null = null;
 
         const off = this._once('client:error', (err) => {
@@ -57,7 +59,22 @@ export default class ProducerClient extends BaseClient {
 
         try {
             for (const msgs of chunks) {
-                await this._produce(msgs, map);
+                for (const msg of msgs) {
+                    // @ts-ignore because of the type inference is a pain
+                    const message: ProduceMessage = (map == null) ? msg : map(msg);
+
+                    this._client.produce(
+                        this._topic,
+                        // This is the partition. There may be use cases where
+                        // we'll need to control this.
+                        null,
+                        message.data,
+                        message.key,
+                        message.timestamp
+                    );
+                }
+
+                await this._try(() => this._flush(), 'produce', 0);
             }
         } finally {
             off();
@@ -65,24 +82,6 @@ export default class ProducerClient extends BaseClient {
                 this._logger.error(error);
             }
         }
-    }
-
-    private async _produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void> {
-        for (const msg of messages) {
-            const message = map(msg);
-
-            this._client.produce(
-                this._topic,
-                // This is the partition. There may be use cases where
-                // we'll need to control this.
-                null,
-                message.data,
-                message.key,
-                message.timestamp
-            );
-        }
-
-        await this._try(() => this._flush(), 'produce', 0);
     }
 
     private _flush(): Promise<void> {

@@ -5,6 +5,7 @@ import {
     OperationAPI,
     DeadLetterAPIFn,
     parseError,
+    Collector,
 } from '@terascope/job-components';
 import { KafkaDeadLetterConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
@@ -12,6 +13,7 @@ import * as kafka from 'node-rdkafka';
 
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer: ProducerClient;
+    collector: Collector<ProduceMessage>;
     private _bufferSize: number;
 
     constructor(context: WorkerContext, apiConfig: KafkaDeadLetterConfig, executionConfig: ExecutionConfig) {
@@ -26,6 +28,11 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
             topic: this.apiConfig.topic,
             batchSize: this._bufferSize,
         });
+
+        this.collector = new Collector({
+            size: this.apiConfig.size,
+            wait: this.apiConfig.wait,
+        });
     }
 
     async initialize() {
@@ -34,37 +41,45 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     }
 
     async shutdown() {
+        const batch = this.collector.flushAll();
+        await this.producer.produce(batch);
+
         await this.producer.disconnect();
         await super.shutdown();
     }
 
     async createAPI(): Promise<DeadLetterAPIFn> {
         return (input: any, err: Error) => {
-            this.producer.produce([input], (msg: any): ProduceMessage => {
-                let record: string;
+            let record: string;
 
-                if (msg && Buffer.isBuffer(msg)) {
-                    record = msg.toString('utf8');
-                } else {
-                    try {
-                        record = JSON.stringify(msg);
-                    } catch (err) {
-                        record = msg;
-                    }
+            if (input && Buffer.isBuffer(input)) {
+                record = input.toString('utf8');
+            } else {
+                try {
+                    record = JSON.stringify(input);
+                } catch (err) {
+                    record = input;
                 }
+            }
 
-                const data = {
-                    record,
-                    error: parseError(err, true)
-                };
+            const data = {
+                record,
+                error: parseError(err, true)
+            };
 
-                return {
-                    timestamp: Date.now(),
-                    data: Buffer.from(JSON.stringify(data)),
-                    key: null,
-                };
-            });
+            const msg = {
+                timestamp: Date.now(),
+                data: Buffer.from(JSON.stringify(data)),
+                key: null,
+            };
+
+            this.collector.add(msg);
         };
+    }
+
+    async onSliceFinalizing() {
+        const batch = this.collector.flushAll();
+        await this.producer.produce(batch);
     }
 
     private clientConfig() {
