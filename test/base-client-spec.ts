@@ -2,34 +2,101 @@ import 'jest-extended';
 import { EventEmitter } from 'events';
 import { debugLogger } from '@terascope/job-components';
 import BaseClient from '../asset/src/_kafka_clients/base-client';
-import { KafkaError } from '../asset/src/_kafka_helpers';
+import { KafkaError, AnyKafkaError } from '../asset/src/_kafka_helpers';
 import * as codes from '../asset/src/_kafka_helpers/error-codes';
 
 describe('Base Client (internal)', () => {
     const logger = debugLogger('base-client');
-    let client: BaseClient;
+    class FakeKafkaClient extends EventEmitter {
+        connected = true;
+        isConnected() {
+            return this.connected;
+        }
+        connect(obj: any, cb: (err: AnyKafkaError, obj: any) => void) {
+            cb(null, obj);
+        }
+        disconnect(cb: (err: AnyKafkaError) => void) {
+            cb(null);
+        }
+    }
+
+    let fakeClient: FakeKafkaClient;
+
+    // @ts-ignore
+    let client: BaseClient<TestKafkaClient>;
     let events: EventEmitter;
 
     beforeEach(() => {
-        client = new BaseClient(logger);
+        fakeClient = new FakeKafkaClient();
+
+        // @ts-ignore
+        client = new BaseClient(fakeClient, logger);
 
         // @ts-ignore because it is private
         events = client._events;
     });
 
-    afterEach(() => client.close());
+    afterEach(() => client.disconnect());
 
-    describe('->close', () => {
-        it('should cleanup everything correctly', () => {
+    describe('->disconnect', () => {
+        it('should cleanup everything correctly', async () => {
             events.on('test:close', () => {});
             expect(events.listenerCount('test:close')).toBe(1);
             expect(client).toHaveProperty('_closed', false);
 
-            client.close();
+            await client.disconnect();
 
             expect(client).toHaveProperty('_closed', true);
             expect(client).toHaveProperty('_cleanup', []);
             expect(events.listenerCount('test:close')).toBe(0);
+        });
+
+        it('should handle an error on disconnect', async () => {
+            const original = fakeClient.disconnect;
+
+            fakeClient.disconnect = jest.fn((cb: (err: AnyKafkaError) => void) => {
+                const err = new Error('Disconnect error');
+                cb(err);
+            });
+
+            try {
+                await client.disconnect();
+            } catch (err) {
+                expect(err).toHaveProperty('message',
+                'Failed to disconnect, caused by error: Disconnect error');
+            }
+
+            fakeClient.disconnect = original;
+        });
+
+        it('should not disconnect if not connected', async () => {
+            fakeClient.connected = false;
+            fakeClient.disconnect = jest.fn();
+
+            await expect(client.disconnect()).resolves.toBeNil();
+            expect(fakeClient.disconnect).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('->_connect', () => {
+        it('should handle an successful connection', async () => {
+            // @ts-ignore
+            return expect(client._connect()).resolves.toBeNil();
+        });
+
+        it('should handle an error on connect', async () => {
+            fakeClient.connect = jest.fn((obj: any, cb: (err: AnyKafkaError, obj: any) => void) => {
+                const err = new Error('Connect error');
+                cb(err, obj);
+            });
+
+            try {
+                // @ts-ignore
+                await client._connect();
+            } catch (err) {
+                expect(err).toHaveProperty('message',
+                'Failed to connect, caused by error: Connect error');
+            }
         });
     });
 
@@ -54,7 +121,7 @@ describe('Base Client (internal)', () => {
             expect(client._cleanup).toBeArrayOfSize(0);
         });
 
-        it('should fire once and cleanup when close is called', () => {
+        it('should fire once and cleanup when close is called', async () => {
             const listener = jest.fn();
 
             // @ts-ignore because it is private
@@ -64,7 +131,7 @@ describe('Base Client (internal)', () => {
             expect(client._cleanup).toBeArrayOfSize(1);
             expect(events.listenerCount('test:once:close')).toBe(1);
 
-            client.close();
+            await client.disconnect();
 
             expect(listener).toHaveBeenCalledTimes(1);
             expect(listener).toHaveBeenCalledWith(null);
@@ -154,7 +221,7 @@ describe('Base Client (internal)', () => {
             expect(client._cleanup).toBeArrayOfSize(0);
         });
 
-        it('should fire once close is called and cleanup', () => {
+        it('should fire once close is called and cleanup', async () => {
             const cb = jest.fn();
 
             // @ts-ignore because it is private
@@ -164,7 +231,7 @@ describe('Base Client (internal)', () => {
             expect(client._cleanup).toBeArrayOfSize(1);
             expect(cb).not.toHaveBeenCalled();
 
-            client.close();
+            await client.disconnect();
 
             expect(cb).toHaveBeenCalledTimes(1);
             expect(cb).toHaveBeenCalledWith(null);

@@ -1,28 +1,61 @@
 import { EventEmitter } from 'events';
 import once from 'lodash.once';
 import { Logger, isError, pDelay } from '@terascope/job-components';
-import { isOkayError, wrapError, isKafkaError } from '../_kafka_helpers';
+import {
+    isOkayError,
+    wrapError,
+    isKafkaError,
+    AnyKafkaError
+} from '../_kafka_helpers';
+import * as kafka from 'node-rdkafka';
 
-export default class BaseClient {
+export default class BaseClient<T extends kafka.Client> {
     protected _closed: boolean = false;
-    protected _events = new EventEmitter();
-    protected _logger: Logger;
     protected _backoff: number = defaultBackOff;
+
+    protected readonly _events = new EventEmitter();
+    protected readonly _logger: Logger;
+    protected readonly _client: T;
 
     private _cleanup: cleanupFn[] = [];
 
-    constructor(logger: Logger) {
+    constructor(client: T, logger: Logger) {
         this._logger = logger;
+        this._client = client;
     }
 
-    close() {
+    /**
+     * Disconnect from Kafka and cleanup.
+    */
+    async disconnect() {
+        this._closed = true;
+
+        if (this._client.isConnected()) {
+            await new Promise((resolve, reject) => {
+                this._client.disconnect((err: AnyKafkaError) => {
+                    if (err) reject(wrapError('Failed to disconnect', err));
+                    else resolve();
+                });
+            });
+        }
+
         for (const fn of this._cleanup) {
             fn();
         }
 
         this._cleanup = [];
+        this._client.removeAllListeners();
         this._events.removeAllListeners();
-        this._closed = true;
+    }
+
+    /** A promisified version of connect */
+    protected _connect(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this._client.connect({}, (err: AnyKafkaError) => {
+                if (err) reject(wrapError('Failed to connect', err));
+                else resolve();
+            });
+        });
     }
 
     /**
@@ -114,6 +147,18 @@ export default class BaseClient {
         return off;
     }
 
+    /**
+     * Perform an action, fail if the function fails,
+     * or the event emits an error
+    */
+    protected async _failIfEvent<T extends tryFn>(event: string, fn: T, action: string = 'any'): RetryResult<T> {
+        return this._tryWithEvent(event, fn, action, 0);
+    }
+
+     /**
+     * Perform an action, retry if the function fails,
+     * or the event emits an error
+    */
     protected async _tryWithEvent<T extends tryFn>(event: string, fn: T, action: string = 'any', retries = 2): RetryResult<T> {
         let eventError: Error|null = null;
 

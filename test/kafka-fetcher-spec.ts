@@ -33,7 +33,7 @@ describe('Kafka Fetcher', () => {
                 topic,
                 group,
                 size: 100,
-                wait: 2000,
+                wait: 5000,
                 rollback_on_failure: true
             },
             {
@@ -74,6 +74,16 @@ describe('Kafka Fetcher', () => {
         exampleData = await loadData(topic, 'example-data.txt');
 
         results = results.concat(await harness.runSlice({}));
+
+        // disconnect in-order to prove the connection can reconnect
+        await new Promise((resolve, reject) => {
+            // @ts-ignore
+            fetcher.consumer._client.disconnect((err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
         results = results.concat(await harness.runSlice({}));
     });
 
@@ -85,7 +95,25 @@ describe('Kafka Fetcher', () => {
         // it should be able to disconnect twice
         await fetcher.consumer.disconnect();
 
+        // @ts-ignore
+        await expect(fetcher.consumer._checkState()).rejects.toThrowError('Client is closed');
+
         await harness.shutdown();
+    });
+
+    it('should able to call _clientEvents without double listening', () => {
+        // @ts-ignore
+        const expected = fetcher.consumer._client.listenerCount('error');
+
+        expect(() => {
+            // @ts-ignore
+            fetcher.consumer._clientEvents();
+        }).not.toThrowError();
+
+        // @ts-ignore
+        const actual = fetcher.consumer._client.listenerCount('error');
+
+        expect(actual).toEqual(expected);
     });
 
     it('should return a list of records', () => {

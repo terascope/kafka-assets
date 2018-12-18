@@ -68,7 +68,7 @@ describe('Kafka Sender', () => {
 
         await harness.initialize();
 
-        // it should be able to call connect
+        // it should be able to call connect again
         await sender.producer.connect();
 
         while (results.length < targetSize) {
@@ -91,6 +91,21 @@ describe('Kafka Sender', () => {
         // it should be able to disconnect twice
         await sender.producer.disconnect();
         await harness.shutdown();
+    });
+
+    it('should able to call _clientEvents without double listening', () => {
+        // @ts-ignore
+        const expected = sender.producer._client.listenerCount('error');
+
+        expect(() => {
+            // @ts-ignore
+            sender.producer._clientEvents();
+        }).not.toThrowError();
+
+        // @ts-ignore
+        const actual = sender.producer._client.listenerCount('error');
+
+        expect(actual).toEqual(expected);
     });
 
     it('should have produced the correct amount of records', () => {
