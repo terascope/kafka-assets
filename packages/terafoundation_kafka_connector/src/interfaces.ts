@@ -1,10 +1,4 @@
 import { KafkaConsumer, Producer } from 'node-rdkafka';
-import {
-    RDKafkaConsumerOptions,
-    RDKafkaProducerOptions,
-    RDKafkaConsumerTopicOptions,
-    RDKafkaProducerTopicOptions,
-} from './rdkafka-options';
 
 export interface KafkaConnectorConfig {
     group?: string;
@@ -15,16 +9,19 @@ export interface KafkaClientSettings {
     autoconnect?: boolean;
 }
 
+export interface RDKafkaOptions {
+    [key: string]: string|number|boolean|Function;
+}
 export interface KafkaConsumerSettings extends KafkaClientSettings {
     options: KafkaConsumerOptions;
-    topic_options?: RDKafkaConsumerTopicOptions;
-    rdkafka_options?: RDKafkaConsumerOptions;
+    topic_options?: RDKafkaOptions;
+    rdkafka_options?: RDKafkaOptions;
 }
 
 export interface KafkaProducerSettings extends KafkaClientSettings {
     options: KafkaProducerOptions;
-    topic_options?: RDKafkaProducerTopicOptions;
-    rdkafka_options?: RDKafkaProducerOptions;
+    topic_options?: RDKafkaOptions;
+    rdkafka_options?: RDKafkaOptions;
 }
 
 export interface KafkaClientOptions {

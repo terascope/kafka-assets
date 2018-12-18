@@ -7,13 +7,8 @@ import {
     KafkaConsumerResult,
     KafkaProducerResult,
     ClientType,
+    RDKafkaOptions
 } from './interfaces';
-import {
-    RDKafkaConsumerOptions,
-    RDKafkaConsumerTopicOptions,
-    RDKafkaProducerOptions,
-    RDKafkaProducerTopicOptions
-} from './rdkafka-options';
 
 /**
  * settings contains a list of options to configure on the client.
@@ -101,13 +96,13 @@ class KafakConnector {
 
         // Default settings for the client. This uses the options we defined
         // before exposing all the settings available to rdkafka
-        const clientOptions: RDKafkaConsumerOptions = Object.assign({
+        const clientOptions: RDKafkaOptions = Object.assign({
             'group.id': group,
             'metadata.broker.list': config.brokers,
         }, settings.rdkafka_options);
 
         // Topic specific options as defined by librdkafka
-        const topicOptions: RDKafkaConsumerTopicOptions = Object.assign({
+        const topicOptions: RDKafkaOptions = Object.assign({
             'auto.offset.reset': 'smallest'
         }, settings.topic_options);
 
@@ -122,7 +117,7 @@ class KafakConnector {
     private _getProducerOptions(config: KafkaConnectorConfig, settings: KafkaProducerSettings) {
         // Default settings for the client. This uses the options we defined
         // before exposing all the settings available to rdkafka
-        const clientOptions: RDKafkaProducerOptions = Object.assign({
+        const clientOptions: RDKafkaOptions = Object.assign({
             'metadata.broker.list': config.brokers,
             'queue.buffering.max.messages': 500000,
             'queue.buffering.max.ms': 1000,
@@ -130,7 +125,7 @@ class KafakConnector {
         }, settings.rdkafka_options);
 
         // Topic specific options as defined by librdkafka
-        const topicOptions: RDKafkaProducerTopicOptions = Object.assign({}, settings.topic_options);
+        const topicOptions: RDKafkaOptions = Object.assign({}, settings.topic_options);
 
         const { poll_interval = 100 } = settings.options;
 
