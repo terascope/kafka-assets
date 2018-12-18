@@ -48,8 +48,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
             );
         });
 
-        const result = await this.consumer.consume(map, this.opConfig);
-        return result;
+        return this.consumer.consume(map, this.opConfig);
     }
 
     async onSliceFinalizing() {

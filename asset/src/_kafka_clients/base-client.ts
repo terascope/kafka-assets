@@ -18,6 +18,10 @@ export default class BaseClient<T extends kafka.Client> {
     protected readonly _client: T;
 
     private _cleanup: cleanupFn[] = [];
+    private _connected = false;
+
+    /** the random factory of the back of interval, [min, max] */
+    private _backoffRandomFactor: [number, number] = [3, 9];
 
     constructor(client: T, logger: Logger) {
         this._logger = logger;
@@ -48,14 +52,41 @@ export default class BaseClient<T extends kafka.Client> {
         this._events.removeAllListeners();
     }
 
-    /** A promisified version of connect */
-    protected _connect(): Promise<void> {
-        return new Promise((resolve, reject) => {
+    isConnected() {
+        return !this._closed && this._connected && this._client.isConnected();
+    }
+
+    /**
+     * Connect to kafka but be double sure you are connected
+    */
+    protected async _connect(): Promise<void> {
+        if (this._closed) {
+            throw new Error('Client is closed');
+        }
+
+        if (this.isConnected()) return;
+
+        this._client.on('disconnected', () => {
+            this._connected = false;
+
+            if (this._closed) return;
+
+            this._logger.warn('client unexpectedly disconnected');
+        });
+
+        await new Promise((resolve, reject) => {
             this._client.connect({}, (err: AnyKafkaError) => {
-                if (err) reject(wrapError('Failed to connect', err));
-                else resolve();
+                if (err) {
+                    this._connected = false;
+                    reject(wrapError('Failed to connect', err));
+                } else {
+                    this._connected = true;
+                    resolve();
+                }
             });
         });
+
+        this._logger.debug('Connected to kafka');
     }
 
     /**
@@ -192,7 +223,9 @@ export default class BaseClient<T extends kafka.Client> {
 
         try {
             const result = await fn();
-            this._resetBackOff();
+            if (action !== 'connect') {
+                this._resetBackOff();
+            }
             return result;
         } catch (err) {
             if (isOkayError(err, action)) {
@@ -220,7 +253,8 @@ export default class BaseClient<T extends kafka.Client> {
     }
 
     protected _incBackOff() {
-        this._backoff += Math.round(defaultBackOff * getRandom(1, 5));
+        const [min, max] = this._backoffRandomFactor;
+        this._backoff += Math.round(defaultBackOff * getRandom(min, max));
     }
 
     protected _resetBackOff() {

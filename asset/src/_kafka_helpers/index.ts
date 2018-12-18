@@ -14,6 +14,7 @@ export function wrapError(message: string, err: AnyKafkaError): KafkaError {
     if (isKafkaError(err)) error.code = err.code;
 
     Error.captureStackTrace(error, wrapError);
+
     // @ts-ignore
     error._wrapped = true;
     return error;
@@ -82,5 +83,5 @@ export function isOkayError(err: AnyKafkaError, action: string = 'any'): boolean
     if (action === 'retryable') {
         return okErrors[action][code] != null;
     }
-    return okErrors[action][code] != null || okErrors.any[code] != null;
+    return okErrors[action] && okErrors[action][code] != null || okErrors.any[code] != null;
 }

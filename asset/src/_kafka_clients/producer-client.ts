@@ -28,12 +28,8 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
      * Connect to kafka
     */
     async connect(): Promise<void> {
-        if (this._client.isConnected()) return;
-
         this._clientEvents();
         await this._try(() => this._connect(), 'connect');
-
-        this._logger.debug('Connected to kafka');
     }
 
     /**

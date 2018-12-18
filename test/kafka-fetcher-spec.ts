@@ -1,5 +1,5 @@
 import 'jest-extended';
-import { TestClientConfig, Logger, DataEntity, NoopProcessor } from '@terascope/job-components';
+import { TestClientConfig, Logger, DataEntity, NoopProcessor, debugLogger } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaFetcher from '../asset/src/kafka_reader/fetcher';
 import { loadData } from './helpers/kafka-data';
@@ -7,8 +7,10 @@ import { kafkaBrokers, fetcherTopic, fetcherGroup } from './helpers/config';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 import KafkaAdmin from './helpers/kafka-admin';
 
+const logger = debugLogger('test-kafka-fetcher');
+
 describe('Kafka Fetcher', () => {
-    jest.setTimeout(15 * 1000);
+    jest.setTimeout(30 * 1000);
 
     const clientConfig: TestClientConfig = {
         type: 'kafka',
@@ -33,7 +35,7 @@ describe('Kafka Fetcher', () => {
                 topic,
                 group,
                 size: 100,
-                wait: 5000,
+                wait: 8000,
                 rollback_on_failure: true
             },
             {
@@ -73,7 +75,11 @@ describe('Kafka Fetcher', () => {
 
         exampleData = await loadData(topic, 'example-data.txt');
 
-        results = results.concat(await harness.runSlice({}));
+        const results1 = await harness.runSlice({});
+        results = results.concat(results1);
+        logger.debug(`got ${results1.length} results on first run`);
+
+        logger.debug('disconnecting...');
 
         // disconnect in-order to prove the connection can reconnect
         await new Promise((resolve, reject) => {
@@ -84,7 +90,11 @@ describe('Kafka Fetcher', () => {
             });
         });
 
-        results = results.concat(await harness.runSlice({}));
+        logger.debug('disconnected');
+
+        const results2 = await harness.runSlice({});
+        results = results.concat(results2);
+        logger.debug(`got ${results2.length} results on second run`);
     });
 
     afterAll(async () => {

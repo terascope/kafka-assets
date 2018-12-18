@@ -31,6 +31,10 @@ describe('Base Client (internal)', () => {
 
         // @ts-ignore
         client = new BaseClient(fakeClient, logger);
+        // @ts-ignore
+        client._backoffRandomFactor = [0, 1];
+        // @ts-ignore
+        client._backoff = 10;
 
         // @ts-ignore because it is private
         events = client._events;
