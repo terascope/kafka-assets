@@ -34,6 +34,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     }
 
     async shutdown() {
+        this.consumer.handlePendingCommits();
         await this.consumer.disconnect();
         await super.shutdown();
     }
@@ -55,6 +56,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         await this.consumer.commit();
     }
 
+    // TODO we should handle slice retries differently now that we have the dead letter queue
     async onSliceRetry() {
         if (this.opConfig.rollback_on_failure) {
             await this.consumer.rollback();
@@ -76,13 +78,14 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
                 'auto.offset.reset': this.opConfig.offset_reset
             },
             rdkafka_options: {
-                // We want to explicitly manage offset commits.
+                // Explicitly manage offset commits.
                 'enable.auto.commit': false,
                 'enable.auto.offset.store': false,
                 'queued.min.messages': 2 * this.opConfig.size,
-                // we want to capture the rebalance so we can handle
-                // them better
+                // Capture the rebalances for better error handling and debug
                 rebalance_cb: true,
+                // Capture the commits for better error handling and debug
+                offset_commit_cb: true,
             },
             autoconnect: false
         } as ConnectionConfig;

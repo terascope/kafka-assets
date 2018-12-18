@@ -49,12 +49,12 @@ describe('Kafka Slicer', () => {
         expect(slices).toEqual([{}]);
     });
 
-    it('should have a maxQueueLength of workers * 2', () => {
+    it('should have a maxQueueLength of workers + 1', () => {
         const slicer = harness.slicer();
         harness.setWorkers(5);
-        expect(slicer.maxQueueLength()).toEqual(10);
+        expect(slicer.maxQueueLength()).toEqual(6);
 
         harness.setWorkers(2);
-        expect(slicer.maxQueueLength()).toEqual(4);
+        expect(slicer.maxQueueLength()).toEqual(3);
     });
 });

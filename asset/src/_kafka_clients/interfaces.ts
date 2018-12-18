@@ -7,6 +7,7 @@ export interface OffsetByPartition {
 export interface TrackedOffsets {
     started: OffsetByPartition;
     ended: OffsetByPartition;
+    pending: OffsetByPartition;
 }
 
 export interface TopicPartition {

@@ -151,6 +151,8 @@ describe('Kafka Fetcher', () => {
                 partition: 0,
             }
         ]);
+
+        expect(fetcher.consumer.handlePendingCommits()).toBeTrue();
     });
 
     describe('when resetting back to zero', () => {

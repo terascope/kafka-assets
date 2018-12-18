@@ -23,8 +23,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
         started: {},
-        ended: {}
+        ended: {},
+        pending: {},
     };
+
     private _rebalanceTimeout: NodeJS.Timer|undefined;
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
@@ -60,12 +62,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         const promises = this._flushOffsets('ended')
             .map(async (offset) => {
                 await this._checkState();
-                const startTime = Date.now();
-                this._logger.trace(offset, 'committing...');
 
-                await this._try(() => this._client.commit(offset), 'commit', 0);
-
-                this._logger.trace(offset, `commit took ${Date.now() - startTime}ms`);
+                this._addPendingCommit(offset);
+                return this._try(() => this._client.commit(offset), 'commit');
             })
             .map((p) => {
                 // If a particular topic fails to commit
@@ -83,6 +82,24 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             this._logger.error('kafka failed to commit', errors);
             throw new Error('Kafka failed to commit');
         }
+    }
+
+    /**
+     * Currently this just logs the pending commits
+     *
+     * @todo: we might need to handle the error cases better
+    */
+    handlePendingCommits(): boolean {
+        let hasInvalidCommits = true;
+
+        for (const [partition, pending] of Object.entries(this._offsets.pending)) {
+            if (pending > 1) {
+                this._logger.warn(`Partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
+                hasInvalidCommits = false;
+            }
+        }
+
+        return hasInvalidCommits;
     }
 
     /**
@@ -133,6 +150,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * @param max.wait - the maximum time to wait before resolving the messages
      */
     async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
+        this.handlePendingCommits();
+
         const endAt = Date.now() + max.wait;
         let results: T[] = [];
 
@@ -294,7 +313,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             if (this._closed || !err) return;
 
             if (err.code === ERR__ASSIGN_PARTITIONS) {
-                this._logger.debug('got new assignments', assignment);
+                this._logger.debug('new assignments', assignment);
                 this._startRebalance('due to assignment');
             } else if (err.code === ERR__REVOKE_PARTITIONS) {
                 this._logger.debug('revoked assignments', assignment);
@@ -310,6 +329,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             this._endRebalance(parseError(err, true));
         }));
 
+        // @ts-ignore because the event doesn't exist in the type definitions
+        this._client.on('offset.commit', (offsets) => {
+            offsets.forEach((offset: TopicPartition) => this._removePendingCommit(offset));
+        });
     }
 
     /**
@@ -376,5 +399,17 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._logger.trace(`rebalance ended ${msg}`);
         this._rebalancing = false;
         this._events.emit('rebalance:end');
+    }
+
+    private _addPendingCommit({ partition }: TopicPartition) {
+        if (this._offsets.pending[partition] == null) {
+            this._offsets.pending[partition] = 0;
+        }
+        this._offsets.pending[partition] += 1;
+    }
+
+    private _removePendingCommit({ partition }: TopicPartition) {
+        if (this._offsets.pending[partition] == null) return;
+        this._offsets.pending[partition] -= 1;
     }
 }
