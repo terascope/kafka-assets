@@ -25,7 +25,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         this.producer = new ProducerClient(this.createClient(), {
             logger,
             topic: this.opConfig.topic,
-            batchSize: this._bufferSize,
+            bufferSize: this._bufferSize,
         });
     }
 

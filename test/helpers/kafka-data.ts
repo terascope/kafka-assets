@@ -36,7 +36,7 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     const client = new ProducerClient(producer, {
         logger,
         topic,
-        batchSize: messages.length
+        bufferSize: messages.length
     });
 
     await client.connect();

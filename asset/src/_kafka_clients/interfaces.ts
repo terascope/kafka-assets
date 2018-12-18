@@ -29,5 +29,5 @@ export interface ProduceMessage {
 export interface ProducerClientConfig {
     topic: string;
     logger: Logger;
-    batchSize: number;
+    bufferSize: number;
 }

@@ -33,16 +33,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._topic = config.topic;
     }
 
-    isSubscribed() {
-        try {
-            const topics = this._client.subscription();
-            return topics.includes(this._topic);
-        } catch (err) {
-            this._logger.trace('got error when getting subscription');
-            return false;
-        }
-    }
-
     /**
      * Connect to kafka
      *
@@ -73,7 +63,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
                 const startTime = Date.now();
                 this._logger.trace(offset, 'committing...');
 
-                await this._try(() => this._client.commitSync(offset), 'commit');
+                await this._try(() => this._client.commit(offset), 'commit', 0);
 
                 this._logger.trace(offset, `commit took ${Date.now() - startTime}ms`);
             })
@@ -99,8 +89,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Rollback the offsets to the start of the
      * last batch of messages consumed.
     */
-    async rollback(key: keyof TrackedOffsets = 'started') {
-        const partitions = this._flushOffsets(key);
+    async rollback() {
+        const partitions = this._flushOffsets('started');
 
         this._logger.warn('rolling back partitions', partitions);
 
@@ -278,10 +268,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._client.on('error', this._logOrEmit('client:error'));
 
         this._client.on('ready', () => {
-            if (!this.isSubscribed()) {
-                this._logger.debug(`subscribing to topic "${this._topic}"`);
-                this._client.subscribe([this._topic]);
-            }
+            this._client.subscribe([this._topic]);
 
             this._logger.info('kafka consumer is ready');
             this._events.emit('client:ready');
@@ -308,19 +295,17 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
             if (err.code === ERR__ASSIGN_PARTITIONS) {
                 this._logger.debug('got new assignments', assignment);
-                    // Since assignements are usally good, we will reset the backoff
-                this._resetBackOff();
                 this._startRebalance('due to assignment');
             } else if (err.code === ERR__REVOKE_PARTITIONS) {
-                this._startRebalance('due to partitions being revoked');
                 this._logger.debug('revoked assignments', assignment);
+                this._startRebalance('due to partitions being revoked');
             } else {
                 this._logger.debug('kafka consumer rebalance', err && err.message, err.code, assignment);
             }
         });
 
         /* istanbul ignore next */
-        // @ts-ignore because the event doesn't exist in the typedefinitions
+        // @ts-ignore because the event doesn't exist in the type definitions
         this._client.on('rebalance.error', this._logOrEmit('rebalance:end', (err) => {
             this._endRebalance(parseError(err, true));
         }));
@@ -352,8 +337,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             });
 
             /* istanbul ignore next */
-            const timeoutOff = this._timeout((err) => {
-                if (err) {
+            const timeoutOff = this._timeout(() => {
+                if (this._rebalancing) {
                     this._endRebalance('due rebalance taking too way too long');
                 }
 

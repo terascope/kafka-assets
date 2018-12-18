@@ -14,14 +14,14 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     flushTimeout = 60000;
 
     private readonly _topic: string;
-    private readonly _batchSize: number;
+    private readonly _bufferSize: number;
     private _hasClientEvents = false;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
         super(client, config.logger);
 
         this._topic = config.topic;
-        this._batchSize = config.batchSize;
+        this._bufferSize = config.bufferSize;
     }
 
     /**
@@ -50,7 +50,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
             error = wrapError('Client error while producing', err);
         });
 
-        const chunks = chunk(messages, this._batchSize);
+        const chunks = chunk(messages, this._bufferSize);
         const sizes = chunks.map((c) => c.length);
         this._logger.debug(`producing batches ${JSON.stringify(sizes)}...`);
 

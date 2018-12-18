@@ -217,7 +217,8 @@ export default class BaseClient<T extends kafka.Client> {
 
     /**
      * Try a async fn n times and back off after each attempt
-     * NOTE: It will only retry if it is a retryable kafka error
+     *
+     * **NOTE:** It will only retry if it is a retryable kafka error
     */
     protected async _try<T extends tryFn>(fn: T, action: string = 'any', retries = 2): RetryResult<T>  {
         const actionStr = action === 'any' ? '' : ` when performing ${action}`;

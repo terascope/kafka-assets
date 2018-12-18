@@ -26,7 +26,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         this.producer = new ProducerClient(this.createClient(), {
             logger,
             topic: this.apiConfig.topic,
-            batchSize: this._bufferSize,
+            bufferSize: this._bufferSize,
         });
 
         this.collector = new Collector({
