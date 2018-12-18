@@ -26,6 +26,7 @@ export default class BaseClient<T extends kafka.Client> {
     constructor(client: T, logger: Logger) {
         this._logger = logger;
         this._client = client;
+        this._onDisconnect = this._onDisconnect.bind(this);
     }
 
     /**
@@ -34,7 +35,7 @@ export default class BaseClient<T extends kafka.Client> {
     async disconnect() {
         this._closed = true;
 
-        if (this._client.isConnected()) {
+        if (this.isConnected()) {
             await new Promise((resolve, reject) => {
                 this._client.disconnect((err: AnyKafkaError) => {
                     if (err) reject(wrapError('Failed to disconnect', err));
@@ -53,7 +54,7 @@ export default class BaseClient<T extends kafka.Client> {
     }
 
     isConnected() {
-        return !this._closed && this._connected && this._client.isConnected();
+        return this._connected && this._client.isConnected();
     }
 
     /**
@@ -66,13 +67,8 @@ export default class BaseClient<T extends kafka.Client> {
 
         if (this.isConnected()) return;
 
-        this._client.on('disconnected', () => {
-            this._connected = false;
-
-            if (this._closed) return;
-
-            this._logger.warn('client unexpectedly disconnected');
-        });
+        this._client.removeListener('disconnected', this._onDisconnect);
+        this._client.on('disconnected', this._onDisconnect);
 
         await new Promise((resolve, reject) => {
             this._client.connect({}, (err: AnyKafkaError) => {
@@ -87,6 +83,15 @@ export default class BaseClient<T extends kafka.Client> {
         });
 
         this._logger.debug('Connected to kafka');
+    }
+
+    protected _onDisconnect() {
+        this._connected = false;
+
+        if (this._closed) return;
+
+        this._incBackOff();
+        this._logger.warn('client unexpectedly disconnected');
     }
 
     /**
