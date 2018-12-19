@@ -177,10 +177,14 @@ describe('Kafka Fetcher', () => {
 
     describe('when resetting back to zero', () => {
         beforeAll(async () => {
-            await fetcher.consumer.seek({
-                partition: 0,
-                offset: 0,
-            });
+            try {
+                await fetcher.consumer.seek({
+                    partition: 0,
+                    offset: 0,
+                });
+            } catch (err) {
+                fatalError = err;
+            }
         });
 
         describe('when a processor fails once', () => {
@@ -195,8 +199,12 @@ describe('Kafka Fetcher', () => {
                 // @ts-ignore
                 noop.onBatch.mockRejectedValueOnce(err);
 
-                retryResults = retryResults.concat(await harness.runSlice({}));
-                retryResults = retryResults.concat(await harness.runSlice({}));
+                try {
+                    retryResults = retryResults.concat(await harness.runSlice({}));
+                    retryResults = retryResults.concat(await harness.runSlice({}));
+                } catch (err) {
+                    fatalError = err;
+                }
             });
 
             it('should have called onSliceRetry', async () => {
