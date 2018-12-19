@@ -11,7 +11,7 @@
         "postinstall": "yarn --cwd ./asset --prod install",
         "build": "rimraf asset/dist; tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
-        "test": "jest",
+        "test": "jest --maxWorkers=2",
         "test:all": "yarn workspaces run test",
         "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
         "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand",
