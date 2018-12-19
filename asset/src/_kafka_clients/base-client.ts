@@ -38,7 +38,9 @@ export default class BaseClient<T extends kafka.Client> {
             this._logger.warn('client unexpectedly disconnected');
         });
 
+        // catch unwanted errors
         this._client.on('error', this._logOrEmit('client:error'));
+        this._events.on('error', this._logOrEmit('client:error'));
     }
 
     /**
@@ -106,9 +108,7 @@ export default class BaseClient<T extends kafka.Client> {
             fn();
             const hasListener = this._events.listenerCount(event) > 0;
             if (hasListener) {
-                process.nextTick(() => {
-                    this._events.emit(event, ...args);
-                });
+                this._events.emit(event, ...args);
                 return;
             }
 

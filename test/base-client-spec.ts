@@ -30,7 +30,7 @@ describe('Base Client (internal)', () => {
         fakeClient = new FakeKafkaClient();
 
         // @ts-ignore
-        client = new BaseClient(fakeClient, logger);
+        client = new BaseClient(fakeClient, 'test-topic', logger);
         // @ts-ignore
         client._backoffRandomFactor = [0, 1];
         // @ts-ignore
