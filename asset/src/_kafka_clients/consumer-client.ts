@@ -15,7 +15,6 @@ import {
     ERR__ASSIGN_PARTITIONS,
     ERR__REVOKE_PARTITIONS,
 } from '../_kafka_helpers/error-codes';
-import { parseError } from '@terascope/job-components';
 
 export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _topic: string;
@@ -53,8 +52,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
     /**
      * Committed to the last known offsets stored.
-     *
-     * **NOTE:** This currently uses commitSync which blocks the event loop
     */
     async commit() {
         const errors: Error[] = [];
@@ -64,15 +61,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
                 await this._checkState();
 
                 this._addPendingCommit(offset);
-                return this._try(() => this._client.commit(offset), 'commit');
-            })
-            .map((p) => {
-                // If a particular topic fails to commit
-                // it should not stop the rest of topics to commit
-                /* istanbul ignore next */
-                return p.catch((err) => {
-                    errors.push(err);
-                });
+                return this._try(() => this._client.commit(offset), 'commit')
+                    // If a particular topic fails to commit
+                    // it should not stop the rest of topics to commit
+                    /* istanbul ignore next */
+                    .catch((err) => {
+                        errors.push(err);
+                    });
             });
 
         await Promise.all(promises);
@@ -94,8 +89,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         for (const [partition, pending] of Object.entries(this._offsets.pending)) {
             if (pending > 1) {
-                this._logger.warn(`Partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
+                this._logger.warn(`partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
                 hasInvalidCommits = false;
+            } else if (pending === 1) {
+                this._logger.debug(`partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
             }
         }
 
@@ -109,7 +106,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     async rollback() {
         const partitions = this._flushOffsets('started');
 
-        this._logger.warn('rolling back partitions', partitions);
+        this._logger.warn(`rolling back, ${formatTopar(partitions)}`);
 
         const promises = partitions.map((topPar) => this.seek(topPar));
 
@@ -151,6 +148,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      */
     async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
         this.handlePendingCommits();
+        this._logger.trace('consuming...', { size: max.size, wait: max.wait });
 
         const endAt = Date.now() + max.wait;
         let results: T[] = [];
@@ -251,8 +249,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /**
      * A promisified method for seeking to particular offset
      */
-    private async _seek(topic: { partition: number, offset: number }): Promise<void> {
-        const { partition, offset } = topic;
+    private async _seek(topar: TopicPartition): Promise<void> {
+        const { partition, offset } = topar;
 
         return new Promise((resolve, reject) => {
             this._client.seek({
@@ -262,12 +260,12 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             }, 1000, (err: AnyKafkaError) => {
                 /* istanbul ignore if */
                 if (err) {
-                    const message = `Failure to seek partition ${partition} to offset ${offset}`;
+                    const message = `Failure to seek ${formatTopar(topar)}`;
                     reject(wrapError(message, err));
                     return;
                 }
 
-                this._logger.debug(`seeked partition ${partition} to offset ${offset}`);
+                this._logger.debug(`seeked partition ${formatTopar(topar)}`);
                 this._offsets.started[partition] = offset;
                 delete this._offsets.ended[partition];
                 resolve();
@@ -313,10 +311,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             if (this._closed || !err) return;
 
             if (err.code === ERR__ASSIGN_PARTITIONS) {
-                this._logger.debug('new assignments', assignment);
+                this._logger.debug(`new assignments ${formatTopar(assignment)}`);
                 this._startRebalance('due to assignment');
             } else if (err.code === ERR__REVOKE_PARTITIONS) {
-                this._logger.debug('revoked assignments', assignment);
+                this._logger.debug(`revoked assignments ${formatTopar(assignment)}`);
                 this._startRebalance('due to partitions being revoked');
             } else {
                 this._logger.debug('kafka consumer rebalance', err && err.message, err.code, assignment);
@@ -325,9 +323,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         /* istanbul ignore next */
         // @ts-ignore because the event doesn't exist in the type definitions
-        this._client.on('rebalance.error', this._logOrEmit('rebalance:end', (err) => {
-            this._endRebalance(parseError(err, true));
-        }));
+        this._client.on('rebalance.error', (err: AnyKafkaError) => {
+            const error = wrapError('Rebalance Error', err);
+            this._endRebalance(error.stack || error.message);
+        });
 
         // @ts-ignore because the event doesn't exist in the type definitions
         this._client.on('offset.commit', (offsets) => {
@@ -401,15 +400,36 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._events.emit('rebalance:end');
     }
 
-    private _addPendingCommit({ partition }: TopicPartition) {
-        if (this._offsets.pending[partition] == null) {
-            this._offsets.pending[partition] = 0;
+    private _addPendingCommit(topar: TopicPartition) {
+        this._logger.trace(`adding a pending commit, ${formatTopar(topar)}`);
+
+        if (this._offsets.pending[topar.partition] == null) {
+            this._offsets.pending[topar.partition] = 0;
         }
-        this._offsets.pending[partition] += 1;
+        this._offsets.pending[topar.partition] += 1;
     }
 
-    private _removePendingCommit({ partition }: TopicPartition) {
-        if (this._offsets.pending[partition] == null) return;
-        this._offsets.pending[partition] -= 1;
+    private _removePendingCommit(topar: TopicPartition) {
+        this._logger.trace(`removing pending commit, ${formatTopar(topar)}`);
+
+        if (this._offsets.pending[topar.partition] == null) return;
+        this._offsets.pending[topar.partition] -= 1;
     }
+}
+
+function formatTopar(input: TopicPartition[]|TopicPartition) {
+    const topars: TopicPartition[] = [];
+
+    if (Array.isArray(input)) {
+        topars.push(...input);
+    } else {
+        topars.push(input);
+    }
+
+    return topars
+        .map((p) => {
+            if (p.offset == null) return `partition: ${p.partition}`;
+            return `partition: ${p.partition} offset: ${p.offset}`;
+        })
+        .join(', ');
 }

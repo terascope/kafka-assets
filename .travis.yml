@@ -11,6 +11,7 @@ branches:
   - master
   - /^v\d+\.\d+\.\d+/
 cache:
+  yarn: true
   directories:
     - "$HOME/.kafka-downloads"
 before_install:
