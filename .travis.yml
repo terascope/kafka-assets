@@ -5,16 +5,60 @@ node_js:
 os:
   - linux
   - osx
+osx_image: xcode8
 branches:
   only:
   - master
   - /^v\d+\.\d+\.\d+/
-before_deploy: yarn build
+cache:
+  yarn: true
+  directories:
+    - "$HOME/.kafka-downloads"
+before_install:
+  # Install latest yarn
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
+  # Install Kafka
+  - export KAFKA_HOME="$HOME/.kafka"
+  - export KAFKA_TMP="$HOME/.kafka-downloads"
+  - mkdir -p "$KAFKA_HOME"
+  - mkdir -p "$KAFKA_TMP"
+  - '[[ ! -f "$KAFKA_TMP/kafka.tgz" ]] && wget https://www.apache.org/dist/kafka/1.1.1/kafka_2.11-1.1.1.tgz -O "$KAFKA_TMP/kafka.tgz" || echo "* using cache"'
+  - tar xzf "$KAFKA_TMP/kafka.tgz" -C $KAFKA_HOME --strip-components 1
+  # add bin to path for ease of use
+  - export PATH="$KAFKA_HOME/bin:$PATH"
+  # Run Zookeeper on localhost:2181
+  - zookeeper-server-start.sh "$KAFKA_HOME/config/zookeeper.properties" > "$KAFKA_HOME/zookeeper.log" &
+  - sleep 3
+  # Run Kafka on localhost:9092
+  - kafka-server-start.sh "$KAFKA_HOME/config/server.properties" > "$KAFKA_HOME/kafka.log" &
+  - sleep 3
+  # Make it colorful
+  - export FORCE_COLOR=1
+install:
+  - yarn install
+script:
+  - yarn test:all
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - yarn lint:all
+after_failure:
+  - tail -n 100 $KAFKA_HOME/*.log
+before_deploy:
+  - ./scripts/build.sh
+  - cp ./docs/CONNECTORS.md > packages/terafoundation_kafka_connector/README.md
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file: builds/*.zip
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: script
+    before_deploy: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    skip_cleanup: true
+    script: yarn publish:changed
+    on:
+      tags: true
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    prerelease: true
+    file_glob: true
+    file: builds/*.zip
+    skip_cleanup: true
+    on:
+      tags: true

@@ -1,31 +1,56 @@
 {
-  "name": "kafka-assets",
-  "version": "1.2.1",
-  "description": "teraslice asset for kafka operations",
-  "main": "index.js",
-  "scripts": {
-    "build": "scripts/build.sh",
-    "lint": "eslint asset/**/*.js test/**/*.js",
-    "lint:fix": "yarn lint -- fix",
-    "test": "jest",
-    "postinstall": "yarn --cwd ./asset --prod --silent --no-progress"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/terascope/kafka-assets.git"
-  },
-  "author": "Terascope, LLC <info@terascope.io>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/terascope/kafka-assets/issues"
-  },
-  "homepage": "https://github.com/terascope/kafka-assets#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "eslint": "^5.8.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "jest": "^23.6.0",
-    "jest-extended": "^0.11.0"
-  }
+    "name": "kafka-asset-bundle",
+    "version": "2.0.0",
+    "description": "A bundle of Kafka operations and processors for Teraslice",
+    "private": true,
+    "scripts": {
+        "lint": "tslint --project tsconfig.json --format verbose",
+        "lint:all": "yarn workspaces run lint",
+        "lint:fix": "yarn lint --fix",
+        "prepare": "yarn workspaces run build",
+        "postinstall": "yarn --cwd ./asset --prod install",
+        "build": "rimraf asset/dist; tsc --project tsconfig.json --pretty",
+        "build:watch": "yarn build --watch",
+        "test": "jest --maxWorkers=2",
+        "test:all": "yarn workspaces run test",
+        "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
+        "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand",
+        "publish:changed": "./scripts/publish.sh"
+    },
+    "repository": "git@github.com:terascope/kafka-assets.git",
+    "author": "Terascope, LLC <info@terascope.io>",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^23.3.10",
+        "@types/lodash.chunk": "^4.2.4",
+        "@types/lodash.isequal": "^4.5.3",
+        "@types/lodash.omit": "^4.5.4",
+        "@types/lodash.once": "^4.1.4",
+        "@types/node": "^10.12.17",
+        "@types/uuid": "^3.4.4",
+        "jest": "^23.6.0",
+        "jest-extended": "^0.11.0",
+        "markdown-table": "^1.1.2",
+        "markdown-toc": "^1.2.0",
+        "rimraf": "^2.6.2",
+        "teraslice-test-harness": "^0.5.1",
+        "ts-jest": "^23.10.4",
+        "ts-node": "^7.0.1",
+        "tslint": "^5.12.0",
+        "tslint-config-airbnb": "^5.11.1",
+        "typescript": "^3.2.2",
+        "uuid": "^3.3.2"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "workspaces": {
+        "packages": [
+            "packages/*",
+            "."
+        ],
+        "nohoist": [
+            "asset"
+        ]
+    }
 }
