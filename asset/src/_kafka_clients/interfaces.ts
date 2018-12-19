@@ -4,10 +4,13 @@ export interface OffsetByPartition {
     [partition: number]: number;
 }
 
+export interface CountPerPartition {
+    [partition: number]: number;
+}
+
 export interface TrackedOffsets {
     started: OffsetByPartition;
     ended: OffsetByPartition;
-    pending: OffsetByPartition;
 }
 
 export interface TopicPartition {

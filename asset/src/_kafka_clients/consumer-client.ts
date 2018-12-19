@@ -4,12 +4,14 @@ import {
     wrapError,
     AnyKafkaError,
     KafkaMessage,
+    KafkaError,
 } from '../_kafka_helpers';
 import BaseClient from './base-client';
 import {
     TrackedOffsets,
     TopicPartition,
     ConsumerClientConfig,
+    CountPerPartition,
 } from './interfaces';
 import {
     ERR__ASSIGN_PARTITIONS,
@@ -17,21 +19,19 @@ import {
 } from '../_kafka_helpers/error-codes';
 
 export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
-    private _topic: string;
     private _rebalancing = false;
     private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
         started: {},
         ended: {},
-        pending: {},
     };
+
+    private _pendingOffsets: CountPerPartition = {};
 
     private _rebalanceTimeout: NodeJS.Timer|undefined;
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
-        super(client, config.logger);
-
-        this._topic = config.topic;
+        super(client, config.topic, config.logger);
     }
 
     /**
@@ -87,7 +87,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     handlePendingCommits(): boolean {
         let hasInvalidCommits = true;
 
-        for (const [partition, pending] of Object.entries(this._offsets.pending)) {
+        for (const [partition, pending] of Object.entries(this._pendingOffsets)) {
             if (pending > 1) {
                 this._logger.warn(`partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
                 hasInvalidCommits = false;
@@ -148,6 +148,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      */
     async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
         this.handlePendingCommits();
+
         this._logger.trace('consuming...', { size: max.size, wait: max.wait });
 
         const endAt = Date.now() + max.wait;
@@ -307,17 +308,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         /* istanbul ignore next */
         // @ts-ignore because the type definition don't work right
-        this._client.on('rebalance', (err, assignment) => {
-            if (this._closed || !err) return;
+        this._client.on('rebalance', (err, assignments) => {
+            if (this._closed) return;
 
-            if (err.code === ERR__ASSIGN_PARTITIONS) {
-                this._logger.debug(`new assignments ${formatTopar(assignment)}`);
-                this._startRebalance('due to assignment');
-            } else if (err.code === ERR__REVOKE_PARTITIONS) {
-                this._logger.debug(`revoked assignments ${formatTopar(assignment)}`);
-                this._startRebalance('due to partitions being revoked');
-            } else {
-                this._logger.debug('kafka consumer rebalance', err && err.message, err.code, assignment);
+            try {
+                this._handleRebalance(err, assignments);
+            } catch (err) {
+                this._logger.error('error handling rebalance', err);
             }
         });
 
@@ -400,20 +397,40 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._events.emit('rebalance:end');
     }
 
-    private _addPendingCommit(topar: TopicPartition) {
-        this._logger.trace(`adding a pending commit, ${formatTopar(topar)}`);
-
-        if (this._offsets.pending[topar.partition] == null) {
-            this._offsets.pending[topar.partition] = 0;
+    private _handleRebalance(err: KafkaError|undefined, assignments: TopicPartition[]) {
+        if (err && err.code === ERR__ASSIGN_PARTITIONS) {
+            this._logger.debug(`got new assignments ${formatTopar(assignments)}`);
+            this._endRebalance('due to new assignments');
+        } else if (err && err.code === ERR__REVOKE_PARTITIONS) {
+            this._logger.debug(`revoking assignments ${formatTopar(assignments)}`);
+            this._startRebalance('due to revoked assignments');
+        } else {
+            this._logger.debug('kafka consumer rebalance', { err, assignments });
         }
-        this._offsets.pending[topar.partition] += 1;
     }
 
-    private _removePendingCommit(topar: TopicPartition) {
-        this._logger.trace(`removing pending commit, ${formatTopar(topar)}`);
+    /**
+     * When a commit is made, track a pending commit
+    */
+    private _addPendingCommit(topar: TopicPartition) {
+        this._logger.trace(`committing ${formatTopar(topar)}...`);
 
-        if (this._offsets.pending[topar.partition] == null) return;
-        this._offsets.pending[topar.partition] -= 1;
+        if (this._pendingOffsets[topar.partition] == null) {
+            this._pendingOffsets[topar.partition] = 0;
+        }
+
+        this._pendingOffsets[topar.partition] += 1;
+    }
+
+    /**
+     * When a commit is acknowledged, untrack the pending commit
+    */
+    private _removePendingCommit(topar: TopicPartition) {
+        this._logger.trace(`commit is acknowledged, ${formatTopar(topar)}`);
+
+        if (this._pendingOffsets[topar.partition] != null) {
+            this._pendingOffsets[topar.partition] -= 1;
+        }
     }
 }
 

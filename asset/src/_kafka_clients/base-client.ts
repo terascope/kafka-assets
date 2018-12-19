@@ -10,6 +10,7 @@ import {
 import * as kafka from 'node-rdkafka';
 
 export default class BaseClient<T extends kafka.Client> {
+    protected readonly _topic: string;
     protected _closed: boolean = false;
     protected _backoff: number = defaultBackOff;
 
@@ -23,10 +24,21 @@ export default class BaseClient<T extends kafka.Client> {
     /** the random factory of the back of interval, [min, max] */
     private _backoffRandomFactor: [number, number] = [3, 9];
 
-    constructor(client: T, logger: Logger) {
-        this._logger = logger;
+    constructor(client: T, topic: string, logger: Logger) {
+        this._topic = topic;
         this._client = client;
-        this._onDisconnect = this._onDisconnect.bind(this);
+        this._logger = logger;
+
+        this._client.on('disconnected', () => {
+            this._connected = false;
+
+            if (this._closed) return;
+
+            this._incBackOff();
+            this._logger.warn('client unexpectedly disconnected');
+        });
+
+        this._client.on('error', this._logOrEmit('client:error'));
     }
 
     /**
@@ -67,11 +79,12 @@ export default class BaseClient<T extends kafka.Client> {
 
         if (this.isConnected()) return;
 
-        this._client.removeListener('disconnected', this._onDisconnect);
-        this._client.on('disconnected', this._onDisconnect);
-
         await new Promise((resolve, reject) => {
-            this._client.connect({}, (err: AnyKafkaError) => {
+            const metadataOptions = {
+                topic: this._topic,
+            };
+
+            this._client.connect(metadataOptions, (err: AnyKafkaError) => {
                 if (err) {
                     this._connected = false;
                     reject(wrapError('Failed to connect', err));
@@ -85,15 +98,6 @@ export default class BaseClient<T extends kafka.Client> {
         this._logger.debug('Connected to kafka');
     }
 
-    protected _onDisconnect() {
-        this._connected = false;
-
-        if (this._closed) return;
-
-        this._incBackOff();
-        this._logger.warn('client unexpectedly disconnected');
-    }
-
     /**
      * Make sure the event has a handler or is logged
     */
@@ -102,7 +106,9 @@ export default class BaseClient<T extends kafka.Client> {
             fn();
             const hasListener = this._events.listenerCount(event) > 0;
             if (hasListener) {
-                this._events.emit(event, ...args);
+                process.nextTick(() => {
+                    this._events.emit(event, ...args);
+                });
                 return;
             }
 

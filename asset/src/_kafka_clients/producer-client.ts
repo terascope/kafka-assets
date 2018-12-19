@@ -13,14 +13,11 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     // one minute
     flushTimeout = 60000;
 
-    private readonly _topic: string;
     private readonly _bufferSize: number;
     private _hasClientEvents = false;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
-        super(client, config.logger);
-
-        this._topic = config.topic;
+        super(client, config.topic, config.logger);
         this._bufferSize = config.bufferSize;
     }
 
