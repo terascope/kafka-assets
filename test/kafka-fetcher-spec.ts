@@ -51,6 +51,13 @@ describe('Kafka Fetcher', () => {
     let noop: NoopProcessor;
     let exampleData: object[];
     let results: DataEntity[] = [];
+    let fatalError: Error|null = new Error('Timeout run beforeEach');
+
+    function checkFatalError(): boolean {
+        if (!fatalError) return false;
+        expect(fatalError.message).toEqual('Kafka Client is in a non-recoverable state');
+        return true;
+    }
 
     beforeAll(async () => {
         jest.restoreAllMocks();
@@ -75,26 +82,34 @@ describe('Kafka Fetcher', () => {
 
         exampleData = await loadData(topic, 'example-data.txt');
 
-        const results1 = await harness.runSlice({});
-        results = results.concat(results1);
-        logger.debug(`got ${results1.length} results on first run`);
+        try {
+            const results1 = await harness.runSlice({});
+            results = results.concat(results1);
+            logger.debug(`got ${results1.length} results on the first run, disconnecting...`);
 
-        logger.debug('disconnecting...');
-
-        // disconnect in-order to prove the connection can reconnect
-        await new Promise((resolve, reject) => {
+            // disconnect in-order to prove the connection can reconnect
+            await new Promise((resolve, reject) => {
             // @ts-ignore
-            fetcher.consumer._client.disconnect((err) => {
-                if (err) reject(err);
-                else resolve();
+                fetcher.consumer._client.disconnect((err) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
             });
-        });
 
-        logger.debug('disconnected');
+            logger.debug('disconnected');
 
-        const results2 = await harness.runSlice({});
-        results = results.concat(results2);
-        logger.debug(`got ${results2.length} results on second run`);
+            const results2 = await harness.runSlice({});
+            results = results.concat(results2);
+            logger.debug(`got ${results2.length} results on the second run`);
+
+            const results3 = await harness.runSlice({});
+            results = results.concat(results3);
+            logger.debug(`got ${results3.length} results on the third run`);
+
+            fatalError = null;
+        } catch (err) {
+            fatalError = err;
+        }
     });
 
     afterAll(async () => {
@@ -112,6 +127,7 @@ describe('Kafka Fetcher', () => {
     });
 
     it('should able to call _clientEvents without double listening', () => {
+        if (checkFatalError()) return;
         // @ts-ignore
         const expected = fetcher.consumer._client.listenerCount('error');
 
@@ -127,6 +143,8 @@ describe('Kafka Fetcher', () => {
     });
 
     it('should return a list of records', () => {
+        if (checkFatalError()) return;
+
         expect(results).toBeArrayOfSize(exampleData.length);
         expect(DataEntity.isDataEntityArray(results)).toBeTrue();
 
@@ -140,6 +158,8 @@ describe('Kafka Fetcher', () => {
     });
 
     it('should have committed the results', async () => {
+        if (checkFatalError()) return;
+
         const result = await fetcher.consumer.topicPositions();
         expect(result).toEqual([
             {
@@ -180,10 +200,14 @@ describe('Kafka Fetcher', () => {
             });
 
             it('should have called onSliceRetry', async () => {
+                if (checkFatalError()) return;
+
                 expect(onSliceRetry).toHaveBeenCalled();
             });
 
             it('should return the correct list of records', () => {
+                if (checkFatalError()) return;
+
                 expect(retryResults).toBeArrayOfSize(exampleData.length);
                 expect(DataEntity.isDataEntityArray(retryResults)).toBeTrue();
 
@@ -197,6 +221,8 @@ describe('Kafka Fetcher', () => {
             });
 
             it('should have committed the results', async () => {
+                if (checkFatalError()) return;
+
                 const result = await fetcher.consumer.topicPositions();
                 expect(result).toEqual([
                     {

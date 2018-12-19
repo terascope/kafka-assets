@@ -16,6 +16,7 @@ import {
 import {
     ERR__ASSIGN_PARTITIONS,
     ERR__REVOKE_PARTITIONS,
+    ERR__STATE,
 } from '../_kafka_helpers/error-codes';
 
 export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
@@ -25,9 +26,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         started: {},
         ended: {},
     };
-
+    /** last known assignments */
+    private _assignments: TopicPartition[] = [];
     private _pendingOffsets: CountPerPartition = {};
-
     private _rebalanceTimeout: NodeJS.Timer|undefined;
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
@@ -64,8 +65,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
                 return this._try(() => this._client.commit(offset), 'commit')
                     // If a particular topic fails to commit
                     // it should not stop the rest of topics to commit
-                    /* istanbul ignore next */
                     .catch((err) => {
+                        /* istanbul ignore next */
                         errors.push(err);
                     });
             });
@@ -88,6 +89,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         let hasInvalidCommits = true;
 
         for (const [partition, pending] of Object.entries(this._pendingOffsets)) {
+            /* istanbul ignore next */
             if (pending > 1) {
                 this._logger.warn(`partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
                 hasInvalidCommits = false;
@@ -167,6 +169,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             results = results.concat(consumed);
         }
 
+        if (!results.length) {
+            await this._verifyClientState();
+        }
+
         this._logger.trace(`consumed ${results.length} messages`);
         return results;
     }
@@ -181,6 +187,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             return this._consumeMessages(count);
         }, 'consume');
 
+        /* istanbul ignore next */
         if (messages == null) return [];
 
         for (const message of messages) {
@@ -335,6 +342,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Verify the connection is alive and well
      */
     private async _checkState(): Promise<void> {
+        if (this._fatalState != null) {
+            throw this._fatalState;
+        }
         await this._connect();
         await this._waitForRebalance();
     }
@@ -400,6 +410,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _handleRebalance(err: KafkaError|undefined, assignments: TopicPartition[]) {
         if (err && err.code === ERR__ASSIGN_PARTITIONS) {
             this._logger.debug(`got new assignments ${formatTopar(assignments)}`);
+            this._assignments = assignments;
             this._endRebalance('due to new assignments');
         } else if (err && err.code === ERR__REVOKE_PARTITIONS) {
             this._logger.debug(`revoking assignments ${formatTopar(assignments)}`);
@@ -430,6 +441,35 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         if (this._pendingOffsets[topar.partition] != null) {
             this._pendingOffsets[topar.partition] -= 1;
+        }
+    }
+
+    /**
+     * There is a case when the kafka client
+     * will get disconnected from the broker
+     * but remain in an invalid state.
+     *
+     * See the following issue:
+     * - https://github.com/Blizzard/node-rdkafka/issues/27
+     * - https://github.com/Blizzard/node-rdkafka/issues/182
+     * - https://github.com/Blizzard/node-rdkafka/issues/237
+    */
+    private async _verifyClientState() {
+        if (!this.isConnected() || this._rebalancing) return;
+
+        this._logger.debug('checking client state...');
+
+        try {
+            // this intentionally doesn't include the offset
+            // so it won't actually seek
+            for (const toppar of this._assignments) {
+                await this._seek(toppar);
+            }
+        } catch (err) {
+            if (err && err.code === ERR__STATE) {
+                this._fatalState = new Error('Kafka Client is in a non-recoverable state');
+                throw this._fatalState;
+            }
         }
     }
 }
