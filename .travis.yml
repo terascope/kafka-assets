@@ -10,15 +10,19 @@ branches:
   only:
   - master
   - /^v\d+\.\d+\.\d+/
+cache:
+  directories:
+    - "$HOME/.kafka-downloads"
 before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
   # Install Kafka
   - export KAFKA_HOME="$HOME/.kafka"
+  - export KAFKA_TMP="$HOME/.kafka-downloads"
   - mkdir -p "$KAFKA_HOME"
-  - wget https://www.apache.org/dist/kafka/1.1.1/kafka_2.11-1.1.1.tgz -O /tmp/kafka.tgz
-  - tar xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1
+  - '[[ ! -f "$KAFKA_TMP/kafka.tgz" ]] && mkdir -p "$KAFKA_TMP" && wget https://www.apache.org/dist/kafka/1.1.1/kafka_2.11-1.1.1.tgz -O "$KAFKA_TMP/kafka.tgz"'
+  - tar xzf "$KAFKA_TMP/kafka.tgz" -C $KAFKA_HOME --strip-components 1
   # add bin to path for ease of use
   - export PATH="$KAFKA_HOME/bin:$PATH"
   # Run Zookeeper on localhost:2181
@@ -32,12 +36,11 @@ before_install:
 install:
   - yarn install
 script:
-  - yarn test:all
+  - yarn workspaces run test:debug
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - yarn lint:all
 after_failure:
-  - yarn test:debug --onlyFailures
   - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:
   - ./scripts/build.sh
