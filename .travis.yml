@@ -36,6 +36,7 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 after_failure:
+  - yarn test:debug --onlyFailures
   - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:
   - ./scripts/build.sh
