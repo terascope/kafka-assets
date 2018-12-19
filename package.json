@@ -5,6 +5,7 @@
     "private": true,
     "scripts": {
         "lint": "tslint --project tsconfig.json --format verbose",
+        "lint:all": "yarn workspaces run lint",
         "lint:fix": "yarn lint --fix",
         "prepare": "yarn workspaces run build",
         "postinstall": "yarn --cwd ./asset --prod install",
