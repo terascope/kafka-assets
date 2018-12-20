@@ -10,6 +10,10 @@ branches:
   only:
   - master
   - /^v\d+\.\d+\.\d+/
+addons:
+  apt:
+    packages:
+      - jq
 cache:
   yarn: true
   directories:
@@ -54,6 +58,8 @@ deploy:
     script: yarn publish:changed
     on:
       tags: true
+      condition: $TRAVIS_OS_NAME = linux
+      node: '8'
   - provider: releases
     api_key: $GITHUB_TOKEN
     prerelease: true
