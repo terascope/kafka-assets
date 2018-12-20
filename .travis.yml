@@ -47,9 +47,9 @@ after_failure:
 before_deploy:
   - ./scripts/build.sh
   - cp ./docs/CONNECTORS.md packages/terafoundation_kafka_connector/README.md
+  - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 deploy:
   - provider: script
-    before_deploy: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
     skip_cleanup: true
     script: yarn publish:changed
     on:
