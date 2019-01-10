@@ -1,6 +1,7 @@
 import 'jest-extended';
 import { TestClientConfig, Logger, DataEntity, NoopProcessor, debugLogger } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
+import { FatalError } from '../asset/src/_kafka_clients';
 import KafkaFetcher from '../asset/src/kafka_reader/fetcher';
 import { loadData } from './helpers/kafka-data';
 import { kafkaBrokers, fetcherTopic, fetcherGroup } from './helpers/config';
@@ -51,11 +52,16 @@ describe('Kafka Fetcher', () => {
     let noop: NoopProcessor;
     let exampleData: object[];
     let results: DataEntity[] = [];
-    let fatalError: Error|null = new Error('Timeout run beforeEach');
+
+    const _fatalErr = new Error('Timeout run beforeEach') as FatalError;
+    _fatalErr.fatalError = true;
+    let fatalError: FatalError|null = _fatalErr;
 
     function checkFatalError(): boolean {
         if (!fatalError) return false;
+
         expect(fatalError.message).toEqual('Kafka Client is in a non-recoverable state');
+        expect(fatalError.fatalError).toBeTrue();
         return true;
     }
 

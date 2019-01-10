@@ -12,6 +12,7 @@ import {
     TopicPartition,
     ConsumerClientConfig,
     CountPerPartition,
+    FatalError,
 } from './interfaces';
 import {
     ERR__ASSIGN_PARTITIONS,
@@ -342,8 +343,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Verify the connection is alive and well
      */
     private async _checkState(): Promise<void> {
-        if (this._fatalState != null) {
-            throw this._fatalState;
+        if (this._fatalError != null) {
+            throw this._fatalError;
         }
         await this._connect();
         await this._waitForRebalance();
@@ -457,6 +458,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private async _verifyClientState() {
         if (!this.isConnected() || this._rebalancing) return;
 
+        // reset the fatal state to undefined
+        // in the off chance where it actually does recover
+        this._fatalError = undefined;
         this._logger.debug('checking client state...');
 
         try {
@@ -467,8 +471,11 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             }
         } catch (err) {
             if (err && err.code === ERR__STATE) {
-                this._fatalState = new Error('Kafka Client is in a non-recoverable state');
-                throw this._fatalState;
+                const error = new Error('Kafka Client is in a non-recoverable state') as FatalError;
+                error.fatalError = true;
+
+                this._fatalError = error;
+                throw this._fatalError;
             }
         }
     }

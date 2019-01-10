@@ -35,3 +35,7 @@ export interface ProducerClientConfig {
     logger: Logger;
     bufferSize: number;
 }
+
+export interface FatalError extends Error {
+    fatalError: true;
+}

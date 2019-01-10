@@ -7,11 +7,12 @@ import {
     isKafkaError,
     AnyKafkaError
 } from '../_kafka_helpers';
+import { FatalError } from './interfaces';
 import * as kafka from 'node-rdkafka';
 
 export default class BaseClient<T extends kafka.Client> {
     protected readonly _topic: string;
-    protected _fatalState: Error|undefined;
+    protected _fatalError: FatalError|undefined;
     protected _closed: boolean = false;
     protected _backoff: number = defaultBackOff;
 
