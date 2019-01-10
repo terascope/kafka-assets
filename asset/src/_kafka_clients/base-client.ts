@@ -11,7 +11,6 @@ import * as kafka from 'node-rdkafka';
 
 export default class BaseClient<T extends kafka.Client> {
     protected readonly _topic: string;
-    protected _fatalState: Error|undefined;
     protected _closed: boolean = false;
     protected _backoff: number = defaultBackOff;
 

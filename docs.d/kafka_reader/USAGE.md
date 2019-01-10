@@ -6,7 +6,7 @@
     "slicers": 1,
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.0"
+    // "kafka:2.0.1"
     "assets": [ "kafka" ],
     // ...
     "operations": [

@@ -12,6 +12,7 @@ import {
     TopicPartition,
     ConsumerClientConfig,
     CountPerPartition,
+    FatalError,
 } from './interfaces';
 import {
     ERR__ASSIGN_PARTITIONS,
@@ -19,7 +20,15 @@ import {
     ERR__STATE,
 } from '../_kafka_helpers/error-codes';
 
+const isTest = process.env.NODE_ENV === 'test';
+/** Maximum number of invalid state errors to get from kafka */
+const MAX_INVALID_STATE_COUNT = !isTest ? 3 : 1;
+/** Minimum number of empty slices to get before checking the state of the client */
+const MIN_EMPTY_SLICES = !isTest ? 2 : 0;
+
 export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
+    private _emptySlices = 0;
+    private _invalidStateCount = 0;
     private _rebalancing = false;
     private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
@@ -90,10 +99,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         for (const [partition, pending] of Object.entries(this._pendingOffsets)) {
             /* istanbul ignore next */
-            if (pending > 1) {
+            if (pending > 2) {
                 this._logger.warn(`partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
                 hasInvalidCommits = false;
-            } else if (pending === 1) {
+            } else if (pending > 0) {
                 this._logger.debug(`partition ${partition} for topic ${this._topic} is behind ${pending} commits`);
             }
         }
@@ -170,10 +179,16 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         }
 
         if (!results.length) {
+            this._emptySlices++;
             await this._verifyClientState();
+        } else {
+            this._emptySlices = 0;
+            if (this._invalidStateCount > 0) {
+                this._invalidStateCount--;
+            }
         }
 
-        this._logger.trace(`consumed ${results.length} messages`);
+        this._logger.debug(`consumed ${results.length} messages`);
         return results;
     }
 
@@ -342,9 +357,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Verify the connection is alive and well
      */
     private async _checkState(): Promise<void> {
-        if (this._fatalState != null) {
-            throw this._fatalState;
-        }
+        this._throwInvalidStateError();
+
         await this._connect();
         await this._waitForRebalance();
     }
@@ -456,21 +470,48 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     */
     private async _verifyClientState() {
         if (!this.isConnected() || this._rebalancing) return;
+        if (this._emptySlices <= MIN_EMPTY_SLICES) return;
 
         this._logger.debug('checking client state...');
 
         try {
             // this intentionally doesn't include the offset
             // so it won't actually seek
-            for (const toppar of this._assignments) {
+            const toppar = this._assignments[0];
+            if (toppar) {
                 await this._seek(toppar);
             }
+
+            // all the client to auto-heal from the invalid state
+            if (this._invalidStateCount > 0) {
+                this._invalidStateCount--;
+            }
         } catch (err) {
+            this._incBackOff();
+
+            // if get an invalid state, increase the count
+            // and if it is past the threshold,
             if (err && err.code === ERR__STATE) {
-                this._fatalState = new Error('Kafka Client is in a non-recoverable state');
-                throw this._fatalState;
+                this._invalidStateCount++;
+                this._throwInvalidStateError();
             }
         }
+    }
+
+    /**
+     * Throw a Fatal Error in the case where the state
+    */
+    private _throwInvalidStateError() {
+        if (this._invalidStateCount < 1) return;
+
+        const error = new Error('Kafka Client is in an invalid state') as FatalError;
+        error.fatalError = true;
+
+        if (this._invalidStateCount <= MAX_INVALID_STATE_COUNT) {
+            this._logger.warn(error.message);
+            return;
+        }
+        throw error;
     }
 }
 
