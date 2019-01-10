@@ -25,7 +25,7 @@ if (!fs.existsSync(assetPath)) {
     throw new Error(`Assets does not exist at path ${assetPath}`);
 }
 
-const docsPath = path.join(rootDir, './docs');
+const docsPath = path.join(rootDir, './docs.d');
 const repoName = path.basename(process.cwd());
 const orgName = 'terascope';
 const repo = `${orgName}/${repoName}`;
@@ -311,10 +311,10 @@ Please make sure to update tests as appropriate.`);
     return formatMarkdown(parts);
 }
 
-const readme = formatMarkdown([
+const readme = addToc(formatMarkdown([
     getHeader(),
     getOperationDocs(),
     getFooter(),
-]);
+]));
 
-process.stdout.write(addToc(readme));
+fs.writeFileSync(path.join(rootDir, 'README.md'), readme);
