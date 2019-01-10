@@ -60,7 +60,7 @@ describe('Kafka Fetcher', () => {
     function checkFatalError(): boolean {
         if (!fatalError) return false;
 
-        expect(fatalError.message).toEqual('Kafka Client is in a non-recoverable state');
+        expect(fatalError.message).toEqual('Kafka Client is in an invalid state');
         expect(fatalError.fatalError).toBeTrue();
         return true;
     }

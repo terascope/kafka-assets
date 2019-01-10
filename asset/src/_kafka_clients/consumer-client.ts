@@ -20,7 +20,10 @@ import {
     ERR__STATE,
 } from '../_kafka_helpers/error-codes';
 
+const MAX_INVALID_STATE_COUNT = process.env.NODE_ENV === 'test' ? 3 : 1;
+
 export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
+    private _invalidStateCount = 0;
     private _rebalancing = false;
     private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
@@ -343,9 +346,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Verify the connection is alive and well
      */
     private async _checkState(): Promise<void> {
-        if (this._fatalError != null) {
-            throw this._fatalError;
-        }
+        this._throwInvalidStateError();
+
         await this._connect();
         await this._waitForRebalance();
     }
@@ -458,9 +460,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private async _verifyClientState() {
         if (!this.isConnected() || this._rebalancing) return;
 
-        // reset the fatal state to undefined
-        // in the off chance where it actually does recover
-        this._fatalError = undefined;
         this._logger.debug('checking client state...');
 
         try {
@@ -471,13 +470,26 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             }
         } catch (err) {
             if (err && err.code === ERR__STATE) {
-                const error = new Error('Kafka Client is in a non-recoverable state') as FatalError;
-                error.fatalError = true;
-
-                this._fatalError = error;
-                throw this._fatalError;
+                this._invalidStateCount++;
+                this._throwInvalidStateError();
             }
         }
+    }
+
+    /**
+     * Throw a Fatal Error in the case where the state
+    */
+    private _throwInvalidStateError() {
+        if (this._invalidStateCount < 1) return;
+
+        const error = new Error('Kafka Client is in an invalid state') as FatalError;
+        error.fatalError = true;
+
+        if (this._invalidStateCount <= MAX_INVALID_STATE_COUNT) {
+            this._logger.warn(error.message);
+            return;
+        }
+        throw error;
     }
 }
 
