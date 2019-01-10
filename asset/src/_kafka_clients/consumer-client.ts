@@ -468,7 +468,16 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             for (const toppar of this._assignments) {
                 await this._seek(toppar);
             }
+
+            // all the client to auto-heal from the invalid state
+            if (this._invalidStateCount > 0) {
+                this._invalidStateCount--;
+            }
         } catch (err) {
+            this._incBackOff();
+
+            // if get an invalid state, increase the count
+            // and if it is past the threshold,
             if (err && err.code === ERR__STATE) {
                 this._invalidStateCount++;
                 this._throwInvalidStateError();
