@@ -205,8 +205,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         /* istanbul ignore next */
         if (messages == null) return [];
 
-        for (const message of messages) {
+        const total = messages.length;
+
+        for (let i = 0; i < total; i++) {
+            const message = messages[i];
+
             this._trackOffsets(message);
+
             const entity = map(message);
             if (entity != null) {
                 results.push(entity);
