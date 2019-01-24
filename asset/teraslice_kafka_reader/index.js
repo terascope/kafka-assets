@@ -261,11 +261,14 @@ function newReader(context, opConfig) {
                     // we may get less on each call.
                     consumer.consume(opConfig.size - slice.length, (err, messages) => {
                         if (err) {
+                            readyToProcess = true;
                             if (!(errorDict[err.code] || errorDict[err])) {
-                                readyToProcess = true;
                                 rejectSlice(err);
                                 return;
                             }
+
+                            logger.warn('consume error', err);
+                            return;
                         }
 
                         for (const message of messages) {
