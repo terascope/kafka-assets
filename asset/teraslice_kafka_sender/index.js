@@ -1,7 +1,7 @@
 'use strict';
 
 const Promise = require('bluebird');
-const { DataEntity } = require('@terascope/job-components');
+const { DataEntity } = require('@terascope/utils');
 
 function newProcessor(context, opConfig) {
     const bufferSize = 5 * opConfig.size;

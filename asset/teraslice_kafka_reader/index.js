@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const Promise = require('bluebird');
-const { DataEntity } = require('@terascope/job-components');
+const { DataEntity } = require('@terascope/utils');
 
 const KAFKA_NO_OFFSET_STORED = -168;
 const ERR__WAIT_COORD = -180;
@@ -219,15 +219,23 @@ function newReader(context, opConfig) {
                 /**
                  * Kafka DataEntity Metadata
                  * @typedef {object} metadata
-                 * @property {string} _key - the message key
-                 * @property {number} _ingestTime - The time at which the data was ingested into the source data
-                 * @property {number} _processTime - The time at which the data was consumed by the reader
-                 * @property {number} _eventTime - TODO - a time off of the specific field
-                 * @property {string} topic - the topic name
-                 * @property {number} partition - the partition on the topic the
+                 * @property {string} _key
+                 *      - the message key
+                 * @property {number} _ingestTime
+                 *      - The time at which the data was ingested into the source data
+                 * @property {number} _processTime
+                 *      - The time at which the data was consumed by the reader
+                 * @property {number} _eventTime
+                 *      - TODO - a time off of the specific field
+                 * @property {string} topic
+                 *      - the topic name
+                 * @property {number} partition
+                 *      - the partition on the topic the
                  * message was on
-                 * @property {number} offset - the offset of the message
-                 * @property {number} size - message size, in bytes.
+                 * @property {number} offset
+                 *      - the offset of the message
+                 * @property {number} size
+                 *      - message size, in bytes.
                 */
                 const metadata = {
                     _key: message.key,
