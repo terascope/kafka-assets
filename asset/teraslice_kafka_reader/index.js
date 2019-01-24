@@ -214,18 +214,31 @@ function newReader(context, opConfig) {
                 // they can be committed.
                 endingOffsets[message.partition] = message.offset + 1;
 
+                const now = Date.now();
+
                 /**
                  * Kafka DataEntity Metadata
                  * @typedef {object} metadata
+                 * @property {string} _key - the message key
+                 * @property {number} _ingestTime - The time at which the data was ingested into the source data
+                 * @property {number} _processTime - The time at which the data was consumed by the reader
+                 * @property {number} _eventTime - TODO - a time off of the specific field
                  * @property {string} topic - the topic name
                  * @property {number} partition - the partition on the topic the
                  * message was on
                  * @property {number} offset - the offset of the message
-                 * @property {string} key - the message key
                  * @property {number} size - message size, in bytes.
-                 * @property {number} timestamp - message timestamp
                 */
-                const metadata = _.omit(message, 'value');
+                const metadata = {
+                    _key: message.key,
+                    _ingestTime: message.timestamp,
+                    _processTime: now,
+                    _eventTime: now,
+                    topic: message.topic,
+                    partition: message.partition,
+                    offset: message.offset,
+                    size: message.size,
+                };
 
                 try {
                     return DataEntity.fromBuffer(
@@ -271,8 +284,9 @@ function newReader(context, opConfig) {
                             return;
                         }
 
-                        for (const message of messages) {
-                            const entity = handleMessage(message);
+                        const count = messages.length;
+                        for (let i = 0; i < count; i++) {
+                            const entity = handleMessage(messages[i]);
                             if (entity != null) {
                                 slice.push(entity);
                             }
