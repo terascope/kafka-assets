@@ -6,9 +6,6 @@
   "main": "index.js",
   "dependencies": {
     "@terascope/job-components": "^0.14.3",
-    "lodash.chunk": "^4.2.0",
-    "lodash.isequal": "^4.5.0",
-    "lodash.omit": "^4.5.0",
     "lodash.once": "^4.1.1"
   },
   "devDependencies": {},
