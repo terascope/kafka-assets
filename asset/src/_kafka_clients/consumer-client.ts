@@ -188,7 +188,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             }
         }
 
-        this._logger.debug(`consumed ${results.length} messages`);
+        this._logger.info(`Resolving with ${results.length} results`);
         return results;
     }
 
