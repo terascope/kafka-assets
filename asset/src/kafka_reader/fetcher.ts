@@ -1,4 +1,3 @@
-import omit from 'lodash.omit';
 import { KafkaReaderConfig } from './interfaces';
 import {
     Fetcher,
@@ -41,7 +40,19 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
 
     async fetch() {
         const map = this.tryRecord((msg: KafkaMessage): DataEntity => {
-            const metadata: KafkaMessageMetadata = omit(msg, 'value');
+            const now = Date.now();
+            const metadata: KafkaMessageMetadata = {
+                _key: msg.key,
+                _ingestTime: msg.timestamp,
+                _processTime: now,
+                // TODO this should be based of an actual value
+                _eventTime: now,
+                topic: msg.topic,
+                partition: msg.partition,
+                offset: msg.offset,
+                size: msg.size,
+            };
+
             return DataEntity.fromBuffer(
                 msg.value,
                 this.opConfig,

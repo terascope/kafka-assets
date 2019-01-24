@@ -53,21 +53,37 @@ function getErrorCause(err: any): string {
 }
 
 export interface KafkaMessageMetadata {
+    /** the message key */
+    _key: string;
+    /** The time at which the data was ingested into the source data */
+    _ingestTime: number;
+    /** The time at which the data was consumed by the reader */
+    _processTime: number;
+    /** TODO - a time off of the specific field */
+    _eventTime: number;
     /** the topic name */
     topic: string;
     /** the partition on the topic the message was on */
     partition: number;
     /** the offset of the message */
     offset: number;
+    /** the message size, in bytes. */
+    size: number;
+}
+
+export interface KafkaMessage {
     /** the message key */
     key: string;
-    /** the message size, in bytes. */
+    /** the topic name */
+    topic: string;
+    /** the partition on the topic the message was on */
+    partition: number;
+    /** the offset of the message */
+    offset: number;
+    /** the message size, in bytes */
     size: number;
     /** the message timestamp */
     timestamp: number;
-}
-
-export interface KafkaMessage extends KafkaMessageMetadata {
     /** the message data */
     value: Buffer;
 }
