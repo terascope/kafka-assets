@@ -1,4 +1,3 @@
-import chunk from 'lodash.chunk';
 import { ProduceMessage, ProducerClientConfig } from './interfaces';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers';
 import * as kafka from 'node-rdkafka';
@@ -47,30 +46,31 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
             error = wrapError('Client error while producing', err);
         });
 
-        const chunks = chunk(messages, this._bufferSize);
-        const sizes = chunks.map((c) => c.length);
-        this._logger.debug(`producing batches ${JSON.stringify(sizes)}...`);
+        const total = messages.length;
+        this._logger.debug(`producing ${total} messages in batches ${Math.floor(total / this._bufferSize)}...`);
 
         try {
-            // Break the messages into chunks so the queue
-            // can be flushed after each "chunk"
-            for (const msgs of chunks) {
-                // for each message
-                for (const msg of msgs) {
-                    const message: ProduceMessage = (map == null) ? msg : map(msg);
+            // Send the messages, after each buffer size is complete
+            // flush the messages
+            for (let i = 0; i < total; i++) {
+                const msg = messages[i];
+                const message: ProduceMessage = (map == null) ? msg : map(msg);
 
-                    this._client.produce(
-                        this._topic,
-                        // This is the partition. There may be use cases where
-                        // we'll need to control this.
-                        null,
-                        message.data,
-                        message.key,
-                        message.timestamp
-                    );
+                this._client.produce(
+                    this._topic,
+                    // This is the partition. There may be use cases where
+                    // we'll need to control this.
+                    null,
+                    message.data,
+                    message.key,
+                    message.timestamp
+                );
+
+                // flush the messages at the end of the buffer size
+                // or the end of the messages
+                if (i % this._bufferSize === 0 || i === (total - 1)) {
+                    await this._try(() => this._flush(), 'produce', 0);
                 }
-
-                await this._try(() => this._flush(), 'produce', 0);
             }
         } finally {
             off();

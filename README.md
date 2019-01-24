@@ -147,7 +147,7 @@ terafoundation:
 {
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.1"
+    // "kafka:2.0.2"
     "assets": [ "kafka" ],
     "apis": [
         {
@@ -205,7 +205,7 @@ terafoundation:
     "slicers": 1,
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.1"
+    // "kafka:2.0.2"
     "assets": [ "kafka" ],
     // ...
     "operations": [
@@ -256,7 +256,7 @@ terafoundation:
 {
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.1"
+    // "kafka:2.0.2"
     "assets": [ "kafka" ],
     // ...
     "operations": [

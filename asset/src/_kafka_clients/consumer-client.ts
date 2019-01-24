@@ -188,7 +188,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             }
         }
 
-        this._logger.debug(`consumed ${results.length} messages`);
+        this._logger.info(`Resolving with ${results.length} results`);
         return results;
     }
 
@@ -205,8 +205,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         /* istanbul ignore next */
         if (messages == null) return [];
 
-        for (const message of messages) {
+        const total = messages.length;
+
+        for (let i = 0; i < total; i++) {
+            const message = messages[i];
+
             this._trackOffsets(message);
+
             const entity = map(message);
             if (entity != null) {
                 results.push(entity);
