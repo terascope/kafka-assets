@@ -143,6 +143,8 @@ function newReader(context, opConfig) {
 
     function processSlice() {
         return new Promise((resolveSlice, rejectSlice) => {
+            let cleared = false;
+
             const slice = [];
             const iterationStart = Date.now();
             const consuming = setInterval(consume, opConfig.interval);
@@ -152,6 +154,7 @@ function newReader(context, opConfig) {
 
             // Listeners are registered on each slice and cleared at the end.
             function clearPrimaryListeners() {
+                cleared = true;
                 clearInterval(consuming);
                 consumer.removeListener('error', error);
                 events.removeListener('worker:shutdown', shutdown);
@@ -161,6 +164,7 @@ function newReader(context, opConfig) {
                 // These can't be called in clearPrimaryListners as they
                 // must exist after processing of the slice is complete.
                 events.removeListener('slice:success', commit);
+                events.removeListener('slice:failure', commit);
                 events.removeListener('slice:finalize', finalize);
 
                 // This can be registared to different functions depending
@@ -284,7 +288,7 @@ function newReader(context, opConfig) {
                         if (err) {
                             readyToProcess = true;
                             if (!(errorDict[err.code] || errorDict[err])) {
-                                rejectSlice(err);
+                                error(err);
                                 return;
                             }
 
@@ -324,6 +328,7 @@ function newReader(context, opConfig) {
                     if (retryTimer.start < 30000) {
                         retryTimer.start += retryStart;
                     }
+
                     setTimeout(() => {
                         fn(args);
                     }, timer);
@@ -332,8 +337,10 @@ function newReader(context, opConfig) {
 
             function finishCommit() {
                 if (shuttingdown) {
+                    logger.info('Committed offsets, shutting down...');
                     consumer.disconnect();
                 } else {
+                    logger.info('Committed offsets, ready to process');
                     readyToProcess = true;
                 }
             }
@@ -361,6 +368,7 @@ function newReader(context, opConfig) {
                 return new Promise((resolve) => {
                     const query = { topic: opConfig.topic, timeout: 5000 };
                     const retry = _retryFn(checkIfAlive, query);
+
                     function checkIfAlive(_query) {
                         Promise.resolve()
                             .then(() => isAlive(_query))
@@ -388,6 +396,7 @@ function newReader(context, opConfig) {
                             finishCommit();
                             return Promise.resolve(true);
                         }
+
                         logger.error('Kafka reader error after slice resolution', err);
                         return Promise.reject(err);
                     });
@@ -397,11 +406,15 @@ function newReader(context, opConfig) {
             function commit() {
                 readyToProcess = false;
                 clearSliceListeners();
+
                 const retry = _retryFn(_commit);
                 function _commit() {
                     return Promise.resolve()
                         .then(() => commitOffsets())
-                        .catch(() => retry());
+                        .catch((err) => {
+                            logger.warn('Failure committing offsets, will retry', err);
+                            return retry();
+                        });
                 }
 
                 _commit();
@@ -409,7 +422,6 @@ function newReader(context, opConfig) {
 
             // If processing the slice fails we need to roll back to the
             // previous state.
-
             function seek(partitionData) {
                 const { offset, partition } = partitionData;
                 return new Promise((resolve, reject) => {
@@ -459,11 +471,21 @@ function newReader(context, opConfig) {
                 Promise.all(allRollbacks)
                     .then(() => {
                         readyToProcess = true;
+                    })
+                    .catch((err) => {
+                        logger.error('Failure rolling back', err);
+                        readyToProcess = true;
                     });
             }
+
             // There could be a race condition and set readyToProcess to true
             // before commit or rollback executes
+            // Additionally if slice:success or slice:failure is not called
+            // we should try set readyToProcess = true;
             function finalize() {
+                if (!cleared) {
+                    readyToProcess = true;
+                }
                 clearSliceListeners();
             }
 
@@ -471,6 +493,7 @@ function newReader(context, opConfig) {
 
             events.on('worker:shutdown', shutdown);
             events.on('slice:success', commit);
+            events.on('slice:failure', commit);
             events.on('slice:finalize', finalize);
 
             if (opConfig.rollback_on_failure) {
