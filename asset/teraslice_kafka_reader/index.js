@@ -337,10 +337,10 @@ function newReader(context, opConfig) {
 
             function finishCommit() {
                 if (shuttingdown) {
-                    logger.info('Committed offsets, shutting down...');
+                    logger.debug('Committed offsets, shutting down...');
                     consumer.disconnect();
                 } else {
-                    logger.info('Committed offsets, ready to process');
+                    logger.debug('Committed offsets, ready to process');
                     readyToProcess = true;
                 }
             }
@@ -406,6 +406,11 @@ function newReader(context, opConfig) {
             function commit() {
                 readyToProcess = false;
                 clearSliceListeners();
+
+                if (_.isEmpty(endingOffsets)) {
+                    logger.debug('no offsets to commit');
+                    return;
+                }
 
                 const retry = _retryFn(_commit);
                 function _commit() {
