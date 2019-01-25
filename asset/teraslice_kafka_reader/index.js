@@ -149,6 +149,12 @@ function newReader(context, opConfig) {
             const iterationStart = Date.now();
             const consuming = setInterval(consume, opConfig.interval);
 
+            const logStuck = setInterval(() => {
+                if (cleared && !readyToProcess) {
+                    logger.warn('Kafka reader is likely stuck...');
+                }
+            }, opConfig.wait * 2);
+
             const startingOffsets = {};
             const endingOffsets = {};
 
@@ -161,6 +167,7 @@ function newReader(context, opConfig) {
             }
 
             function clearSliceListeners() {
+                clearInterval(logStuck);
                 // These can't be called in clearPrimaryListners as they
                 // must exist after processing of the slice is complete.
                 events.removeListener('slice:success', commit);
