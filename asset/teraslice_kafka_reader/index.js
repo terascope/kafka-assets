@@ -560,7 +560,7 @@ function schema() {
         },
         connection: {
             doc: 'The Kafka consumer connection to use.',
-            default: '',
+            default: 'default',
             format: 'required_String'
         },
         rollback_on_failure: {
