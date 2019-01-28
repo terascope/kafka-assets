@@ -415,16 +415,18 @@ function newReader(context, opConfig) {
                 clearSliceListeners();
 
                 if (_.isEmpty(endingOffsets)) {
+                    readyToProcess = true;
                     logger.debug('no offsets to commit');
                     return;
                 }
 
+                let retries = 0;
                 const retry = _retryFn(_commit);
                 function _commit() {
                     return Promise.resolve()
                         .then(() => commitOffsets())
                         .catch((err) => {
-                            logger.warn('Failure committing offsets, will retry', err);
+                            logger.warn(`Failure committing offsets on retry ${++retries}, will retry again..`, err);
                             return retry();
                         });
                 }
