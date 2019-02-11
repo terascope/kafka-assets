@@ -1,5 +1,6 @@
 
 import * as kafka from 'node-rdkafka';
+import { pDelay } from '@terascope/job-components';
 import {
     wrapError,
     AnyKafkaError,
@@ -68,8 +69,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         const promises = this._flushOffsets('ended')
             .map(async (offset) => {
-                await this._checkState();
-
                 this._addPendingCommit(offset);
                 return this._try(() => this._client.commit(offset), 'commit')
                     // If a particular topic fails to commit
@@ -129,8 +128,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * If an error happens it will attempt to retry
     */
     async seek(topPar: { partition: number, offset: number }): Promise<void> {
-        await this._checkState();
-
         await this._try(() => this._seek(topPar), 'seek');
     }
 
@@ -138,8 +135,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Get the topic partitions, this useful for find the tracked offsets
     */
     async topicPositions(): Promise<TopicPartition[]> {
-        await this._checkState();
-
         try {
             return this._client.position(null);
         } catch (err) {
@@ -172,7 +167,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
             this._client.setDefaultConsumeTimeout(timeout);
 
-            await this._checkState();
             const consumed = await this._consume(remaining, map);
 
             results = results.concat(consumed);
@@ -361,7 +355,11 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /**
      * Verify the connection is alive and well
      */
-    private async _checkState(): Promise<void> {
+    protected async _beforeTry(): Promise<void> {
+        if (this._invalidStateCount > 0) {
+            await pDelay(this._invalidStateCount * 1000);
+        }
+
         this._throwInvalidStateError();
 
         await this._connect();

@@ -95,7 +95,7 @@ describe('Kafka Fetcher', () => {
 
             // disconnect in-order to prove the connection can reconnect
             await new Promise((resolve, reject) => {
-            // @ts-ignore
+                // @ts-ignore
                 fetcher.consumer._client.disconnect((err) => {
                     if (err) reject(err);
                     else resolve();
@@ -127,7 +127,7 @@ describe('Kafka Fetcher', () => {
         await fetcher.consumer.disconnect();
 
         // @ts-ignore
-        await expect(fetcher.consumer._checkState()).rejects.toThrowError('Client is closed');
+        await expect(fetcher.consumer._beforeTry()).rejects.toThrowError('Client is closed');
 
         await harness.shutdown();
     });

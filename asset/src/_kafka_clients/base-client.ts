@@ -237,6 +237,8 @@ export default class BaseClient<T extends kafka.Client> {
             return null;
         }
 
+        await this._beforeTry();
+
         try {
             const result = await fn();
             if (action !== 'connect') {
@@ -274,6 +276,8 @@ export default class BaseClient<T extends kafka.Client> {
             throw wrapError(`Failure${actionStr}`, err);
         }
     }
+
+    protected async _beforeTry() {}
 
     protected _incBackOff() {
         const [min, max] = this._backoffRandomFactor;
