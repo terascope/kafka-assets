@@ -180,7 +180,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         if (!results.length) {
             this._emptySlices++;
-            await this._verifyClientState();
+            this._throwInvalidStateError();
         } else {
             this._emptySlices = 0;
             if (this._invalidStateCount > 0) {
@@ -464,7 +464,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     }
 
     /**
-     * There is a case when the kafka client
+     * When in an invalid state, throw a Fatal Error
+     *
+     * This can happen in the case when the kafka client
      * will get disconnected from the broker
      * but remain in an invalid state.
      *
@@ -473,25 +475,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * - https://github.com/Blizzard/node-rdkafka/issues/182
      * - https://github.com/Blizzard/node-rdkafka/issues/237
     */
-    private async _verifyClientState() {
-        if (this._emptySlices <= MIN_EMPTY_SLICES) return;
-        if (this._invalidStateCount < 1) return;
-
-        const error = new Error('Kafka Client is in an invalid state') as FatalError;
-        error.fatalError = true;
-
-        if (this._invalidStateCount <= MAX_INVALID_STATE_COUNT) {
-            this._logger.warn(error.message);
-            return;
-        }
-
-        throw error;
-    }
-
-    /**
-     * Throw a Fatal Error in the case where the state
-    */
     private _throwInvalidStateError() {
+        if (!this.isConnected() || this._rebalancing) return;
+        if (this._emptySlices <= MIN_EMPTY_SLICES) return;
         if (this._invalidStateCount < 1) return;
 
         const error = new Error('Kafka Client is in an invalid state') as FatalError;
