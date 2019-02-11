@@ -29,12 +29,12 @@ describe('Base Client (internal)', () => {
     beforeEach(() => {
         fakeClient = new FakeKafkaClient();
 
+        BaseClient.DEFAULT_BACKOFF = 10;
+        BaseClient.DEFAULT_MAX_RETRIES = 2;
+        BaseClient.BACKOFF_RANDOM_FACTOR = [0, 1];
+
         // @ts-ignore
         client = new BaseClient(fakeClient, 'test-topic', logger);
-        // @ts-ignore
-        client._backoffRandomFactor = [0, 1];
-        // @ts-ignore
-        client._backoff = 10;
 
         // @ts-ignore because it is private
         events = client._events;
@@ -397,7 +397,6 @@ describe('Base Client (internal)', () => {
                 }, 'commit');
 
                 expect(result).toBeNull();
-
                 expect(fn).toHaveBeenCalledTimes(2);
             });
         });
@@ -417,13 +416,14 @@ describe('Base Client (internal)', () => {
                 }, 'produce');
 
                 expect(result).toEqual('hello');
-
                 expect(fn).toHaveBeenCalledTimes(3);
             });
         });
 
         describe('when it fails on the third attempt when a fatal error', () => {
             it('should call the fn thrice and throw', async () => {
+                expect.hasAssertions();
+
                 const retryable = new Error('Uh oh') as KafkaError;
                 retryable.code = codes.ERR__WAIT_CACHE;
 
@@ -441,14 +441,15 @@ describe('Base Client (internal)', () => {
                     }, 'any');
                 } catch (err) {
                     expect(err.message).toStartWith('Failure, caused by error: Fatal Error');
+                    expect(fn).toHaveBeenCalledTimes(3);
                 }
-
-                expect(fn).toHaveBeenCalledTimes(3);
             });
         });
 
         describe('when it fails on the third attempt when a retryable error', () => {
-            it('should call the fn four times and throw', async () => {
+            it('should call the fn thrice and throw', async () => {
+                expect.hasAssertions();
+
                 const error = new Error('ERR__WAIT_CACHE') as KafkaError;
                 error.code = codes.ERR__WAIT_CACHE;
 
@@ -464,9 +465,8 @@ describe('Base Client (internal)', () => {
                     }, 'any');
                 } catch (err) {
                     expect(err.message).toStartWith('Failure after retries, caused by error: ERR__WAIT_CACHE');
+                    expect(fn).toHaveBeenCalledTimes(3);
                 }
-
-                expect(fn).toHaveBeenCalledTimes(4);
             });
         });
     });
