@@ -280,6 +280,11 @@ export default class BaseClient<T extends kafka.Client> {
     protected async _beforeTry() {}
 
     protected _incBackOff() {
+        if (this._backoff > 60000) {
+            this._backoff = 60000;
+            return;
+        }
+
         const [min, max] = this._backoffRandomFactor;
         this._backoff += Math.round(defaultBackOff * getRandom(min, max));
     }
@@ -294,7 +299,7 @@ function getRandom(min: number, max: number) {
     return Math.random() * (max - min + 1) + min; // The maximum is inclusive and the minimum is inclusive
 }
 
-const defaultBackOff = 100;
+const defaultBackOff = 1000;
 
 type cleanupFn = () => void;
 export type tryFn = () => any;
