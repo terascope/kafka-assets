@@ -112,6 +112,10 @@ describe('Kafka Fetcher', () => {
             results = results.concat(results3);
             logger.debug(`got ${results3.length} results on the third run`);
 
+            const results4 = await harness.runSlice({});
+            results = results.concat(results4);
+            logger.debug(`got ${results4.length} results on the fourth run`);
+
             fatalError = null;
         } catch (err) {
             fatalError = err;
