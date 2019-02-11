@@ -356,14 +356,14 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Verify the connection is alive and well
      */
     protected async _beforeTry(): Promise<void> {
+        await this._connect();
+        await this._waitForRebalance();
+
         if (this._invalidStateCount > 0) {
             await pDelay(this._invalidStateCount * 1000);
         }
 
         this._throwInvalidStateError();
-
-        await this._connect();
-        await this._waitForRebalance();
     }
 
     /**
