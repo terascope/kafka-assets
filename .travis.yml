@@ -27,7 +27,7 @@ before_install:
   - export KAFKA_TMP="$HOME/.kafka-downloads"
   - mkdir -p "$KAFKA_HOME"
   - mkdir -p "$KAFKA_TMP"
-  - '[[ ! -f "$KAFKA_TMP/kafka.tgz" ]] && wget https://www.apache.org/dist/kafka/1.1.1/kafka_2.11-1.1.1.tgz -O "$KAFKA_TMP/kafka.tgz" || echo "* using cache"'
+  - '[[ ! -f "$KAFKA_TMP/kafka.tgz" ]] && wget https://www.apache.org/dist/kafka/2.1.0/kafka_2.11-2.1.0.tgz -O "$KAFKA_TMP/kafka.tgz" || echo "* using cache"'
   - tar xzf "$KAFKA_TMP/kafka.tgz" -C $KAFKA_HOME --strip-components 1
   # add bin to path for ease of use
   - export PATH="$KAFKA_HOME/bin:$PATH"
