@@ -4,7 +4,7 @@
 {
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.2"
+    // "kafka:2.0.3"
     "assets": [ "kafka" ],
     // ...
     "operations": [
