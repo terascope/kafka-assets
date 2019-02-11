@@ -448,7 +448,7 @@ describe('Base Client (internal)', () => {
         });
 
         describe('when it fails on the third attempt when a retryable error', () => {
-            it('should call the fn thrice and throw', async () => {
+            it('should call the fn four times and throw', async () => {
                 const error = new Error('ERR__WAIT_CACHE') as KafkaError;
                 error.code = codes.ERR__WAIT_CACHE;
 
@@ -466,7 +466,7 @@ describe('Base Client (internal)', () => {
                     expect(err.message).toStartWith('Failure after retries, caused by error: ERR__WAIT_CACHE');
                 }
 
-                expect(fn).toHaveBeenCalledTimes(3);
+                expect(fn).toHaveBeenCalledTimes(4);
             });
         });
     });

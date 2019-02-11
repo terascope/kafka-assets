@@ -205,7 +205,7 @@ export default class BaseClient<T extends kafka.Client> {
      * Perform an action, retry if the function fails,
      * or the event emits an error
     */
-    protected async _tryWithEvent<T extends tryFn>(event: string, fn: T, action: string = 'any', retries = 2): RetryResult<T> {
+    protected async _tryWithEvent<T extends tryFn>(event: string, fn: T, action: string = 'any', retries = 3): RetryResult<T> {
         let eventError: Error|null = null;
 
         const off = this._once(event, (err) => {
@@ -230,7 +230,7 @@ export default class BaseClient<T extends kafka.Client> {
      *
      * **NOTE:** It will only retry if it is a retryable kafka error
     */
-    protected async _try<T extends tryFn>(fn: T, action: string = 'any', retries = 2): RetryResult<T>  {
+    protected async _try<T extends tryFn>(fn: T, action: string = 'any', retries = 3): RetryResult<T>  {
         const actionStr = action === 'any' ? '' : ` when performing ${action}`;
         if (this._closed) {
             this._logger.error(`Kafka client closed${actionStr}`);
@@ -251,6 +251,7 @@ export default class BaseClient<T extends kafka.Client> {
             // if get an invalid state, increase the count
             // and if it is past the threshold,
             if (err && err.code === ERR__STATE) {
+                this._incBackOff();
                 this._invalidStateCount++;
             }
 
