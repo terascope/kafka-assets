@@ -5,14 +5,18 @@ import {
     isOkayError,
     wrapError,
     isKafkaError,
-    AnyKafkaError
+    AnyKafkaError,
 } from '../_kafka_helpers';
+import {
+    ERR__STATE
+} from '../_kafka_helpers/error-codes';
 import * as kafka from 'node-rdkafka';
 
 export default class BaseClient<T extends kafka.Client> {
     protected readonly _topic: string;
     protected _closed: boolean = false;
     protected _backoff: number = defaultBackOff;
+    protected _invalidStateCount = 0;
 
     protected readonly _events = new EventEmitter();
     protected readonly _logger: Logger;
@@ -242,6 +246,12 @@ export default class BaseClient<T extends kafka.Client> {
         } catch (err) {
             if (isOkayError(err, action)) {
                 return null;
+            }
+
+            // if get an invalid state, increase the count
+            // and if it is past the threshold,
+            if (err && err.code === ERR__STATE) {
+                this._invalidStateCount++;
             }
 
             const isRetryableError = isOkayError(err, 'retryable');
