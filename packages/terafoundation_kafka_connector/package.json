@@ -26,17 +26,17 @@
         "node-rdkafka": "^2.5.1"
     },
     "devDependencies": {
-        "@terascope/job-components": "^0.14.3",
+        "@terascope/job-components": "^0.14.4",
         "@types/convict": "^4.2.1",
         "@types/jest": "^23.3.13",
-        "@types/node": "^10.12.18",
+        "@types/node": "^10.12.24",
         "convict": "^4.4.1",
         "jest": "^23.6.0",
-        "jest-extended": "^0.11.0",
+        "jest-extended": "^0.11.1",
         "ts-jest": "^23.10.4",
         "tslint": "^5.12.1",
         "tslint-config-airbnb": "^5.11.1",
-        "typescript": "^3.2.4"
+        "typescript": "^3.3.3"
     },
     "engines": {
         "node": ">=8.0.0"

@@ -1,11 +1,11 @@
 {
   "name": "kafka-assets",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": true,
   "description": "Teraslice asset for kafka operations",
   "main": "index.js",
   "dependencies": {
-    "@terascope/job-components": "^0.14.3",
+    "@terascope/job-components": "^0.14.4",
     "lodash.once": "^4.1.1"
   },
   "devDependencies": {},

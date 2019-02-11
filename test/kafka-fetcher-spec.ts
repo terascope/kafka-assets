@@ -88,29 +88,35 @@ describe('Kafka Fetcher', () => {
 
         exampleData = await loadData(topic, 'example-data.txt');
 
+        async function runSlice() {
+            if (results.length >= exampleData.length) {
+                logger.debug('all results created');
+                return;
+            }
+
+            const moreResults = await harness.runSlice({});
+            logger.debug(`got ${moreResults.length} results`);
+
+            results = results.concat(moreResults);
+        }
+
         try {
-            const results1 = await harness.runSlice({});
-            results = results.concat(results1);
-            logger.debug(`got ${results1.length} results on the first run, disconnecting...`);
+            await runSlice();
 
             // disconnect in-order to prove the connection can reconnect
             await new Promise((resolve, reject) => {
-            // @ts-ignore
+                logger.debug('disconnecting...');
+                // @ts-ignore
                 fetcher.consumer._client.disconnect((err) => {
+                    logger.debug('disconnected', { err });
                     if (err) reject(err);
                     else resolve();
                 });
             });
 
-            logger.debug('disconnected');
-
-            const results2 = await harness.runSlice({});
-            results = results.concat(results2);
-            logger.debug(`got ${results2.length} results on the second run`);
-
-            const results3 = await harness.runSlice({});
-            results = results.concat(results3);
-            logger.debug(`got ${results3.length} results on the third run`);
+            await runSlice();
+            await runSlice();
+            await runSlice();
 
             fatalError = null;
         } catch (err) {
@@ -127,7 +133,7 @@ describe('Kafka Fetcher', () => {
         await fetcher.consumer.disconnect();
 
         // @ts-ignore
-        await expect(fetcher.consumer._checkState()).rejects.toThrowError('Client is closed');
+        await expect(fetcher.consumer._beforeTry()).rejects.toThrowError('Client is closed');
 
         await harness.shutdown();
     });

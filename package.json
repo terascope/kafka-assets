@@ -1,6 +1,6 @@
 {
     "name": "kafka-asset-bundle",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "private": true,
     "scripts": {
@@ -11,10 +11,10 @@
         "postinstall": "yarn --cwd ./asset --prod install",
         "build": "rimraf asset/dist; tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
-        "test": "jest --maxWorkers=2",
+        "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
         "test:all": "yarn workspaces run test",
-        "test:watch": "jest --forceExit=true --coverage=false --notify --watch --onlyChanged",
-        "test:debug": "env DEBUG='*teraslice*' jest --forceExit=true --detectOpenHandles --coverage=false --runInBand",
+        "test:watch": "jest --forceExit --coverage=false --notify --watch --onlyChanged",
+        "test:debug": "env DEBUG=\"${DEBUG:-*teraslice*}\" jest --colors --detectOpenHandles --forceExit --coverage=false --runInBand",
         "publish:changed": "./scripts/publish.sh"
     },
     "repository": "git@github.com:terascope/kafka-assets.git",
@@ -23,19 +23,20 @@
     "devDependencies": {
         "@types/jest": "^23.3.13",
         "@types/lodash.once": "^4.1.4",
-        "@types/node": "^10.12.18",
+        "@types/node": "^10.12.24",
         "@types/uuid": "^3.4.4",
+        "bunyan": "^1.8.12",
         "jest": "^23.6.0",
-        "jest-extended": "^0.11.0",
+        "jest-extended": "^0.11.1",
         "markdown-table": "^1.1.2",
         "markdown-toc": "^1.2.0",
         "rimraf": "^2.6.3",
         "teraslice-test-harness": "^0.5.2",
         "ts-jest": "^23.10.4",
-        "ts-node": "^8.0.1",
+        "ts-node": "^8.0.2",
         "tslint": "^5.12.1",
         "tslint-config-airbnb": "^5.11.1",
-        "typescript": "^3.2.4",
+        "typescript": "^3.3.3",
         "uuid": "^3.3.2"
     },
     "engines": {

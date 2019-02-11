@@ -5,14 +5,23 @@ import {
     isOkayError,
     wrapError,
     isKafkaError,
-    AnyKafkaError
+    AnyKafkaError,
 } from '../_kafka_helpers';
+import {
+    ERR__STATE
+} from '../_kafka_helpers/error-codes';
 import * as kafka from 'node-rdkafka';
 
 export default class BaseClient<T extends kafka.Client> {
+    /** the random factory of the back of interval, [min, max] */
+    static BACKOFF_RANDOM_FACTOR: [number, number] = [3, 9];
+    static DEFAULT_BACKOFF = 1000;
+    static DEFAULT_MAX_RETRIES = 3;
+
     protected readonly _topic: string;
     protected _closed: boolean = false;
-    protected _backoff: number = defaultBackOff;
+    protected _backoff: number = BaseClient.DEFAULT_BACKOFF;
+    protected _invalidStateCount = 0;
 
     protected readonly _events = new EventEmitter();
     protected readonly _logger: Logger;
@@ -20,9 +29,6 @@ export default class BaseClient<T extends kafka.Client> {
 
     private _cleanup: cleanupFn[] = [];
     private _connected = false;
-
-    /** the random factory of the back of interval, [min, max] */
-    private _backoffRandomFactor: [number, number] = [3, 9];
 
     constructor(client: T, topic: string, logger: Logger) {
         this._topic = topic;
@@ -201,7 +207,7 @@ export default class BaseClient<T extends kafka.Client> {
      * Perform an action, retry if the function fails,
      * or the event emits an error
     */
-    protected async _tryWithEvent<T extends tryFn>(event: string, fn: T, action: string = 'any', retries = 2): RetryResult<T> {
+    protected async _tryWithEvent<T extends tryFn>(event: string, fn: T, action: string = 'any', retries = BaseClient.DEFAULT_MAX_RETRIES): RetryResult<T> {
         let eventError: Error|null = null;
 
         const off = this._once(event, (err) => {
@@ -226,12 +232,14 @@ export default class BaseClient<T extends kafka.Client> {
      *
      * **NOTE:** It will only retry if it is a retryable kafka error
     */
-    protected async _try<T extends tryFn>(fn: T, action: string = 'any', retries = 2): RetryResult<T>  {
+    protected async _try<T extends tryFn>(fn: T, action: string = 'any', retries = BaseClient.DEFAULT_MAX_RETRIES): RetryResult<T>  {
         const actionStr = action === 'any' ? '' : ` when performing ${action}`;
         if (this._closed) {
             this._logger.error(`Kafka client closed${actionStr}`);
             return null;
         }
+
+        await this._beforeTry();
 
         try {
             const result = await fn();
@@ -242,6 +250,13 @@ export default class BaseClient<T extends kafka.Client> {
         } catch (err) {
             if (isOkayError(err, action)) {
                 return null;
+            }
+
+            // if get an invalid state, increase the count
+            // and if it is past the threshold,
+            if (err && err.code === ERR__STATE) {
+                this._incBackOff();
+                this._invalidStateCount++;
             }
 
             const isRetryableError = isOkayError(err, 'retryable');
@@ -264,13 +279,19 @@ export default class BaseClient<T extends kafka.Client> {
         }
     }
 
+    protected async _beforeTry() {}
+
     protected _incBackOff() {
-        const [min, max] = this._backoffRandomFactor;
-        this._backoff += Math.round(defaultBackOff * getRandom(min, max));
+        const [min, max] = BaseClient.BACKOFF_RANDOM_FACTOR;
+        this._backoff += Math.floor(BaseClient.DEFAULT_BACKOFF * getRandom(min, max));
+
+        if (this._backoff > 60000) {
+            this._backoff = 60000;
+        }
     }
 
     protected _resetBackOff() {
-        this._backoff = defaultBackOff;
+        this._backoff = BaseClient.DEFAULT_BACKOFF;
     }
 }
 
@@ -278,8 +299,6 @@ export default class BaseClient<T extends kafka.Client> {
 function getRandom(min: number, max: number) {
     return Math.random() * (max - min + 1) + min; // The maximum is inclusive and the minimum is inclusive
 }
-
-const defaultBackOff = 100;
 
 type cleanupFn = () => void;
 export type tryFn = () => any;

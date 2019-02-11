@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/terascope/kafka-assets/branch/master/graph/badge.svg)](https://codecov.io/gh/terascope/kafka-assets)
 
 > A bundle of [Kafka](https://kafka.apache.org/) operations and processors for [Teraslice](https://github.com/terascope/teraslice).
-    
+
 
 - [Releases](#releases)
 - [Getting Started](#getting-started)
@@ -147,7 +147,7 @@ terafoundation:
 {
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.2"
+    // "kafka:2.0.3"
     "assets": [ "kafka" ],
     "apis": [
         {
@@ -205,7 +205,7 @@ terafoundation:
     "slicers": 1,
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.2"
+    // "kafka:2.0.3"
     "assets": [ "kafka" ],
     // ...
     "operations": [
@@ -256,7 +256,7 @@ terafoundation:
 {
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.0.2"
+    // "kafka:2.0.3"
     "assets": [ "kafka" ],
     // ...
     "operations": [

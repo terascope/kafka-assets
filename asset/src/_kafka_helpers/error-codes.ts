@@ -132,6 +132,7 @@ okErrors.retryable[ERR__TRANSPORT] = true;
 okErrors.retryable[ERR__WAIT_CACHE] = true;
 okErrors.retryable[ERR__QUEUE_FULL] = true;
 okErrors.retryable[ERR__RESOLVE] = true;
+okErrors.retryable[ERR__STATE] = true;
 
 okErrors.any[ERR__PARTITION_EOF] = true;
 okErrors.any[ERR_NO_ERROR] = true;

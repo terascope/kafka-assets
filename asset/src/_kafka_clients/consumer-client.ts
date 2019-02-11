@@ -1,5 +1,6 @@
 
 import * as kafka from 'node-rdkafka';
+import { pDelay } from '@terascope/job-components';
 import {
     wrapError,
     AnyKafkaError,
@@ -17,26 +18,26 @@ import {
 import {
     ERR__ASSIGN_PARTITIONS,
     ERR__REVOKE_PARTITIONS,
-    ERR__STATE,
 } from '../_kafka_helpers/error-codes';
 
-const isTest = process.env.NODE_ENV === 'test';
+const isProd = process.env.NODE_ENV !== 'test';
 /** Maximum number of invalid state errors to get from kafka */
-const MAX_INVALID_STATE_COUNT = !isTest ? 3 : 1;
+const MAX_INVALID_STATE_COUNT = isProd ? 3 : 1;
 /** Minimum number of empty slices to get before checking the state of the client */
-const MIN_EMPTY_SLICES = !isTest ? 2 : 0;
+const MIN_EMPTY_SLICES = isProd ? 5 : 0;
 
 export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _emptySlices = 0;
-    private _invalidStateCount = 0;
     private _rebalancing = false;
     private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
         started: {},
         ended: {},
     };
+
     /** last known assignments */
-    private _assignments: TopicPartition[] = [];
+    protected _assignments: TopicPartition[] = [];
+
     private _pendingOffsets: CountPerPartition = {};
     private _rebalanceTimeout: NodeJS.Timer|undefined;
 
@@ -68,8 +69,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         const promises = this._flushOffsets('ended')
             .map(async (offset) => {
-                await this._checkState();
-
                 this._addPendingCommit(offset);
                 return this._try(() => this._client.commit(offset), 'commit')
                     // If a particular topic fails to commit
@@ -129,8 +128,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * If an error happens it will attempt to retry
     */
     async seek(topPar: { partition: number, offset: number }): Promise<void> {
-        await this._checkState();
-
         await this._try(() => this._seek(topPar), 'seek');
     }
 
@@ -138,8 +135,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Get the topic partitions, this useful for find the tracked offsets
     */
     async topicPositions(): Promise<TopicPartition[]> {
-        await this._checkState();
-
         try {
             return this._client.position(null);
         } catch (err) {
@@ -172,7 +167,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
             this._client.setDefaultConsumeTimeout(timeout);
 
-            await this._checkState();
             const consumed = await this._consume(remaining, map);
 
             results = results.concat(consumed);
@@ -180,7 +174,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         if (!results.length) {
             this._emptySlices++;
-            await this._verifyClientState();
+            this._throwInvalidStateError();
         } else {
             this._emptySlices = 0;
             if (this._invalidStateCount > 0) {
@@ -361,11 +355,15 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /**
      * Verify the connection is alive and well
      */
-    private async _checkState(): Promise<void> {
-        this._throwInvalidStateError();
-
+    protected async _beforeTry(): Promise<void> {
         await this._connect();
         await this._waitForRebalance();
+
+        if (this._invalidStateCount > 0) {
+            await pDelay(this._invalidStateCount * 1000);
+        }
+
+        this._throwInvalidStateError();
     }
 
     /**
@@ -464,7 +462,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     }
 
     /**
-     * There is a case when the kafka client
+     * When in an invalid state, throw a Fatal Error
+     *
+     * This can happen in the case when the kafka client
      * will get disconnected from the broker
      * but remain in an invalid state.
      *
@@ -473,40 +473,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * - https://github.com/Blizzard/node-rdkafka/issues/182
      * - https://github.com/Blizzard/node-rdkafka/issues/237
     */
-    private async _verifyClientState() {
+    private _throwInvalidStateError() {
         if (!this.isConnected() || this._rebalancing) return;
         if (this._emptySlices <= MIN_EMPTY_SLICES) return;
-
-        this._logger.debug('checking client state...');
-
-        try {
-            // this intentionally doesn't include the offset
-            // so it won't actually seek
-            const toppar = this._assignments[0];
-            if (toppar) {
-                await this._seek(toppar);
-            }
-
-            // all the client to auto-heal from the invalid state
-            if (this._invalidStateCount > 0) {
-                this._invalidStateCount--;
-            }
-        } catch (err) {
-            this._incBackOff();
-
-            // if get an invalid state, increase the count
-            // and if it is past the threshold,
-            if (err && err.code === ERR__STATE) {
-                this._invalidStateCount++;
-                this._throwInvalidStateError();
-            }
-        }
-    }
-
-    /**
-     * Throw a Fatal Error in the case where the state
-    */
-    private _throwInvalidStateError() {
         if (this._invalidStateCount < 1) return;
 
         const error = new Error('Kafka Client is in an invalid state') as FatalError;
