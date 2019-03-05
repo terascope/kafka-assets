@@ -1,8 +1,21 @@
 import { KafkaConsumer, Producer } from 'node-rdkafka';
 
 export interface KafkaConnectorConfig {
-    group?: string;
+    /** A list of brokers */
     brokers: string[]|string;
+
+    /** The security protocol to use */
+    security_protocol?: 'plaintext'|'ssl'|'sasl_plaintext'|'sasl_ssl';
+
+    // SSL configuration
+    ssl_crl_location?: string;
+    ssl_ca_location?: string;
+    ssl_certificate_location?: string;
+    ssl_key_location?: string;
+    ssl_key_password?: string;
+
+    /** a hidden configuration for default group for consumers? */
+    group?: string;
 }
 
 export interface KafkaClientSettings {

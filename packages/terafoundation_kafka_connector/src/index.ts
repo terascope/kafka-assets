@@ -1,5 +1,6 @@
 import { Logger } from '@terascope/job-components';
 import { KafkaConsumer, Producer } from 'node-rdkafka';
+import schema from './schema';
 import {
     KafkaConnectorConfig,
     KafkaConsumerSettings,
@@ -66,13 +67,7 @@ class KafakConnector {
     }
 
     config_schema() {
-        return {
-            brokers: {
-                doc: 'List of seed brokers for the kafka environment',
-                default: ['localhost:9092'],
-                format: Array
-            }
-        };
+        return schema;
     }
 
     private _autoconnect(client: Producer|KafkaConsumer, logger: Logger, autoconnect: boolean = true) {
@@ -94,11 +89,8 @@ class KafakConnector {
         // application or configured in terafoundation config.
         const group = settings.options.group || config.group;
 
-        // Default settings for the client. This uses the options we defined
-        // before exposing all the settings available to rdkafka
-        const clientOptions: RDKafkaOptions = Object.assign({
+        const clientOptions = this._getClientOptions(config, {
             'group.id': group,
-            'metadata.broker.list': config.brokers,
         }, settings.rdkafka_options);
 
         // Topic specific options as defined by librdkafka
@@ -115,10 +107,7 @@ class KafakConnector {
     }
 
     private _getProducerOptions(config: KafkaConnectorConfig, settings: KafkaProducerSettings) {
-        // Default settings for the client. This uses the options we defined
-        // before exposing all the settings available to rdkafka
-        const clientOptions: RDKafkaOptions = Object.assign({
-            'metadata.broker.list': config.brokers,
+        const clientOptions = this._getClientOptions(config, {
             'queue.buffering.max.messages': 500000,
             'queue.buffering.max.ms': 1000,
             'batch.num.messages': 100000,
@@ -134,6 +123,28 @@ class KafakConnector {
             clientOptions,
             pollInterval: poll_interval,
         };
+    }
+
+    // Default settings for the client. This uses the options we defined
+    // before exposing all the settings available to rdkafka
+    private _getClientOptions(config: KafkaConnectorConfig, ...options: any[]): RDKafkaOptions {
+        const clientConfig =  Object.assign({
+            'metadata.broker.list': config.brokers,
+            'security.protocol': config.security_protocol,
+            'ssl.crl.location': config.ssl_crl_location,
+            'ssl.ca.location': config.ssl_ca_location,
+            'ssl.certificate.location': config.ssl_certificate_location,
+            'ssl.key.location': config.ssl_key_location,
+            'ssl.key.password': config.ssl_key_password,
+        }, ...options);
+
+        for (const [key, val] of Object.entries(clientConfig)) {
+            if (val == null || val === '') {
+                delete clientConfig[key];
+            }
+        }
+
+        return clientConfig;
     }
 }
 
