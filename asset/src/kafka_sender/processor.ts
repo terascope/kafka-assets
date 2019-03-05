@@ -80,7 +80,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     private clientConfig() {
-        return {
+        const config = {
             type: 'kafka',
             endpoint: this.opConfig.connection,
             options: {
@@ -92,10 +92,17 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
                 'queue.buffering.max.ms': this.opConfig.wait,
                 'batch.num.messages': this.opConfig.size,
                 'topic.metadata.refresh.interval.ms': this.opConfig.metadata_refresh,
-                'log.connection.close': false
+                'log.connection.close': false,
             },
             autoconnect: false
-        } as ConnectionConfig;
+        };
+
+        const assignmentStrategy = this.opConfig.partition_assignment_strategy;
+        if (assignmentStrategy) {
+            config.rdkafka_options['partition.assignment.strategy'] = assignmentStrategy;
+        }
+
+        return config as ConnectionConfig;
     }
 
     private createClient(): kafka.Producer {

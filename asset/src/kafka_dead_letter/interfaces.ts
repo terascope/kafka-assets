@@ -26,4 +26,8 @@ export interface KafkaDeadLetterConfig extends APIConfig {
      Set to -1 to disable polling.
     */
     metadata_refresh: number;
+    /**
+     * Name of partition assignment strategy to use when elected group leader assigns partitions to group members.
+    */
+    partition_assignment_strategy?: 'range'|'roundrobin';
 }

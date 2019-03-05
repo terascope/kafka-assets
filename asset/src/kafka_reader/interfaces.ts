@@ -44,4 +44,9 @@ export interface KafkaReaderConfig extends OpConfig {
      at some point in the future it is expected this will default to `true`.
     */
     rollback_on_failure: boolean;
+
+    /**
+     * Name of partition assignment strategy to use when elected group leader assigns partitions to group members.
+    */
+    partition_assignment_strategy?: 'range'|'roundrobin';
 }
