@@ -50,7 +50,7 @@ after_failure:
   - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:
   - ./scripts/build.sh
-  - cp ./docs.d/CONNECTORS.md packages/terafoundation_kafka_connector/README.md
+  - cp ./docs/CONNECTORS.md packages/terafoundation_kafka_connector/README.md
   - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 deploy:
   - provider: script

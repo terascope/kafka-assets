@@ -10,22 +10,34 @@ npm install terafoundation_kafka_connector
 
 **Configuration:**
 
-This connector exposes two different client implementations. One for producers `type: producer` and one for consumers `type: consumer`.
+The terafoundation level configuration is as follows:
 
-| Name | Description | Default | Required |
-| ---- | ----------- | ------- | -------- |
-| brokers | List of kafka brokers to use | `localhost:9092` | N |
-| options | Consumer group to join. Only applies to type: consumer | see below | Y |
-| topic_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that apply per topic. | `{}` | N |
-| rdkafka_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that are not subscription specific. | `{}` | N |
+|            Field             |          Type          |      Default       |                                Description                                 |
+| :--------------------------: | :--------------------: | :----------------: | :------------------------------------------------------------------------: |
+|         **brokers**          |        `Array`         | `"localhost:9092"` |               List of seed brokers for the kafka environment               |
+|    **security_protocol**     | `"plaintext"`, `"ssl"` |   `"plaintext"`    |                 Protocol used to communicate with brokers                  |
+|     **ssl_ca_location**      |        `String`        |         -          | File or directory path to CA certificate(s) for verifying the broker's key |
+| **ssl_certificate_location** |        `String`        |         -          |         Path to client's public key (PEM) used for authentication          |
+|     **ssl_crl_location**     |        `String`        |         -          |          Path to CRL for verifying broker's certificate validity           |
+|     **ssl_key_location**     |        `String`        |         -          |         Path to client's private key (PEM) used for authentication         |
+|     **ssl_key_password**     |        `String`        |         -          |                           Private key passphrase                           |
+
+When using this connector in code, this connector exposes two different client implementations. One for producers `type: producer` and one for consumers `type: consumer`.
+
+
+| Name                | Description                                                                                                                             | Default   | Required |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------- |
+| **options**         | Consumer or Producer specific options                                                                                                   | see below | Y        |
+| **topic_options**   | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that apply per topic.               | `{}`      | N        |
+| **rdkafka_options** | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that are not subscription specific. | `{}`      | N        |
 
 The `options` object enables setting a few properties
 
-| Name | Description | Default | Required |
-| ---- | ----------- | ------- | -------- |
-| type | What type of connector is required. "consumer" or "producer". | consumer | N |
-| group | For type = 'consumer' what consumer group to use | terafoundation_kafka_connector | N |
-| poll_interval | For type = 'producer', how often (in milliseconds) the producer connection is polled to keep it alive. | `100` | N |
+| Name              | Description                                                                                          | Default    | Required |
+| ----------------- | ---------------------------------------------------------------------------------------------------- | ---------- | -------- |
+| **type**          | What type of connector is required. "consumer" or "producer".                                        | `consumer` | N        |
+| **group**         | For type 'consumer', what consumer group to use                                                      | `N/A`      | N        |
+| **poll_interval** | For type 'producer', how often (in milliseconds) the producer connection is polled to keep it alive. | `100`      | N        |
 
 **Consumer connector configuration example:**
 

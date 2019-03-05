@@ -5,7 +5,7 @@ export interface KafkaConnectorConfig {
     brokers: string[]|string;
 
     /** The security protocol to use */
-    security_protocol?: 'plaintext'|'ssl'|'sasl_plaintext'|'sasl_ssl';
+    security_protocol?: 'plaintext'|'ssl';
 
     // SSL configuration
     ssl_crl_location?: string;
@@ -13,9 +13,6 @@ export interface KafkaConnectorConfig {
     ssl_certificate_location?: string;
     ssl_key_location?: string;
     ssl_key_password?: string;
-
-    /** a hidden configuration for default group for consumers? */
-    group?: string;
 }
 
 export interface KafkaClientSettings {

@@ -29,7 +29,7 @@ class KafakConnector {
     create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings): KafkaConsumerResult;
     create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaProducerSettings): KafkaProducerResult;
     create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings|KafkaProducerSettings): KafkaConsumerResult|KafkaProducerResult {
-        const clientType = getClientType(settings.options.type);
+        const clientType = getClientType(settings.options && settings.options.type);
 
         if (isConsumerSettings(settings)) {
             const {
@@ -87,7 +87,7 @@ class KafakConnector {
     private _getConsumerOptions(config: KafkaConnectorConfig, settings: KafkaConsumerSettings) {
         // Group can be passed in when the connection is requested by the
         // application or configured in terafoundation config.
-        const group = settings.options.group || config.group;
+        const group = settings.options.group;
 
         const clientOptions = this._getClientOptions(config, {
             'group.id': group,
@@ -107,6 +107,8 @@ class KafakConnector {
     }
 
     private _getProducerOptions(config: KafkaConnectorConfig, settings: KafkaProducerSettings) {
+        const pollInterval = settings.options.poll_interval;
+
         const clientOptions = this._getClientOptions(config, {
             'queue.buffering.max.messages': 500000,
             'queue.buffering.max.ms': 1000,
@@ -116,12 +118,10 @@ class KafakConnector {
         // Topic specific options as defined by librdkafka
         const topicOptions: RDKafkaOptions = Object.assign({}, settings.topic_options);
 
-        const { poll_interval = 100 } = settings.options;
-
         return {
             topicOptions,
             clientOptions,
-            pollInterval: poll_interval,
+            pollInterval: pollInterval != null ? pollInterval : 100,
         };
     }
 
