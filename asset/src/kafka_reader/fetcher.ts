@@ -78,7 +78,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     }
 
     private clientConfig() {
-        return {
+        const config = {
             type: 'kafka',
             endpoint: this.opConfig.connection,
             options: {
@@ -99,7 +99,14 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
                 offset_commit_cb: true,
             },
             autoconnect: false
-        } as ConnectionConfig;
+        };
+
+        const assignmentStrategy = this.opConfig.partition_assignment_strategy;
+        if (assignmentStrategy) {
+            config.rdkafka_options['partition.assignment.strategy'] = assignmentStrategy;
+        }
+
+        return config as ConnectionConfig;
     }
 
     private createClient(): kafka.KafkaConsumer {

@@ -10,11 +10,13 @@ const {
     isString,
     getTypeOf,
     firstToUpper,
-    opSchema
+    opSchema,
+    isFunction
 } = require('@terascope/job-components');
 
 const generateToc = require('markdown-toc');
 const table = require('markdown-table');
+const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
@@ -25,7 +27,13 @@ if (!fs.existsSync(assetPath)) {
     throw new Error(`Assets does not exist at path ${assetPath}`);
 }
 
-const docsPath = path.join(rootDir, './docs.d');
+const replaceThese = {
+    $PWD: process.cwd(),
+    $HOME: os.homedir(),
+    $HOSTNAME: os.hostname(),
+};
+
+const docsPath = path.join(rootDir, './docs');
 const repoName = path.basename(process.cwd());
 const orgName = 'terascope';
 const repo = `${orgName}/${repoName}`;
@@ -44,17 +52,24 @@ function formatVal(val, isType = false) {
         if (isType) {
             if (val.indexOf('required_') === 0) {
                 str = `${val.replace('required_', '')}`;
-            }
-            if (val.indexOf('optional_') === 0) {
+            } else if (val.indexOf('optional_') === 0) {
                 str = `${val.replace('optional_', '')}`;
+            } else {
+                str = `${val}`;
             }
         } else {
             str = `"${val}"`;
         }
-    } else if (val && val.name != null) {
+    } else if (val && val.name) {
         str = val.name;
     } else {
         str = toString(val);
+    }
+
+    if (isString(str)) {
+        for (const [replaceWith, searchFor] of Object.entries(replaceThese)) {
+            str = str.replace(searchFor, replaceWith);
+        }
     }
 
     return `\`${str}\``;
@@ -67,7 +82,13 @@ function formatDefaultVal(s) {
 }
 
 function formatType(s) {
-    if (s.default && !s.format) return getTypeOf(s);
+    if (s.default != null && (!s.format || isFunction(s.format))) {
+        const typeOf = getTypeOf(s.default);
+        if (/^[`"']/.test(typeOf)) {
+            return typeOf;
+        }
+        return `\`${typeOf}\``;
+    }
     return firstToUpper(formatVal(s.format, true));
 }
 
@@ -120,18 +141,32 @@ function generateConfigDocs(schemaPath, opType) {
 
     const schema = Object.assign({}, opSchema, new Schema(context, opType).schema);
 
-    Object.keys(schema)
-        .sort()
-        .forEach((field) => {
-            const s = schema[field];
+    function handleSchemaObj(schemaObj, prefix = '') {
+        Object.keys(schemaObj)
+            .sort()
+            .forEach((field) => {
+                const s = schemaObj[field];
+                if (!s) return;
 
-            data.push([
-                `**${field}**`,
-                formatType(s),
-                formatDefaultVal(s),
-                sanatizeStr(s.doc),
-            ]);
-        });
+                const fullField = [prefix, field]
+                    .join('.')
+                    .replace(/^\./, '');
+
+                if (!s.doc) {
+                    handleSchemaObj(s, fullField);
+                    return;
+                }
+
+                data.push([
+                    `**${fullField}**`,
+                    formatType(s),
+                    formatDefaultVal(s),
+                    sanatizeStr(s.doc),
+                ]);
+            });
+    }
+
+    handleSchemaObj(schema);
 
     return `**Configuration:**
 

@@ -1,6 +1,6 @@
 {
     "name": "terafoundation_kafka_connector",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "Terafoundation connector for Kafka producer and consumer clients.",
     "publishConfig": {
         "access": "public"
@@ -26,17 +26,9 @@
         "node-rdkafka": "^2.5.1"
     },
     "devDependencies": {
-        "@terascope/job-components": "^0.14.4",
+        "@terascope/job-components": "^0.14.5",
         "@types/convict": "^4.2.1",
-        "@types/jest": "^23.3.13",
-        "@types/node": "^10.12.24",
-        "convict": "^4.4.1",
-        "jest": "^23.6.0",
-        "jest-extended": "^0.11.1",
-        "ts-jest": "^23.10.4",
-        "tslint": "^5.12.1",
-        "tslint-config-airbnb": "^5.11.1",
-        "typescript": "^3.3.3"
+        "convict": "^4.4.1"
     },
     "engines": {
         "node": ">=8.0.0"

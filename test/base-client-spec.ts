@@ -366,7 +366,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__TIMED_OUT') as KafkaError;
                 error.code = codes.ERR__TIMED_OUT;
 
-                const fn = jest.fn(() => 'howdy').mockRejectedValueOnce(error);
+                const fn = jest.fn<any, any[]>(() => 'howdy').mockRejectedValueOnce(error);
 
                 // @ts-ignore because it is private
                 const result = await client._try(async () => {
@@ -387,7 +387,7 @@ describe('Base Client (internal)', () => {
                 const okError = new Error('KAFKA_NO_OFFSET_STORED') as KafkaError;
                 okError.code = codes.KAFKA_NO_OFFSET_STORED;
 
-                const fn = jest.fn(() => 'howdy')
+                const fn = jest.fn<any, any[]>(() => 'howdy')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(okError);
 
@@ -406,7 +406,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__RESOLVE') as KafkaError;
                 error.code = codes.ERR__RESOLVE;
 
-                const fn = jest.fn(() => 'hello')
+                const fn = jest.fn<any, any[]>(() => 'hello')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error);
 
@@ -429,7 +429,7 @@ describe('Base Client (internal)', () => {
 
                 const error = new Error('Fatal Error');
 
-                const fn = jest.fn(() => 'hi')
+                const fn = jest.fn<any, any[]>(() => 'hi')
                     .mockRejectedValueOnce(retryable)
                     .mockRejectedValueOnce(retryable)
                     .mockRejectedValueOnce(error);
@@ -453,7 +453,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__WAIT_CACHE') as KafkaError;
                 error.code = codes.ERR__WAIT_CACHE;
 
-                const fn = jest.fn(() => 'hi')
+                const fn = jest.fn<any, any[]>(() => 'hi')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error);

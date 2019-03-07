@@ -57,6 +57,11 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 ].join(' '),
                 default: false,
                 format: Boolean
+            },
+            partition_assignment_strategy: {
+                doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
+                default: '',
+                format: ['range', 'roundrobin', '']
             }
         };
     }

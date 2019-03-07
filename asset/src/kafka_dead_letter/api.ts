@@ -83,7 +83,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     }
 
     private clientConfig() {
-        return {
+        const config = {
             type: 'kafka',
             endpoint: this.apiConfig.connection,
             options: {
@@ -98,7 +98,14 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
                 'log.connection.close': false
             },
             autoconnect: false
-        } as ConnectionConfig;
+        };
+
+        const assignmentStrategy = this.apiConfig.partition_assignment_strategy;
+        if (assignmentStrategy) {
+            config.rdkafka_options['partition.assignment.strategy'] = assignmentStrategy;
+        }
+
+        return config as ConnectionConfig;
     }
 
     private createClient(): kafka.Producer {
