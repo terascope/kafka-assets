@@ -61,6 +61,7 @@ typings/
 .next
 
 # Ignore teraslice asset builds
+build/
 builds/
 
 asset/dist

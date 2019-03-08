@@ -39,6 +39,8 @@ before_install:
   - sleep 3
   # Make it colorful
   - export FORCE_COLOR=1
+  # Install teraslice-cli
+  - yarn global add teraslice-cli
 install:
   - yarn install
 script:
@@ -46,10 +48,12 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - yarn lint:all
+  # Attempt to build the asset (so it doesn't blow up when it deploys)
+  - teraslice-cli assets build
 after_failure:
   - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:
-  - ./scripts/build.sh
+  - teraslice-cli assets build
   - cp ./docs/CONNECTORS.md packages/terafoundation_kafka_connector/README.md
   - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 deploy:
@@ -64,7 +68,7 @@ deploy:
     api_key: $GITHUB_TOKEN
     prerelease: true
     file_glob: true
-    file: builds/*.zip
+    file: build/*.zip
     skip_cleanup: true
     on:
       tags: true

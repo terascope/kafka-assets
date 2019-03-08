@@ -311,8 +311,14 @@ yarn test
 
 Build a compiled asset bundle to deploy to a teraslice cluster.
 
+**Install Teraslice CLI**
+
 ```bash
-./scripts/build.sh
+yarn global add teraslice-cli
+```
+
+```bash
+teraslice-cli assets build
 ```
 
 ### Documentation
