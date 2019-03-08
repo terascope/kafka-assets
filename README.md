@@ -160,7 +160,7 @@ terafoundation:
 {
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.1.0"
+    // "kafka:2.1.1"
     "assets": [ "kafka" ],
     "apis": [
         {
@@ -219,7 +219,7 @@ terafoundation:
     "slicers": 1,
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.1.0"
+    // "kafka:2.1.1"
     "assets": [ "kafka" ],
     // ...
     "operations": [
@@ -271,7 +271,7 @@ terafoundation:
 {
     // make sure to include the asset bundle
     // additionally you can specify the version
-    // "kafka:2.1.0"
+    // "kafka:2.1.1"
     "assets": [ "kafka" ],
     // ...
     "operations": [
@@ -311,8 +311,14 @@ yarn test
 
 Build a compiled asset bundle to deploy to a teraslice cluster.
 
+**Install Teraslice CLI**
+
 ```bash
-./scripts/build.sh
+yarn global add teraslice-cli
+```
+
+```bash
+teraslice-cli assets build
 ```
 
 ### Documentation
