@@ -76,7 +76,7 @@ describe('isOkayError helper', () => {
     describe.each(alwaysBad)('when consuming and checking error code %s', (code) => {
         it('should return false', () => {
             const err = new Error('Uh oh') as KafkaError;
-            err.code = code;
+            err.code = code as string|number;
 
             expect(isOkayError(err, 'consume')).toBeFalse();
             expect(isOkayError(code, 'consume')).toBeFalse();
