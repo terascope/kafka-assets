@@ -4,7 +4,7 @@ import { codeToMessage, okErrors } from './error-codes';
 export type AnyKafkaError = Error|KafkaError|number|string|null;
 
 export interface KafkaError extends Error {
-    code: number;
+    code: number|string;
 }
 
 export function wrapError(message: string, err: AnyKafkaError): KafkaError {
@@ -34,7 +34,7 @@ function getErrorCause(err: any): string {
     let message = causedBy;
     message += typeof err === 'object' ? err.message : toString(err);
 
-    let code: number|null = null;
+    let code: number|string|null = null;
 
     if (isKafkaError(err)) {
         code = err.code;
@@ -73,7 +73,7 @@ export interface KafkaMessageMetadata {
 
 export interface KafkaMessage {
     /** the message key */
-    key: string;
+    key: Buffer|string;
     /** the topic name */
     topic: string;
     /** the partition on the topic the message was on */
@@ -93,7 +93,7 @@ export function isKafkaError(err: any): err is KafkaError {
     return isError(err) && err.code != null;
 }
 
-export function isOkayError(err: AnyKafkaError, action: string = 'any'): boolean {
+export function isOkayError(err?: AnyKafkaError, action: string = 'any'): boolean {
     if (err == null) return false;
     const code = isKafkaError(err) ? err.code : err as number;
     if (action === 'retryable') {

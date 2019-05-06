@@ -42,7 +42,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         const map = this.tryRecord((msg: KafkaMessage): DataEntity => {
             const now = Date.now();
             const metadata: KafkaMessageMetadata = {
-                _key: msg.key,
+                _key: keyToString(msg.key),
                 _ingestTime: msg.timestamp,
                 _processTime: now,
                 // TODO this should be based of an actual value
@@ -113,4 +113,10 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         const connection = this.context.foundation.getConnection(this.clientConfig());
         return connection.client;
     }
+}
+
+/** Safely convert a buffer or string to a string */
+function keyToString(str?: string|Buffer) {
+    if (!str) return '';
+    return str.toString('utf8');
 }
