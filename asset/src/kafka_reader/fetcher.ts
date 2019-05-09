@@ -41,6 +41,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     async fetch() {
         const map = this.tryRecord((msg: KafkaMessage): DataEntity => {
             const now = Date.now();
+
             const metadata: KafkaMessageMetadata = {
                 _key: keyToString(msg.key),
                 _ingestTime: msg.timestamp,
@@ -117,6 +118,6 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
 
 /** Safely convert a buffer or string to a string */
 function keyToString(str?: string|Buffer) {
-    if (!str) return '';
+    if (!str) return null;
     return str.toString('utf8');
 }
