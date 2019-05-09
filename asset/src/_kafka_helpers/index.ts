@@ -54,7 +54,7 @@ function getErrorCause(err: any): string {
 
 export interface KafkaMessageMetadata {
     /** the message key */
-    _key: string;
+    _key: string|null;
     /** The time at which the data was ingested into the source data */
     _ingestTime: number;
     /** The time at which the data was consumed by the reader */
