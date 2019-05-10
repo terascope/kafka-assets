@@ -184,7 +184,7 @@ describe('Kafka Sender', () => {
 
             it('should return metadata _key if _key is present', () => {
                 // @ts-ignore
-                sender.opConfig.id_field = undefined;
+                delete sender.opConfig.id_field;
 
                 const entity = new DataEntity({
                     id: '7da04627-f786-5d1f-a18c-2735684efd3d',
