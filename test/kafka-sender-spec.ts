@@ -153,7 +153,7 @@ describe('Kafka Sender', () => {
                 expect(key).toEqual(entity.ip);
             });
 
-            it('should return null if the key does not exist', () => {
+            it('should return null if the key does not exist and no metadata', () => {
                 const entity = new DataEntity({
                     id: '7da04627-f786-5d1f-a18c-2735684efd3d',
                     name: 'Belle Parsons',
@@ -180,6 +180,42 @@ describe('Kafka Sender', () => {
                 const key = sender.getKey(entity);
 
                 expect(key).toBeNull();
+            });
+
+            it('should return metadata _key if _key is present', () => {
+                // @ts-ignore
+                sender.opConfig.id_field = undefined;
+
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
+                }, { _key: 'someKey'});
+
+                // @ts-ignore
+                const key = sender.getKey(entity);
+
+                expect(key).toEqual('someKey');
+            });
+
+            it('should return opConfig.id_field, if specified', () => {
+                // @ts-ignore
+                sender.opConfig.id_field = 'ip';
+
+                const entity = new DataEntity({
+                    id: '7da04627-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Belle Parsons',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi',
+                    created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
+                }, { _key: 'someKey'});
+
+                // @ts-ignore
+                const key = sender.getKey(entity);
+
+                expect(key).toEqual(entity.ip);
             });
         });
 

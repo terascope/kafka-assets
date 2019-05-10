@@ -45,10 +45,10 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     private getKey(msg: DataEntity): string|null {
-        if (!this.opConfig.id_field) return null;
+        const key = msg[this.opConfig.id_field] || msg.getMetadata('_key');
 
-        const key = msg[this.opConfig.id_field];
-        if (key && isString(key)) return key;
+        if (key === undefined) return null;
+        else if (isString(key)) return key;
 
         const err = new Error(`invalid id_field on record ${this.opConfig.id_field}`);
         this.rejectRecord(msg, err);
