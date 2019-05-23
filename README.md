@@ -177,7 +177,7 @@ terafoundation:
             // Make sure to specify the dead letter action
             "_dead_letter_action": "kafka_dead_letter",
             // the kafka topic to subscribe to
-            "topic": "d9c7ba7..."
+            "topic": "d9c7ba7...",
             // the kafka consumer group
             "group": "4e69b5271-4a6..."
         },
@@ -227,7 +227,7 @@ terafoundation:
         {
             "_op": "kafka_reader",
             // the kafka topic to subscribe to
-            "topic": "d9c7ba7..."
+            "topic": "d9c7ba7...",
             // the kafka consumer group
             "group": "4e69b5271-4a6...",
             // collect 10000 records before resolving the slice
@@ -281,7 +281,7 @@ terafoundation:
         {
             "_op": "kafka_sender",
             // the kafka topic to subscribe to
-            "topic": "d9c7ba7..."
+            "topic": "d9c7ba7...",
             // produce 10000 records at a time
             "size": 10000
         }
