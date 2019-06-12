@@ -348,6 +348,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         // @ts-ignore because the event doesn't exist in the type definitions
         this._client.on('offset.commit', (offsets) => {
+            if (!offsets || !Array.isArray(offsets)) {
+                this._logger.trace('Invalid event data for offset.commit', offsets);
+                return;
+            }
             offsets.forEach((offset: TopicPartition) => this._removePendingCommit(offset));
         });
     }
