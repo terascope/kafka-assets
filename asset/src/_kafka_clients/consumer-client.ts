@@ -329,7 +329,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         /* istanbul ignore next */
         // @ts-ignore because the type definition don't work right
-        this._client.on('rebalance', (err, assignments) => {
+        this._client.on('rebalance', (err: KafkaError|undefined, assignments: TopicPartition[]) => {
             if (this._closed) return;
 
             try {
