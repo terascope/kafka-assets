@@ -5,7 +5,7 @@ node_js:
 os:
   - linux
   - osx
-osx_image: xcode8
+osx_image: xcode10
 branches:
   only:
   - master
@@ -23,6 +23,9 @@ before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
   # Install Kafka
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install openssl; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CPPFLAGS=-I/usr/local/opt/openssl/include; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export LDFLAGS=-L/usr/local/opt/openssl/lib; fi
   - export KAFKA_HOME="$HOME/.kafka"
   - export KAFKA_TMP="$HOME/.kafka-downloads"
   - mkdir -p "$KAFKA_HOME"
@@ -41,6 +44,7 @@ before_install:
   - export FORCE_COLOR=1
   # Install teraslice-cli
   - yarn global add teraslice-cli
+
 install:
   - yarn install
 script:
