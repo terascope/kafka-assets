@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.15.0.tgz#9174470a13b65cb4be0afcb91bda346e717466ac"
-  integrity sha512-F9JJS781fsJoZWfGmuMDs9b8E04k4XZRSjqTnYsRIebc18w90Z8vV/++hALTpd/rusAYD32OMgSpe44ZTBQCVw==
+"@terascope/job-components@^0.17.0":
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.17.0.tgz#74caf9ca964ead4eb6b4eddfb10b51c6e48dc332"
+  integrity sha512-Q8/jGJ1uPK5e0MvyEURRZnGH/iyX7J4d9vX7y27Y7B10w8BDijAYnZJZaW8jy9XbZJnhKWywRfHkfVJ0bmJZpA==
   dependencies:
     "@terascope/queue" "^1.1.6"
-    "@terascope/utils" "^0.6.0"
+    "@terascope/utils" "^0.10.2"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.2"
@@ -18,15 +18,17 @@
   resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.6.tgz#763d035cf31d2e1fd819ae827274f50874016708"
   integrity sha512-TmLOLh49UVdksjwAUzOO6lqOQMwJIW0pHsXKibcdfzAcUgwXL3JH6BjO2l1u5njQeHjoj1SOyBk6aU1/fHd0PQ==
 
-"@terascope/utils@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.6.0.tgz#72a226ef3f675b3b5b561b4a2d5491af6991af99"
-  integrity sha512-Aeztbtd6Rn6dQ6pfCfIFSAXRiO5N0lFmNvu6cTPyxsqtjyPMe8jv5Jgtz3Guh+PX6trktvMVNzQNhsTel9Nc4A==
+"@terascope/utils@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.10.2.tgz#fcaba3ade6c5546f3fa2f755dec7969095b826d3"
+  integrity sha512-HQ9ML+Q3w3PSMS9O3Or82QDGYjkyRRTFRO/vfWdlGCI/xK/b2nEX9eVnuhKvHSY7OOJiTHjS+o/epIuP1pj6og==
   dependencies:
     debug "^4.1.1"
-    is-plain-object "^2.0.4"
+    is-plain-object "^3.0.0"
     kind-of "^6.0.2"
     lodash.clonedeep "^4.5.0"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
 
 camelcase@^5.0.0:
   version "5.0.0"
@@ -69,17 +71,17 @@ depd@1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
 
-is-plain-object@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.4.tgz#2c163b3fafb1b606d9d17928f05c2a1c38e07677"
-  integrity sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==
+is-plain-object@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-3.0.0.tgz#47bfc5da1b5d50d64110806c199359482e75a928"
+  integrity sha512-tZIpofR+P05k8Aocp7UI/2UTa9lTJSebCXpFFoR9aibpokDj/uXBsJ8luUu0tTVYKkMU6URDUuOfJZ7koewXvg==
   dependencies:
-    isobject "^3.0.1"
+    isobject "^4.0.0"
 
-isobject@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
-  integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
+isobject@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/isobject/-/isobject-4.0.0.tgz#3f1c9155e73b192022a80819bacd0343711697b0"
+  integrity sha512-S/2fF5wH8SJA/kmwr6HYhK/RI/OkhD84k8ntalo0iJjZikgq1XFvR5M8NPT1x5F7fBwCG3qHfnzeP/Vh/ZxCUA==
 
 json5@1.0.1:
   version "1.0.1"
@@ -98,10 +100,20 @@ lodash.clonedeep@4.5.0, lodash.clonedeep@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+
 lodash.once@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
   integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
+
+lodash.set@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
+  integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
 
 minimist@^1.2.0:
   version "1.2.0"
