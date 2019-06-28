@@ -315,10 +315,10 @@
     datemath-parser "^1.0.6"
     uuid "^3.3.2"
 
-"@terascope/job-components@^0.20.0":
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.20.0.tgz#52a0233cfdc45c4f3c3486073f846b08b00e997b"
-  integrity sha512-L3d1rox/IvVLSNKZhbwHI7izi9Hv+dKhX7rql46TNhK5QCvsFCh0r5wwgneYVK4qFhoW4mMLB5+73ILwrJA5mg==
+"@terascope/job-components@^0.20.0", "@terascope/job-components@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.20.1.tgz#8cbb678e60cd452cd5683152ada76a5cdbe420f6"
+  integrity sha512-+VK/P1zMr0bABdYkVwoSQnIljE1euoHXXjoNz3DMk0Wm5YvF/fREMJrQ/vTukBCEv3jfsx7LseSea8vnkzDBRg==
   dependencies:
     "@terascope/queue" "^1.1.6"
     "@terascope/utils" "^0.11.0"
