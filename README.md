@@ -38,10 +38,10 @@ yarn global add teraslice-cli
 teraslice-cli asset deploy ...
 ```
 
-
 **IMPORTANT:** Additionally make sure have installed the required [connectors](#connectors).
 
 ## Connectors
+
 ### Kafka Connector
 
 > Terafoundation connector for Kafka producer and consumer clients.
@@ -67,7 +67,6 @@ The terafoundation level configuration is as follows:
 |     **ssl_key_password**     |        `String`        |         -          |                           Private key passphrase                           |
 
 When using this connector in code, this connector exposes two different client implementations. One for producers `type: producer` and one for consumers `type: consumer`.
-
 
 | Name                | Description                                                                                                                             | Default   | Required |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------- |
@@ -177,7 +176,7 @@ terafoundation:
             // Make sure to specify the dead letter action
             "_dead_letter_action": "kafka_dead_letter",
             // the kafka topic to subscribe to
-            "topic": "d9c7ba7...",
+            "topic": "d9c7ba7..."
             // the kafka consumer group
             "group": "4e69b5271-4a6..."
         },
@@ -227,7 +226,7 @@ terafoundation:
         {
             "_op": "kafka_reader",
             // the kafka topic to subscribe to
-            "topic": "d9c7ba7...",
+            "topic": "d9c7ba7..."
             // the kafka consumer group
             "group": "4e69b5271-4a6...",
             // collect 10000 records before resolving the slice
@@ -256,7 +255,7 @@ terafoundation:
 |              **_op**              |                       `String`                       |      -      |                                                                                                                                                                                                                       Name of operation, , it must reflect the name of the file or folder                                                                                                                                                                                                                        |
 |          **compression**          | `"none"`, `"gzip"`, `"snappy"`, `"lz4"`, `"inherit"` |  `"gzip"`   |                                                                                                                                                                                                                                            Type of compression to use                                                                                                                                                                                                                                            |
 |          **connection**           |                       `String`                       | `"default"` |                                                                                                                                                                                                                                      The Kafka producer connection to use.                                                                                                                                                                                                                                       |
-|           **id_field**            |                       `String`                       |      `"metadata _key"`      |                                                                                                                                                                                                                                 Field in the incoming record that contains keys, leave blank to use the DataEntity's metadata _key                                                                                                                                                                                                                                  |
+|           **id_field**            |                       `String`                       |      -      |                                                                                                                                                                                                                                 Field in the incoming record that contains keys                                                                                                                                                                                                                                  |
 |       **metadata_refresh**        |                       `Number`                       |  `300000`   |                                                                                                                                                                                                       How often the producer will poll the broker for metadata information. Set to -1 to disable polling.                                                                                                                                                                                                        |
 | **partition_assignment_strategy** |           `"range"`, `"roundrobin"`, `""`            |      -      |                                                                                                                                                                                                   Name of partition assignment strategy to use when elected group leader assigns partitions to group members.                                                                                                                                                                                                    |
 |             **size**              |                       `Number`                       |   `10000`   |                                                                                                                                                                                                                          How many messages will be batched and sent to kafka together.                                                                                                                                                                                                                           |
@@ -281,7 +280,7 @@ terafoundation:
         {
             "_op": "kafka_sender",
             // the kafka topic to subscribe to
-            "topic": "d9c7ba7...",
+            "topic": "d9c7ba7..."
             // produce 10000 records at a time
             "size": 10000
         }
@@ -301,6 +300,7 @@ Run the kafka tests
 - `kafka` - A running instance of kafka
 
 **Environment:**
+
 - `KAFKA_BROKERS` - Defaults to `localhost:9091`
 
 ```bash
