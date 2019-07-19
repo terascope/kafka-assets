@@ -335,7 +335,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             try {
                 this._handleRebalance(err, assignments);
             } catch (err) {
-                this._logger.error('error handling rebalance', err);
+                this._logger.error(err, 'failure handling rebalance');
             }
         });
 

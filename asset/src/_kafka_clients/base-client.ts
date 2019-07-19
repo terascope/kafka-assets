@@ -122,12 +122,12 @@ export default class BaseClient<T extends kafka.Client> {
 
             if (err && isError(err)) {
                 if (isOkayError(err, 'retryable')) {
-                    this._logger.warn(`kafka client warning for event "${event}"`, err);
+                    this._logger.warn(err, `kafka client warning for event "${event}"`);
                     return;
                 }
 
                 if (!isKafkaError(err) || !isOkayError(err, 'any')) {
-                    this._logger.error(`kafka client error for event "${event}"`, err);
+                    this._logger.error(err, `kafka client error for event "${event}"`);
                     return;
                 }
             }
@@ -265,7 +265,7 @@ export default class BaseClient<T extends kafka.Client> {
                 this._incBackOff();
                 await pDelay(this._backoff);
 
-                this._logger.warn(`got retryable kafka${actionStr}, will retry in ${this._backoff}ms`, err);
+                this._logger.warn(err, `got retryable kafka${actionStr}, will retry in ${this._backoff}ms`);
                 return this._try(fn, action, retries - 1);
             }
 
