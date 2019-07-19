@@ -335,7 +335,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             try {
                 this._handleRebalance(err, assignments);
             } catch (err) {
-                this._logger.error('error handling rebalance', err);
+                this._logger.error(err, 'failure handling rebalance');
             }
         });
 
@@ -347,11 +347,25 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         });
 
         // @ts-ignore because the event doesn't exist in the type definitions
-        this._client.on('offset.commit', (offsets) => {
-            if (!offsets || !Array.isArray(offsets)) {
+        this._client.on('offset.commit', (_err, _offsets) => {
+            let err: Error|null = null;
+            let offsets: TopicPartition[] = [];
+            // the change the way this event is called
+            if (_offsets && Array.isArray(_offsets)) {
+                err = _err;
+                offsets = _offsets;
+            } else if (_err && Array.isArray(_err)) {
+                err = null;
+                offsets = _err;
+            }
+            // log error if we get one
+            if (err) this._logger.warn(err, 'offset commit error', { offsets });
+
+            if (!Array.isArray(offsets)) {
                 this._logger.trace('Invalid event data for offset.commit', offsets);
                 return;
             }
+
             offsets.forEach((offset: TopicPartition) => this._removePendingCommit(offset));
         });
     }

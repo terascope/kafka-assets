@@ -301,7 +301,7 @@ describe('Base Client (internal)', () => {
                 client._logOrEmit('test:log:warn')(error, 'hello');
 
                 expect(logger.warn).toHaveBeenCalledTimes(1);
-                expect(logger.warn).toHaveBeenCalledWith('kafka client warning for event "test:log:warn"', error);
+                expect(logger.warn).toHaveBeenCalledWith(error, 'kafka client warning for event "test:log:warn"');
             });
 
             it('should log to error when given a fatal error', () => {
@@ -311,7 +311,7 @@ describe('Base Client (internal)', () => {
                 client._logOrEmit('test:log:error')(error, 'hello');
 
                 expect(logger.error).toHaveBeenCalledTimes(1);
-                expect(logger.error).toHaveBeenCalledWith('kafka client error for event "test:log:error"', error);
+                expect(logger.error).toHaveBeenCalledWith(error, 'kafka client error for event "test:log:error"');
             });
         });
     });
