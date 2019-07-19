@@ -304,13 +304,13 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
-"@terascope/job-components@^0.20.0", "@terascope/job-components@^0.20.1", "@terascope/job-components@^0.20.4":
-  version "0.20.4"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.20.4.tgz#6c408c9e9d3f2787023dcb0d036cf8796d170889"
-  integrity sha512-oZ3fGJ6IXqT/T87A9QiNbCbDj79kAIYxTvBoaYWT1IBM13IesUc9LHFeqPWFmqjItnfwEwn/S707icmzPSjtQw==
+"@terascope/job-components@^0.20.0", "@terascope/job-components@^0.20.1", "@terascope/job-components@^0.20.5":
+  version "0.20.5"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.20.5.tgz#c0f911d03a36fa60b8c15073e2aba1684dc42049"
+  integrity sha512-8ixwyt6JrsL4ca3dDYYk/fJXexM8wFOF4LWXq7oIK/MmJENf4EKppySLtzhtxXAtjJmg4MlkO62InxN060u4VA==
   dependencies:
     "@terascope/queue" "^1.1.6"
-    "@terascope/utils" "^0.12.2"
+    "@terascope/utils" "^0.12.4"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.2"
@@ -329,10 +329,10 @@
     bluebird "^3.5.5"
     lodash "^4.17.11"
 
-"@terascope/utils@^0.12.2":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.12.2.tgz#7bbc4c42e41a67ba1f26605b278d5a9b87fa0f2a"
-  integrity sha512-O0DLxCCol6ll5Rzh4V9UzMTXuEHkfT1X7axYDvdLjPo8kzTvXLU6Kk8rZHGka5ySd7I3shltffl5ezIL2qBxmQ==
+"@terascope/utils@^0.12.4":
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.12.4.tgz#bc849b574c0f7cf9a4163db241dc8b2db92546ac"
+  integrity sha512-iA2/7cGTqkiOP/wyS46iFjTYVbIHpNmJ2hlAfTbUxPQvnU6rP1H2zi5ZK1NRfKBrrp0JvcqxgBQVWReIbt27QA==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"
