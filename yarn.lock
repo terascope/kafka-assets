@@ -304,10 +304,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
-"@terascope/job-components@^0.20.7":
-  version "0.20.7"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.20.7.tgz#d40547207da99d6295b1c8521f2e9be287093420"
-  integrity sha512-nAxzPJh1Vqu9dV8mlC4G15VeFltHKGkE2mVhZGAD9j2ftw3Hn8nanEnjj15Kpixfwnt/6Xu5YZ5yNz+hfp/PfA==
+"@terascope/job-components@^0.20.7", "@terascope/job-components@^0.20.8":
+  version "0.20.8"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.20.8.tgz#415b68913d136f02356e5f604c520c3899f18be0"
+  integrity sha512-8Hw1A54o1imObBnSeZXuDfZ3qKFhCmS0LFYTYorupF1upR5Kkca69UU7knDASx08MjR3M18EDhxmbMc2MJ9Jtw==
   dependencies:
     "@terascope/queue" "^1.1.6"
     "@terascope/utils" "^0.14.1"
