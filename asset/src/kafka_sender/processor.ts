@@ -59,7 +59,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
             return key;
         }
-        
+
         return DataEntity.getMetadata(msg, '_key') || null;
     }
 

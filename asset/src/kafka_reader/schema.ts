@@ -38,6 +38,7 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 format: Number
             },
             interval: {
+                // tslint:disable-next-line: max-line-length
                 doc: 'How often to attempt to consume `size` number of records. This only comes into play if the initial consume could not get a full slice.',
                 default: 50,
                 format: Number
