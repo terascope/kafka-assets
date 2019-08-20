@@ -48,6 +48,11 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 default: 'default',
                 format: 'required_String'
             },
+            use_commit_sync: {
+                doc: 'Use commit sync instead of async (usually not recommended)',
+                default: false,
+                format: Boolean
+            },
             rollback_on_failure: {
                 doc: [
                     'Controls whether the consumer state is rolled back on failure.',

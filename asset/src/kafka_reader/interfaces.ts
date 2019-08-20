@@ -37,6 +37,11 @@ export interface KafkaReaderConfig extends OpConfig {
     interval: number;
 
     /**
+     * Use commit sync instead of async (usually not recommended)
+    */
+    use_commit_sync: boolean;
+
+    /**
      Controls whether the consumer state is rolled back on failure.
      This will protect against data loss, however this can have an unintended side effect
      of blocking the job from moving if failures are minor and persistent.

@@ -38,10 +38,10 @@ yarn global add teraslice-cli
 teraslice-cli asset deploy ...
 ```
 
+
 **IMPORTANT:** Additionally make sure have installed the required [connectors](#connectors).
 
 ## Connectors
-
 ### Kafka Connector
 
 > Terafoundation connector for Kafka producer and consumer clients.
@@ -67,6 +67,7 @@ The terafoundation level configuration is as follows:
 |     **ssl_key_password**     |        `String`        |         -          |                           Private key passphrase                           |
 
 When using this connector in code, this connector exposes two different client implementations. One for producers `type: producer` and one for consumers `type: consumer`.
+
 
 | Name                | Description                                                                                                                             | Default   | Required |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------- |
@@ -208,6 +209,7 @@ terafoundation:
 |      **rollback_on_failure**      |                                   `Boolean`                                   |   `false`    |                                                             Controls whether the consumer state is rolled back on failure. This will protect against data loss, however this can have an unintended side effect of blocking the job from moving if failures are minor and persistent. **NOTE:** This currently defaults to `false` due to the side effects of the behavior, at some point in the future it is expected this will default to `true`.                                                              |
 |             **size**              |                                   `Number`                                    |   `10000`    |                                                                                                                                                                                                                         How many records to read before a slice is considered complete.                                                                                                                                                                                                                          |
 |             **topic**             |                                   `String`                                    |      -       |                                                                                                                                                                                                                                        Name of the Kafka topic to process                                                                                                                                                                                                                                        |
+|        **use_commit_sync**        |                                   `Boolean`                                   |   `false`    |                                                                                                                                                                                                                            Use commit sync instead of async (usually not recommended)                                                                                                                                                                                                                            |
 |             **wait**              |                                   `Number`                                    |   `30000`    |                                                                                                                                                                                                              How long to wait for a full chunk of data to be available. Specified in milliseconds.                                                                                                                                                                                                               |
 
 **Example Job Config:**
@@ -300,7 +302,6 @@ Run the kafka tests
 - `kafka` - A running instance of kafka
 
 **Environment:**
-
 - `KAFKA_BROKERS` - Defaults to `localhost:9091`
 
 ```bash

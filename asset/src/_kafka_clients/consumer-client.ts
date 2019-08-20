@@ -7,7 +7,7 @@ import {
     KafkaMessage,
     KafkaError,
 } from '../_kafka_helpers';
-import BaseClient from './base-client';
+import BaseClient, { getRandom } from './base-client';
 import {
     TrackedOffsets,
     TopicPartition,
@@ -64,13 +64,21 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /**
      * Committed to the last known offsets stored.
     */
-    async commit() {
+    async commit(useSync = false) {
         const errors: Error[] = [];
 
         const promises = this._flushOffsets('ended')
-            .map(async (offset) => {
+            .map(async (offset, i) => {
                 this._addPendingCommit(offset);
-                return this._try(() => this._client.commit(offset), 'commit')
+                return this._try(async () => {
+                    // add a random delay to stagger commits
+                    await pDelay(i * getRandom(2, 30));
+                    if (useSync) {
+                        await this._client.commitSync(offset);
+                    } else {
+                        await this._client.commit(offset);
+                    }
+                }, 'commit')
                     // If a particular topic fails to commit
                     // it should not stop the rest of topics to commit
                     .catch((err) => {
