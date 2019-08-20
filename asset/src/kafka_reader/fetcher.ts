@@ -65,7 +65,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     }
 
     async onSliceFinalizing() {
-        await this.consumer.commit();
+        await this.consumer.commit(this.opConfig.use_commit_sync);
     }
 
     // TODO we should handle slice retries differently now that we have the dead letter queue
