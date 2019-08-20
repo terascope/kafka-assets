@@ -28,7 +28,11 @@ import {
 class KafakConnector {
     create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings): KafkaConsumerResult;
     create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaProducerSettings): KafkaProducerResult;
-    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings|KafkaProducerSettings): KafkaConsumerResult|KafkaProducerResult {
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaConsumerSettings|KafkaProducerSettings
+    ): KafkaConsumerResult|KafkaProducerResult {
         const clientType = getClientType(settings.options && settings.options.type);
 
         if (isConsumerSettings(settings)) {
