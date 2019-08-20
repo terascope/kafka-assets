@@ -22,7 +22,7 @@
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT",
     "devDependencies": {
-        "@types/jest": "^24.0.17",
+        "@types/jest": "^24.0.18",
         "@types/lodash.once": "^4.1.6",
         "@types/node": "^12.7.2",
         "@types/uuid": "^3.4.4",
