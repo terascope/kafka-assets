@@ -74,7 +74,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
             await this.consumer.rollback();
         } else {
             this.logger.warn('committing kafka offsets on slice retry - THIS MAY CAUSE DATA LOSS');
-            await this.consumer.commit();
+            await this.consumer.commit(this.opConfig.use_commit_sync);
         }
     }
 
