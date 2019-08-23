@@ -98,6 +98,8 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
                 rebalance_cb: true,
                 // Capture the commits for better error handling and debug
                 offset_commit_cb: true,
+                // Set the max.poll.interval.ms
+                'max.poll.interval.ms': this.opConfig.max_poll_interval,
             },
             autoconnect: false
         };
