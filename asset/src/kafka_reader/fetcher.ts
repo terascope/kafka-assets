@@ -74,7 +74,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
             await this.consumer.rollback();
         } else {
             this.logger.warn('committing kafka offsets on slice retry - THIS MAY CAUSE DATA LOSS');
-            await this.consumer.commit();
+            await this.consumer.commit(this.opConfig.use_commit_sync);
         }
     }
 
@@ -98,6 +98,8 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
                 rebalance_cb: true,
                 // Capture the commits for better error handling and debug
                 offset_commit_cb: true,
+                // Set the max.poll.interval.ms
+                'max.poll.interval.ms': this.opConfig.max_poll_interval,
             },
             autoconnect: false
         };

@@ -37,7 +37,7 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             wait: {
                 doc: 'How long to wait for `size` messages to become available on the producer.',
                 default: 20,
-                format: Number
+                format: 'duration'
             },
             size: {
                 doc: 'How many messages will be batched and sent to kafka together.',
@@ -46,8 +46,8 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             },
             metadata_refresh: {
                 doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
-                default: 300000,
-                format: Number
+                default: '5 minutes',
+                format: 'duration'
             },
             partition_assignment_strategy: {
                 doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
