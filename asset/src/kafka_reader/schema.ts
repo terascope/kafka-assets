@@ -34,14 +34,8 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
             },
             wait: {
                 doc: 'How long to wait for a full chunk of data to be available. Specified in milliseconds.',
-                default: 30000,
-                format: Number
-            },
-            interval: {
-                // tslint:disable-next-line: max-line-length
-                doc: 'How often to attempt to consume `size` number of records. This only comes into play if the initial consume could not get a full slice.',
-                default: 50,
-                format: Number
+                default: '30 seconds',
+                format: 'duration'
             },
             connection: {
                 doc: 'The Kafka consumer connection to use.',

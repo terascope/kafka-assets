@@ -32,11 +32,6 @@ export interface KafkaReaderConfig extends OpConfig {
     size: number;
 
     /**
-     How often to attempt to consume `size` number of records. This only comes into play if the initial consume could not get a full slice.
-    */
-    interval: number;
-
-    /**
      * Use commit sync instead of async (usually not recommended)
     */
     use_commit_sync: boolean;
