@@ -9,8 +9,6 @@
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "scripts": {
-        "lint": "tslint --project tsconfig.json --format verbose",
-        "lint:fix": "yarn lint --fix",
         "prepare": "yarn build",
         "build": "tsc --project tsconfig.json --pretty",
         "build:watch": "yarn build --watch",
