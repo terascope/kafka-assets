@@ -7,9 +7,9 @@ import {
     getValidDate,
     isString,
 } from '@terascope/job-components';
+import * as kafka from 'node-rdkafka';
 import { KafkaSenderConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
-import * as kafka from 'node-rdkafka';
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     producer: ProducerClient;
@@ -45,7 +45,6 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     private getKey(msg: DataEntity): string|null {
-
         if (this.opConfig.id_field) {
             const key = msg[this.opConfig.id_field];
 

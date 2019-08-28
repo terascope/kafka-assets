@@ -1,6 +1,6 @@
+import * as kafka from 'node-rdkafka';
 import { ProduceMessage, ProducerClientConfig } from './interfaces';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers';
-import * as kafka from 'node-rdkafka';
 import BaseClient from './base-client';
 
 /**

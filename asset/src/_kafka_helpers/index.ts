@@ -93,7 +93,7 @@ export function isKafkaError(err: any): err is KafkaError {
     return isError(err) && err.code != null;
 }
 
-export function isOkayError(err?: AnyKafkaError, action: string = 'any'): boolean {
+export function isOkayError(err?: AnyKafkaError, action = 'any'): boolean {
     if (err == null) return false;
     const code = isKafkaError(err) ? err.code : err as number;
     if (action === 'retryable') {

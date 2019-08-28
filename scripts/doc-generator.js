@@ -41,7 +41,7 @@ const repo = `${orgName}/${repoName}`;
 const context = new TestContext('operation-doc-generator');
 
 function formatArr(arr) {
-    return arr.map(v => formatVal(v)).join(', ');
+    return arr.map((v) => formatVal(v)).join(', ');
 }
 
 function formatVal(val, isType = false) {
@@ -112,8 +112,8 @@ function formatName(name, suffix) {
 
 function formatMarkdown(parts) {
     return parts
-        .filter(p => !!p)
-        .filter(p => p.trim())
+        .filter((p) => !!p)
+        .filter((p) => p.trim())
         .join('\n\n');
 }
 
@@ -245,8 +245,8 @@ function findOps(searchPath) {
     if (fs.existsSync(srcPath)) return findOps(srcPath);
 
     return fs.readdirSync(searchPath)
-        .filter(opName => isOperation(path.join(searchPath, opName)))
-        .map(opName => ({
+        .filter((opName) => isOperation(path.join(searchPath, opName)))
+        .map((opName) => ({
             opPath: path.join(searchPath, opName),
             opName,
         }));

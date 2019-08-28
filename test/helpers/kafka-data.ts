@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import uuidv4 from 'uuid/v4';
-import { kafkaBrokers } from './config';
 import { debugLogger } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
+import { kafkaBrokers } from './config';
 import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients';
 
 const logger = debugLogger('kafka-data');
@@ -44,14 +44,12 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     logger.debug(`loading ${messages.length} into topic: ${topic}...`);
 
     client.flushTimeout = 5000;
-    await client.produce(messages, (data) => {
-        return {
-            topic,
-            key: null,
-            data,
-            timestamp: Date.now()
-        };
-    });
+    await client.produce(messages, (data) => ({
+        topic,
+        key: null,
+        data,
+        timestamp: Date.now()
+    }));
 
     logger.debug('DONE loading messages');
 

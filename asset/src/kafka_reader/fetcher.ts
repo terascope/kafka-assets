@@ -1,4 +1,3 @@
-import { KafkaReaderConfig } from './interfaces';
 import {
     Fetcher,
     WorkerContext,
@@ -6,8 +5,9 @@ import {
     ConnectionConfig,
     DataEntity
 } from '@terascope/job-components';
-import { ConsumerClient } from '../_kafka_clients';
 import * as kafka from 'node-rdkafka';
+import { KafkaReaderConfig } from './interfaces';
+import { ConsumerClient } from '../_kafka_clients';
 import {
     KafkaMessage,
     KafkaMessageMetadata
