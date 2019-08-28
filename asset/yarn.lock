@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.23.0":
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.0.tgz#d3aa06451ebdbdfee59351d9fa6c011577110c2e"
-  integrity sha512-GWzPfv/nOLkjv47lHVbx26wfhFUiJ9Y38hw3ndY5P+hNlN0WjgdGIavGvm6MZNa7aRlF4JjUNSH0ilzVJvCwxw==
+"@terascope/job-components@^0.23.1":
+  version "0.23.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.1.tgz#fa797f4e03a195967f6e184fc170e80ac78de6c9"
+  integrity sha512-P0+CbRy3RGIJ9kpvzjh73BAnnAxftUiIDG6XbjAJz62ME6w0ki5z6YdCoziLwYmVo5WRkMuE1XtuKdvXDPuklQ==
   dependencies:
     "@terascope/queue" "^1.1.7"
     "@terascope/utils" "^0.17.0"
