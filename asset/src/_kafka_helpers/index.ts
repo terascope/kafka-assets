@@ -99,5 +99,5 @@ export function isOkayError(err?: AnyKafkaError, action = 'any'): boolean {
     if (action === 'retryable') {
         return okErrors[action][code] != null;
     }
-    return okErrors[action] && okErrors[action][code] != null || okErrors.any[code] != null;
+    return (okErrors[action] && okErrors[action][code] != null) || okErrors.any[code] != null;
 }

@@ -20,8 +20,8 @@ describe('Kafka Fetcher', () => {
         config: {
             brokers: kafkaBrokers,
         },
-        create(config: any, logger: Logger, settings: any) {
-            return Connector.create(config, logger, settings);
+        create(config: any, _logger: Logger, settings: any) {
+            return Connector.create(config, _logger, settings);
         }
     };
 
@@ -214,8 +214,8 @@ describe('Kafka Fetcher', () => {
                 try {
                     retryResults = retryResults.concat(await harness.runSlice({}));
                     retryResults = retryResults.concat(await harness.runSlice({}));
-                } catch (err) {
-                    fatalError = err;
+                } catch (_err) {
+                    fatalError = _err;
                 }
             });
 

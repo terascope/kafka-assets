@@ -26,8 +26,16 @@ import {
  */
 
 class KafakConnector {
-    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings): KafkaConsumerResult;
-    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaProducerSettings): KafkaProducerResult;
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaConsumerSettings
+    ): KafkaConsumerResult;
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaProducerSettings
+    ): KafkaProducerResult;
     create(
         config: KafkaConnectorConfig,
         logger: Logger,
@@ -70,6 +78,7 @@ class KafakConnector {
         throw new Error(`Unsupport client type of ${clientType}`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/camelcase
     config_schema() {
         return schema;
     }

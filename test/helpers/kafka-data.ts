@@ -19,7 +19,9 @@ export async function loadData(topic: string, fileName: string): Promise<object[
         .map((d) => {
             try {
                 data.push(JSON.parse(d));
-            } catch (err) {}
+            } catch (err) {
+                // do nothing
+            }
             return Buffer.from(d);
         });
 
@@ -44,10 +46,10 @@ export async function loadData(topic: string, fileName: string): Promise<object[
     logger.debug(`loading ${messages.length} into topic: ${topic}...`);
 
     client.flushTimeout = 5000;
-    await client.produce(messages, (data) => ({
+    await client.produce(messages, (_data) => ({
         topic,
         key: null,
-        data,
+        data: _data,
         timestamp: Date.now()
     }));
 

@@ -16,7 +16,11 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     collector: Collector<ProduceMessage>;
     private _bufferSize: number;
 
-    constructor(context: WorkerContext, apiConfig: KafkaDeadLetterConfig, executionConfig: ExecutionConfig) {
+    constructor(
+        context: WorkerContext,
+        apiConfig: KafkaDeadLetterConfig,
+        executionConfig: ExecutionConfig
+    ) {
         super(context, apiConfig, executionConfig);
 
         const logger = this.logger.child({ module: 'kafka-producer' });
@@ -57,7 +61,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
             } else {
                 try {
                     record = JSON.stringify(input);
-                } catch (err) {
+                } catch (_err) {
                     record = input;
                 }
             }

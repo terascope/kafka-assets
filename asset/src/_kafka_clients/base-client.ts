@@ -142,6 +142,8 @@ export default class BaseClient<T extends kafka.Client> {
      * @returns an off function to the event listener
     */
     protected _once(event: string, fn: (err: Error|null, ...args: any[]) => void) {
+        let off: () => void;
+
         const cb = once(fn);
         const handler = (...args: any) => {
             if (args[0] && isError(args[0])) {
@@ -155,7 +157,7 @@ export default class BaseClient<T extends kafka.Client> {
 
         this._events.once(event, handler);
 
-        const off = once(() => {
+        off = once(() => {
             this._events.removeListener(event, handler);
             cb(null);
             this._cleanup = this._cleanup.filter((f) => f !== off);
@@ -172,6 +174,8 @@ export default class BaseClient<T extends kafka.Client> {
      * @returns an off function to cleanup the timer
     */
     protected _timeout(fn: (err: Error|null) => void, timeoutMs: number) {
+        let off: () => void;
+
         const cb = once(fn);
         const timeout = setTimeout(() => {
             const error = new Error(`Timeout of ${timeoutMs}ms`);
@@ -180,7 +184,7 @@ export default class BaseClient<T extends kafka.Client> {
             off();
         }, timeoutMs);
 
-        const off = once(() => {
+        off = once(() => {
             clearTimeout(timeout);
             cb(null);
             this._cleanup = this._cleanup.filter((f) => f !== off);
@@ -298,7 +302,8 @@ export default class BaseClient<T extends kafka.Client> {
 
 // get random number inclusive
 export function getRandom(min: number, max: number) {
-    return Math.random() * (max - min + 1) + min; // The maximum is inclusive and the minimum is inclusive
+    // The maximum is inclusive and the minimum is inclusive
+    return Math.random() * (max - min + 1) + min;
 }
 
 type cleanupFn = () => void;

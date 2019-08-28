@@ -83,9 +83,10 @@ describe('Base Client (internal)', () => {
     });
 
     describe('->_connect', () => {
-        it('should handle an successful connection', async () =>
+        it('should handle an successful connection', async () => {
             // @ts-ignore
-            expect(client._connect()).resolves.toBeNil());
+            await expect(client._connect()).resolves.toBeNil();
+        });
 
         it('should handle an error on connect', async () => {
             fakeClient.connect = jest.fn((obj: any, cb: (err: AnyKafkaError, obj: any) => void) => {
@@ -97,8 +98,10 @@ describe('Base Client (internal)', () => {
                 // @ts-ignore
                 await client._connect();
             } catch (err) {
-                expect(err).toHaveProperty('message',
-                    'Failed to connect, caused by error: Connect error');
+                expect(err).toHaveProperty(
+                    'message',
+                    'Failed to connect, caused by error: Connect error'
+                );
             }
         });
     });

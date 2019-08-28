@@ -160,7 +160,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * @param max.size - the target size of messages to consume
      * @param max.wait - the maximum time to wait before resolving the messages
      */
-    async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number; wait: number }): Promise<T[]> {
+    async consume<T>(
+        map: (msg: KafkaMessage) => T,
+        max: { size: number; wait: number }
+    ): Promise<T[]> {
         this.handlePendingCommits();
 
         this._logger.trace('consuming...', { size: max.size, wait: max.wait });
@@ -340,8 +343,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
             try {
                 this._handleRebalance(err, assignments);
-            } catch (err) {
-                this._logger.error(err, 'failure handling rebalance');
+            } catch (_err) {
+                this._logger.error(_err, 'failure handling rebalance');
             }
         });
 
@@ -401,13 +404,15 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._logger.debug('waiting for rebalance...');
 
         return new Promise((resolve) => {
+            let timeoutOff: () => void;
+
             const eventOff = this._once('rebalance:end', () => {
                 timeoutOff();
                 resolve();
             });
 
             /* istanbul ignore next */
-            const timeoutOff = this._timeout(() => {
+            timeoutOff = this._timeout(() => {
                 if (this._rebalancing) {
                     this._endRebalance('due rebalance taking too way too long');
                 }

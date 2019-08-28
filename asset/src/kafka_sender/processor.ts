@@ -15,7 +15,11 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     producer: ProducerClient;
     private _bufferSize: number;
 
-    constructor(context: WorkerContext, opConfig: KafkaSenderConfig, executionConfig: ExecutionConfig) {
+    constructor(
+        context: WorkerContext,
+        opConfig: KafkaSenderConfig,
+        executionConfig: ExecutionConfig
+    ) {
         super(context, opConfig, executionConfig);
 
         const logger = this.logger.child({ module: 'kafka-producer' });

@@ -16,7 +16,11 @@ import {
 export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     consumer: ConsumerClient;
 
-    constructor(context: WorkerContext, opConfig: KafkaReaderConfig, executionConfig: ExecutionConfig) {
+    constructor(
+        context: WorkerContext,
+        opConfig: KafkaReaderConfig,
+        executionConfig: ExecutionConfig
+    ) {
         super(context, opConfig, executionConfig);
 
         const logger = this.logger.child({ module: 'kafka-consumer' });
