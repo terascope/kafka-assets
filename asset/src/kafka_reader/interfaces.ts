@@ -28,8 +28,10 @@ export interface KafkaReaderConfig extends OpConfig {
 
     /**
     * The maximum delay between invocations of poll() when using consumer group management.
-    * This places an upper bound on the amount of time that the consumer can be idle before fetching more records.
-    * If poll() is not called before expiration of this timeout, then the consumer is considered failed
+    * This places an upper bound on the amount of time that the consumer can be idle
+    * before fetching more records.
+    * If poll() is not called before expiration of this timeout,
+    * then the consumer is considered failed
     * and the group will rebalance in order to reassign the partitions to another member.
     */
     max_poll_interval: number;
@@ -54,7 +56,8 @@ export interface KafkaReaderConfig extends OpConfig {
     rollback_on_failure: boolean;
 
     /**
-     * Name of partition assignment strategy to use when elected group leader assigns partitions to group members.
+     * Name of partition assignment strategy to use when elected group leader
+     * assigns partitions to group members.
     */
     partition_assignment_strategy?: 'range'|'roundrobin';
 }

@@ -154,6 +154,5 @@ describe('Kafka Connector', () => {
                 connector.create(config, logger, settings);
             }).toThrowError('Unsupport client type of wrong');
         });
-
     });
 });

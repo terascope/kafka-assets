@@ -135,7 +135,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Seek to a specific offset in a partition.
      * If an error happens it will attempt to retry
     */
-    async seek(topPar: { partition: number, offset: number }): Promise<void> {
+    async seek(topPar: { partition: number; offset: number }): Promise<void> {
         await this._try(() => this._seek(topPar), 'seek');
     }
 
@@ -160,7 +160,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * @param max.size - the target size of messages to consume
      * @param max.wait - the maximum time to wait before resolving the messages
      */
-    async consume<T>(map: (msg: KafkaMessage) => T, max: { size: number, wait: number }): Promise<T[]> {
+    async consume<T>(
+        map: (msg: KafkaMessage) => T,
+        max: { size: number; wait: number }
+    ): Promise<T[]> {
         this.handlePendingCommits();
 
         this._logger.trace('consuming...', { size: max.size, wait: max.wait });
@@ -200,9 +203,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private async _consume<T>(count: number, map: (msg: KafkaMessage) => T): Promise<T[]> {
         const results: T[] = [];
 
-        const messages = await this._failIfEvent('client:error', async () => {
-            return this._consumeMessages(count);
-        }, 'consume');
+        const messages = await this._failIfEvent('client:error', async () => this._consumeMessages(count), 'consume');
 
         /* istanbul ignore next */
         if (messages == null) return [];
@@ -331,9 +332,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         // for event error logs.
         this._client.on('event.error', this._logOrEmit('client:error'));
 
-        this._client.on('unsubscribed',  this._logOrEmit('client:unsubscribed'));
+        this._client.on('unsubscribed', this._logOrEmit('client:unsubscribed'));
 
-        this._client.on('connection.failure',  this._logOrEmit('connect:error'));
+        this._client.on('connection.failure', this._logOrEmit('connect:error'));
 
         /* istanbul ignore next */
         // @ts-ignore because the type definition don't work right
@@ -342,8 +343,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
             try {
                 this._handleRebalance(err, assignments);
-            } catch (err) {
-                this._logger.error(err, 'failure handling rebalance');
+            } catch (_err) {
+                this._logger.error(_err, 'failure handling rebalance');
             }
         });
 
@@ -403,13 +404,15 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._logger.debug('waiting for rebalance...');
 
         return new Promise((resolve) => {
+            let timeoutOff: () => void;
+
             const eventOff = this._once('rebalance:end', () => {
                 timeoutOff();
                 resolve();
             });
 
             /* istanbul ignore next */
-            const timeoutOff = this._timeout(() => {
+            timeoutOff = this._timeout(() => {
                 if (this._rebalancing) {
                     this._endRebalance('due rebalance taking too way too long');
                 }

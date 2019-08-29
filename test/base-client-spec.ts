@@ -67,7 +67,7 @@ describe('Base Client (internal)', () => {
                 await client.disconnect();
             } catch (err) {
                 expect(err).toHaveProperty('message',
-                'Failed to disconnect, caused by error: Disconnect error');
+                    'Failed to disconnect, caused by error: Disconnect error');
             }
 
             fakeClient.disconnect = original;
@@ -85,7 +85,7 @@ describe('Base Client (internal)', () => {
     describe('->_connect', () => {
         it('should handle an successful connection', async () => {
             // @ts-ignore
-            return expect(client._connect()).resolves.toBeNil();
+            await expect(client._connect()).resolves.toBeNil();
         });
 
         it('should handle an error on connect', async () => {
@@ -98,8 +98,10 @@ describe('Base Client (internal)', () => {
                 // @ts-ignore
                 await client._connect();
             } catch (err) {
-                expect(err).toHaveProperty('message',
-                'Failed to connect, caused by error: Connect error');
+                expect(err).toHaveProperty(
+                    'message',
+                    'Failed to connect, caused by error: Connect error'
+                );
             }
         });
     });
@@ -335,9 +337,7 @@ describe('Base Client (internal)', () => {
                 client._closed = true;
 
                 // @ts-ignore because it is private
-                const result = await client._try(async () => {
-                    return fn();
-                });
+                const result = await client._try(async () => fn());
 
                 expect(result).toBeNull();
 
@@ -351,9 +351,7 @@ describe('Base Client (internal)', () => {
                 const fn = jest.fn(() => 'foo');
 
                 // @ts-ignore because it is private
-                const result = await client._try(async () => {
-                    return fn();
-                }, 'consume');
+                const result = await client._try(async () => fn(), 'consume');
 
                 expect(result).toEqual('foo');
 
@@ -369,9 +367,7 @@ describe('Base Client (internal)', () => {
                 const fn = jest.fn<any, any[]>(() => 'howdy').mockRejectedValueOnce(error);
 
                 // @ts-ignore because it is private
-                const result = await client._try(async () => {
-                    return fn();
-                }, 'commit');
+                const result = await client._try(async () => fn(), 'commit');
 
                 expect(result).toEqual('howdy');
 
@@ -392,9 +388,7 @@ describe('Base Client (internal)', () => {
                     .mockRejectedValueOnce(okError);
 
                 // @ts-ignore because it is private
-                const result = await client._try(async () => {
-                    return fn();
-                }, 'commit');
+                const result = await client._try(async () => fn(), 'commit');
 
                 expect(result).toBeNull();
                 expect(fn).toHaveBeenCalledTimes(2);
@@ -411,9 +405,7 @@ describe('Base Client (internal)', () => {
                     .mockRejectedValueOnce(error);
 
                 // @ts-ignore because it is private
-                const result = await client._try(async () => {
-                    return fn();
-                }, 'produce');
+                const result = await client._try(async () => fn(), 'produce');
 
                 expect(result).toEqual('hello');
                 expect(fn).toHaveBeenCalledTimes(3);
@@ -436,9 +428,7 @@ describe('Base Client (internal)', () => {
 
                 try {
                     // @ts-ignore because it is private
-                    await client._try(async () => {
-                        return fn();
-                    }, 'any');
+                    await client._try(async () => fn(), 'any');
                 } catch (err) {
                     expect(err.message).toStartWith('Failure, caused by error: Fatal Error');
                     expect(fn).toHaveBeenCalledTimes(3);
@@ -460,9 +450,7 @@ describe('Base Client (internal)', () => {
 
                 try {
                     // @ts-ignore because it is private
-                    await client._try(async () => {
-                        return fn();
-                    }, 'any');
+                    await client._try(async () => fn(), 'any');
                 } catch (err) {
                     expect(err.message).toStartWith('Failure after retries, caused by error: ERR__WAIT_CACHE');
                     expect(fn).toHaveBeenCalledTimes(3);
@@ -477,9 +465,7 @@ describe('Base Client (internal)', () => {
                 const fn = jest.fn(() => 'bar');
 
                 // @ts-ignore because it is private
-                const result = await client._tryWithEvent('test:try', async () => {
-                    return fn();
-                });
+                const result = await client._tryWithEvent('test:try', async () => fn());
 
                 expect(result).toEqual('bar');
 

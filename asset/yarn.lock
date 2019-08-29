@@ -2,26 +2,26 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.21.1":
-  version "0.21.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.21.1.tgz#f3cb3d6d795650835bf7c7519a01a984797b2237"
-  integrity sha512-HCmUvidUUfhCf1SJEFpWrg59EMbCvK2riVA8v/q/ha2eJEJK/9OHwygUPJVSVINS6qGKdFXTQMBaELOEff+Igw==
+"@terascope/job-components@^0.23.2":
+  version "0.23.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.2.tgz#0280512e1b5403e14ecff5bd4c3e4d8850984cbf"
+  integrity sha512-gkO5vfDG3MuNvLm8Y2X4wPCUnjA0IptH/rkxHBoGVT2/nr+Fsr8O9VJOzV4fe3zjMfnvPY0VZrIJ67Kn/n5mBQ==
   dependencies:
-    "@terascope/queue" "^1.1.6"
-    "@terascope/utils" "^0.16.1"
+    "@terascope/queue" "^1.1.7"
+    "@terascope/utils" "^0.17.1"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
 
-"@terascope/queue@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.6.tgz#763d035cf31d2e1fd819ae827274f50874016708"
-  integrity sha512-TmLOLh49UVdksjwAUzOO6lqOQMwJIW0pHsXKibcdfzAcUgwXL3JH6BjO2l1u5njQeHjoj1SOyBk6aU1/fHd0PQ==
+"@terascope/queue@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.7.tgz#26cd3a42747ec802744f9b86c08034b0bbe07091"
+  integrity sha512-foPas4K4rShs0RxtLNauC9ssXbzWvf5YzCa+6tJ9BAEk+PfjHJhi9bPDL6stXfcHroKtbet49dPwFbFIJJAOHw==
 
-"@terascope/utils@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.16.1.tgz#cd68c760e9c5d6fff4c199d2c614be42c3d6991b"
-  integrity sha512-DNbeD5I0vZ+tLFZRTKE4LyJGQRwrFMczJwlKLJihhK9N/3maToAvqjcOqnJgaKbSGrp4e9zb3sxCmVoRl1YDeQ==
+"@terascope/utils@^0.17.1":
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.17.1.tgz#ae1aacd13a2279c48851d5f7fa1b43a6f2bd34ad"
+  integrity sha512-q76TA7Q2Ol3Kv3opaCc9Th2RtFWEBUcALfS4oaT8mFEZjKMsG/AXAUY0pmqTw8aGAfpCr4+mxptZdWPmGYHwzg==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"

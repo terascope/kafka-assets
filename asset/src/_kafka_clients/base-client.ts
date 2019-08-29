@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import once from 'lodash.once';
 import { Logger, isError, pDelay } from '@terascope/job-components';
+import * as kafka from 'node-rdkafka';
 import {
     isOkayError,
     wrapError,
@@ -10,7 +11,6 @@ import {
 import {
     ERR__STATE
 } from '../_kafka_helpers/error-codes';
-import * as kafka from 'node-rdkafka';
 
 export default class BaseClient<T extends kafka.Client> {
     /** the random factory of the back of interval, [min, max] */
@@ -19,7 +19,7 @@ export default class BaseClient<T extends kafka.Client> {
     static DEFAULT_MAX_RETRIES = 3;
 
     protected readonly _topic: string;
-    protected _closed: boolean = false;
+    protected _closed = false;
     protected _backoff: number = BaseClient.DEFAULT_BACKOFF;
     protected _invalidStateCount = 0;
 
@@ -142,6 +142,8 @@ export default class BaseClient<T extends kafka.Client> {
      * @returns an off function to the event listener
     */
     protected _once(event: string, fn: (err: Error|null, ...args: any[]) => void) {
+        let off: () => void;
+
         const cb = once(fn);
         const handler = (...args: any) => {
             if (args[0] && isError(args[0])) {
@@ -155,12 +157,10 @@ export default class BaseClient<T extends kafka.Client> {
 
         this._events.once(event, handler);
 
-        const off = once(() => {
+        off = once(() => {
             this._events.removeListener(event, handler);
             cb(null);
-            this._cleanup = this._cleanup.filter((f) => {
-                return f !== off;
-            });
+            this._cleanup = this._cleanup.filter((f) => f !== off);
         });
 
         this._cleanup = [...this._cleanup, off];
@@ -174,6 +174,8 @@ export default class BaseClient<T extends kafka.Client> {
      * @returns an off function to cleanup the timer
     */
     protected _timeout(fn: (err: Error|null) => void, timeoutMs: number) {
+        let off: () => void;
+
         const cb = once(fn);
         const timeout = setTimeout(() => {
             const error = new Error(`Timeout of ${timeoutMs}ms`);
@@ -182,12 +184,10 @@ export default class BaseClient<T extends kafka.Client> {
             off();
         }, timeoutMs);
 
-        const off = once(() => {
+        off = once(() => {
             clearTimeout(timeout);
             cb(null);
-            this._cleanup = this._cleanup.filter((f) => {
-                return f !== off;
-            });
+            this._cleanup = this._cleanup.filter((f) => f !== off);
         });
 
         this._cleanup = [...this._cleanup, off];
@@ -199,18 +199,18 @@ export default class BaseClient<T extends kafka.Client> {
      * Perform an action, fail if the function fails,
      * or the event emits an error
     */
-    protected async _failIfEvent<F extends tryFn>(event: string, fn: F, action: string = 'any'): RetryResult<F> {
+    protected async _failIfEvent<F extends tryFn>(event: string, fn: F, action = 'any'): RetryResult<F> {
         return this._tryWithEvent(event, fn, action, 0);
     }
 
-     /**
+    /**
      * Perform an action, retry if the function fails,
      * or the event emits an error
     */
     protected async _tryWithEvent<F extends tryFn>(
         event: string,
         fn: F,
-        action: string = 'any',
+        action = 'any',
         retries = BaseClient.DEFAULT_MAX_RETRIES
     ): RetryResult<F> {
         let eventError: Error|null = null;
@@ -237,7 +237,7 @@ export default class BaseClient<T extends kafka.Client> {
      *
      * **NOTE:** It will only retry if it is a retryable kafka error
     */
-    protected async _try<F extends tryFn>(fn: F, action: string = 'any', retries = BaseClient.DEFAULT_MAX_RETRIES): RetryResult<F>  {
+    protected async _try<F extends tryFn>(fn: F, action = 'any', retries = BaseClient.DEFAULT_MAX_RETRIES): RetryResult<F> {
         const actionStr = action === 'any' ? '' : ` when performing ${action}`;
         if (this._closed) {
             this._logger.error(`Kafka client closed${actionStr}`);
@@ -302,7 +302,8 @@ export default class BaseClient<T extends kafka.Client> {
 
 // get random number inclusive
 export function getRandom(min: number, max: number) {
-    return Math.random() * (max - min + 1) + min; // The maximum is inclusive and the minimum is inclusive
+    // The maximum is inclusive and the minimum is inclusive
+    return Math.random() * (max - min + 1) + min;
 }
 
 type cleanupFn = () => void;

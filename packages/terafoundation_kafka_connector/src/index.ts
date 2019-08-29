@@ -26,8 +26,16 @@ import {
  */
 
 class KafakConnector {
-    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaConsumerSettings): KafkaConsumerResult;
-    create(config: KafkaConnectorConfig, logger: Logger, settings: KafkaProducerSettings): KafkaProducerResult;
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaConsumerSettings
+    ): KafkaConsumerResult;
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaProducerSettings
+    ): KafkaProducerResult;
     create(
         config: KafkaConnectorConfig,
         logger: Logger,
@@ -70,11 +78,12 @@ class KafakConnector {
         throw new Error(`Unsupport client type of ${clientType}`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/camelcase
     config_schema() {
         return schema;
     }
 
-    private _autoconnect(client: Producer|KafkaConsumer, logger: Logger, autoconnect: boolean = true) {
+    private _autoconnect(client: Producer|KafkaConsumer, logger: Logger, autoconnect = true) {
         if (!autoconnect) return;
 
         // Default to autoconnecting but can be disabled.
@@ -91,7 +100,7 @@ class KafakConnector {
     private _getConsumerOptions(config: KafkaConnectorConfig, settings: KafkaConsumerSettings) {
         // Group can be passed in when the connection is requested by the
         // application or configured in terafoundation config.
-        const group = settings.options.group;
+        const { group } = settings.options;
 
         const clientOptions = this._getClientOptions(config, {
             'group.id': group,
@@ -132,7 +141,7 @@ class KafakConnector {
     // Default settings for the client. This uses the options we defined
     // before exposing all the settings available to rdkafka
     private _getClientOptions(config: KafkaConnectorConfig, ...options: any[]): RDKafkaOptions {
-        const clientConfig =  Object.assign({
+        const clientConfig = Object.assign({
             'metadata.broker.list': config.brokers,
             'security.protocol': config.security_protocol,
             'ssl.crl.location': config.ssl_crl_location,

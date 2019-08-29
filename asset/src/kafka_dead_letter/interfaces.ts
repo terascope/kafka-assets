@@ -27,7 +27,8 @@ export interface KafkaDeadLetterConfig extends APIConfig {
     */
     metadata_refresh: number;
     /**
-     * Name of partition assignment strategy to use when elected group leader assigns partitions to group members.
+     * Name of partition assignment strategy to use
+     * when elected group leader assigns partitions to group members.
     */
     partition_assignment_strategy?: 'range'|'roundrobin';
 }

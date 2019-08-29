@@ -1,7 +1,9 @@
 import 'jest-extended';
 import fs from 'fs';
 import path from 'path';
-import { TestClientConfig, Logger, DataEntity, parseJSON } from '@terascope/job-components';
+import {
+    TestClientConfig, Logger, DataEntity, parseJSON
+} from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import KafkaSender from '../asset/src/kafka_sender/processor';
 import { readData } from './helpers/kafka-data';
@@ -192,7 +194,7 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi',
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
-                }, { _key: 'someKey'});
+                }, { _key: 'someKey' });
 
                 // @ts-ignore
                 const key = sender.getKey(entity);
@@ -210,7 +212,7 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi',
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
-                }, { _key: 'someKey'});
+                }, { _key: 'someKey' });
 
                 // @ts-ignore
                 const key = sender.getKey(entity);

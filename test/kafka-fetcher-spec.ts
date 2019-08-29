@@ -1,5 +1,7 @@
 import 'jest-extended';
-import { TestClientConfig, Logger, DataEntity, NoopProcessor, debugLogger } from '@terascope/job-components';
+import {
+    TestClientConfig, Logger, DataEntity, NoopProcessor, debugLogger
+} from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { FatalError } from '../asset/src/_kafka_clients';
 import KafkaFetcher from '../asset/src/kafka_reader/fetcher';
@@ -18,8 +20,8 @@ describe('Kafka Fetcher', () => {
         config: {
             brokers: kafkaBrokers,
         },
-        create(config: any, logger: Logger, settings: any) {
-            return Connector.create(config, logger, settings);
+        create(config: any, _logger: Logger, settings: any) {
+            return Connector.create(config, _logger, settings);
         }
     };
 
@@ -77,9 +79,7 @@ describe('Kafka Fetcher', () => {
         fetcher = harness.fetcher();
         noop = harness.getOperation('noop');
 
-        noop.onBatch = jest.fn(async (data) => {
-            return data;
-        });
+        noop.onBatch = jest.fn(async (data) => data);
 
         await harness.initialize();
 
@@ -214,8 +214,8 @@ describe('Kafka Fetcher', () => {
                 try {
                     retryResults = retryResults.concat(await harness.runSlice({}));
                     retryResults = retryResults.concat(await harness.runSlice({}));
-                } catch (err) {
-                    fatalError = err;
+                } catch (_err) {
+                    fatalError = _err;
                 }
             });
 

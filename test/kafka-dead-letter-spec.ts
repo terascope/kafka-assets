@@ -104,8 +104,7 @@ describe('Kafka Dead Letter', () => {
     it('should have produced all of the bad records', () => {
         expect(consumed).toBeArrayOfSize(badRecords.length);
 
-        for (let i = 0; i < consumed.length; i++) {
-            const expected = consumed[i];
+        for (const expected of consumed) {
             expect(expected).toHaveProperty('error');
             expect(expected).toHaveProperty('record');
         }
