@@ -10,8 +10,6 @@
         "strict": true,
         "sourceMap": true,
         "inlineSourceMap": false,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "noImplicitReturns": true,
         "preserveConstEnums": true,
         "esModuleInterop": true,
