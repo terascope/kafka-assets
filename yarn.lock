@@ -344,13 +344,13 @@
     eslint-plugin-react "^7.14.3"
     eslint-plugin-react-hooks "^1.7.0"
 
-"@terascope/job-components@^0.23.2":
-  version "0.23.2"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.2.tgz#0280512e1b5403e14ecff5bd4c3e4d8850984cbf"
-  integrity sha512-gkO5vfDG3MuNvLm8Y2X4wPCUnjA0IptH/rkxHBoGVT2/nr+Fsr8O9VJOzV4fe3zjMfnvPY0VZrIJ67Kn/n5mBQ==
+"@terascope/job-components@^0.23.2", "@terascope/job-components@^0.23.3":
+  version "0.23.3"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.3.tgz#d494f9b29f208d3a3e10a3ac49f5767ebc3d6fe6"
+  integrity sha512-bS6y5TztrTL+e+cfyDyFzBaxtxFeeoyBxiQmqz6TTdJzKKU/f4kWnRMw7kIU4D94NvaiRGenmzGqIPszQAY/+Q==
   dependencies:
     "@terascope/queue" "^1.1.7"
-    "@terascope/utils" "^0.17.1"
+    "@terascope/utils" "^0.18.0"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
@@ -369,10 +369,10 @@
     bluebird "^3.5.5"
     lodash "^4.17.11"
 
-"@terascope/utils@^0.17.1":
-  version "0.17.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.17.1.tgz#ae1aacd13a2279c48851d5f7fa1b43a6f2bd34ad"
-  integrity sha512-q76TA7Q2Ol3Kv3opaCc9Th2RtFWEBUcALfS4oaT8mFEZjKMsG/AXAUY0pmqTw8aGAfpCr4+mxptZdWPmGYHwzg==
+"@terascope/utils@^0.18.0":
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.18.0.tgz#74b2a1e31ca5448aa509284a1ac1faf81977d62e"
+  integrity sha512-HmbNZcsgNwoWLdl3PHa61PIpwkY8lEBBRtn2Md8/Ipu2zWLlgX1c1OSYNRnzzlzDZZMCjWW/nKRI/0cNmxc8IQ==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"
@@ -4780,12 +4780,7 @@ util.promisify@^1.0.0:
     define-properties "^1.1.2"
     object.getownpropertydescriptors "^2.0.3"
 
-uuid@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
-  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
-
-uuid@^3.3.3:
+uuid@^3.3.2, uuid@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
