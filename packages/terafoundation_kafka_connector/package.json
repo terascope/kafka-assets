@@ -24,7 +24,7 @@
         "node-rdkafka": "~2.7.1-2"
     },
     "devDependencies": {
-        "@terascope/job-components": "^0.23.3",
+        "@terascope/job-components": "^0.23.5",
         "@types/convict": "^4.2.1",
         "convict": "^4.4.1"
     },
