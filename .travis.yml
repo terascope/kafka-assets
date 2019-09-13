@@ -47,9 +47,9 @@ before_install:
   - yarn global add teraslice-cli
 
 install:
-  - yarn install
+  - yarn
 script:
-    - '[[ -z "$DEBUG" ]] && yarn test:all || yarn test:debug | yarn bunyan -o short'
+    - yarn test:all
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - yarn lint:all

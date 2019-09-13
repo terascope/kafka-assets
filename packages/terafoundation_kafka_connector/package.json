@@ -10,7 +10,7 @@
     "typings": "dist/index.d.ts",
     "scripts": {
         "prepare": "yarn build",
-        "build": "tsc --project tsconfig.json --pretty",
+        "build": "tsc --project tsconfig.json",
         "build:watch": "yarn build --watch",
         "test": "jest",
         "test:watch": "jest --coverage=false --notify --watch --onlyChanged",

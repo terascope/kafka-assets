@@ -9,7 +9,7 @@
         "prepare": "yarn workspaces run build",
         "postinstall": "yarn --cwd ./asset --prod install",
         "asset:build": "yarn run build",
-        "build": "rm -rf asset/dist; tsc --project tsconfig.json --pretty",
+        "build": "rm -rf asset/dist; tsc --project tsconfig.json",
         "build:watch": "yarn build --watch",
         "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
         "test:all": "yarn workspaces run test",

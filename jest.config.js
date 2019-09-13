@@ -26,7 +26,6 @@ module.exports = {
         'ts-jest': {
             tsConfig: './tsconfig.json',
             diagnostics: true,
-            pretty: true,
         },
         ignoreDirectories: ['dist'],
         availableExtensions: ['.js', '.ts']

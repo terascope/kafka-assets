@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.23.2":
-  version "0.23.2"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.2.tgz#0280512e1b5403e14ecff5bd4c3e4d8850984cbf"
-  integrity sha512-gkO5vfDG3MuNvLm8Y2X4wPCUnjA0IptH/rkxHBoGVT2/nr+Fsr8O9VJOzV4fe3zjMfnvPY0VZrIJ67Kn/n5mBQ==
+"@terascope/job-components@^0.23.3":
+  version "0.23.4"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.4.tgz#0316167757c66c1b2a1ed8ecdc66d128c7cf2a13"
+  integrity sha512-Z97/3Gf/lq8pdN3C1XEt39T3yi48XfvWbqc7PJrMyFu4nagvkjWotXGjVaH7+IX8vNaSoa0J3e9yiUbfVrelUQ==
   dependencies:
     "@terascope/queue" "^1.1.7"
-    "@terascope/utils" "^0.17.1"
+    "@terascope/utils" "^0.20.0"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
@@ -18,10 +18,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.7.tgz#26cd3a42747ec802744f9b86c08034b0bbe07091"
   integrity sha512-foPas4K4rShs0RxtLNauC9ssXbzWvf5YzCa+6tJ9BAEk+PfjHJhi9bPDL6stXfcHroKtbet49dPwFbFIJJAOHw==
 
-"@terascope/utils@^0.17.1":
-  version "0.17.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.17.1.tgz#ae1aacd13a2279c48851d5f7fa1b43a6f2bd34ad"
-  integrity sha512-q76TA7Q2Ol3Kv3opaCc9Th2RtFWEBUcALfS4oaT8mFEZjKMsG/AXAUY0pmqTw8aGAfpCr4+mxptZdWPmGYHwzg==
+"@terascope/utils@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.20.0.tgz#a2b8ce70ef8d0c34ecfb9b61e5791298879dc9e5"
+  integrity sha512-IvN2gn4RS74ZUo+Nd6GpBQqlF404VaqBoHPE7aZBOOT6UqJgEFq4FYQrEtVs+2EfreycPPUU9otQuuX2ETU3Ag==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"
@@ -29,6 +29,7 @@
     lodash.clonedeep "^4.5.0"
     lodash.get "^4.4.2"
     lodash.set "^4.3.2"
+    lodash.unset "^4.5.2"
 
 camelcase@^5.0.0:
   version "5.3.1"
@@ -114,6 +115,11 @@ lodash.set@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
   integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
+
+lodash.unset@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/lodash.unset/-/lodash.unset-4.5.2.tgz#370d1d3e85b72a7e1b0cdf2d272121306f23e4ed"
+  integrity sha1-Nw0dPoW3Kn4bDN8tJyEhMG8j5O0=
 
 minimist@^1.2.0:
   version "1.2.0"

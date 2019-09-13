@@ -76,7 +76,8 @@ describe('Kafka Fetcher', () => {
             clients,
         });
 
-        fetcher = harness.fetcher();
+        // FIXME: using "as any" is hack, we should properly fix it
+        fetcher = harness.fetcher() as any;
         noop = harness.getOperation('noop');
 
         noop.onBatch = jest.fn(async (data) => data);

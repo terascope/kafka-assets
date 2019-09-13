@@ -66,7 +66,8 @@ describe('Kafka Sender', () => {
             clients,
         });
 
-        sender = harness.getOperation('kafka_sender');
+        // FIXME: using "as any" is hack, we should properly fix it
+        sender = harness.getOperation('kafka_sender') as any;
 
         await harness.initialize();
 
