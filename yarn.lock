@@ -344,13 +344,13 @@
     eslint-plugin-react "^7.14.3"
     eslint-plugin-react-hooks "^1.7.0"
 
-"@terascope/job-components@^0.23.2", "@terascope/job-components@^0.23.3":
-  version "0.23.3"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.3.tgz#d494f9b29f208d3a3e10a3ac49f5767ebc3d6fe6"
-  integrity sha512-bS6y5TztrTL+e+cfyDyFzBaxtxFeeoyBxiQmqz6TTdJzKKU/f4kWnRMw7kIU4D94NvaiRGenmzGqIPszQAY/+Q==
+"@terascope/job-components@^0.23.2", "@terascope/job-components@^0.23.4":
+  version "0.23.4"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.4.tgz#0316167757c66c1b2a1ed8ecdc66d128c7cf2a13"
+  integrity sha512-Z97/3Gf/lq8pdN3C1XEt39T3yi48XfvWbqc7PJrMyFu4nagvkjWotXGjVaH7+IX8vNaSoa0J3e9yiUbfVrelUQ==
   dependencies:
     "@terascope/queue" "^1.1.7"
-    "@terascope/utils" "^0.18.0"
+    "@terascope/utils" "^0.20.0"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
@@ -369,10 +369,10 @@
     bluebird "^3.5.5"
     lodash "^4.17.11"
 
-"@terascope/utils@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.18.0.tgz#74b2a1e31ca5448aa509284a1ac1faf81977d62e"
-  integrity sha512-HmbNZcsgNwoWLdl3PHa61PIpwkY8lEBBRtn2Md8/Ipu2zWLlgX1c1OSYNRnzzlzDZZMCjWW/nKRI/0cNmxc8IQ==
+"@terascope/utils@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.20.0.tgz#a2b8ce70ef8d0c34ecfb9b61e5791298879dc9e5"
+  integrity sha512-IvN2gn4RS74ZUo+Nd6GpBQqlF404VaqBoHPE7aZBOOT6UqJgEFq4FYQrEtVs+2EfreycPPUU9otQuuX2ETU3Ag==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"
@@ -380,6 +380,7 @@
     lodash.clonedeep "^4.5.0"
     lodash.get "^4.4.2"
     lodash.set "^4.3.2"
+    lodash.unset "^4.5.2"
 
 "@types/babel__core@^7.1.0":
   version "7.1.2"
@@ -3110,6 +3111,11 @@ lodash.unescape@4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
   integrity sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=
+
+lodash.unset@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/lodash.unset/-/lodash.unset-4.5.2.tgz#370d1d3e85b72a7e1b0cdf2d272121306f23e4ed"
+  integrity sha1-Nw0dPoW3Kn4bDN8tJyEhMG8j5O0=
 
 lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.14:
   version "4.17.15"
