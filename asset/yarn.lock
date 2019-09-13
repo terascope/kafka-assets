@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.23.3":
-  version "0.23.4"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.4.tgz#0316167757c66c1b2a1ed8ecdc66d128c7cf2a13"
-  integrity sha512-Z97/3Gf/lq8pdN3C1XEt39T3yi48XfvWbqc7PJrMyFu4nagvkjWotXGjVaH7+IX8vNaSoa0J3e9yiUbfVrelUQ==
+"@terascope/job-components@^0.23.5":
+  version "0.23.5"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.5.tgz#874cd4d1e2ba330f39e1c70c5151be91533859e1"
+  integrity sha512-ozpJJEsZCp1Nfli7651f/YoNoaNYJhyycDl59SeXIjXkjxCtATsnTe8jAXl/rYrD8WLyrpeaG25Pm9o9geo9eQ==
   dependencies:
     "@terascope/queue" "^1.1.7"
-    "@terascope/utils" "^0.20.0"
+    "@terascope/utils" "^0.20.1"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
@@ -18,10 +18,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.7.tgz#26cd3a42747ec802744f9b86c08034b0bbe07091"
   integrity sha512-foPas4K4rShs0RxtLNauC9ssXbzWvf5YzCa+6tJ9BAEk+PfjHJhi9bPDL6stXfcHroKtbet49dPwFbFIJJAOHw==
 
-"@terascope/utils@^0.20.0":
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.20.0.tgz#a2b8ce70ef8d0c34ecfb9b61e5791298879dc9e5"
-  integrity sha512-IvN2gn4RS74ZUo+Nd6GpBQqlF404VaqBoHPE7aZBOOT6UqJgEFq4FYQrEtVs+2EfreycPPUU9otQuuX2ETU3Ag==
+"@terascope/utils@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.20.1.tgz#a8b14b85e34bb5f66c8ac44fe55f98f7b97a24a6"
+  integrity sha512-Omm85MgrQ6yiBefedbsCMLMD0Y6+4Smhibu+WjlPDSgauq+dbuGJJkC6nXZgSvWC9ZnLLkzY/aQtaGotseVmCg==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"
