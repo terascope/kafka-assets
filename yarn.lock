@@ -330,10 +330,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@terascope/eslint-config@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-0.1.4.tgz#dddf055a4647e94c06f894af987d252cc0d64d3c"
-  integrity sha512-wQ0N6WSDt0wuqlElLxGjxRgh93+oqmkUmOlHtqBfgD8Q/KM6BcSE+SKjD9L5kP83t0jDxQWajkA5qbVN2+RBfw==
+"@terascope/eslint-config@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-0.1.5.tgz#1c9ef6189e17f485b2379e5abb3f3667b681f795"
+  integrity sha512-sV8NC8d6D89uK6arUrbpoHL0A3uoRHRDa3Q8v4dNzvTs1MS2kLgxFKyPjzfrG2BJYXtqx0KC0VPNtwGNC9QvoA==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^2.3.0"
     "@typescript-eslint/parser" "^2.3.0"
