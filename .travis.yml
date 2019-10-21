@@ -23,10 +23,12 @@ before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
-  # Install Kafka
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install openssl; fi
+  # brew install openssl seems to be broken now
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install openssl; fi
+  # we still need to set the openssl flags for building
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CPPFLAGS=-I/usr/local/opt/openssl/include; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export LDFLAGS=-L/usr/local/opt/openssl/lib; fi
+  # Install Kafka
   - export KAFKA_HOME="$HOME/.kafka"
   - export KAFKA_TMP="$HOME/.kafka-downloads"
   - mkdir -p "$KAFKA_HOME"
