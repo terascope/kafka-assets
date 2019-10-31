@@ -1,4 +1,4 @@
-import { KafkaConsumer, Producer } from 'node-rdkafka';
+import { KafkaConsumer, Producer } from '@terascope/node-rdkafka';
 
 export interface KafkaConnectorConfig {
     /** A list of brokers */

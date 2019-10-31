@@ -3,6 +3,7 @@ dist: bionic
 language: node_js
 node_js:
   - '10.16'
+  - '12.13'
 os:
   - linux
   - osx
@@ -47,11 +48,10 @@ before_install:
   - export FORCE_COLOR=1
   # Install teraslice-cli
   - yarn global add teraslice-cli
-
 install:
   - yarn
 script:
-    - yarn test:all
+  - yarn test:all
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - yarn lint:all
@@ -70,7 +70,7 @@ deploy:
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = linux
-      node: '8'
+      node: '10'
   - provider: releases
     api_key: $GITHUB_TOKEN
     prerelease: true
