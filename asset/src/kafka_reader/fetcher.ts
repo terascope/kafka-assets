@@ -5,7 +5,7 @@ import {
     ConnectionConfig,
     DataEntity
 } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
+import * as kafka from '@terascope/node-rdkafka';
 import { KafkaReaderConfig } from './interfaces';
 import { ConsumerClient } from '../_kafka_clients';
 import {

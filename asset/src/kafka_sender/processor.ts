@@ -7,7 +7,7 @@ import {
     getValidDate,
     isString,
 } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
+import * as kafka from '@terascope/node-rdkafka';
 import { KafkaSenderConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 

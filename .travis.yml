@@ -3,6 +3,7 @@ dist: bionic
 language: node_js
 node_js:
   - '10.16'
+  - '12.13'
 os:
   - linux
   - osx
@@ -16,9 +17,8 @@ addons:
     packages:
       - jq
 cache:
-  yarn: true
-  directories:
-    - "$HOME/.kafka-downloads"
+  npm: false
+  yarn: false
 before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -33,7 +33,7 @@ before_install:
   - export KAFKA_TMP="$HOME/.kafka-downloads"
   - mkdir -p "$KAFKA_HOME"
   - mkdir -p "$KAFKA_TMP"
-  - '[[ ! -f "$KAFKA_TMP/kafka.tgz" ]] && wget https://www.apache.org/dist/kafka/2.1.1/kafka_2.11-2.1.1.tgz -O "$KAFKA_TMP/kafka.tgz" || echo "* using cache"'
+  - '[[ ! -f "$KAFKA_TMP/kafka.tgz" ]] && wget https://www.apache.org/dist/kafka/2.3.1/kafka_2.11-2.3.1.tgz -O "$KAFKA_TMP/kafka.tgz" || echo "* using cache"'
   - tar xzf "$KAFKA_TMP/kafka.tgz" -C $KAFKA_HOME --strip-components 1
   # add bin to path for ease of use
   - export PATH="$KAFKA_HOME/bin:$PATH"
@@ -47,11 +47,10 @@ before_install:
   - export FORCE_COLOR=1
   # Install teraslice-cli
   - yarn global add teraslice-cli
-
 install:
   - yarn
 script:
-    - yarn test:all
+  - yarn test:all
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - yarn lint:all
@@ -70,7 +69,6 @@ deploy:
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = linux
-      node: '8'
   - provider: releases
     api_key: $GITHUB_TOKEN
     prerelease: true

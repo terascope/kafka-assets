@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import uuidv4 from 'uuid/v4';
 import { debugLogger } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
+import * as kafka from '@terascope/node-rdkafka';
 import { kafkaBrokers } from './config';
 import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients';
 
