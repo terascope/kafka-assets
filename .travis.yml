@@ -17,9 +17,8 @@ addons:
     packages:
       - jq
 cache:
-  yarn: true
-  directories:
-    - "$HOME/.kafka-downloads"
+  npm: false
+  yarn: false
 before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -70,7 +69,6 @@ deploy:
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = linux
-      node: '10'
   - provider: releases
     api_key: $GITHUB_TOKEN
     prerelease: true
