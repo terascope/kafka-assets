@@ -25,7 +25,7 @@
         "@types/jest": "^24.0.22",
         "@types/lodash.once": "^4.1.6",
         "@types/node": "^12.11.7",
-        "@types/uuid": "^3.4.4",
+        "@types/uuid": "^3.4.6",
         "bunyan": "^1.8.12",
         "eslint": "^6.6.0",
         "jest": "^24.9.0",
