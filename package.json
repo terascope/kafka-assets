@@ -24,7 +24,7 @@
         "@terascope/eslint-config": "^0.1.6",
         "@types/jest": "^24.0.22",
         "@types/lodash.once": "^4.1.6",
-        "@types/node": "^12.12.6",
+        "@types/node": "^12.12.7",
         "@types/uuid": "^3.4.6",
         "bunyan": "^1.8.12",
         "eslint": "^6.6.0",
