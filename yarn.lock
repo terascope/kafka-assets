@@ -355,10 +355,10 @@
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
 
-"@terascope/node-rdkafka@~2.7.3":
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/@terascope/node-rdkafka/-/node-rdkafka-2.7.3.tgz#fefcc3c2e7de48de3f4754edca024f21a93d60f6"
-  integrity sha512-9F9+MHmqpTF2CtQtV1Nd1MNgGBbnrNKrMERhalb+dleSP4Frizfb8P9qvCtayHWY+AwxNqrNWsE6BhpjmkFZRw==
+"@terascope/node-rdkafka@~2.7.4":
+  version "2.7.4"
+  resolved "https://registry.yarnpkg.com/@terascope/node-rdkafka/-/node-rdkafka-2.7.4.tgz#9826a509f261714df8206c5f321e5e61273b5f23"
+  integrity sha512-jEYPzt3VjPMXTxi2gZ/Vnog19HLVv3WkNedgZxHe9UhMYiNcZuoxZHjlZg4z/koZ+dh43u1r4XYKm7+4ZSDLdw==
   dependencies:
     bindings "^1.3.1"
     nan "^2.14.0"
