@@ -1,6 +1,6 @@
 
 import * as kafka from '@terascope/node-rdkafka';
-import { pDelay } from '@terascope/job-components';
+import { pDelay, toHumanTime } from '@terascope/job-components';
 import {
     wrapError,
     AnyKafkaError,
@@ -165,19 +165,15 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         max: { size: number; wait: number }
     ): Promise<T[]> {
         this.handlePendingCommits();
+        const start = Date.now();
+        const endAt = start + max.wait;
 
         this._logger.trace('consuming...', { size: max.size, wait: max.wait });
 
-        const endAt = Date.now() + max.wait;
         let results: T[] = [];
 
         while (results.length < max.size && endAt > Date.now()) {
             const remaining = max.size - results.length;
-            const remainingMs = endAt - Date.now();
-            const timeout = remainingMs > 0 ? remainingMs : 0;
-
-            this._client.setDefaultConsumeTimeout(timeout);
-
             const consumed = await this._consume(remaining, map);
 
             results = results.concat(consumed);
@@ -193,7 +189,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             }
         }
 
-        this._logger.info(`Resolving with ${results.length} results`);
+        this._logger.info(`Resolving with ${results.length} results, took ${toHumanTime(Date.now() - start)}`);
         return results;
     }
 

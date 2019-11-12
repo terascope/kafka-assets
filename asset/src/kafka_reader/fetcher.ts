@@ -104,6 +104,9 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
                 offset_commit_cb: true,
                 // Set the max.poll.interval.ms
                 'max.poll.interval.ms': this.opConfig.max_poll_interval,
+                // Enable partition EOF because node-rdkafka
+                // requires this work for consuming batches
+                'enable.partition.eof': true,
             },
             autoconnect: false
         };
