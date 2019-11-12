@@ -58,7 +58,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             this._tryWithEvent('connect:error', () => this._connect(), 'connect'),
         ]);
 
-        off();
+        if (off) off();
     }
 
     /**
