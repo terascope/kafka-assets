@@ -27,5 +27,15 @@ describe('Kafka Sender Schema', () => {
                 });
             }).not.toThrowError();
         });
+
+        it('should set the required_acks default to 1', () => {
+            expect(schema.validate({
+                _op: 'kafka_sender',
+                topic: 'hello',
+                size: 1
+            })).toMatchObject({
+                required_acks: 1
+            });
+        });
     });
 });
