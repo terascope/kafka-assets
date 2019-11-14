@@ -43,4 +43,13 @@ export interface KafkaSenderConfig extends OpConfig {
      * group leader assigns partitions to group members.
     */
     partition_assignment_strategy?: 'range'|'roundrobin';
+    /**
+     * This field indicates the number of acknowledgements the leader broker
+     * must receive from ISR brokers before responding to the request:
+     * 0=Broker does not send any response/ack to client,
+     * -1 or all=Broker will block until message is committed by all in sync replicas (ISRs).
+     * If there are less than min.insync.replicas (broker configuration) in the ISR set the
+     * produce request will fail.
+    */
+    required_acks: number;
 }

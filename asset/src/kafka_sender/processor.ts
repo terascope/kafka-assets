@@ -104,6 +104,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
                 'batch.num.messages': this.opConfig.size,
                 'topic.metadata.refresh.interval.ms': this.opConfig.metadata_refresh,
                 'log.connection.close': false,
+                // librdkafka >1.0.0 changed the default broker acknowledgement
+                // to all brokers, but this has performance issues
+                'request.required.acks': this.opConfig.required_acks
             },
             autoconnect: false
         };
