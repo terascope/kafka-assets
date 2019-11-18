@@ -1,4 +1,4 @@
-import * as kafka from '@terascope/node-rdkafka';
+import * as kafka from 'node-rdkafka';
 import { ProduceMessage, ProducerClientConfig } from './interfaces';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers';
 import BaseClient from './base-client';

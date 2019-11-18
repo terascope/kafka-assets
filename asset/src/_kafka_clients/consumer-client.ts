@@ -1,5 +1,5 @@
 
-import * as kafka from '@terascope/node-rdkafka';
+import * as kafka from 'node-rdkafka';
 import { pDelay, toHumanTime } from '@terascope/job-components';
 import {
     wrapError,
