@@ -22,7 +22,7 @@
     "license": "MIT",
     "devDependencies": {
         "@terascope/eslint-config": "^0.1.7",
-        "@types/jest": "^24.0.22",
+        "@types/jest": "^24.0.23",
         "@types/lodash.once": "^4.1.6",
         "@types/node": "^12.12.7",
         "@types/uuid": "^3.4.6",
