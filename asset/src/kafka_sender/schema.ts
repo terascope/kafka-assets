@@ -36,7 +36,7 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             },
             wait: {
                 doc: 'How long to wait for `size` messages to become available on the producer.',
-                default: 20,
+                default: 500,
                 format: 'duration'
             },
             size: {
