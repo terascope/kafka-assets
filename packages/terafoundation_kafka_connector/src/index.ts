@@ -1,5 +1,5 @@
 import { Logger } from '@terascope/job-components';
-import { KafkaConsumer, Producer } from '@terascope/node-rdkafka';
+import { KafkaConsumer, Producer } from 'node-rdkafka';
 import schema from './schema';
 import {
     KafkaConnectorConfig,

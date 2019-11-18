@@ -1,7 +1,7 @@
 import 'jest-extended';
 import { TestClientConfig, Logger } from '@terascope/job-components';
 import { SlicerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import Connector from '../packages/terafoundation_kafka_connector';
+import Connector from '../packages/terafoundation_kafka_connector/dist';
 
 describe('Kafka Slicer', () => {
     const clientConfig: TestClientConfig = {

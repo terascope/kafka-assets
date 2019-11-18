@@ -1,5 +1,5 @@
 import { debugLogger, pDelay } from '@terascope/job-components';
-import { AdminClient, InternalAdminClient } from '@terascope/node-rdkafka';
+import { AdminClient, InternalAdminClient } from 'node-rdkafka';
 import { ERR_UNKNOWN_TOPIC_OR_PART } from '../../asset/src/_kafka_helpers/error-codes';
 import { kafkaBrokers } from './config';
 

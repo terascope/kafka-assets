@@ -7,7 +7,7 @@ import {
     parseError,
     Collector,
 } from '@terascope/job-components';
-import * as kafka from '@terascope/node-rdkafka';
+import * as kafka from 'node-rdkafka';
 import { KafkaDeadLetterConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 
