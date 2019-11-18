@@ -47,6 +47,8 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
         });
 
         const total = messages.length;
+        const endOfBatchIndex = (total - 1);
+        const endofBufferIndex = (this._bufferSize - 1);
         this._logger.debug(`producing ${total} messages in batches ${Math.floor(total / this._bufferSize)}...`);
 
         try {
@@ -66,9 +68,11 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                     message.timestamp
                 );
 
-                // flush the messages at the end of the buffer size
-                // or the end of the messages
-                if (i % this._bufferSize === 0 || i === (total - 1)) {
+                // flush the messages at the end of each slice
+                if (i === endOfBatchIndex) {
+                    await this._try(() => this._flush(), 'produce', 0);
+                // OR at that the first message
+                } else if (i % this._bufferSize === endofBufferIndex) {
                     await this._try(() => this._flush(), 'produce', 0);
                 }
             }

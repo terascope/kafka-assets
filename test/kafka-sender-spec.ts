@@ -16,6 +16,7 @@ const testFetcherData: object[] = parseJSON(fs.readFileSync(testFetcherFile));
 
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
+    const mockFlush = jest.fn();
 
     const clientConfig: TestClientConfig = {
         type: 'kafka',
@@ -23,7 +24,13 @@ describe('Kafka Sender', () => {
             brokers: kafkaBrokers,
         },
         create(config: any, logger: Logger, settings: any) {
-            return Connector.create(config, logger, settings);
+            const result = Connector.create(config, logger, settings);
+            // @ts-ignore
+            result.client.flush = mockFlush
+                // @ts-ignore
+                .mockImplementation(result.client.flush)
+                .bind(result.client);
+            return result;
         }
     };
 
@@ -58,7 +65,7 @@ describe('Kafka Sender', () => {
     let runs = 0;
 
     beforeAll(async () => {
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
 
         await admin.ensureTopic(topic);
 
@@ -87,7 +94,7 @@ describe('Kafka Sender', () => {
     });
 
     afterAll(async () => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
 
         admin.disconnect();
 
@@ -123,6 +130,12 @@ describe('Kafka Sender', () => {
 
             expect(actual).toEqual(expected);
         }
+    });
+
+    it('should call flush once per run and before the buffer is full', () => {
+        const bufferSize = batchSize * 5;
+        const expected = runs + Math.floor(results.length / bufferSize);
+        expect(mockFlush).toHaveBeenCalledTimes(expected);
     });
 
     describe('->getKey', () => {
