@@ -344,13 +344,24 @@
     eslint-plugin-react "^7.14.3"
     eslint-plugin-react-hooks "^2.3.0"
 
-"@terascope/job-components@^0.23.10", "@terascope/job-components@^0.23.9":
+"@terascope/job-components@^0.23.10":
   version "0.23.10"
   resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.23.10.tgz#5fed72df0cf9a9c88c2a63a6dfa88cec85f82749"
   integrity sha512-M0hhyyPZOUtfco7Vl47VfjNR0kpwH8fFQDCX1KvvhBWgnnvcM2AZ2j2hWq+qH6AmAgIXrCFkv/vIP6hFoOH58g==
   dependencies:
     "@terascope/queue" "^1.1.7"
     "@terascope/utils" "^0.20.6"
+    convict "^4.4.1"
+    datemath-parser "^1.0.6"
+    uuid "^3.3.3"
+
+"@terascope/job-components@^0.24.0":
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.24.0.tgz#9e7a5725ad861f2da0cc6432a4c10a30745e89dd"
+  integrity sha512-DzTSBvMY+zpNVw+iA0VcrKFDc52P5VkLDUY1Wz+ZJmVVRJzL5cwxTH9ZhiI2rieEjWY60XqpW3nuk9W+AOzBQA==
+  dependencies:
+    "@terascope/queue" "^1.1.7"
+    "@terascope/utils" "^0.20.7"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
@@ -369,10 +380,10 @@
     bluebird "^3.5.5"
     lodash "^4.17.11"
 
-"@terascope/utils@^0.20.6":
-  version "0.20.6"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.20.6.tgz#0b751bcaa88063930069ed856c73e7a8a04d9759"
-  integrity sha512-HdDkVPRNVLs9n6xpVXiGjpQuASfvHI5lDsHAe6WUiCc+pM3naDTNK23xe/DlGwaA+KL2kVs4ESeYXcofSMOnTA==
+"@terascope/utils@^0.20.6", "@terascope/utils@^0.20.7":
+  version "0.20.7"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.20.7.tgz#ce60891c9cb1e25114ade674c9efb48d871a6d49"
+  integrity sha512-wYgHicp56E52PbTkbLfeHsMvwdQwGvEW+CsbEYALYqGtqaPVY3QTN2a6Gj+rQZreUJWJZN3Ze9q0q4J4Yf756A==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"
