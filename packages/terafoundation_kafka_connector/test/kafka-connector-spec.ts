@@ -1,4 +1,3 @@
-
 // @ts-ignore
 import convict from 'convict';
 import { debugLogger } from '@terascope/job-components';

@@ -495,7 +495,7 @@ describe('Base Client (internal)', () => {
             });
         });
 
-        describe('when the event fires with an error ', () => {
+        describe('when the event fires with an error', () => {
             it('should call the fn and cleanup', async () => {
                 const error = new Error('Uh oh') as KafkaError;
 
