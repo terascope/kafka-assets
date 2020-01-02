@@ -355,24 +355,49 @@
     datemath-parser "^1.0.6"
     uuid "^3.3.3"
 
+"@terascope/job-components@^0.26.0":
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.26.0.tgz#65702dd5b715d9e58d82e5c66b291d16569bcd6d"
+  integrity sha512-Uuevjz03wr2zUB1H/n28C7/sddfviBeNQXdR1rkCi4l+Hvfyon6X74fxMPrLTrNdr8MNWA9yPmThx+Xoh2Igyw==
+  dependencies:
+    "@terascope/queue" "^1.1.7"
+    "@terascope/utils" "^0.21.0"
+    convict "^4.4.1"
+    datemath-parser "^1.0.6"
+    uuid "^3.3.3"
+
 "@terascope/queue@^1.1.7":
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.7.tgz#26cd3a42747ec802744f9b86c08034b0bbe07091"
   integrity sha512-foPas4K4rShs0RxtLNauC9ssXbzWvf5YzCa+6tJ9BAEk+PfjHJhi9bPDL6stXfcHroKtbet49dPwFbFIJJAOHw==
 
-"@terascope/teraslice-op-test-harness@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.8.0.tgz#8ffbecd9554e913e96be3212b1929d75e9579959"
-  integrity sha512-x9cr5MC7Df9/LfrOzCxxIlpwNfvCyCbIEIqA/muRUNjkvqBWQTnDWzPLenhxs9v2ODOJ2ITmAKG2zsMlZv57VA==
+"@terascope/teraslice-op-test-harness@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.10.0.tgz#6255306cab748b949f00849db00d982f6f4f051c"
+  integrity sha512-fQvmhh5MFupnV5uTyiarRXjd8MsN+5SSSsczDccRocTE136Kf+xYzp49r9p6A9ps6wrureXoAgpLZNEnzVKe6g==
   dependencies:
-    "@terascope/job-components" "^0.24.0"
-    bluebird "^3.5.5"
+    "@terascope/job-components" "^0.26.0"
+    bluebird "^3.7.2"
     lodash "^4.17.11"
 
 "@terascope/utils@^0.20.7":
   version "0.20.7"
   resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.20.7.tgz#ce60891c9cb1e25114ade674c9efb48d871a6d49"
   integrity sha512-wYgHicp56E52PbTkbLfeHsMvwdQwGvEW+CsbEYALYqGtqaPVY3QTN2a6Gj+rQZreUJWJZN3Ze9q0q4J4Yf756A==
+  dependencies:
+    debug "^4.1.1"
+    is-plain-object "^3.0.0"
+    js-string-escape "^1.0.1"
+    kind-of "^6.0.2"
+    lodash.clonedeep "^4.5.0"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
+    lodash.unset "^4.5.2"
+
+"@terascope/utils@^0.21.0":
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.21.0.tgz#1e2c7effbfec62d10479805a7b89340630caae96"
+  integrity sha512-sHl+yM0w0WWc89A5R0BjOA0d9j39IsKWwvUmcErzdkdVwibI9mLMDv9Mdqr811ylsFWK25Gtuw5HRveDF+FCmg==
   dependencies:
     debug "^4.1.1"
     is-plain-object "^3.0.0"
@@ -863,10 +888,10 @@ bindings@^1.3.1:
   dependencies:
     file-uri-to-path "1.0.0"
 
-bluebird@^3.5.5:
-  version "3.5.5"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.5.tgz#a8d0afd73251effbbd5fe384a77d73003c17a71f"
-  integrity sha512-5am6HnnfN+urzt4yfg7IgTbotDjIT/u8AJpEt0sIU9FtXfVeezXAPKswrG+xKUCOYAINpSdgZVDU6QFh+cuH3w==
+bluebird@^3.7.2:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
+  integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -4572,13 +4597,13 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-teraslice-test-harness@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.9.0.tgz#1f1f163f3785c2395aafd285db3a129111c58eba"
-  integrity sha512-SgN67iOJQP/LlwZq6mkecS4QUpkm2UMEPAjkTIysbNpPD1BKO0g/X2vs62YOMj7HBRYjLYB6rEGM9kzDf/rpPQ==
+teraslice-test-harness@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.11.0.tgz#87c0860517229a9cfdd1a7d5697d2f5abba4267e"
+  integrity sha512-WSxtXq2g/G2LhAbdtkmvh7jzokHvWqEHhu1U84vEGnSN58eHygxT4QifJi97yIDxQwDRWq7o5G0N17/vqkIfdA==
   dependencies:
-    "@terascope/job-components" "^0.24.0"
-    "@terascope/teraslice-op-test-harness" "^1.8.0"
+    "@terascope/job-components" "^0.26.0"
+    "@terascope/teraslice-op-test-harness" "^1.10.0"
     lodash "^4.17.11"
 
 test-exclude@^5.2.3:
