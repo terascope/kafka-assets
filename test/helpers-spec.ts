@@ -63,7 +63,8 @@ describe('isOkayError helper', () => {
         codes.ERR_NOT_COORDINATOR_FOR_GROUP,
         codes.ERR__TIMED_OUT_QUEUE,
         ...alwaysOk
-    ])('when consuming and checking error code %s', (code) => {
+    ])('when consuming and checking ok error code %s', (code) => {
+        // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
             const err = new Error('Uh oh') as KafkaError;
             err.code = code;
@@ -73,7 +74,7 @@ describe('isOkayError helper', () => {
         });
     });
 
-    describe.each(alwaysBad)('when consuming and checking error code %s', (code) => {
+    describe.each(alwaysBad)('when consuming and checking bad error code %s', (code) => {
         it('should return false', () => {
             const err = new Error('Uh oh') as KafkaError;
             err.code = code as string|number;
@@ -87,6 +88,7 @@ describe('isOkayError helper', () => {
         codes.KAFKA_NO_OFFSET_STORED,
         ...alwaysOk
     ])('when committing and checking error code %s', (code) => {
+        // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
             const err = new Error('Uh oh') as KafkaError;
             err.code = code;
@@ -100,6 +102,7 @@ describe('isOkayError helper', () => {
         codes.ERR__MSG_TIMED_OUT,
         ...alwaysOk
     ])('when producing and checking error code %s', (code) => {
+        // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
             const err = new Error('Uh oh') as KafkaError;
             err.code = code;

@@ -51,9 +51,9 @@ install:
   - yarn
 script:
   - yarn test:all
+  - yarn lint
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - yarn lint:all
   # Attempt to build the asset (so it doesn't blow up when it deploys)
   - teraslice-cli assets build
 after_failure:

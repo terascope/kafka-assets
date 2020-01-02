@@ -281,7 +281,6 @@ ${overview}
 
 You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/${repo}/releases).`);
 
-
     parts.push(`## Getting Started
 
 This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://github.com/terascope/teraslice/blob/master/README.md).

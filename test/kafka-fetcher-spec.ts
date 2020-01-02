@@ -134,6 +134,7 @@ describe('Kafka Fetcher', () => {
         await fetcher.consumer.disconnect();
 
         // @ts-ignore
+        // eslint-disable-next-line jest/no-standalone-expect
         await expect(fetcher.consumer._beforeTry()).rejects.toThrowError('Client is closed');
 
         await harness.shutdown();
