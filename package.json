@@ -1,6 +1,6 @@
 {
     "name": "kafka-asset-bundle",
-    "version": "2.5.2",
+    "version": "2.6.0",
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "private": true,
     "scripts": {
