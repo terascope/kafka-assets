@@ -51,7 +51,7 @@ install:
   - yarn
 script:
   - yarn test:all
-  - yarn lint:all
+  - yarn lint
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   # Attempt to build the asset (so it doesn't blow up when it deploys)
