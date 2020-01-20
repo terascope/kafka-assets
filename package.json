@@ -21,7 +21,7 @@
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT",
     "devDependencies": {
-        "@terascope/eslint-config": "^0.2.2",
+        "@terascope/eslint-config": "^0.2.3",
         "@types/jest": "^24.0.25",
         "@types/lodash.once": "^4.1.6",
         "@types/node": "^12.12.18",
