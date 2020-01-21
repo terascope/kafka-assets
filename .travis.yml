@@ -19,7 +19,7 @@ addons:
 cache:
   npm: false
   yarn: false
-if: NOT (branch = master AND type = push AND os = osx)
+if: NOT (branch = master AND type = push AND tag IS blank AND os = osx)
 before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
