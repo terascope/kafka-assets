@@ -12,13 +12,6 @@ branches:
   only:
   - master
   - /^v\d+\.\d+\.\d+/
-jobs:
-  exclude:
-    - os: osx
-      if: branch = master
-    - os: linux
-      node_js: '12.14'
-      if: branch = master
 addons:
   apt:
     packages:
@@ -26,6 +19,13 @@ addons:
 cache:
   npm: false
   yarn: false
+jobs:
+  exclude:
+    - if: branch = master AND type = push
+      os: linux
+      node_js: '12.14'
+    - if: branch = master AND type = push
+      os: osx
 before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
