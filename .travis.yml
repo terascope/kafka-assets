@@ -3,7 +3,7 @@ dist: bionic
 language: node_js
 node_js:
   - '10.16'
-  - '12.13'
+  - '12.14'
 os:
   - linux
   - osx
@@ -12,6 +12,13 @@ branches:
   only:
   - master
   - /^v\d+\.\d+\.\d+/
+jobs:
+  exclude:
+    - os: osx
+      if: branch = master
+    - os: linux
+      node_js: '12.14'
+      if: branch = master
 addons:
   apt:
     packages:
