@@ -19,13 +19,7 @@ addons:
 cache:
   npm: false
   yarn: false
-jobs:
-  exclude:
-    - if: branch = master AND type = push
-      os: linux
-      node_js: '12.14'
-    - if: branch = master AND type = push
-      os: osx
+if: NOT (branch = master AND type = push AND os = osx)
 before_install:
   # Install latest yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
