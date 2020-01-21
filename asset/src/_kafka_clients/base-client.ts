@@ -69,7 +69,8 @@ export default class BaseClient<T extends kafka.Client> {
         }
 
         this._cleanup = [];
-        this._client.removeAllListeners();
+        // For some reason the typing broke for this and need to have a hack for it
+        (this._client as any).removeAllListeners();
         this._events.removeAllListeners();
     }
 
