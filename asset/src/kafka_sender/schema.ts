@@ -1,13 +1,46 @@
-import { ConvictSchema } from '@terascope/job-components';
+import {
+    ConvictSchema, ValidatedJobConfig, getOpConfig, get
+} from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
 
+function fetchConfig(job: ValidatedJobConfig) {
+    const opConfig = getOpConfig(job, 'kafka_sender');
+    if (opConfig == null) throw new Error('Could not find elasticsearch_bulk operation in jobConfig');
+    return opConfig as KafkaSenderConfig;
+}
+
 export default class Schema extends ConvictSchema<KafkaSenderConfig> {
+    validateJob(job: ValidatedJobConfig) {
+        const opConfig = fetchConfig(job);
+        const kafkaConnectors = get(this.context, 'sysconfig.terafoundation.connectors.kafka');
+        if (kafkaConnectors == null) throw new Error('Could not find kafka connector in terafoundation config');
+
+        // check to verify if connection map provided is
+        // consistent with sysconfig.terafoundation.connectors
+        if (opConfig.connection_map) {
+            for (const [, value] of Object.entries(opConfig.connection_map)) {
+                if (!kafkaConnectors[value]) {
+                    throw new Error(`A connection for [${value}] was set on the elasticsearch_bulk connection_map but is not found in the system configuration [terafoundation.connectors.elasticsearch]`);
+                }
+            }
+        }
+    }
     build() {
         return {
             topic: {
                 doc: 'Name of the Kafka topic to send data to',
                 default: '',
                 format: 'required_String'
+            },
+            connection_map: {
+                doc: 'Mapping from ID prefix to connection names. Routes data to multiple topics '
+                + 'based on the incoming partition metadata. The key name can be a '
+                + 'comma separated list of prefixes that will map to the same connection. Prefixes matching takes '
+                + 'the first character of the key.',
+                default: {
+                    '*': 'default'
+                },
+                format: Object
             },
             id_field: {
                 doc: 'Field in the incoming record that contains keys',

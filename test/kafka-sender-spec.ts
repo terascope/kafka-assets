@@ -78,8 +78,13 @@ describe('Kafka Sender', () => {
 
         await harness.initialize();
 
-        // it should be able to call connect again
-        await sender.producer.connect();
+        const initList = [];
+
+        for (const [, { producer }] of Object.entries(sender.topicMap)) {
+            initList.push(producer.connect());
+        }
+
+        await Promise.all(initList);
 
         while (results.length < targetSize) {
             if (runs > targetRuns) {
@@ -99,22 +104,27 @@ describe('Kafka Sender', () => {
         admin.disconnect();
 
         // it should be able to disconnect twice
-        await sender.producer.disconnect();
+        const shutdownList = [];
+
+        for (const [, { producer }] of Object.entries(sender.topicMap)) {
+            shutdownList.push(producer.disconnect());
+        }
+
+        await Promise.all(shutdownList);
         await harness.shutdown();
     });
 
     it('should able to call _clientEvents without double listening', () => {
         // @ts-ignore
-        const expected = sender.producer._client.listenerCount('error');
+        const expected = sender.topicMap['*'].producer._client.listenerCount('error');
 
         expect(() => {
             // @ts-ignore
-            sender.producer._clientEvents();
+            sender.topicMap['*'].producer._clientEvents();
         }).not.toThrowError();
 
         // @ts-ignore
-        const actual = sender.producer._client.listenerCount('error');
-
+        const actual = sender.topicMap['*'].producer._client.listenerCount('error');
         expect(actual).toEqual(expected);
     });
 
