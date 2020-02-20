@@ -40,14 +40,16 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         for (const keyset of Object.keys(connectionMap)) {
             const client = this.createClient(connectionMap[keyset]);
             const keys = keyset.split(',');
-            const producer = new ProducerClient(client, {
-                logger,
-                topic,
-                bufferSize: this._bufferSize,
-            });
 
             for (const key of keys) {
-                this.topicMap[key.toLowerCase()] = {
+                const newTopic = key === '*' ? topic : `${topic}-${key}`;
+                const producer = new ProducerClient(client, {
+                    logger,
+                    topic: newTopic,
+                    bufferSize: this._bufferSize,
+                });
+
+                this.topicMap[key] = {
                     producer,
                     data: []
                 };
