@@ -33,7 +33,7 @@
         "markdown-table": "^2.0.0",
         "markdown-toc": "^1.2.0",
         "teraslice-test-harness": "^0.12.1",
-        "ts-jest": "^25.2.0",
+        "ts-jest": "^25.2.1",
         "ts-node": "^8.6.2",
         "typescript": "^3.7.5",
         "uuid": "^3.4.0"
