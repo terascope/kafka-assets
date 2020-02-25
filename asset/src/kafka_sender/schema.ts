@@ -1,11 +1,11 @@
 import {
-    ConvictSchema, ValidatedJobConfig, getOpConfig, get
+    ConvictSchema, ValidatedJobConfig, getOpConfig, get, isPlainObject
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
 
 function fetchConfig(job: ValidatedJobConfig) {
     const opConfig = getOpConfig(job, 'kafka_sender');
-    if (opConfig == null) throw new Error('Could not find elasticsearch_bulk operation in jobConfig');
+    if (opConfig == null) throw new Error('Could not find kafka_sender operation in jobConfig');
     return opConfig as KafkaSenderConfig;
 }
 
@@ -18,9 +18,9 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
         // check to verify if connection map provided is
         // consistent with sysconfig.terafoundation.connectors
         if (opConfig.connection_map) {
-            for (const [, value] of Object.entries(opConfig.connection_map)) {
+            for (const value of Object.values(opConfig.connection_map)) {
                 if (!kafkaConnectors[value]) {
-                    throw new Error(`A connection for [${value}] was set on the elasticsearch_bulk connection_map but is not found in the system configuration [terafoundation.connectors.elasticsearch]`);
+                    throw new Error(`A connection for [${value}] was set on the kafka_sender connection_map but is not found in the system configuration [terafoundation.connectors.elasticsearch]`);
                 }
             }
         }
@@ -35,12 +35,13 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             connection_map: {
                 doc: 'Mapping from ID prefix to connection names. Routes data to multiple topics '
                 + 'based on the incoming partition metadata. The key name can be a '
-                + 'comma separated list of prefixes that will map to the same connection. Prefixes matching takes '
-                + 'the first character of the key.',
-                default: {
-                    '*': 'default'
-                },
-                format: Object
+                + 'comma separated list of prefixes that will map to the same connection.',
+                default: null,
+                format: (val: any) => {
+                    if (val !== null) {
+                        if (!isPlainObject(val)) throw new Error('Invalid parameter, connection_map must be an object');
+                    }
+                }
             },
             id_field: {
                 doc: 'Field in the incoming record that contains keys',

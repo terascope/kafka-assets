@@ -6,7 +6,7 @@ import {
     ConnectionConfig,
     getValidDate,
     isString,
-    has,
+    TSError,
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderConfig } from './interfaces';
@@ -17,13 +17,12 @@ interface Endpoint {
     data: any[];
 }
 
-interface TopicMap {
-    [key: string]: Endpoint;
-}
+type TopicMap = Map<string, Endpoint>
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     private _bufferSize: number;
-    topicMap: TopicMap = {};
+    topicMap: TopicMap = new Map();
+    hasConnectionMap = false;
 
     constructor(
         context: WorkerContext,
@@ -37,23 +36,34 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
         this._bufferSize = size * 5;
 
-        for (const keyset of Object.keys(connectionMap)) {
-            const client = this.createClient(connectionMap[keyset]);
-            const keys = keyset.split(',');
+        if (connectionMap) {
+            for (const keyset of Object.keys(connectionMap)) {
+                this.hasConnectionMap = true;
+                const client = this.createClient(connectionMap[keyset]);
+                const keys = keyset.split(',');
 
-            for (const key of keys) {
-                const newTopic = key === '*' ? topic : `${topic}-${key}`;
-                const producer = new ProducerClient(client, {
-                    logger,
-                    topic: newTopic,
-                    bufferSize: this._bufferSize,
-                });
+                for (const key of keys) {
+                    const newTopic = key === '*' ? topic : `${topic}-${key}`;
+                    const producer = new ProducerClient(client, {
+                        logger,
+                        topic: newTopic,
+                        bufferSize: this._bufferSize,
+                    });
 
-                this.topicMap[key] = {
-                    producer,
-                    data: []
-                };
+                    this.topicMap.set(key, { producer, data: [] });
+                }
             }
+        }
+
+        // the connection specified on opConfig must be on topicMap
+        if (!this.topicMap.has(opConfig.connection)) {
+            const client = this.createClient();
+            const producer = new ProducerClient(client, {
+                logger,
+                topic,
+                bufferSize: this._bufferSize,
+            });
+            this.topicMap.set(opConfig.connection, { producer, data: [] });
         }
     }
 
@@ -61,7 +71,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         await super.initialize();
         const initList = [];
 
-        for (const [, { producer }] of Object.entries(this.topicMap)) {
+        for (const { producer } of this.topicMap.values()) {
             initList.push(producer.connect());
         }
 
@@ -69,7 +79,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     private _cleanupTopicMap() {
-        for (const [, config] of Object.entries(this.topicMap)) {
+        for (const config of this.topicMap.values()) {
             config.data = [];
         }
     }
@@ -77,7 +87,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     async shutdown() {
         const shutdownList = [];
 
-        for (const [, { producer }] of Object.entries(this.topicMap)) {
+        for (const { producer } of this.topicMap.values()) {
             shutdownList.push(producer.disconnect());
         }
 
@@ -85,23 +95,25 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         await super.shutdown();
     }
 
-    async onBatch(batch: DataEntity[]) {
+    async routeToAllTopics(batch: DataEntity[]) {
         const senders = [];
 
         for (const record of batch) {
-            const partition = record.getMetadata('_partition');
+            const route = record.getMetadata('standard:route');
 
-            if (has(this.topicMap, partition)) {
-                this.topicMap[partition].data.push(record);
-            } else if (has(this.topicMap, '*')) {
-                this.topicMap['*'].data.push(record);
+            if (this.topicMap.has(route)) {
+                const routeConfig = this.topicMap.get(route) as Endpoint;
+                routeConfig.data.push(record);
+            } else if (this.topicMap.has('*')) {
+                const routeConfig = this.topicMap.get('*') as Endpoint;
+                routeConfig.data.push(record);
             } else {
-                // TODO: should we just drop it?
-                this.logger.error(`Invalid connection partition: ${partition}`);
+                const error = new TSError(`Invalid connection route: ${route}`);
+                this.rejectRecord(record, error);
             }
         }
 
-        for (const [, { data, producer }] of Object.entries(this.topicMap)) {
+        for (const { data, producer } of this.topicMap.values()) {
             if (data.length > 0) {
                 senders.push(producer.produce(data, this.mapFn()));
             }
@@ -110,6 +122,16 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         await Promise.all(senders);
 
         this._cleanupTopicMap();
+    }
+
+    async onBatch(batch: DataEntity[]) {
+        if (this.hasConnectionMap) {
+            await this.routeToAllTopics(batch);
+        } else {
+            const { producer } = this.topicMap.get(this.opConfig.connection) as Endpoint;
+            await producer.produce(batch, this.mapFn());
+        }
+
         return batch;
     }
 

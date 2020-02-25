@@ -80,7 +80,7 @@ describe('Kafka Sender', () => {
 
         const initList = [];
 
-        for (const [, { producer }] of Object.entries(sender.topicMap)) {
+        for (const { producer } of sender.topicMap.values()) {
             initList.push(producer.connect());
         }
 
@@ -106,7 +106,7 @@ describe('Kafka Sender', () => {
         // it should be able to disconnect twice
         const shutdownList = [];
 
-        for (const [, { producer }] of Object.entries(sender.topicMap)) {
+        for (const { producer } of sender.topicMap.values()) {
             shutdownList.push(producer.disconnect());
         }
 
@@ -116,15 +116,22 @@ describe('Kafka Sender', () => {
 
     it('should able to call _clientEvents without double listening', () => {
         // @ts-ignore
-        const expected = sender.topicMap['*'].producer._client.listenerCount('error');
+        const expectedTopic = sender.topicMap.get('default');
+        // @ts-ignore
+        const expected = expectedTopic.producer._client.listenerCount('error');
 
         expect(() => {
             // @ts-ignore
-            sender.topicMap['*'].producer._clientEvents();
+            const testTopic = sender.topicMap.get('default');
+            // @ts-ignore
+            testTopic.producer._clientEvents();
         }).not.toThrowError();
 
         // @ts-ignore
-        const actual = sender.topicMap['*'].producer._client.listenerCount('error');
+        const actualTopic = sender.topicMap.get('default');
+        // @ts-ignore
+        const actual = actualTopic.producer._client.listenerCount('error');
+
         expect(actual).toEqual(expected);
     });
 

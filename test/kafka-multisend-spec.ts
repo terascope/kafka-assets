@@ -126,13 +126,13 @@ describe('Kafka Sender', () => {
         await harness.shutdown();
     });
 
-    it('run', async () => {
+    it('can send to two topics', async () => {
         const obj1 = { hello: 'world' };
         const obj2 = { foo: 'bar' };
 
         input = [
-            DataEntity.make(obj1, { _partition: topicMeta1 }),
-            DataEntity.make(obj2, { _partition: topicMeta2 })
+            DataEntity.make(obj1, { 'standard:route': topicMeta1 }),
+            DataEntity.make(obj2, { 'standard:route': topicMeta2 })
         ];
 
         const results = await harness.runSlice({});
