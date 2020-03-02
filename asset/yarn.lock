@@ -2,31 +2,32 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.27.0.tgz#83dbfdc4183f285aded159ffdbb14919f326d0df"
-  integrity sha512-4mDDkk3jVxWhReWmVWivkOSKo15ie/Wl5Fn8ChUN2HfO7wlgZ+p8tYCzf221HDnG6HjRdG71BhFpuHwr3b7eVQ==
+"@terascope/job-components@^0.28.2":
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.28.2.tgz#99d6d0faa61ef732399942bf28afd4b54ade077f"
+  integrity sha512-+CAGi1mM9vnaAWIMRK1fgQhboQC0vURdgzW8lzQRq3jUrnj6M1vlqgIbPDLYbO0k8EgeUGjpIj08G87j1hIHMA==
   dependencies:
-    "@terascope/queue" "^1.1.7"
-    "@terascope/utils" "^0.22.0"
+    "@terascope/utils" "^0.23.2"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
-    uuid "^3.3.3"
+    uuid "^3.4.0"
 
-"@terascope/queue@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@terascope/queue/-/queue-1.1.7.tgz#26cd3a42747ec802744f9b86c08034b0bbe07091"
-  integrity sha512-foPas4K4rShs0RxtLNauC9ssXbzWvf5YzCa+6tJ9BAEk+PfjHJhi9bPDL6stXfcHroKtbet49dPwFbFIJJAOHw==
+"@terascope/types@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.1.2.tgz#ff95bf7ff48eb96ae0bff7dece0f85abf217558d"
+  integrity sha512-lYd3t6B8FTmvfZ2pXnQEfgAYNVro4FEw2VgRAB8CBmactCOA12xiStrP7Vqehva5ELgvnovFFqK5my10Ms8hwA==
 
-"@terascope/utils@^0.22.0":
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.22.0.tgz#ce65b2659dbe23bf8ce6a5a1b114211ad9cd420f"
-  integrity sha512-jjB5Lr/ISKzC9TmgEnMpFU42YDHViRjqWu7WzXidVKk6oIq4hxv1kCW/G+xnzSx21yMev40yE2X2NFyQi1z1Hw==
+"@terascope/utils@^0.23.2":
+  version "0.23.2"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.23.2.tgz#faea098877d31f78b818a30e1b074bb8453e97f4"
+  integrity sha512-4/lAnLXttuUE2wX03kyAY3j9bXT3cQffe7YOCaYLfQdG+Jjh1sGmq4YRmYMbgUbiTCb2h+y5ZpdWe2cK0Cwapg==
   dependencies:
+    "@terascope/types" "^0.1.2"
     debug "^4.1.1"
     is-plain-object "^3.0.0"
     js-string-escape "^1.0.1"
-    kind-of "^6.0.2"
+    kind-of "^6.0.3"
+    latlon-geohash "^1.1.0"
     lodash.clonedeep "^4.5.0"
     lodash.get "^4.4.2"
     lodash.set "^4.3.2"
@@ -97,10 +98,15 @@ json5@1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-kind-of@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
-  integrity sha512-s5kLOcnH0XqDO+FvuaLX8DDjZ18CGFk7VygH40QoKPUQhW4e2rvM0rwUq0t8IQDOwYSeLK01U90OjzBTme2QqA==
+kind-of@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
+  integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
+
+latlon-geohash@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/latlon-geohash/-/latlon-geohash-1.1.0.tgz#7abe15224c4800e3eaecac71c753a20bfb6cbf65"
+  integrity sha1-er4VIkxIAOPq7Kxxx1OiC/tsv2U=
 
 lodash.clonedeep@4.5.0, lodash.clonedeep@^4.5.0:
   version "4.5.0"
@@ -147,10 +153,10 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-uuid@^3.3.3:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
-  integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
+uuid@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
+  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
 validator@10.8.0:
   version "10.8.0"
