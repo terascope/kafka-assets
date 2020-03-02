@@ -14,13 +14,12 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
         const opConfig = fetchConfig(job);
         const kafkaConnectors = get(this.context, 'sysconfig.terafoundation.connectors.kafka');
         if (kafkaConnectors == null) throw new Error('Could not find kafka connector in terafoundation config');
-
         // check to verify if connection map provided is
         // consistent with sysconfig.terafoundation.connectors
         if (opConfig.connection_map) {
             for (const value of Object.values(opConfig.connection_map)) {
                 if (!kafkaConnectors[value]) {
-                    throw new Error(`A connection for [${value}] was set on the kafka_sender connection_map but is not found in the system configuration [terafoundation.connectors.elasticsearch]`);
+                    throw new Error(`A connection for [${value}] was set on the kafka_sender connection_map but is not found in the system configuration [terafoundation.connectors.kafka]`);
                 }
             }
         }

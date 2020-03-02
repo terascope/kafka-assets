@@ -7,6 +7,7 @@ import {
     getValidDate,
     isString,
     TSError,
+    Logger,
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderConfig } from './interfaces';
@@ -17,12 +18,20 @@ interface Endpoint {
     data: any[];
 }
 
+interface ConnectorMapping {
+    clientName: string;
+    topic: string;
+}
+
 type TopicMap = Map<string, Endpoint>
+type ConnectorMap = Map<string, ConnectorMapping>
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     private _bufferSize: number;
     topicMap: TopicMap = new Map();
+    connectorDict: ConnectorMap = new Map();
     hasConnectionMap = false;
+    kafkaLogger: Logger
 
     constructor(
         context: WorkerContext,
@@ -30,41 +39,50 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         executionConfig: ExecutionConfig
     ) {
         super(context, opConfig, executionConfig);
-        const { topic, size, connection_map: connectionMap } = opConfig;
+        const {
+            topic, size, connection_map: connectionMap, connection
+        } = opConfig;
 
         const logger = this.logger.child({ module: 'kafka-producer' });
+        this.kafkaLogger = logger;
 
         this._bufferSize = size * 5;
 
         if (connectionMap) {
+            this.hasConnectionMap = true;
+
             for (const keyset of Object.keys(connectionMap)) {
-                this.hasConnectionMap = true;
-                const client = this.createClient(connectionMap[keyset]);
                 const keys = keyset.split(',');
 
                 for (const key of keys) {
                     const newTopic = key === '*' ? topic : `${topic}-${key}`;
-                    const producer = new ProducerClient(client, {
-                        logger,
-                        topic: newTopic,
-                        bufferSize: this._bufferSize,
-                    });
-
-                    this.topicMap.set(key, { producer, data: [] });
+                    const topicSettings: ConnectorMapping = {
+                        clientName: connectionMap[keyset],
+                        topic: newTopic
+                    };
+                    this.connectorDict.set(key, topicSettings);
                 }
             }
-        }
-
         // the connection specified on opConfig must be on topicMap
-        if (!this.topicMap.has(opConfig.connection)) {
-            const client = this.createClient();
-            const producer = new ProducerClient(client, {
-                logger,
-                topic,
-                bufferSize: this._bufferSize,
-            });
-            this.topicMap.set(opConfig.connection, { producer, data: [] });
+        } else {
+            this.connectorDict.set(connection, { clientName: connection, topic });
+            this.createTopic(connection, false);
         }
+    }
+
+    private async createTopic(route: string, shouldConnect = true) {
+        const { clientName, topic } = this.connectorDict.get(route) as ConnectorMapping;
+        const client = this.createClient(clientName);
+
+        const producer = new ProducerClient(client, {
+            logger: this.kafkaLogger,
+            topic,
+            bufferSize: this._bufferSize,
+        });
+
+        if (shouldConnect) await producer.connect();
+
+        this.topicMap.set(route, { producer, data: [] });
     }
 
     async initialize() {
@@ -100,8 +118,14 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
         for (const record of batch) {
             const route = record.getMetadata('standard:route');
-
+            // if we have route, then use it, else make a topic if allowed.
+            // if not then check if a "*" is set, if not then use rejectRecord
             if (this.topicMap.has(route)) {
+                const routeConfig = this.topicMap.get(route) as Endpoint;
+                routeConfig.data.push(record);
+            } else if (this.connectorDict.has(route)) {
+                await this.createTopic(route);
+
                 const routeConfig = this.topicMap.get(route) as Endpoint;
                 routeConfig.data.push(record);
             } else if (this.topicMap.has('*')) {

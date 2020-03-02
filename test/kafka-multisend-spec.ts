@@ -10,8 +10,9 @@ import KafkaAdmin from './helpers/kafka-admin';
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
     const mockFlush = jest.fn();
-    const topicMeta1 = 'billy';
-    const topicMeta2 = 'fred';
+    const topicMeta1 = 'b';
+    const topicMeta2 = 'F';
+    const connectionEndpoint1 = 'kafka-1';
     const connectionEndpoint2 = 'kafka-2';
 
     const firstTopic = `${senderTopic}-${topicMeta1}`;
@@ -19,11 +20,12 @@ describe('Kafka Sender', () => {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const connectorMap: Record<string, string> = {
-        [topicMeta1]: 'default',
-        [topicMeta2]: connectionEndpoint2
+        'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p': connectionEndpoint1,
+        'q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I': connectionEndpoint2,
+        'J,K,L,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0,+,=': connectionEndpoint2
     };
 
-    const clientConfig: TestClientConfig = {
+    const kafkaConfig1: TestClientConfig = {
         type: 'kafka',
         config: {
             brokers: kafkaBrokers,
@@ -37,10 +39,10 @@ describe('Kafka Sender', () => {
                 .bind(result.client);
             return result;
         },
-        endpoint: 'default'
+        endpoint: connectionEndpoint1
     };
 
-    const clientConfig2: TestClientConfig = {
+    const kafkaConfig2: TestClientConfig = {
         type: 'kafka',
         config: {
             brokers: kafkaBrokers,
@@ -59,7 +61,7 @@ describe('Kafka Sender', () => {
 
     const topic = senderTopic;
 
-    const clients = [clientConfig, clientConfig2];
+    const clients = [kafkaConfig1, kafkaConfig2];
     const batchSize = 100;
 
     const job = newTestJobConfig({
