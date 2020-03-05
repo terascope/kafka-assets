@@ -132,7 +132,14 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
                 const routeConfig = this.topicMap.get('*') as Endpoint;
                 routeConfig.data.push(record);
             } else {
-                const error = new TSError(`Invalid connection route: ${route}`);
+                let error: TSError;
+
+                if (route == null) {
+                    error = new TSError('No route was specified in record metadata');
+                } else {
+                    error = new TSError(`Invalid connection route: ${route} was not found on connector_map`);
+                }
+
                 this.rejectRecord(record, error);
             }
         }

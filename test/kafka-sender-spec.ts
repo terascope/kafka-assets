@@ -51,7 +51,8 @@ describe('Kafka Sender', () => {
             {
                 _op: 'kafka_sender',
                 topic,
-                size: batchSize
+                size: batchSize,
+                _dead_letter_action: 'log'
             }
         ],
     });

@@ -1,7 +1,6 @@
 import 'jest-extended';
 import { TestClientConfig, Logger, DataEntity } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import KafkaSender from '../asset/src/kafka_sender/processor';
 import { readData } from './helpers/kafka-data';
 import Connector from '../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers, senderTopic } from './helpers/config';
@@ -64,80 +63,70 @@ describe('Kafka Sender', () => {
     const clients = [kafkaConfig1, kafkaConfig2];
     const batchSize = 100;
 
-    const job = newTestJobConfig({
-        max_retries: 3,
-        operations: [
-            {
-                _op: 'test-reader',
-            },
+    const admin = new KafkaAdmin();
+
+    let harness: WorkerTestHarness;
+
+    async function makeTest(config = {}) {
+        const kafkaConfig = Object.assign(
+            {},
             {
                 _op: 'kafka_sender',
                 topic,
                 size: batchSize,
                 connection_map: connectorMap
-            }
-        ],
-    });
+            },
+            config
+        );
 
-    const admin = new KafkaAdmin();
-
-    let harness: WorkerTestHarness;
-    let sender: KafkaSender;
-    let input: DataEntity[] = [];
-
-    beforeAll(async () => {
-        jest.clearAllMocks();
-
-        await Promise.all([
-            admin.ensureTopic(firstTopic),
-            admin.ensureTopic(secondTopic)
-        ]);
+        const job = newTestJobConfig({
+            max_retries: 3,
+            operations: [
+                {
+                    _op: 'test-reader',
+                    passthrough_slice: true
+                },
+                kafkaConfig
+            ],
+        });
 
         harness = new WorkerTestHarness(job, {
             clients,
         });
 
-        harness.fetcher().handle = async () => input;
-
-        sender = harness.getOperation('kafka_sender') as any;
-
         await harness.initialize();
 
-        const initList = [];
+        return harness;
+    }
 
-        for (const [, { producer }] of Object.entries(sender.topicMap)) {
-            initList.push(producer.connect());
-        }
+    beforeEach(async () => {
+        await Promise.all([
+            admin.ensureTopic(firstTopic),
+            admin.ensureTopic(secondTopic)
+        ]);
+    });
 
-        await Promise.all(initList);
+    afterEach(async () => {
+        await harness.shutdown();
     });
 
     afterAll(async () => {
         jest.clearAllMocks();
-
         admin.disconnect();
-
-        // it should be able to disconnect twice
-        const shutdownList = [];
-
-        for (const [, { producer }] of Object.entries(sender.topicMap)) {
-            shutdownList.push(producer.disconnect());
-        }
-
-        await Promise.all(shutdownList);
-        await harness.shutdown();
     });
 
     it('can send to two topics', async () => {
         const obj1 = { hello: 'world' };
         const obj2 = { foo: 'bar' };
 
-        input = [
+        const slice = [
             DataEntity.make(obj1, { 'standard:route': topicMeta1 }),
             DataEntity.make(obj2, { 'standard:route': topicMeta2 })
         ];
 
-        const results = await harness.runSlice({});
+        const test = await makeTest();
+
+        const results = await test.runSlice(slice);
 
         expect(results).toBeArrayOfSize(2);
 
@@ -151,5 +140,36 @@ describe('Kafka Sender', () => {
 
         expect(topic2).toBeArrayOfSize(1);
         expect(topic2[0]).toEqual(obj2);
+    });
+
+    it('can throw if route is not set on record with default opConfig settings', async () => {
+        const obj1 = { i: 'will fail' };
+        const slice = [DataEntity.make(obj1)];
+
+        const test = await makeTest();
+
+        await expect(test.runSlice(slice)).rejects.toThrow('No route was specified in record metadata');
+    });
+
+    it('can throw if route is set on record but not in connector_map with no defaults with default opConfig settings', async () => {
+        const obj1 = { i: 'will fail' };
+        const route = 'iWillNotMatchAnything';
+        const slice = [DataEntity.make(obj1, { 'standard:route': route })];
+
+        const test = await makeTest();
+
+        await expect(test.runSlice(slice)).rejects.toThrow(`Invalid connection route: ${route} was not found on connector_map`);
+    });
+
+    it('can ignore records (with no routes/ no connector_map match) setting opConfig _dead_letter_action to none', async () => {
+        const obj1 = { i: 'will fail' };
+        const route = 'iWillNotMatchAnything';
+        const slice = [DataEntity.make(obj1, { 'standard:route': route })];
+
+        const test = await makeTest({ _dead_letter_action: 'none' });
+
+        const results = await test.runSlice(slice);
+
+        expect(results).toEqual(slice);
     });
 });
