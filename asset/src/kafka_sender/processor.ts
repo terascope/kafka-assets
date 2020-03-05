@@ -6,14 +6,32 @@ import {
     ConnectionConfig,
     getValidDate,
     isString,
+    TSError,
+    Logger,
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 
-export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
+interface Endpoint {
     producer: ProducerClient;
+    data: any[];
+}
+
+interface ConnectorMapping {
+    clientName: string;
+    topic: string;
+}
+
+type TopicMap = Map<string, Endpoint>
+type ConnectorMap = Map<string, ConnectorMapping>
+
+export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     private _bufferSize: number;
+    topicMap: TopicMap = new Map();
+    connectorDict: ConnectorMap = new Map();
+    hasConnectionMap = false;
+    kafkaLogger: Logger
 
     constructor(
         context: WorkerContext,
@@ -21,30 +39,130 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         executionConfig: ExecutionConfig
     ) {
         super(context, opConfig, executionConfig);
+        const {
+            topic, size, connection_map: connectionMap, connection
+        } = opConfig;
 
         const logger = this.logger.child({ module: 'kafka-producer' });
+        this.kafkaLogger = logger;
 
-        this._bufferSize = this.opConfig.size * 5;
+        this._bufferSize = size * 5;
 
-        this.producer = new ProducerClient(this.createClient(), {
-            logger,
-            topic: this.opConfig.topic,
+        if (connectionMap) {
+            this.hasConnectionMap = true;
+
+            for (const keyset of Object.keys(connectionMap)) {
+                const keys = keyset.split(',');
+
+                for (const key of keys) {
+                    const newTopic = key === '*' ? topic : `${topic}-${key}`;
+                    const topicSettings: ConnectorMapping = {
+                        clientName: connectionMap[keyset],
+                        topic: newTopic
+                    };
+                    this.connectorDict.set(key, topicSettings);
+                }
+            }
+        // the connection specified on opConfig must be on topicMap
+        } else {
+            this.connectorDict.set(connection, { clientName: connection, topic });
+            this.createTopic(connection, false);
+        }
+    }
+
+    private async createTopic(route: string, shouldConnect = true) {
+        const { clientName, topic } = this.connectorDict.get(route) as ConnectorMapping;
+        const client = this.createClient(clientName);
+
+        const producer = new ProducerClient(client, {
+            logger: this.kafkaLogger,
+            topic,
             bufferSize: this._bufferSize,
         });
+
+        if (shouldConnect) await producer.connect();
+
+        this.topicMap.set(route, { producer, data: [] });
     }
 
     async initialize() {
         await super.initialize();
-        await this.producer.connect();
+        const initList = [];
+
+        for (const { producer } of this.topicMap.values()) {
+            initList.push(producer.connect());
+        }
+
+        await Promise.all(initList);
+    }
+
+    private _cleanupTopicMap() {
+        for (const config of this.topicMap.values()) {
+            config.data = [];
+        }
     }
 
     async shutdown() {
-        await this.producer.disconnect();
+        const shutdownList = [];
+
+        for (const { producer } of this.topicMap.values()) {
+            shutdownList.push(producer.disconnect());
+        }
+
+        await Promise.all(shutdownList);
         await super.shutdown();
     }
 
+    async routeToAllTopics(batch: DataEntity[]) {
+        const senders = [];
+
+        for (const record of batch) {
+            const route = record.getMetadata('standard:route');
+            // if we have route, then use it, else make a topic if allowed.
+            // if not then check if a "*" is set, if not then use rejectRecord
+            if (this.topicMap.has(route)) {
+                const routeConfig = this.topicMap.get(route) as Endpoint;
+                routeConfig.data.push(record);
+            } else if (this.connectorDict.has(route)) {
+                await this.createTopic(route);
+
+                const routeConfig = this.topicMap.get(route) as Endpoint;
+                routeConfig.data.push(record);
+            } else if (this.topicMap.has('*')) {
+                const routeConfig = this.topicMap.get('*') as Endpoint;
+                routeConfig.data.push(record);
+            } else {
+                let error: TSError;
+
+                if (route == null) {
+                    error = new TSError('No route was specified in record metadata');
+                } else {
+                    error = new TSError(`Invalid connection route: ${route} was not found on connector_map`);
+                }
+
+                this.rejectRecord(record, error);
+            }
+        }
+
+        for (const { data, producer } of this.topicMap.values()) {
+            if (data.length > 0) {
+                senders.push(producer.produce(data, this.mapFn()));
+            }
+        }
+
+        await Promise.all(senders);
+
+        this._cleanupTopicMap();
+    }
+
     async onBatch(batch: DataEntity[]) {
-        await this.producer.produce(batch, this.mapFn());
+        if (this.hasConnectionMap) {
+            await this.routeToAllTopics(batch);
+        } else {
+            const { producer } = this.topicMap.get(this.opConfig.connection) as Endpoint;
+            await producer.produce(batch, this.mapFn());
+        }
+
         return batch;
     }
 
@@ -90,10 +208,10 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         };
     }
 
-    private clientConfig() {
+    private clientConfig(connection?: string) {
         const config = {
             type: 'kafka',
-            endpoint: this.opConfig.connection,
+            endpoint: connection || this.opConfig.connection,
             options: {
                 type: 'producer'
             },
@@ -119,9 +237,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         return config as ConnectionConfig;
     }
 
-    private createClient(): kafka.Producer {
-        const config = this.clientConfig();
-        const connection = this.context.foundation.getConnection(config);
-        return connection.client;
+    private createClient(connection?: string): kafka.Producer {
+        const config = this.clientConfig(connection);
+        const { client } = this.context.foundation.getConnection(config);
+        return client;
     }
 }

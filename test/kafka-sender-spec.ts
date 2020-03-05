@@ -51,7 +51,8 @@ describe('Kafka Sender', () => {
             {
                 _op: 'kafka_sender',
                 topic,
-                size: batchSize
+                size: batchSize,
+                _dead_letter_action: 'log'
             }
         ],
     });
@@ -78,8 +79,13 @@ describe('Kafka Sender', () => {
 
         await harness.initialize();
 
-        // it should be able to call connect again
-        await sender.producer.connect();
+        const initList = [];
+
+        for (const { producer } of sender.topicMap.values()) {
+            initList.push(producer.connect());
+        }
+
+        await Promise.all(initList);
 
         while (results.length < targetSize) {
             if (runs > targetRuns) {
@@ -99,21 +105,33 @@ describe('Kafka Sender', () => {
         admin.disconnect();
 
         // it should be able to disconnect twice
-        await sender.producer.disconnect();
+        const shutdownList = [];
+
+        for (const { producer } of sender.topicMap.values()) {
+            shutdownList.push(producer.disconnect());
+        }
+
+        await Promise.all(shutdownList);
         await harness.shutdown();
     });
 
     it('should able to call _clientEvents without double listening', () => {
         // @ts-ignore
-        const expected = sender.producer._client.listenerCount('error');
+        const expectedTopic = sender.topicMap.get('default');
+        // @ts-ignore
+        const expected = expectedTopic.producer._client.listenerCount('error');
 
         expect(() => {
             // @ts-ignore
-            sender.producer._clientEvents();
+            const testTopic = sender.topicMap.get('default');
+            // @ts-ignore
+            testTopic.producer._clientEvents();
         }).not.toThrowError();
 
         // @ts-ignore
-        const actual = sender.producer._client.listenerCount('error');
+        const actualTopic = sender.topicMap.get('default');
+        // @ts-ignore
+        const actual = actualTopic.producer._client.listenerCount('error');
 
         expect(actual).toEqual(expected);
     });

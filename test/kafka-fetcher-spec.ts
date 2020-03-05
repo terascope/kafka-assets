@@ -39,7 +39,8 @@ describe('Kafka Fetcher', () => {
                 group,
                 size: 100,
                 wait: 8000,
-                rollback_on_failure: true
+                rollback_on_failure: true,
+                _dead_letter_action: 'log'
             },
             {
                 _op: 'noop'

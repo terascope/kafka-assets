@@ -52,4 +52,8 @@ export interface KafkaSenderConfig extends OpConfig {
      * produce request will fail.
     */
     required_acks: number;
+    /**
+     * partition keys to terafoundation kafka connector names
+    */
+    connection_map: Record<string, string>;
 }
