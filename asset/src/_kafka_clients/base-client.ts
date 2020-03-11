@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
-import once from 'lodash.once';
-import { Logger, isError, pDelay } from '@terascope/job-components';
+import {
+    Logger, isError, pDelay, once
+} from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import {
     isOkayError,
