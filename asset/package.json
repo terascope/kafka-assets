@@ -5,8 +5,7 @@
     "description": "Teraslice asset for kafka operations",
     "main": "index.js",
     "dependencies": {
-        "@terascope/job-components": "^0.30.1",
-        "lodash.once": "^4.1.1"
+        "@terascope/job-components": "^0.30.1"
     },
     "devDependencies": {},
     "scripts": {
