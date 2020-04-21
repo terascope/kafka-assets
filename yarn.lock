@@ -446,13 +446,13 @@
   dependencies:
     type-detect "4.0.8"
 
-"@terascope/eslint-config@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-0.2.5.tgz#843c53eff1bd915c7da7eec4730d3aed672afbe0"
-  integrity sha512-VSt4k9uJ6uYb6hjtyjBu3HTlO7jtj1JfV25Rc21jCQapZub8/CJJfxHOSDadwXhLz0/vzq1DwN8CJsYBkK5L8A==
+"@terascope/eslint-config@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-0.3.0.tgz#7ff5bd8ad34b9e31cd09a58c1a58d0389eb2535d"
+  integrity sha512-qzfyuLV9MGqtqJKMmQuKJiQY4AvlIXYotll4bx8dMuzlLVTGFvOpzOuAJrBipEe74lj2kwhkwjih7ONgy1vsTA==
   dependencies:
-    "@typescript-eslint/eslint-plugin" "^2.27.0"
-    "@typescript-eslint/parser" "^2.27.0"
+    "@typescript-eslint/eslint-plugin" "^2.28.0"
+    "@typescript-eslint/parser" "^2.28.0"
     eslint-config-airbnb "^18.1.0"
     eslint-config-airbnb-base "^14.1.0"
     eslint-plugin-import "~2.20.2"
@@ -621,7 +621,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@typescript-eslint/eslint-plugin@^2.27.0":
+"@typescript-eslint/eslint-plugin@^2.28.0":
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-2.28.0.tgz#4431bc6d3af41903e5255770703d4e55a0ccbdec"
   integrity sha512-w0Ugcq2iatloEabQP56BRWJowliXUP5Wv6f9fKzjJmDW81hOTBxRoJ4LoEOxRpz9gcY51Libytd2ba3yLmSOfg==
@@ -650,7 +650,7 @@
     "@typescript-eslint/typescript-estree" "2.23.0"
     eslint-scope "^5.0.0"
 
-"@typescript-eslint/parser@^2.27.0":
+"@typescript-eslint/parser@^2.28.0":
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-2.28.0.tgz#bb761286efd2b0714761cab9d0ee5847cf080385"
   integrity sha512-RqPybRDquui9d+K86lL7iPqH6Dfp9461oyqvlXMNtap+PyqYbkY5dB7LawQjDzot99fqzvS0ZLZdfe+1Bt3Jgw==
