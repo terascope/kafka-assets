@@ -16,7 +16,7 @@ export interface TrackedOffsets {
 export interface TopicPartition {
     partition: number;
     offset: number;
-    topic?: string;
+    topic: string;
 }
 
 export interface ConsumerClientConfig {

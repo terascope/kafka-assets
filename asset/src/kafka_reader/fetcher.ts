@@ -48,7 +48,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
 
             const metadata: KafkaMessageMetadata = {
                 _key: keyToString(msg.key),
-                _ingestTime: msg.timestamp,
+                _ingestTime: msg.timestamp || now,
                 _processTime: now,
                 // TODO this should be based of an actual value
                 _eventTime: now,
@@ -59,7 +59,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
             };
 
             return DataEntity.fromBuffer(
-                msg.value,
+                msg.value as string|Buffer,
                 this.opConfig,
                 metadata
             );
@@ -126,7 +126,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
 }
 
 /** Safely convert a buffer or string to a string */
-function keyToString(str?: string|Buffer) {
+function keyToString(str?: kafka.MessageKey) {
     if (!str) return null;
     return str.toString('utf8');
 }

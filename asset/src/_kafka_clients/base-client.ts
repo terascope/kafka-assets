@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import {
     Logger, isError, pDelay, once
 } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
+import type * as kafka from 'node-rdkafka';
 import {
     isOkayError,
     wrapError,
@@ -13,7 +13,7 @@ import {
     ERR__STATE
 } from '../_kafka_helpers/error-codes';
 
-export default class BaseClient<T extends kafka.Client> {
+export default class BaseClient<T extends kafka.Client<any>> {
     /** the random factory of the back of interval, [min, max] */
     static BACKOFF_RANDOM_FACTOR: [number, number] = [3, 9];
     static DEFAULT_BACKOFF = 1000;

@@ -1,17 +1,20 @@
+import type { LibrdKafkaError, Message } from 'node-rdkafka';
 import { toString, isString, isError } from '@terascope/job-components';
 import { codeToMessage, okErrors } from './error-codes';
 
 export type AnyKafkaError = Error|KafkaError|number|string|null;
 
-export interface KafkaError extends Error {
-    code: number|string;
-}
+export type KafkaError = LibrdKafkaError;
 
 export function wrapError(message: string, err: AnyKafkaError): KafkaError {
     const cause = getErrorCause(err);
-    const error = new Error(`${message}${cause}`) as KafkaError;
+    const error = new Error(`${message}${cause}`) as any as KafkaError;
 
-    if (isKafkaError(err)) error.code = err.code;
+    if (isKafkaError(err)) {
+        error.code = err.code;
+        error.errno = err.errno;
+        error.origin = err.origin;
+    }
 
     Error.captureStackTrace(error, wrapError);
 
@@ -71,22 +74,7 @@ export interface KafkaMessageMetadata {
     size: number;
 }
 
-export interface KafkaMessage {
-    /** the message key */
-    key: Buffer|string;
-    /** the topic name */
-    topic: string;
-    /** the partition on the topic the message was on */
-    partition: number;
-    /** the offset of the message */
-    offset: number;
-    /** the message size, in bytes */
-    size: number;
-    /** the message timestamp */
-    timestamp: number;
-    /** the message data */
-    value: Buffer;
-}
+export type KafkaMessage = Message;
 
 export function isKafkaError(err: any): err is KafkaError {
     // @ts-ignore
