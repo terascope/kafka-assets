@@ -84,7 +84,7 @@ export async function readData(topic: string, size: number): Promise<any[]> {
 
     const messages = await client.consume((msg): any => {
         try {
-            return JSON.parse(msg.value.toString('utf8'));
+            return JSON.parse((msg.value as string | Buffer).toString('utf8'));
         } catch (err) {
             if (Buffer.isBuffer(msg.value)) {
                 return msg.value.toString('utf8');
