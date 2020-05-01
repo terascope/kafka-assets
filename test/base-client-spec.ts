@@ -285,7 +285,7 @@ describe('Base Client (internal)', () => {
             });
 
             it('should log to debug and there is on okay error', () => {
-                const error = new Error('Test Kafka Error') as KafkaError;
+                const error = new Error('Test Kafka Error') as any as KafkaError;
                 error.code = codes.ERR_NO_ERROR;
 
                 // @ts-ignore because it is private
@@ -296,7 +296,7 @@ describe('Base Client (internal)', () => {
             });
 
             it('should log to warn when given a retryable error', () => {
-                const error = new Error('Test Kafka Error') as KafkaError;
+                const error = new Error('Test Kafka Error') as any as KafkaError;
                 error.code = codes.ERR__TIMED_OUT;
 
                 // @ts-ignore because it is private
@@ -361,7 +361,7 @@ describe('Base Client (internal)', () => {
 
         describe('when it succeeds on the second attempt', () => {
             it('should call the fn twice', async () => {
-                const error = new Error('ERR__TIMED_OUT') as KafkaError;
+                const error = new Error('ERR__TIMED_OUT') as any as KafkaError;
                 error.code = codes.ERR__TIMED_OUT;
 
                 const fn = jest.fn<any, any[]>(() => 'howdy').mockRejectedValueOnce(error);
@@ -377,10 +377,10 @@ describe('Base Client (internal)', () => {
 
         describe('when it throws an okay error on the second attempt', () => {
             it('should call the fn twice', async () => {
-                const error = new Error('ERR__TIMED_OUT') as KafkaError;
+                const error = new Error('ERR__TIMED_OUT') as any as KafkaError;
                 error.code = codes.ERR__TIMED_OUT;
 
-                const okError = new Error('KAFKA_NO_OFFSET_STORED') as KafkaError;
+                const okError = new Error('KAFKA_NO_OFFSET_STORED') as any as KafkaError;
                 okError.code = codes.KAFKA_NO_OFFSET_STORED;
 
                 const fn = jest.fn<any, any[]>(() => 'howdy')
@@ -397,7 +397,7 @@ describe('Base Client (internal)', () => {
 
         describe('when it succeeds on the third attempt', () => {
             it('should call the fn thrice', async () => {
-                const error = new Error('ERR__RESOLVE') as KafkaError;
+                const error = new Error('ERR__RESOLVE') as any as KafkaError;
                 error.code = codes.ERR__RESOLVE;
 
                 const fn = jest.fn<any, any[]>(() => 'hello')
@@ -416,7 +416,7 @@ describe('Base Client (internal)', () => {
             it('should call the fn thrice and throw', async () => {
                 expect.hasAssertions();
 
-                const retryable = new Error('Uh oh') as KafkaError;
+                const retryable = new Error('Uh oh') as any as KafkaError;
                 retryable.code = codes.ERR__WAIT_CACHE;
 
                 const error = new Error('Fatal Error');
@@ -440,7 +440,7 @@ describe('Base Client (internal)', () => {
             it('should call the fn thrice and throw', async () => {
                 expect.hasAssertions();
 
-                const error = new Error('ERR__WAIT_CACHE') as KafkaError;
+                const error = new Error('ERR__WAIT_CACHE') as any as KafkaError;
                 error.code = codes.ERR__WAIT_CACHE;
 
                 const fn = jest.fn<any, any[]>(() => 'hi')
@@ -497,7 +497,7 @@ describe('Base Client (internal)', () => {
 
         describe('when the event fires with an error', () => {
             it('should call the fn and cleanup', async () => {
-                const error = new Error('Uh oh') as KafkaError;
+                const error = new Error('Uh oh') as any as KafkaError;
 
                 const fn = jest.fn(() => 'howdy');
 

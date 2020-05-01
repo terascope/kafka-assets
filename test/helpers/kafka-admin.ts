@@ -1,17 +1,17 @@
-import { debugLogger, pDelay } from '@terascope/job-components';
-import { AdminClient, InternalAdminClient } from 'node-rdkafka';
+import { debugLogger, pDelay, castArray } from '@terascope/job-components';
+import { AdminClient, IAdminClient } from 'node-rdkafka';
 import { ERR_UNKNOWN_TOPIC_OR_PART } from '../../asset/src/_kafka_helpers/error-codes';
 import { kafkaBrokers } from './config';
 
 const logger = debugLogger('test-kafka-admin');
 
 export default class KafkaAdmin {
-    private _client: InternalAdminClient;
+    private _client: IAdminClient;
 
     constructor() {
         // @ts-ignore because node-rdkafka type definitions are terrible
         this._client = AdminClient.create({
-            'metadata.broker.list': kafkaBrokers,
+            'metadata.broker.list': castArray(kafkaBrokers).join(','),
         });
     }
 
