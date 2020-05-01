@@ -1,4 +1,4 @@
-import * as kafka from 'node-rdkafka';
+import type * as kafka from 'node-rdkafka';
 import { pDelay, toHumanTime } from '@terascope/job-components';
 import {
     wrapError,
@@ -135,7 +135,9 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * If an error happens it will attempt to retry
     */
     async seek(topPar: { partition: number; offset: number }): Promise<void> {
-        await this._try(() => this._seek(topPar), 'seek');
+        await this._try(() => this._seek({
+            ...topPar, topic: this._topic
+        }), 'seek');
     }
 
     /**
@@ -143,7 +145,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     */
     async topicPositions(): Promise<TopicPartition[]> {
         try {
-            return this._client.position(null);
+            return this._client.position(undefined);
         } catch (err) {
             /* istanbul ignore next */
             throw wrapError('Failed to get topic partitions', err);
@@ -224,7 +226,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      */
     private _consumeMessages(count: number): Promise<KafkaMessage[]> {
         return new Promise((resolve, reject) => {
-            this._client.consume(count, (err: AnyKafkaError, messages: KafkaMessage[]) => {
+            this._client.consume(count, (err: KafkaError, messages: KafkaMessage[]) => {
                 /* istanbul ignore if */
                 if (err) reject(err);
                 else resolve(messages);
@@ -308,7 +310,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         if (this._hasClientEvents) return;
         this._hasClientEvents = true;
 
-        this._client.on('error', this._logOrEmit('client:error'));
+        this._client.on('error' as any, this._logOrEmit('client:error'));
 
         this._client.on('ready', () => {
             this._client.subscribe([this._topic]);

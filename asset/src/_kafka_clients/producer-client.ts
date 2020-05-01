@@ -38,7 +38,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     async produce(messages: ProduceMessage[]): Promise<void>;
     async produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void>;
     async produce(messages: any[], map?: (msg: any) => ProduceMessage): Promise<void> {
-        let error: Error|null = null;
+        let error: kafka.LibrdKafkaError|null = null;
 
         const off = this._once('client:error', (err) => {
             if (!err) return;
@@ -109,7 +109,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
         this._hasClientEvents = true;
 
         // for client event error logs.
-        this._client.on('error', this._logOrEmit('client:error'));
+        this._client.on('error' as any, this._logOrEmit('client:error'));
 
         // for event error logs.
         this._client.on('event.error', this._logOrEmit('client:error'));

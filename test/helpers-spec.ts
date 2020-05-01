@@ -13,7 +13,7 @@ describe('wrapError helper', () => {
 
     describe('when given a KafkaError', () => {
         it('should return a correctly formatted error', () => {
-            const err = new Error('Uh oh') as KafkaError;
+            const err = new Error('Uh oh') as any as KafkaError;
             err.code = -174;
             const error = wrapError('Failure', err);
             expect(error.message).toEqual('Failure, caused by error: Uh oh, code: -174, desc: "Revoked partitions (rebalance_cb)"');
@@ -22,7 +22,7 @@ describe('wrapError helper', () => {
 
     describe('when given a wrappedError', () => {
         it('should return a correctly formatted error', () => {
-            const err = new Error('Uh oh') as KafkaError;
+            const err = new Error('Uh oh') as any as KafkaError;
             err.code = -174;
             const wrappedError = wrapError('Failure', err);
 
@@ -66,8 +66,8 @@ describe('isOkayError helper', () => {
     ])('when consuming and checking ok error code %s', (code) => {
         // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
-            const err = new Error('Uh oh') as KafkaError;
-            err.code = code;
+            const err = new Error('Uh oh') as any as KafkaError;
+            err.code = code as number;
 
             expect(isOkayError(err, 'consume')).toBeTrue();
             expect(isOkayError(code, 'consume')).toBeTrue();
@@ -76,8 +76,8 @@ describe('isOkayError helper', () => {
 
     describe.each(alwaysBad)('when consuming and checking bad error code %s', (code) => {
         it('should return false', () => {
-            const err = new Error('Uh oh') as KafkaError;
-            err.code = code as string|number;
+            const err = new Error('Uh oh') as any as KafkaError;
+            err.code = code as number;
 
             expect(isOkayError(err, 'consume')).toBeFalse();
             expect(isOkayError(code, 'consume')).toBeFalse();
@@ -90,8 +90,8 @@ describe('isOkayError helper', () => {
     ])('when committing and checking error code %s', (code) => {
         // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
-            const err = new Error('Uh oh') as KafkaError;
-            err.code = code;
+            const err = new Error('Uh oh') as any as KafkaError;
+            err.code = code as number;
 
             expect(isOkayError(err, 'commit')).toBeTrue();
             expect(isOkayError(code, 'commit')).toBeTrue();
@@ -104,8 +104,8 @@ describe('isOkayError helper', () => {
     ])('when producing and checking error code %s', (code) => {
         // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
-            const err = new Error('Uh oh') as KafkaError;
-            err.code = code;
+            const err = new Error('Uh oh') as any as KafkaError;
+            err.code = code as number;
 
             expect(isOkayError(err, 'produce')).toBeTrue();
             expect(isOkayError(code, 'produce')).toBeTrue();
