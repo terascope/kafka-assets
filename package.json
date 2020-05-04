@@ -27,7 +27,7 @@
         "@types/uuid": "^7.0.2",
         "bunyan": "^1.8.12",
         "eslint": "^6.7.2",
-        "jest": "^25.4.0",
+        "jest": "^25.5.4",
         "jest-extended": "^0.11.5",
         "markdown-table": "^2.0.0",
         "markdown-toc": "^1.2.0",
