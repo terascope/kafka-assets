@@ -540,16 +540,6 @@
     eslint-plugin-react "^7.19.0"
     eslint-plugin-react-hooks "^3.0.0"
 
-"@terascope/job-components@^0.32.2":
-  version "0.32.3"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.32.3.tgz#27d35f4021d9c6e4f8f84d358c6cb61b83682412"
-  integrity sha512-lPCSeYdGlvUN+ERpf6jreQCNvr9ixjcCl0SHSM9znfWeeEkJUOHDhLZGlo7QaxbZBKXRkH26/DVhJ+cIwHQ2hg==
-  dependencies:
-    "@terascope/utils" "^0.26.2"
-    convict "^4.4.1"
-    datemath-parser "^1.0.6"
-    uuid "^7.0.2"
-
 "@terascope/job-components@^0.33.0":
   version "0.33.0"
   resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.33.0.tgz#82a83e2c97ac2f7b6b0c61d6ec2d56b9fe6f2e28"
@@ -572,23 +562,6 @@
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.3.0.tgz#41a0ac5a440841d89d6902064f360cc03fd0f4d0"
   integrity sha512-qvCI0gfsI8HYHJhnfRa5rRTkITM0ZnPpAYX1M0GdYsR8h2ytIUF5jnsf2Bn6OqDdReQCFisr4h+FQafpqxmE6g==
-
-"@terascope/utils@^0.26.2":
-  version "0.26.2"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.26.2.tgz#a96fd7023a6135d0402670fc8839587be8f0a68a"
-  integrity sha512-8aQi/dlyn2hLN2d2SVa1l3HkGad06Cw2qPj2tb2O4qO5SQQ0oqJ/DR1dIGDtsFsxJ6oJLE/kWx0jTmjfYyJWBA==
-  dependencies:
-    "@terascope/types" "^0.3.0"
-    debug "^4.1.1"
-    is-plain-object "^3.0.0"
-    js-string-escape "^1.0.1"
-    kind-of "^6.0.3"
-    latlon-geohash "^1.1.0"
-    lodash.get "^4.4.2"
-    lodash.has "^4.5.2"
-    lodash.set "^4.3.2"
-    lodash.unset "^4.5.2"
-    shallow-clone "^3.0.1"
 
 "@terascope/utils@^0.27.0":
   version "0.27.0"
