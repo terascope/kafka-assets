@@ -25,6 +25,7 @@ export interface ConsumerClientConfig {
 }
 
 export interface ProduceMessage {
+    topic: string|null;
     data: Buffer;
     key: Buffer|string|null;
     timestamp: number|null;

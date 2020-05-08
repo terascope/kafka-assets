@@ -50,12 +50,15 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
         if (connectionMap) {
             this.hasConnectionMap = true;
+            const keysets = Object.keys(connectionMap);
 
-            for (const keyset of Object.keys(connectionMap)) {
+            if (keysets.indexOf('*') > -1 && keysets.indexOf('**') > -1) throw new TSError('connectorMap cannot specify "*" and "**"');
+
+            for (const keyset of keysets) {
                 const keys = keyset.split(',');
 
                 for (const key of keys) {
-                    const newTopic = key === '*' ? topic : `${topic}-${key}`;
+                    const newTopic = (key === '*' || key === '**') ? topic : `${topic}-${key}`;
                     const topicSettings: ConnectorMapping = {
                         clientName: connectionMap[keyset],
                         topic: newTopic
@@ -131,6 +134,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             } else if (this.topicMap.has('*')) {
                 const routeConfig = this.topicMap.get('*') as Endpoint;
                 routeConfig.data.push(record);
+            } else if (this.topicMap.has('**')) {
+                const routeConfig = this.topicMap.get('**') as Endpoint;
+                routeConfig.data.push(record);
             } else {
                 let error: TSError;
 
@@ -198,13 +204,27 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         return null;
     }
 
+    private getRouteTopic(msg: DataEntity): string|null {
+        if (this.topicMap.has('**')) {
+            const route = msg.getMetadata('standard:route');
+            if (route) {
+                return `${this.opConfig.topic}-${route}`;
+            }
+            return this.opConfig.topic;
+        }
+        return null;
+    }
+
     private mapFn() {
         return (msg: DataEntity): ProduceMessage => {
             const key = this.getKey(msg);
             const timestamp = this.getTimestamp(msg);
             const data = msg.toBuffer();
+            const topic = this.getRouteTopic(msg);
 
-            return { timestamp, key, data };
+            return {
+                timestamp, key, data, topic
+            };
         };
     }
 
