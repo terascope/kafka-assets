@@ -75,6 +75,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
                 timestamp: Date.now(),
                 data: Buffer.from(JSON.stringify(data)),
                 key: null,
+                topic: null
             };
 
             this.collector.add(msg);
