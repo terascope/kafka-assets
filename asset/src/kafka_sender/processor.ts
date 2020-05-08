@@ -52,7 +52,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             this.hasConnectionMap = true;
             const keysets = Object.keys(connectionMap);
 
-            if (keysets.indexOf('*') > -1 && keysets.indexOf('**') > -1) throw new TSError('connectorMap cannot specify "*" and "**"');
+            if (keysets.includes('*') && keysets.includes('**')) throw new TSError('connectorMap cannot specify "*" and "**"');
 
             for (const keyset of keysets) {
                 const keys = keyset.split(',');
