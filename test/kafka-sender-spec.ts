@@ -308,7 +308,7 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi'
                 });
-                //@ts-ignore
+                // @ts-ignore
                 const routeTopic = sender.getRouteTopic(entity);
                 expect(routeTopic).toEqual(null);
             });
