@@ -291,18 +291,14 @@ describe('Kafka Sender', () => {
             let ogTopicMap: Map<string, any>;
 
             beforeAll(() => {
-                // @ts-ignore
                 ogTopicMap = sender.topicMap;
 
-                // @ts-ignore
                 sender.topicMap = new Map();
-                // Ensure '**' will not be in the topic map for this test
                 // @ts-ignore
                 sender.topicMap.set('*', {});
             });
 
             afterAll(() => {
-                // @ts-ignore
                 sender.topicMap = ogTopicMap;
             });
             it('returns null', () => {
@@ -312,7 +308,7 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi'
                 });
-                // @ts-ignore
+                //@ts-ignore
                 const routeTopic = sender.getRouteTopic(entity);
                 expect(routeTopic).toEqual(null);
             });
@@ -321,17 +317,14 @@ describe('Kafka Sender', () => {
             let ogTopicMap: Map<string, any>;
 
             beforeAll(() => {
-                // @ts-ignore
                 ogTopicMap = sender.topicMap;
 
-                // @ts-ignore
                 sender.topicMap = new Map();
                 // @ts-ignore
                 sender.topicMap.set('**', {});
             });
 
             afterAll(() => {
-                // @ts-ignore
                 sender.topicMap = ogTopicMap;
             });
             it('sets the topic based on the opConfig and the record\'s "standard:route"', () => {
@@ -343,7 +336,7 @@ describe('Kafka Sender', () => {
                 });
                 entity.setMetadata('standard:route', 'endor');
                 // @ts-ignore
-                const routeTopic = sender.getRouteTopic(entity);
+                const routeTopic = sender.getRouteTopic(entity, '**');
                 expect(routeTopic).toEqual('kafka-test-sender-endor');
             });
             it('sets the topic to default when missing record\'s "standard:route"', () => {
@@ -354,7 +347,7 @@ describe('Kafka Sender', () => {
                     url: 'http://bijupnag.cv/owi'
                 });
                 // @ts-ignore
-                const routeTopic = sender.getRouteTopic(entity);
+                const routeTopic = sender.getRouteTopic(entity, '**');
                 expect(routeTopic).toEqual('kafka-test-sender');
             });
         });
