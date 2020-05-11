@@ -150,9 +150,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             }
         }
 
-        for (const { data, producer } of this.topicMap.values()) {
+        for (const [topicKey, { data, producer }] of this.topicMap) {
             if (data.length > 0) {
-                senders.push(producer.produce(data, this.mapFn()));
+                senders.push(producer.produce(data, this.mapFn(topicKey)));
             }
         }
 
@@ -204,8 +204,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         return null;
     }
 
-    private getRouteTopic(msg: DataEntity): string|null {
-        if (this.topicMap.has('**')) {
+    private getRouteTopic(msg: DataEntity, topicKey?: string): string|null {
+        if (topicKey === '**') {
             const route = msg.getMetadata('standard:route');
             if (route) {
                 return `${this.opConfig.topic}-${route}`;
@@ -215,12 +215,12 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         return null;
     }
 
-    private mapFn() {
+    private mapFn(topicKey?: string) {
         return (msg: DataEntity): ProduceMessage => {
             const key = this.getKey(msg);
             const timestamp = this.getTimestamp(msg);
             const data = msg.toBuffer();
-            const topic = this.getRouteTopic(msg);
+            const topic = this.getRouteTopic(msg, topicKey);
 
             return {
                 timestamp, key, data, topic

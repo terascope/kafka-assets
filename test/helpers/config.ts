@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 const {
-    KAFKA_BROKERS = '10.210.50.201:19092'
+    KAFKA_BROKERS = 'localhost:9092'
 } = process.env;
 
 export const kafkaBrokers: string[] = KAFKA_BROKERS.split(',').map((s) => s.trim());
