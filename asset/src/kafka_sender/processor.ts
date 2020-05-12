@@ -73,13 +73,13 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         }
     }
 
-    private async createTopic(route: string, shouldConnect = true) {
+    private async createTopic(route: string, shouldConnect = true, topicOverride?: string) {
         const { clientName, topic } = this.connectorDict.get(route) as ConnectorMapping;
         const client = this.createClient(clientName);
 
         const producer = new ProducerClient(client, {
             logger: this.kafkaLogger,
-            topic,
+            topic: topicOverride || topic,
             bufferSize: this._bufferSize,
         });
 
@@ -131,10 +131,17 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
                 const routeConfig = this.topicMap.get(route) as Endpoint;
                 routeConfig.data.push(record);
-            } else if (this.topicMap.has('*')) {
+            } else if (this.connectorDict.has('*')) {
+                if (!this.topicMap.has(this.opConfig.topic)) {
+                    await this.createTopic('*', true, this.opConfig.topic);
+                }
                 const routeConfig = this.topicMap.get('*') as Endpoint;
                 routeConfig.data.push(record);
-            } else if (this.topicMap.has('**')) {
+            } else if (this.connectorDict.has('**')) {
+                const routeTopic = `${this.opConfig.topic}-${route}`;
+                if (!this.topicMap.has(routeTopic)) {
+                    await this.createTopic('**', true, routeTopic);
+                }
                 const routeConfig = this.topicMap.get('**') as Endpoint;
                 routeConfig.data.push(record);
             } else {
