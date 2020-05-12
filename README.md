@@ -266,6 +266,48 @@ terafoundation:
 |         **timestamp_now**         |                      `Boolean`                       |    `false`    |                                                                                                                                                                                           Set to true to have a timestamp generated as records are added to the topic                                                                                                                                                                                            |
 |             **topic**             |                       `String`                       |       -       |                                                                                                                                                                                                             Name of the Kafka topic to send data to                                                                                                                                                                                                              |
 |             **wait**              |                      `duration`                      |     `500`     |                                                                                                                                                                                            How long to wait for `size` messages to become available on the producer.                                                                                                                                                                                             |
+| **connection_map** | `Object` | `null` | This field determines optional custom routing specifications |
+
+**Custom Routing**
+
+The `connection_map` can be used to route records to specific topics in specific connections based on the `standard:route` set on each record. The keys should be a comma-separated list of values to match, and the value should be the target Kafka connector. Additionally, either `*` or `**` can be specified as a key to function as a catch-all for records with a `standard:route` that doesn't match any of the other keys. `*` will set the destination topic to the default specified in the opConfig, and `**` will append the record's `standard:route` to that default. Both **CANNOT** be specified in the same `connection_map`.
+
+**Example `connection_map`s:**
+
+```js
+"topic": "my-data",
+"connection_map": {
+    "1,2": "kafka1",
+    "3,4": "kafka1"
+}
+```
+
+- Records with a `standard:route` of `1` or `2` will go to topic `my-data-1` or `my-data-2` respectively
+- Records with a `standard:route` of `3` or `4` will go to topic `my-data-3` or `my-data-4` respectively
+- All other records will be rejected
+
+```js
+"topic": "my-data",
+"connection_map": {
+    "1,2": "kafka1",
+    "*": "kafka1"
+}
+```
+
+- Records with a `standard:route` of `1` or `2` will go to topic `my-data-1` or `my-data-2` respectively
+- All other records will go to topic `my-data`
+
+```js
+"topic": "my-data",
+"connection_map": {
+    "1,2": "kafka1",
+    "**": "kafka1"
+}
+```
+
+- Records with a `standard:route` of `1` or `2` will go to topic `my-data-1` or `my-data-2` respectively
+- All other records will be dynamically sorted. Destination topics will be `my-data-${standard:route}` if `standard:route` is set on the record or `my-data` if it is not
+
 
 **Example Job Config:**
 
