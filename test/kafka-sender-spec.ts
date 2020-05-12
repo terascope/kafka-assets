@@ -286,6 +286,73 @@ describe('Kafka Sender', () => {
         });
     });
 
+    describe('->getRouteTopic', () => {
+        describe('when "**" is not in the topic map', () => {
+            let ogTopicMap: Map<string, any>;
+
+            beforeAll(() => {
+                ogTopicMap = sender.topicMap;
+
+                sender.topicMap = new Map();
+                // @ts-ignore
+                sender.topicMap.set('*', {});
+            });
+
+            afterAll(() => {
+                sender.topicMap = ogTopicMap;
+            });
+            it('returns null', () => {
+                const entity = new DataEntity({
+                    id: '7dab1337-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Luke Skywalker',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi'
+                });
+                // @ts-ignore
+                const routeTopic = sender.getRouteTopic(entity);
+                expect(routeTopic).toEqual(null);
+            });
+        });
+        describe('when "**" is in the topic map', () => {
+            let ogTopicMap: Map<string, any>;
+
+            beforeAll(() => {
+                ogTopicMap = sender.topicMap;
+
+                sender.topicMap = new Map();
+                // @ts-ignore
+                sender.topicMap.set('**', {});
+            });
+
+            afterAll(() => {
+                sender.topicMap = ogTopicMap;
+            });
+            it('sets the topic based on the opConfig and the record\'s "standard:route"', () => {
+                const entity = new DataEntity({
+                    id: '7dab1337-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Luke Skywalker',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi'
+                });
+                entity.setMetadata('standard:route', 'endor');
+                // @ts-ignore
+                const routeTopic = sender.getRouteTopic(entity, '**');
+                expect(routeTopic).toEqual('kafka-test-sender-endor');
+            });
+            it('sets the topic to default when missing record\'s "standard:route"', () => {
+                const entity = new DataEntity({
+                    id: '7dab1337-f786-5d1f-a18c-2735684efd3d',
+                    name: 'Luke Skywalker',
+                    ip: '235.99.183.52',
+                    url: 'http://bijupnag.cv/owi'
+                });
+                // @ts-ignore
+                const routeTopic = sender.getRouteTopic(entity, '**');
+                expect(routeTopic).toEqual('kafka-test-sender');
+            });
+        });
+    });
+
     describe('->getTimestamp', () => {
         describe('when timestamp_field is set', () => {
             let ogTimestampField: string;

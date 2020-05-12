@@ -59,7 +59,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                 const message: ProduceMessage = (map == null) ? msg : map(msg);
 
                 this._client.produce(
-                    this._topic,
+                    message.topic || this._topic,
                     // This is the partition. There may be use cases where
                     // we'll need to control this.
                     null,
