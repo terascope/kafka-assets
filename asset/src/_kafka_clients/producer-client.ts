@@ -36,7 +36,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
         return new Promise((resolve, reject) => {
             this._client.getMetadata({ topic }, (err: AnyKafkaError) => {
                 /* istanbul ignore if */
-                if (err) reject(wrapError(`Failed to get topic metadata for topic ${topic}`, err));
+                if (err) reject(wrapError(`Failed to get topic metadata for topic "${topic}"`, err));
                 else resolve();
             });
         });
