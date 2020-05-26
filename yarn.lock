@@ -530,16 +530,6 @@
     eslint-plugin-react "^7.19.0"
     eslint-plugin-react-hooks "^4.0.2"
 
-"@terascope/job-components@^0.33.0":
-  version "0.33.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.33.0.tgz#82a83e2c97ac2f7b6b0c61d6ec2d56b9fe6f2e28"
-  integrity sha512-sN+ODQOc4w4nplzFaBpcJWL91x+RoMxdBrVjv49okFovvnUZXgvHJKRCvL7hJM4jm0elUsVQqYv33aLrfjXTFg==
-  dependencies:
-    "@terascope/utils" "^0.27.0"
-    convict "^4.4.1"
-    datemath-parser "^1.0.6"
-    uuid "^7.0.2"
-
 "@terascope/job-components@^0.34.0":
   version "0.34.0"
   resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.0.tgz#264dc50a72dd99e0a0ec3fa93839bd91edee4e71"
@@ -5071,11 +5061,6 @@ uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-uuid@^7.0.2:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
-  integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
 uuid@^8.0.0, uuid@^8.1.0:
   version "8.1.0"
