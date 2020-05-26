@@ -42,7 +42,6 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
         });
     }
 
-
     /**
      * Produce messages and flush after the queue is full
      *
