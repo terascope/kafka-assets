@@ -90,9 +90,11 @@ export default class BaseClient<T extends kafka.Client<any>> {
         if (this.isConnected()) return;
 
         await new Promise((resolve, reject) => {
-            const metadataOptions = {
+            const metadataOptions: kafka.MetadataOptions = {
                 topic: this._topic,
             };
+
+            if (!this._topic) metadataOptions.allTopics = false;
 
             this._client.connect(metadataOptions, (err: AnyKafkaError) => {
                 if (err) {

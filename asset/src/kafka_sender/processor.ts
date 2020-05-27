@@ -132,17 +132,18 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
                 const routeConfig = this.topicMap.get(route) as Endpoint;
                 routeConfig.data.push(record);
             } else if (this.connectorDict.has('*')) {
-                if (!this.topicMap.has(this.opConfig.topic)) {
-                    await this.createTopic('*', true, this.opConfig.topic);
+                if (!this.topicMap.has('*')) {
+                    await this.createTopic('*');
                 }
                 const routeConfig = this.topicMap.get('*') as Endpoint;
                 routeConfig.data.push(record);
             } else if (this.connectorDict.has('**')) {
                 const routeTopic = route ? `${this.opConfig.topic}-${route}` : this.opConfig.topic;
-                if (!this.topicMap.has(routeTopic)) {
-                    await this.createTopic('**', true, routeTopic);
+                if (!this.topicMap.has('**')) {
+                    await this.createTopic('**', true, '');
                 }
                 const routeConfig = this.topicMap.get('**') as Endpoint;
+                await routeConfig.producer.getMetadata(routeTopic);
                 routeConfig.data.push(record);
             } else {
                 let error: TSError;
