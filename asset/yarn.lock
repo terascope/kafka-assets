@@ -2,25 +2,25 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.34.0":
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.0.tgz#264dc50a72dd99e0a0ec3fa93839bd91edee4e71"
-  integrity sha512-DlrJG6C4qVA4sxNbs8RiAHx4GgljE7Ll2YPLxrmAVddPAjJQVAApWst9oU63E7ez4ZeL5RWOXSR4NNtvqAQCEQ==
+"@terascope/job-components@^0.34.1":
+  version "0.34.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.1.tgz#43c28947a18e0ce87deb7040466b9869885c1a05"
+  integrity sha512-zaURBIbPpBADANg8oGvX662ylOCLmungavQ99JqYaa7DjLheVDyglNMMSfECFeRLE4YmFh43ayqMs3NLCmqy9w==
   dependencies:
-    "@terascope/utils" "^0.27.0"
+    "@terascope/utils" "^0.27.1"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
-    uuid "^8.0.0"
+    uuid "^8.1.0"
 
 "@terascope/types@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.3.0.tgz#41a0ac5a440841d89d6902064f360cc03fd0f4d0"
   integrity sha512-qvCI0gfsI8HYHJhnfRa5rRTkITM0ZnPpAYX1M0GdYsR8h2ytIUF5jnsf2Bn6OqDdReQCFisr4h+FQafpqxmE6g==
 
-"@terascope/utils@^0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.27.0.tgz#91bf9cc4b6e30046ddfc457c96276f1bd7adf755"
-  integrity sha512-i9Xq4iOwJm1fuNDFl7IjAp833N4vf3wPer8kRc2ZQlSgyc36uxKoDzmBoXe1E8stSyTMUgWYUpluZrl9qrPenA==
+"@terascope/utils@^0.27.1":
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.27.1.tgz#e288a3790480a5f4400ffd6531f30c1becb58a53"
+  integrity sha512-gFkiEdhR8Pt9vSDaoaG13fOu+yhGZI2sC1QP0uym/Da6GBCwxnbJC9D8appzFNOtpnaiteP8/Cdfvdq5ANOxyg==
   dependencies:
     "@terascope/types" "^0.3.0"
     debug "^4.1.1"
@@ -161,7 +161,7 @@ shallow-clone@^3.0.1:
   dependencies:
     kind-of "^6.0.2"
 
-uuid@^8.0.0:
+uuid@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.1.0.tgz#6f1536eb43249f473abc6bd58ff983da1ca30d8d"
   integrity sha512-CI18flHDznR0lq54xBycOVmphdCYnQLKn8abKn7PXUiKUGdEd+/l9LWNJmugXel4hXq7S+RMNl34ecyC9TntWg==
