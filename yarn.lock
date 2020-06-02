@@ -530,15 +530,15 @@
     eslint-plugin-react "^7.19.0"
     eslint-plugin-react-hooks "^4.0.2"
 
-"@terascope/job-components@^0.34.0":
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.0.tgz#264dc50a72dd99e0a0ec3fa93839bd91edee4e71"
-  integrity sha512-DlrJG6C4qVA4sxNbs8RiAHx4GgljE7Ll2YPLxrmAVddPAjJQVAApWst9oU63E7ez4ZeL5RWOXSR4NNtvqAQCEQ==
+"@terascope/job-components@^0.34.0", "@terascope/job-components@^0.34.2":
+  version "0.34.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.2.tgz#696604b62339f9e1fbadaa145b4fed9f382ef99e"
+  integrity sha512-qsNNPrLcsyRzLX7em8M8s1sdcjqdGaGV6RuTT+d8XNdvHP6KOHBsMmKY3b8DxQSFLDKHnDoqhtjM4zlUYotPBg==
   dependencies:
-    "@terascope/utils" "^0.27.0"
+    "@terascope/utils" "^0.27.2"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
-    uuid "^8.0.0"
+    uuid "^8.1.0"
 
 "@terascope/teraslice-op-test-harness@^1.18.0":
   version "1.18.0"
@@ -553,10 +553,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.3.0.tgz#41a0ac5a440841d89d6902064f360cc03fd0f4d0"
   integrity sha512-qvCI0gfsI8HYHJhnfRa5rRTkITM0ZnPpAYX1M0GdYsR8h2ytIUF5jnsf2Bn6OqDdReQCFisr4h+FQafpqxmE6g==
 
-"@terascope/utils@^0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.27.0.tgz#91bf9cc4b6e30046ddfc457c96276f1bd7adf755"
-  integrity sha512-i9Xq4iOwJm1fuNDFl7IjAp833N4vf3wPer8kRc2ZQlSgyc36uxKoDzmBoXe1E8stSyTMUgWYUpluZrl9qrPenA==
+"@terascope/utils@^0.27.2":
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.27.2.tgz#25cddf84cc71072b731d04ccd2f623e62ca73831"
+  integrity sha512-C0OAMD+SKHPqKZx/nI6WE8JdQ+gw9GaVxJCBuMhFNclZof41v7cuu16yMbaZ0nNw3s6qtjjT5odcq+ZxvaiHAg==
   dependencies:
     "@terascope/types" "^0.3.0"
     debug "^4.1.1"
@@ -568,6 +568,7 @@
     lodash.has "^4.5.2"
     lodash.set "^4.3.2"
     lodash.unset "^4.5.2"
+    p-map "^4.0.0"
     shallow-clone "^3.0.1"
 
 "@types/babel__core@^7.1.7":
@@ -800,6 +801,14 @@ acorn@^7.1.0, acorn@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.1.1.tgz#e35668de0b402f359de515c5482a1ab9f89a69bf"
   integrity sha512-add7dgA5ppRPxCFJoAGfMDi7PIBXq1RtGo7BhbLaxwrXPOmw8gq48Y9ozT01hUKy9byMjlR20EJhu5zlkErEkg==
+
+aggregate-error@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.0.1.tgz#db2fe7246e536f40d9b5442a39e117d7dd6a24e0"
+  integrity sha512-quoaXsZ9/BLNae5yiNoUz+Nhkwz83GhWwtYFglcjEQB2NDHCIpApbqXxIFnm4Pq/Nvhrsq5sYJFyohrrxnTGAA==
+  dependencies:
+    clean-stack "^2.0.0"
+    indent-string "^4.0.0"
 
 ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5:
   version "6.12.2"
@@ -1237,6 +1246,11 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
+
+clean-stack@^2.0.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
+  integrity sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==
 
 cli-cursor@^3.1.0:
   version "3.1.0"
@@ -2395,6 +2409,11 @@ imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
+
+indent-string@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
+  integrity sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -3868,6 +3887,13 @@ p-locate@^4.1.0:
   dependencies:
     p-limit "^2.2.0"
 
+p-map@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/p-map/-/p-map-4.0.0.tgz#bb2f95a5eda2ec168ec9274e06a747c3e2904d2b"
+  integrity sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==
+  dependencies:
+    aggregate-error "^3.0.0"
+
 p-try@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
@@ -5062,7 +5088,7 @@ uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuid@^8.0.0, uuid@^8.1.0:
+uuid@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.1.0.tgz#6f1536eb43249f473abc6bd58ff983da1ca30d8d"
   integrity sha512-CI18flHDznR0lq54xBycOVmphdCYnQLKn8abKn7PXUiKUGdEd+/l9LWNJmugXel4hXq7S+RMNl34ecyC9TntWg==
