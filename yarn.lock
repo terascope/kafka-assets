@@ -530,7 +530,7 @@
     eslint-plugin-react "^7.19.0"
     eslint-plugin-react-hooks "^4.0.2"
 
-"@terascope/job-components@^0.34.0", "@terascope/job-components@^0.34.2":
+"@terascope/job-components@^0.34.2":
   version "0.34.2"
   resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.2.tgz#696604b62339f9e1fbadaa145b4fed9f382ef99e"
   integrity sha512-qsNNPrLcsyRzLX7em8M8s1sdcjqdGaGV6RuTT+d8XNdvHP6KOHBsMmKY3b8DxQSFLDKHnDoqhtjM4zlUYotPBg==
@@ -540,12 +540,12 @@
     datemath-parser "^1.0.6"
     uuid "^8.1.0"
 
-"@terascope/teraslice-op-test-harness@^1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.18.0.tgz#84e3f4873975d5523ffe7113dd799603a4b5ea68"
-  integrity sha512-EzA3fKyaxnQ2FLj3e03F39TLNkZEoLc452gFwT6W2csReS22k0cTfD8cQsA4u41ciu+vJF0gO/s/4jtCdg9xrw==
+"@terascope/teraslice-op-test-harness@^1.18.2":
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.18.2.tgz#789c30947f38dd3aec6fb764b7026c6ec3af5943"
+  integrity sha512-fSMsVwj7VXiDVVT3uA/wbXJ/55OecnJegUIu5W5Hc60lW3teWU9V701N1ETZjUMR44EPADnB6LvmYj36i5slpg==
   dependencies:
-    "@terascope/job-components" "^0.34.0"
+    "@terascope/job-components" "^0.34.2"
     bluebird "^3.7.2"
 
 "@terascope/types@^0.3.0":
@@ -4822,13 +4822,13 @@ table@^5.2.3:
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
 
-teraslice-test-harness@^0.19.0:
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.19.0.tgz#b7f61cdf97750b4ffd8299ed311bde737901ca3d"
-  integrity sha512-GpWXykI1TUc36OZ912Acz1LUF72w9iUa4JpZJfA9OflMvrHc9320bDhwubUrdNDA2/9vMUGo0Cc7gLCJACXVsg==
+teraslice-test-harness@^0.19.2:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.19.2.tgz#43f6eedf4449b0014e82607f6e68df597cfffb41"
+  integrity sha512-I1I3/hABW9DQeKvucihF1pyjNOhS+dHtw07x8c47MvyWVg5e94ZzqQUmh+nXps/xO7DgWxDnl0TmSJhOhuTd6g==
   dependencies:
-    "@terascope/job-components" "^0.34.0"
-    "@terascope/teraslice-op-test-harness" "^1.18.0"
+    "@terascope/job-components" "^0.34.2"
+    "@terascope/teraslice-op-test-harness" "^1.18.2"
 
 terminal-link@^2.0.0:
   version "2.1.1"
