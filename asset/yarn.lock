@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.34.1":
-  version "0.34.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.1.tgz#43c28947a18e0ce87deb7040466b9869885c1a05"
-  integrity sha512-zaURBIbPpBADANg8oGvX662ylOCLmungavQ99JqYaa7DjLheVDyglNMMSfECFeRLE4YmFh43ayqMs3NLCmqy9w==
+"@terascope/job-components@^0.34.3":
+  version "0.34.3"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.3.tgz#69fdd1a0b6dafa2dde503efee87bf18702d4b681"
+  integrity sha512-8ZqB1kRShnRir1XHAxGGHjTOllPhFmzvzc7945MtNlqknlMzGU5WRt8VJ6FiKjSpFXK6K28rbcDEg5sMNrzL1Q==
   dependencies:
-    "@terascope/utils" "^0.27.1"
+    "@terascope/utils" "^0.27.3"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.1.0"
@@ -17,10 +17,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.3.0.tgz#41a0ac5a440841d89d6902064f360cc03fd0f4d0"
   integrity sha512-qvCI0gfsI8HYHJhnfRa5rRTkITM0ZnPpAYX1M0GdYsR8h2ytIUF5jnsf2Bn6OqDdReQCFisr4h+FQafpqxmE6g==
 
-"@terascope/utils@^0.27.1":
-  version "0.27.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.27.1.tgz#e288a3790480a5f4400ffd6531f30c1becb58a53"
-  integrity sha512-gFkiEdhR8Pt9vSDaoaG13fOu+yhGZI2sC1QP0uym/Da6GBCwxnbJC9D8appzFNOtpnaiteP8/Cdfvdq5ANOxyg==
+"@terascope/utils@^0.27.3":
+  version "0.27.3"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.27.3.tgz#ce5374cb933d3cff243fe8f220b730b3f4d02a7e"
+  integrity sha512-qJy0UQ9L8/TOoI4UDsJnYSXRnWf1bMJZ+8vRx0IcXpStHsjAqzVkVCBUHw1zAfPzYZNv0EhAGnTGJW3YySB9/Q==
   dependencies:
     "@terascope/types" "^0.3.0"
     debug "^4.1.1"
@@ -32,12 +32,26 @@
     lodash.has "^4.5.2"
     lodash.set "^4.3.2"
     lodash.unset "^4.5.2"
+    p-map "^4.0.0"
     shallow-clone "^3.0.1"
+
+aggregate-error@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.0.1.tgz#db2fe7246e536f40d9b5442a39e117d7dd6a24e0"
+  integrity sha512-quoaXsZ9/BLNae5yiNoUz+Nhkwz83GhWwtYFglcjEQB2NDHCIpApbqXxIFnm4Pq/Nvhrsq5sYJFyohrrxnTGAA==
+  dependencies:
+    clean-stack "^2.0.0"
+    indent-string "^4.0.0"
 
 camelcase@^5.0.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
+
+clean-stack@^2.0.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
+  integrity sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==
 
 convict@^4.4.1:
   version "4.4.1"
@@ -74,6 +88,11 @@ depd@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
+
+indent-string@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
+  integrity sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==
 
 is-plain-object@^3.0.0:
   version "3.0.0"
@@ -153,6 +172,13 @@ ms@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
+
+p-map@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/p-map/-/p-map-4.0.0.tgz#bb2f95a5eda2ec168ec9274e06a747c3e2904d2b"
+  integrity sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==
+  dependencies:
+    aggregate-error "^3.0.0"
 
 shallow-clone@^3.0.1:
   version "3.0.1"
