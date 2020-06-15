@@ -2,27 +2,27 @@
 # yarn lockfile v1
 
 
-"@terascope/job-components@^0.34.3":
-  version "0.34.3"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.34.3.tgz#69fdd1a0b6dafa2dde503efee87bf18702d4b681"
-  integrity sha512-8ZqB1kRShnRir1XHAxGGHjTOllPhFmzvzc7945MtNlqknlMzGU5WRt8VJ6FiKjSpFXK6K28rbcDEg5sMNrzL1Q==
+"@terascope/job-components@^0.35.0":
+  version "0.35.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.35.0.tgz#e268cdff4e4fd68522b3190989c77a7bcf7460ad"
+  integrity sha512-z7/P/YnywJs4Z6fWh0sgKoDXEZycfAo5UCdPDBGClVhjCgUsQnEsUh8p9PlR9RbN/Ts51Q7IqXmUkOi71mcuQA==
   dependencies:
-    "@terascope/utils" "^0.27.3"
+    "@terascope/utils" "^0.28.0"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.1.0"
 
-"@terascope/types@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.3.0.tgz#41a0ac5a440841d89d6902064f360cc03fd0f4d0"
-  integrity sha512-qvCI0gfsI8HYHJhnfRa5rRTkITM0ZnPpAYX1M0GdYsR8h2ytIUF5jnsf2Bn6OqDdReQCFisr4h+FQafpqxmE6g==
+"@terascope/types@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.4.0.tgz#63a6e2c8f1487c5b6f781092431aa10386519010"
+  integrity sha512-WOSuYZ0x7WRC1L6zLqFqbqqr95UZ/SQnWNN6uA14pyq67s782gXsmxrqgs/MsR7jOuggVGQQBUoxB7dk7E56sA==
 
-"@terascope/utils@^0.27.3":
-  version "0.27.3"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.27.3.tgz#ce5374cb933d3cff243fe8f220b730b3f4d02a7e"
-  integrity sha512-qJy0UQ9L8/TOoI4UDsJnYSXRnWf1bMJZ+8vRx0IcXpStHsjAqzVkVCBUHw1zAfPzYZNv0EhAGnTGJW3YySB9/Q==
+"@terascope/utils@^0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.28.0.tgz#440b14b071bd2c6d721a064f6ae487d6ce5fefc0"
+  integrity sha512-NYwTvgNGJ9ORDL+jswekF83K3GODdwlQeJUuD+NpdGnpxRURY1IjVl4knywarDzpRSmOqtSIf2A+OIKHheh4nw==
   dependencies:
-    "@terascope/types" "^0.3.0"
+    "@terascope/types" "^0.4.0"
     debug "^4.1.1"
     is-plain-object "^3.0.0"
     js-string-escape "^1.0.1"
