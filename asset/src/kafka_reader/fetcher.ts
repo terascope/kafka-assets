@@ -31,18 +31,18 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         });
     }
 
-    async initialize() {
+    async initialize(): Promise<void> {
         await super.initialize();
         await this.consumer.connect();
     }
 
-    async shutdown() {
+    async shutdown(): Promise<void> {
         this.consumer.handlePendingCommits();
         await this.consumer.disconnect();
         await super.shutdown();
     }
 
-    async fetch() {
+    async fetch(): Promise<DataEntity[]> {
         const map = this.tryRecord((msg: KafkaMessage): DataEntity => {
             const now = Date.now();
 
@@ -65,15 +65,15 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
             );
         });
 
-        return this.consumer.consume(map, this.opConfig);
+        return await this.consumer.consume(map, this.opConfig) as DataEntity[];
     }
 
-    async onSliceFinalizing() {
+    async onSliceFinalizing(): Promise<void> {
         await this.consumer.commit(this.opConfig.use_commit_sync);
     }
 
     // TODO we should handle slice retries differently now that we have the dead letter queue
-    async onSliceRetry() {
+    async onSliceRetry(): Promise<void> {
         if (this.opConfig.rollback_on_failure) {
             await this.consumer.rollback();
         } else {

@@ -2,15 +2,15 @@ import { Slicer } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
 export default class KafkaSlicer extends Slicer<KafkaReaderConfig> {
-    isRecoverable() {
+    isRecoverable(): boolean {
         return Boolean(this.executionConfig.autorecover);
     }
 
-    maxQueueLength() {
+    maxQueueLength(): number {
         return this.workersConnected + 1;
     }
 
-    async slice() {
+    async slice(): Promise<Record<any, unknown>> {
         return { };
     }
 }

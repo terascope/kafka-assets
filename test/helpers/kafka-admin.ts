@@ -9,13 +9,12 @@ export default class KafkaAdmin {
     private _client: IAdminClient;
 
     constructor() {
-        // @ts-ignore because node-rdkafka type definitions are terrible
         this._client = AdminClient.create({
             'metadata.broker.list': castArray(kafkaBrokers).join(','),
         });
     }
 
-    async ensureTopic(topic: string) {
+    async ensureTopic(topic: string): Promise<void> {
         logger.debug(`ensuring topic "${topic}"...`);
 
         try {
@@ -55,7 +54,7 @@ export default class KafkaAdmin {
         });
     }
 
-    disconnect() {
+    disconnect(): void {
         this._client.disconnect();
     }
 }

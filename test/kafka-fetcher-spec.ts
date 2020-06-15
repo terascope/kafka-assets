@@ -53,7 +53,7 @@ describe('Kafka Fetcher', () => {
     let harness: WorkerTestHarness;
     let fetcher: KafkaFetcher;
     let noop: NoopProcessor;
-    let exampleData: object[];
+    let exampleData: Record<string, any>[];
     let results: DataEntity[] = [];
 
     const _fatalErr = new Error('Timeout run beforeEach') as FatalError;
@@ -108,7 +108,7 @@ describe('Kafka Fetcher', () => {
             // disconnect in-order to prove the connection can reconnect
             await new Promise((resolve, reject) => {
                 logger.debug('disconnecting...');
-                // @ts-ignore
+                // @ts-expect-error
                 fetcher.consumer._client.disconnect((err) => {
                     logger.debug('disconnected', { err });
                     if (err) reject(err);
@@ -134,7 +134,7 @@ describe('Kafka Fetcher', () => {
         // it should be able to disconnect twice
         await fetcher.consumer.disconnect();
 
-        // @ts-ignore
+        // @ts-expect-error
         // eslint-disable-next-line jest/no-standalone-expect
         await expect(fetcher.consumer._beforeTry()).rejects.toThrowError('Client is closed');
 
@@ -143,15 +143,15 @@ describe('Kafka Fetcher', () => {
 
     it('should able to call _clientEvents without double listening', () => {
         if (checkFatalError()) return;
-        // @ts-ignore
+        // @ts-expect-error
         const expected = fetcher.consumer._client.listenerCount('error');
 
         expect(() => {
-            // @ts-ignore
+            // @ts-expect-error
             fetcher.consumer._clientEvents();
         }).not.toThrowError();
 
-        // @ts-ignore
+        // @ts-expect-error
         const actual = fetcher.consumer._client.listenerCount('error');
 
         expect(actual).toEqual(expected);
@@ -211,7 +211,7 @@ describe('Kafka Fetcher', () => {
                 const err = new Error('Failure is part of life');
                 harness.events.on('slice:retry', onSliceRetry);
 
-                // @ts-ignore
+                // @ts-expect-error
                 noop.onBatch.mockRejectedValueOnce(err);
 
                 try {

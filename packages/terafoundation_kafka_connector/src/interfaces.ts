@@ -20,7 +20,7 @@ export interface KafkaClientSettings {
 }
 
 export interface RDKafkaOptions {
-    [key: string]: string|number|boolean|Function;
+    [key: string]: string|number|boolean|((...args: any[]) => any);
 }
 export interface KafkaConsumerSettings extends KafkaClientSettings {
     options: KafkaConsumerOptions;

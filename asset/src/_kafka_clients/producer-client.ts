@@ -32,7 +32,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
      * Query for metadata on a topic. Used for dynamic topic creation
      * @param topic - topic to query metadata for
     */
-    async getMetadata(topic: string) {
+    async getMetadata(topic: string): Promise<void> {
         return new Promise((resolve, reject) => {
             this._client.getMetadata({ topic }, (err: AnyKafkaError) => {
                 /* istanbul ignore if */

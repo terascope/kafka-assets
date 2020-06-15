@@ -1,4 +1,3 @@
-// @ts-ignore
 import convict from 'convict';
 import { debugLogger } from '@terascope/job-components';
 import connector from '../src';
@@ -149,7 +148,7 @@ describe('Kafka Connector', () => {
             }).getProperties();
 
             expect(() => {
-                // @ts-ignore
+                // @ts-expect-error
                 connector.create(config, logger, settings);
             }).toThrowError('Unsupport client type of wrong');
         });

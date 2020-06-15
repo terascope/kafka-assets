@@ -78,7 +78,6 @@ class KafakConnector {
         throw new Error(`Unsupport client type of ${clientType}`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/camelcase
     config_schema() {
         return schema;
     }
