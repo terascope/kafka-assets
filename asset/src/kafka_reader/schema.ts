@@ -2,7 +2,7 @@ import { ConvictSchema, ValidatedJobConfig } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
 export default class Schema extends ConvictSchema<KafkaReaderConfig> {
-    validateJob(job: ValidatedJobConfig) {
+    validateJob(job: ValidatedJobConfig): void {
         const secondOp = job.operations[1] && job.operations[1]._op;
 
         if (secondOp === 'json_protocol') {
@@ -10,7 +10,7 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
         }
     }
 
-    build() {
+    build(): Record<string, any> {
         return {
             topic: {
                 doc: 'Name of the Kafka topic to process',

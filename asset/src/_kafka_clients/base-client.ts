@@ -28,7 +28,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
     protected readonly _logger: Logger;
     protected readonly _client: T;
 
-    private _cleanup: cleanupFn[] = [];
+    private _cleanup: CleanupFn[] = [];
     private _connected = false;
 
     constructor(client: T, topic: string, logger: Logger) {
@@ -53,7 +53,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
     /**
      * Disconnect from Kafka and cleanup.
     */
-    async disconnect() {
+    async disconnect(): Promise<void> {
         this._closed = true;
 
         if (this.isConnected()) {
@@ -75,7 +75,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
         this._events.removeAllListeners();
     }
 
-    isConnected() {
+    isConnected(): boolean {
         return this._connected && this._client.isConnected();
     }
 
@@ -114,7 +114,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Make sure the event has a handler or is logged
     */
     protected _logOrEmit(event: string, fn = () => {}) {
-        return (...args: any[]) => {
+        return (...args: any[]): void => {
             fn();
             const hasListener = this._events.listenerCount(event) > 0;
             if (hasListener) {
@@ -145,7 +145,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Guaranteed to call the callback at least once
      * @returns an off function to the event listener
     */
-    protected _once(event: string, fn: (err: Error|null, ...args: any[]) => void) {
+    protected _once(event: string, fn: (err: Error|null, ...args: any[]) => void): () => void {
         let off: () => void;
 
         const cb = once(fn);
@@ -177,7 +177,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Guaranteed to call the callback at least once
      * @returns an off function to cleanup the timer
     */
-    protected _timeout(fn: (err: Error|null) => void, timeoutMs: number) {
+    protected _timeout(fn: (err: Error|null) => void, timeoutMs: number): () => void {
         let off: () => void;
 
         const cb = once(fn);
@@ -203,7 +203,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Perform an action, fail if the function fails,
      * or the event emits an error
     */
-    protected async _failIfEvent<F extends tryFn>(event: string, fn: F, action = 'any'): RetryResult<F> {
+    protected async _failIfEvent<F extends TryFn>(event: string, fn: F, action = 'any'): RetryResult<F> {
         return this._tryWithEvent(event, fn, action, 0);
     }
 
@@ -211,7 +211,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Perform an action, retry if the function fails,
      * or the event emits an error
     */
-    protected async _tryWithEvent<F extends tryFn>(
+    protected async _tryWithEvent<F extends TryFn>(
         event: string,
         fn: F,
         action = 'any',
@@ -241,7 +241,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      *
      * **NOTE:** It will only retry if it is a retryable kafka error
     */
-    protected async _try<F extends tryFn>(fn: F, action = 'any', retries = BaseClient.DEFAULT_MAX_RETRIES): RetryResult<F> {
+    protected async _try<F extends TryFn>(fn: F, action = 'any', retries = BaseClient.DEFAULT_MAX_RETRIES): RetryResult<F> {
         const actionStr = action === 'any' ? '' : ` when performing ${action}`;
         if (this._closed) {
             this._logger.error(`Kafka client closed${actionStr}`);
@@ -288,9 +288,9 @@ export default class BaseClient<T extends kafka.Client<any>> {
         }
     }
 
-    protected async _beforeTry() {}
+    protected async _beforeTry(): Promise<void> {}
 
-    protected _incBackOff() {
+    protected _incBackOff(): void {
         const [min, max] = BaseClient.BACKOFF_RANDOM_FACTOR;
         this._backoff += Math.floor(BaseClient.DEFAULT_BACKOFF * getRandom(min, max));
 
@@ -299,17 +299,17 @@ export default class BaseClient<T extends kafka.Client<any>> {
         }
     }
 
-    protected _resetBackOff() {
+    protected _resetBackOff(): void {
         this._backoff = BaseClient.DEFAULT_BACKOFF;
     }
 }
 
 // get random number inclusive
-export function getRandom(min: number, max: number) {
+export function getRandom(min: number, max: number): number {
     // The maximum is inclusive and the minimum is inclusive
     return Math.random() * (max - min + 1) + min;
 }
 
-type cleanupFn = () => void;
-export type tryFn = () => any;
-type RetryResult<T extends tryFn> = Promise<ReturnType<T>|null>;
+type CleanupFn = () => void;
+export type TryFn = () => any;
+type RetryResult<T extends TryFn> = Promise<ReturnType<T>|null>;

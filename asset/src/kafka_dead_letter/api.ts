@@ -39,12 +39,12 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         });
     }
 
-    async initialize() {
+    async initialize(): Promise<void> {
         await super.initialize();
         await this.producer.connect();
     }
 
-    async shutdown() {
+    async shutdown(): Promise<void> {
         const batch = this.collector.flushAll();
         await this.producer.produce(batch);
 
@@ -82,7 +82,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         };
     }
 
-    async onSliceFinalizing() {
+    async onSliceFinalizing(): Promise<void> {
         const batch = this.collector.flushAll();
         await this.producer.produce(batch);
     }

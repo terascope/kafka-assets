@@ -65,7 +65,7 @@ describe('Kafka Dead Letter', () => {
 
     let harness: WorkerTestHarness;
     let noop: NoopProcessor;
-    let consumed: object[] = [];
+    let consumed: Record<string, any>[] = [];
 
     beforeAll(async () => {
         jest.restoreAllMocks();

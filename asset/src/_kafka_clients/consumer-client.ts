@@ -63,7 +63,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /**
      * Committed to the last known offsets stored.
     */
-    async commit(useSync = false) {
+    async commit(useSync = false): Promise<void> {
         const errors: Error[] = [];
 
         const promises = this._flushOffsets('ended')
@@ -120,7 +120,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * Rollback the offsets to the start of the
      * last batch of messages consumed.
     */
-    async rollback() {
+    async rollback(): Promise<void> {
         const partitions = this._flushOffsets('started');
 
         this._logger.warn(`rolling back, ${formatTopar(partitions)}`);
@@ -334,27 +334,24 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._client.on('connection.failure', this._logOrEmit('connect:error'));
 
         /* istanbul ignore next */
-        // @ts-ignore because the type definition don't work right
-        this._client.on('rebalance', (err: KafkaError|undefined, assignments: TopicPartition[]) => {
+        this._client.on('rebalance', (err: KafkaError|undefined, assignments: Omit<TopicPartition, 'offset'>[]) => {
             if (this._closed) return;
 
             try {
-                this._handleRebalance(err, assignments);
+                this._handleRebalance(err, assignments as TopicPartition[]);
             } catch (_err) {
                 this._logger.error(_err, 'failure handling rebalance');
             }
         });
 
         /* istanbul ignore next */
-        // @ts-ignore because the event doesn't exist in the type definitions
         this._client.on('rebalance.error', (err: AnyKafkaError) => {
             const error = wrapError('Rebalance Error', err);
             this._endRebalance(error.stack || error.message);
         });
 
-        // @ts-ignore because the event doesn't exist in the type definitions
         this._client.on('offset.commit', (_err, _offsets) => {
-            let err: Error|null = null;
+            let err: AnyKafkaError|null = null;
             let offsets: TopicPartition[] = [];
             // the change the way this event is called
             if (_offsets && Array.isArray(_offsets)) {

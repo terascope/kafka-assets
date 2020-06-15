@@ -10,7 +10,7 @@ function fetchConfig(job: ValidatedJobConfig) {
 }
 
 export default class Schema extends ConvictSchema<KafkaSenderConfig> {
-    validateJob(job: ValidatedJobConfig) {
+    validateJob(job: ValidatedJobConfig): void {
         const opConfig = fetchConfig(job);
         const kafkaConnectors = get(this.context, 'sysconfig.terafoundation.connectors.kafka');
         if (kafkaConnectors == null) throw new Error('Could not find kafka connector in terafoundation config');
@@ -24,7 +24,8 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             }
         }
     }
-    build() {
+
+    build(): Record<string, any> {
         return {
             topic: {
                 doc: 'Name of the Kafka topic to send data to',

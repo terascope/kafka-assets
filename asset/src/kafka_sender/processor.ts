@@ -88,7 +88,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         this.topicMap.set(route, { producer, data: [] });
     }
 
-    async initialize() {
+    async initialize(): Promise<void> {
         await super.initialize();
         const initList = [];
 
@@ -105,7 +105,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         }
     }
 
-    async shutdown() {
+    async shutdown(): Promise<void> {
         const shutdownList = [];
 
         for (const { producer } of this.topicMap.values()) {
@@ -116,7 +116,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         await super.shutdown();
     }
 
-    async routeToAllTopics(batch: DataEntity[]) {
+    async routeToAllTopics(batch: DataEntity[]): Promise<void> {
         const senders = [];
 
         for (const record of batch) {
@@ -169,7 +169,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         this._cleanupTopicMap();
     }
 
-    async onBatch(batch: DataEntity[]) {
+    async onBatch(batch: DataEntity[]): Promise<DataEntity[]> {
         if (this.hasConnectionMap) {
             await this.routeToAllTopics(batch);
         } else {

@@ -8,11 +8,11 @@ import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients';
 
 const logger = debugLogger('kafka-data');
 
-export async function loadData(topic: string, fileName: string): Promise<object[]> {
+export async function loadData(topic: string, fileName: string): Promise<Record<string, any>[]> {
     const filePath = path.join(__dirname, '..', 'fixtures', fileName);
     const exampleData = fs.readFileSync(filePath, 'utf8');
 
-    const data: object[] = [];
+    const data: Record<string, any>[] = [];
 
     const messages = exampleData.trim()
         .split('\n')

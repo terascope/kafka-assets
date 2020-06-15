@@ -12,7 +12,7 @@ import { kafkaBrokers, senderTopic } from './helpers/config';
 import KafkaAdmin from './helpers/kafka-admin';
 
 const testFetcherFile = path.join(__dirname, 'fixtures', 'test-fetcher-data.json');
-const testFetcherData: object[] = parseJSON(fs.readFileSync(testFetcherFile));
+const testFetcherData: Record<string, any>[] = parseJSON(fs.readFileSync(testFetcherFile));
 
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
@@ -25,9 +25,9 @@ describe('Kafka Sender', () => {
         },
         create(config: any, logger: Logger, settings: any) {
             const result = Connector.create(config, logger, settings);
-            // @ts-ignore
+            // @ts-expect-error
             result.client.flush = mockFlush
-                // @ts-ignore
+                // @ts-expect-error
                 .mockImplementation(result.client.flush)
                 .bind(result.client);
             return result;
@@ -62,7 +62,7 @@ describe('Kafka Sender', () => {
     let harness: WorkerTestHarness;
     let sender: KafkaSender;
     let results: DataEntity[] = [];
-    let consumed: object[] = [];
+    let consumed: Record<string, any>[] = [];
     let runs = 0;
 
     beforeAll(async () => {
@@ -116,21 +116,18 @@ describe('Kafka Sender', () => {
     });
 
     it('should able to call _clientEvents without double listening', () => {
-        // @ts-ignore
         const expectedTopic = sender.topicMap.get('default');
-        // @ts-ignore
+        // @ts-expect-error
         const expected = expectedTopic.producer._client.listenerCount('error');
 
         expect(() => {
-            // @ts-ignore
             const testTopic = sender.topicMap.get('default');
-            // @ts-ignore
+            // @ts-expect-error
             testTopic.producer._clientEvents();
         }).not.toThrowError();
 
-        // @ts-ignore
         const actualTopic = sender.topicMap.get('default');
-        // @ts-ignore
+        // @ts-expect-error
         const actual = actualTopic.producer._client.listenerCount('error');
 
         expect(actual).toEqual(expected);
@@ -161,14 +158,13 @@ describe('Kafka Sender', () => {
             let ogIdField: string;
 
             beforeAll(() => {
-                // @ts-ignore
                 ogIdField = sender.opConfig.id_field;
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.id_field = 'ip';
             });
 
             afterAll(() => {
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.id_field = ogIdField;
             });
 
@@ -181,7 +177,7 @@ describe('Kafka Sender', () => {
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const key = sender.getKey(entity);
 
                 expect(key).toEqual(entity.ip);
@@ -195,7 +191,7 @@ describe('Kafka Sender', () => {
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const key = sender.getKey(entity);
 
                 expect(key).toBeNull();
@@ -210,14 +206,14 @@ describe('Kafka Sender', () => {
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const key = sender.getKey(entity);
 
                 expect(key).toBeNull();
             });
 
             it('should return metadata _key if _key is present', () => {
-                // @ts-ignore
+                // @ts-expect-error
                 delete sender.opConfig.id_field;
 
                 const entity = new DataEntity({
@@ -228,14 +224,14 @@ describe('Kafka Sender', () => {
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
                 }, { _key: 'someKey' });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const key = sender.getKey(entity);
 
                 expect(key).toEqual('someKey');
             });
 
             it('should return opConfig.id_field, if specified', () => {
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.id_field = 'ip';
 
                 const entity = new DataEntity({
@@ -246,7 +242,7 @@ describe('Kafka Sender', () => {
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
                 }, { _key: 'someKey' });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const key = sender.getKey(entity);
 
                 expect(key).toEqual(entity.ip);
@@ -257,15 +253,14 @@ describe('Kafka Sender', () => {
             let ogIdField: string;
 
             beforeAll(() => {
-                // @ts-ignore
                 ogIdField = sender.opConfig.id_field;
 
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.id_field = '';
             });
 
             afterAll(() => {
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.id_field = ogIdField;
             });
 
@@ -278,7 +273,7 @@ describe('Kafka Sender', () => {
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const key = sender.getKey(entity);
 
                 expect(key).toBeNull();
@@ -294,7 +289,7 @@ describe('Kafka Sender', () => {
                 ogTopicMap = sender.topicMap;
 
                 sender.topicMap = new Map();
-                // @ts-ignore
+                // @ts-expect-error
                 sender.topicMap.set('*', {});
             });
 
@@ -308,7 +303,7 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi'
                 });
-                // @ts-ignore
+                // @ts-expect-error
                 const routeTopic = sender.getRouteTopic(entity);
                 expect(routeTopic).toEqual(null);
             });
@@ -320,7 +315,7 @@ describe('Kafka Sender', () => {
                 ogTopicMap = sender.topicMap;
 
                 sender.topicMap = new Map();
-                // @ts-ignore
+                // @ts-expect-error
                 sender.topicMap.set('**', {});
             });
 
@@ -335,7 +330,7 @@ describe('Kafka Sender', () => {
                     url: 'http://bijupnag.cv/owi'
                 });
                 entity.setMetadata('standard:route', 'endor');
-                // @ts-ignore
+                // @ts-expect-error
                 const routeTopic = sender.getRouteTopic(entity, '**');
                 expect(routeTopic).toEqual('kafka-test-sender-endor');
             });
@@ -346,7 +341,7 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi'
                 });
-                // @ts-ignore
+                // @ts-expect-error
                 const routeTopic = sender.getRouteTopic(entity, '**');
                 expect(routeTopic).toEqual('kafka-test-sender');
             });
@@ -358,15 +353,14 @@ describe('Kafka Sender', () => {
             let ogTimestampField: string;
 
             beforeAll(() => {
-                // @ts-ignore
                 ogTimestampField = sender.opConfig.timestamp_field;
 
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.timestamp_field = 'created';
             });
 
             afterAll(() => {
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.timestamp_field = ogTimestampField;
             });
 
@@ -380,7 +374,7 @@ describe('Kafka Sender', () => {
                     created: date.toISOString()
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const time = sender.getTimestamp(entity);
 
                 expect(time).toEqual(date.getTime());
@@ -394,7 +388,7 @@ describe('Kafka Sender', () => {
                     url: 'http://bijupnag.cv/owi',
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const time = sender.getTimestamp(entity);
 
                 expect(time).toBeNull();
@@ -409,7 +403,7 @@ describe('Kafka Sender', () => {
                     created: 'INVALID DATE'
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const time = sender.getTimestamp(entity);
 
                 expect(time).toBeNull();
@@ -420,14 +414,13 @@ describe('Kafka Sender', () => {
             let ogTimestampField: string;
 
             beforeAll(() => {
-                // @ts-ignore
                 ogTimestampField = sender.opConfig.timestamp_field;
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.timestamp_field = '';
             });
 
             afterAll(() => {
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.timestamp_field = ogTimestampField;
             });
 
@@ -440,7 +433,7 @@ describe('Kafka Sender', () => {
                     created: new Date().toISOString()
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const time = sender.getTimestamp(entity);
 
                 expect(time).toBeNull();
@@ -451,14 +444,13 @@ describe('Kafka Sender', () => {
             let ogTimestampNow: boolean;
 
             beforeAll(() => {
-                // @ts-ignore
                 ogTimestampNow = sender.opConfig.timestamp_now;
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.timestamp_now = true;
             });
 
             afterAll(() => {
-                // @ts-ignore
+                // @ts-expect-error
                 sender.opConfig.timestamp_now = ogTimestampNow;
             });
 
@@ -471,7 +463,7 @@ describe('Kafka Sender', () => {
                     created: 'Tue May 15 2046 18:37:21 GMT-0700 (Mountain Standard Time)'
                 });
 
-                // @ts-ignore
+                // @ts-expect-error
                 const time = sender.getTimestamp(entity);
 
                 const now = Date.now();

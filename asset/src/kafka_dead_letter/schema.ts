@@ -2,7 +2,7 @@ import { ConvictSchema } from '@terascope/job-components';
 import { KafkaDeadLetterConfig } from './interfaces';
 
 export default class Schema extends ConvictSchema<KafkaDeadLetterConfig> {
-    build() {
+    build(): Record<string, any> {
         return {
             topic: {
                 doc: 'Name of the Kafka topic to send data to',

@@ -31,9 +31,9 @@ describe('Kafka Sender', () => {
         },
         create(config: any, logger: Logger, settings: any) {
             const result = Connector.create(config, logger, settings);
-            // @ts-ignore
+            // @ts-expect-error
             result.client.flush = mockFlush
-                // @ts-ignore
+                // @ts-expect-error
                 .mockImplementation(result.client.flush)
                 .bind(result.client);
             return result;
@@ -48,9 +48,9 @@ describe('Kafka Sender', () => {
         },
         create(config: any, logger: Logger, settings: any) {
             const result = Connector.create(config, logger, settings);
-            // @ts-ignore
+            // @ts-expect-error
             result.client.flush = mockFlush
-                // @ts-ignore
+                // @ts-expect-error
                 .mockImplementation(result.client.flush)
                 .bind(result.client);
             return result;

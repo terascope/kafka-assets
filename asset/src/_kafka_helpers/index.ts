@@ -18,7 +18,7 @@ export function wrapError(message: string, err: AnyKafkaError): KafkaError {
 
     Error.captureStackTrace(error, wrapError);
 
-    // @ts-ignore
+    // @ts-expect-error
     error._wrapped = true;
     return error;
 }
@@ -76,8 +76,8 @@ export interface KafkaMessageMetadata {
 
 export type KafkaMessage = Message;
 
-export function isKafkaError(err: any): err is KafkaError {
-    // @ts-ignore
+export function isKafkaError(err: unknown): err is KafkaError {
+    // @ts-expect-error
     return isError(err) && err.code != null;
 }
 
