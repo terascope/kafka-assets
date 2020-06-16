@@ -3,14 +3,17 @@
     "version": "2.8.2",
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "private": true,
+    "workspaces": {
+        "packages": [
+            "packages/*",
+            "asset"
+        ]
+    },
     "scripts": {
         "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "lint:fix": "yarn lint --fix",
-        "prepare": "yarn workspaces run build",
-        "postinstall": "yarn --cwd ./asset --prod install",
-        "asset:build": "yarn run build",
-        "build": "rm -rf asset/dist; tsc --project tsconfig.json",
-        "build:watch": "yarn build --watch",
+        "asset:build": "yarn && yarn --cwd ./asset build",
+        "build": "yarn workspaces run build",
         "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
         "test:all": "yarn workspaces run test",
         "test:watch": "jest --forceExit --coverage=false --notify --watch --onlyChanged",
@@ -39,14 +42,5 @@
     },
     "engines": {
         "node": ">=8.0.0"
-    },
-    "workspaces": {
-        "packages": [
-            "packages/*",
-            "."
-        ],
-        "nohoist": [
-            "asset"
-        ]
     }
 }

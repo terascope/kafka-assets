@@ -50,13 +50,14 @@ before_install:
   - yarn global add teraslice-cli
 install:
   - yarn
+  - yarn build
 script:
   - yarn test:all
   - yarn lint
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
   # Attempt to build the asset (so it doesn't blow up when it deploys)
   - teraslice-cli assets build
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 after_failure:
   - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:

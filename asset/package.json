@@ -2,6 +2,9 @@
     "name": "kafka-assets",
     "version": "2.8.2",
     "private": true,
+    "workspaces": {
+        "nohoist": ["**"]
+    },
     "description": "Teraslice asset for kafka operations",
     "main": "index.js",
     "dependencies": {
@@ -9,7 +12,8 @@
     },
     "devDependencies": {},
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "yarn --cwd ../ test",
+        "build": "rm -rf dist; tsc --project ../tsconfig.json"
     },
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT"
