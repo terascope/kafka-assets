@@ -12,8 +12,8 @@
     },
     "devDependencies": {},
     "scripts": {
-        "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
-        "build": "rm -rf asset/dist; tsc --project ../tsconfig.json"
+        "test": "yarn --cwd ../ test",
+        "build": "rm -rf dist; tsc --project ../tsconfig.json"
     },
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT"
