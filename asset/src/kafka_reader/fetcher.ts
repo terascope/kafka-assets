@@ -7,11 +7,7 @@ import {
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { KafkaReaderConfig } from './interfaces';
-import { ConsumerClient } from '../_kafka_clients';
-import {
-    KafkaMessage,
-    KafkaMessageMetadata
-} from '../_kafka_helpers';
+import { ConsumerClient, ConsumeFn } from '../_kafka_clients';
 
 export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     consumer: ConsumerClient;
@@ -24,10 +20,10 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         super(context, opConfig, executionConfig);
 
         const logger = this.logger.child({ module: 'kafka-consumer' });
-
         this.consumer = new ConsumerClient(this.createClient(), {
             logger,
             topic: this.opConfig.topic,
+            _encoding: opConfig._encoding
         });
     }
 
@@ -43,29 +39,8 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     }
 
     async fetch(): Promise<DataEntity[]> {
-        const map = this.tryRecord((msg: KafkaMessage): DataEntity => {
-            const now = Date.now();
-
-            const metadata: KafkaMessageMetadata = {
-                _key: keyToString(msg.key),
-                _ingestTime: msg.timestamp || now,
-                _processTime: now,
-                // TODO this should be based of an actual value
-                _eventTime: now,
-                topic: msg.topic,
-                partition: msg.partition,
-                offset: msg.offset,
-                size: msg.size,
-            };
-
-            return DataEntity.fromBuffer(
-                msg.value as string|Buffer,
-                this.opConfig,
-                metadata
-            );
-        });
-
-        return await this.consumer.consume(map, this.opConfig) as DataEntity[];
+        const tryRecord = this.tryRecord.bind(this) as ConsumeFn;
+        return this.consumer.consume(tryRecord, this.opConfig);
     }
 
     async onSliceFinalizing(): Promise<void> {
@@ -123,10 +98,4 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         const connection = this.context.foundation.getConnection(this.clientConfig());
         return connection.client;
     }
-}
-
-/** Safely convert a buffer or string to a string */
-function keyToString(str?: kafka.MessageKey) {
-    if (!str) return null;
-    return str.toString('utf8');
 }

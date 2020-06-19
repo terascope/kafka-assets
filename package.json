@@ -14,6 +14,7 @@
         "lint:fix": "yarn lint --fix",
         "asset:build": "yarn && yarn --cwd ./asset build",
         "build": "yarn workspaces run build",
+        "build:watch": "yarn build --watch",
         "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
         "test:all": "yarn workspaces run test",
         "test:watch": "jest --forceExit --coverage=false --notify --watch --onlyChanged",

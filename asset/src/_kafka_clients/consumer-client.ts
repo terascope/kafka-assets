@@ -1,10 +1,13 @@
 import type * as kafka from 'node-rdkafka';
-import { pDelay, toHumanTime } from '@terascope/job-components';
+import {
+    pDelay, toHumanTime, DataEntity, EncodingConfig
+} from '@terascope/job-components';
 import {
     wrapError,
     AnyKafkaError,
     KafkaMessage,
     KafkaError,
+    KafkaMessageMetadata,
 } from '../_kafka_helpers';
 import BaseClient, { getRandom } from './base-client';
 import {
@@ -18,6 +21,7 @@ import {
     ERR__ASSIGN_PARTITIONS,
     ERR__REVOKE_PARTITIONS,
 } from '../_kafka_helpers/error-codes';
+import { ConsumeFn } from '../_kafka_clients';
 
 const isProd = process.env.NODE_ENV !== 'test';
 /** Maximum number of invalid state errors to get from kafka */
@@ -33,7 +37,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         started: {},
         ended: {},
     };
-
+    private encoding: EncodingConfig = {};
     /** last known assignments */
     protected _assignments: TopicPartition[] = [];
 
@@ -42,6 +46,28 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
+        this.encoding._encoding = config._encoding;
+        this.processKafkaRecord = (msg: KafkaMessage): DataEntity => {
+            const now = Date.now();
+
+            const metadata: KafkaMessageMetadata = {
+                _key: keyToString(msg.key),
+                _ingestTime: msg.timestamp || now,
+                _processTime: now,
+                // TODO this should be based of an actual value
+                _eventTime: now,
+                topic: msg.topic,
+                partition: msg.partition,
+                offset: msg.offset,
+                size: msg.size,
+            };
+
+            return DataEntity.fromBuffer(
+                msg.value as string|Buffer,
+                this.encoding,
+                metadata
+            );
+        };
     }
 
     /**
@@ -161,21 +187,22 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * @param max.size - the target size of messages to consume
      * @param max.wait - the maximum time to wait before resolving the messages
      */
-    async consume<T>(
-        map: (msg: KafkaMessage) => T,
+
+    async consume(
+        tryFn: ConsumeFn,
         max: { size: number; wait: number }
-    ): Promise<T[]> {
+    ): Promise<DataEntity[]> {
         this.handlePendingCommits();
         const start = Date.now();
         const endAt = start + max.wait;
-
+        const map = tryFn(this.processKafkaRecord);
         this._logger.trace('consuming...', { size: max.size, wait: max.wait });
 
-        let results: T[] = [];
+        let results: DataEntity[] = [];
 
         while (results.length < max.size && endAt > Date.now()) {
             const remaining = max.size - results.length;
-            const consumed = await this._consume(remaining, map);
+            const consumed = await this._consume<DataEntity>(remaining, map);
 
             results = results.concat(consumed);
         }
@@ -192,6 +219,28 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         this._logger.info(`Resolving with ${results.length} results, took ${toHumanTime(Date.now() - start)}`);
         return results;
+    }
+
+    processKafkaRecord(msg: KafkaMessage): DataEntity {
+        const now = Date.now();
+
+        const metadata: KafkaMessageMetadata = {
+            _key: keyToString(msg.key),
+            _ingestTime: msg.timestamp || now,
+            _processTime: now,
+            // TODO this should be based of an actual value
+            _eventTime: now,
+            topic: msg.topic,
+            partition: msg.partition,
+            offset: msg.offset,
+            size: msg.size,
+        };
+
+        return DataEntity.fromBuffer(
+            msg.value as string|Buffer,
+            this.encoding,
+            metadata
+        );
     }
 
     /**
@@ -527,4 +576,10 @@ function formatTopar(input: TopicPartition[]|TopicPartition) {
             return `partition: ${p.partition} offset: ${p.offset}`;
         })
         .join(', ');
+}
+
+/** Safely convert a buffer or string to a string */
+function keyToString(str?: kafka.MessageKey) {
+    if (!str) return null;
+    return str.toString('utf8');
 }
