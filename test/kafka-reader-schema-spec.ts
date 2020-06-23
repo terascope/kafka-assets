@@ -3,11 +3,16 @@ import { TestContext, newTestJobConfig } from '@terascope/job-components';
 import Schema from '../asset/src/kafka_reader/schema';
 
 describe('Kafka Reader Schema', () => {
-    const context = new TestContext('kafka-reader');
-    const schema = new Schema(context);
+    let context: TestContext;
+    let schema: Schema;
 
     afterAll(() => {
         context.apis.foundation.getSystemEvents().removeAllListeners();
+    });
+
+    beforeEach(() => {
+        context = new TestContext('kafka-reader');
+        schema = new Schema(context);
     });
 
     describe('when validating the job', () => {
@@ -40,6 +45,23 @@ describe('Kafka Reader Schema', () => {
             });
             expect(() => {
                 schema.validateJob(job);
+            }).not.toThrowError();
+        });
+
+        fit('should inject an api if none is specified', () => {
+            const job = newTestJobConfig({
+                operations: [
+                    {
+                        _op: 'kafka_reader',
+                    },
+                    {
+                        _op: 'noop',
+                    }
+                ]
+            });
+            expect(() => {
+                const results = schema.validateJob(job);
+                console.log('results', context)
             }).not.toThrowError();
         });
     });

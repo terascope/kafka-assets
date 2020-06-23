@@ -45,17 +45,53 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, AnyObject
 
     async create(topic: string, config: AnyObject = {}): Promise<ConsumerClient> {
         const { logger } = this;
-        const clientConfig = Object.assign({}, this.clientConfig(config));
+        const clientConfig = Object.assign(
+            {}, this.apiConfig, config, this.clientConfig(config), { logger, topic }
+        );
         const kafkaClient = this.context.foundation.getConnection(clientConfig).client;
-        const client = new ConsumerClient(kafkaClient, { logger, topic });
+        const client = new ConsumerClient(kafkaClient, clientConfig);
 
         await client.connect();
 
         return client;
     }
 
+    async shutdown(): Promise<void> {
+        const actions: Promise<void>[] = [];
+
+        for (const consumer of this._registry.values()) {
+            consumer.handlePendingCommits();
+            actions.push(consumer.disconnect());
+        }
+
+        await Promise.all(actions);
+        await super.shutdown();
+    }
+
+    async onSliceFinalizing(): Promise<void> {
+        const actions: Promise<void>[] = [];
+
+        for (const consumer of this._registry.values()) {
+            actions.push(consumer.onFinalizing());
+        }
+
+        await Promise.all(actions);
+    }
+
+    // TODO we should handle slice retries differently now that we have the dead letter queue
+    async onSliceRetry(): Promise<void> {
+        const actions: Promise<void>[] = [];
+
+        for (const consumer of this._registry.values()) {
+            actions.push(consumer.onRetry());
+        }
+
+        await Promise.all(actions);
+    }
+
     async remove(topic: string): Promise<void> {
         const client = this._registry.get(topic);
+
         if (isNotNil(client)) {
             client!.handlePendingCommits();
             await client?.disconnect();

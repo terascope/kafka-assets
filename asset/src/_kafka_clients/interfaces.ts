@@ -23,7 +23,9 @@ export interface TopicPartition {
 export interface ConsumerClientConfig {
     topic: string;
     logger: Logger;
-    _encoding?: DataEncoding
+    _encoding?: DataEncoding,
+    rollback_on_failure?: boolean;
+    use_commit_sync?: boolean;
 }
 
 export interface ProduceMessage {

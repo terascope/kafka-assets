@@ -60,4 +60,9 @@ export interface KafkaReaderConfig extends OpConfig {
      * assigns partitions to group members.
     */
     partition_assignment_strategy?: 'range'|'roundrobin';
+    /**
+     * Name of kafka api used for reader, if none is provided, then one is made
+     * and the name is kafka_reader_api, and is injected into the execution
+    */
+    api_name?: string;
 }

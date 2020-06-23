@@ -1,4 +1,4 @@
-import { ConvictSchema, ValidatedJobConfig } from '@terascope/job-components';
+import { ConvictSchema, ValidatedJobConfig, getOpConfig, isNotNil, isNil } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
 export default class Schema extends ConvictSchema<KafkaReaderConfig> {
@@ -8,6 +8,24 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
         if (secondOp === 'json_protocol') {
             throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
         }
+        //  this.validate();
+        const config = getOpConfig(job, 'kafka_reader') as KafkaReaderConfig;
+
+        const apiName = config.api_name;
+
+        if (isNotNil(apiName)) {
+            const kafkaReaderAPI = job.apis.find((api) => api._name === apiName);
+            if (isNil(kafkaReaderAPI)) throw new Error(`kafka_reader parameter for api_name: "${kafkaReaderAPI}" was not found listed in the apis of this execution ${JSON.stringify(job, null, 4)}`);
+        } else {
+            this.injectApi(job);
+            // this.validate(newJob);
+        }
+    }
+
+    injectApi(config: ValidatedJobConfig): void {
+        config.apis.push({
+            _name: 'kafka_reader_api'
+        });
     }
 
     build(): Record<string, any> {
@@ -16,6 +34,11 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 doc: 'Name of the Kafka topic to process',
                 default: '',
                 format: 'required_String'
+            },
+            api_name: {
+                doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
+                default: null,
+                format: 'optional_String'
             },
             group: {
                 doc: 'Name of the Kafka consumer group',

@@ -1,6 +1,6 @@
 import type * as kafka from 'node-rdkafka';
 import {
-    pDelay, toHumanTime, DataEntity, EncodingConfig
+    pDelay, toHumanTime, DataEntity, EncodingConfig, isBoolean, isNotNil
 } from '@terascope/job-components';
 import {
     wrapError,
@@ -43,10 +43,24 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
     private _pendingOffsets: CountPerPartition = {};
     private _rebalanceTimeout: NodeJS.Timer|undefined;
+    private rollback_on_failure = false;
+    private use_commit_sync = false
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
-        this.encoding._encoding = config._encoding;
+        const {
+            _encoding, rollback_on_failure, use_commit_sync
+        } = config;
+        this.encoding._encoding = _encoding;
+
+        if (isNotNil(rollback_on_failure) && isBoolean(rollback_on_failure)) {
+            this.rollback_on_failure = rollback_on_failure;
+        }
+
+        if (isNotNil(use_commit_sync) && isBoolean(use_commit_sync)) {
+            this.use_commit_sync = use_commit_sync;
+        }
+
         this.processKafkaRecord = (msg: KafkaMessage): DataEntity => {
             const now = Date.now();
 
@@ -119,6 +133,19 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
             this._logger.error('kafka failed to commit', errors);
             throw new Error('Kafka failed to commit');
         }
+    }
+
+    async onRetry(): Promise<void> {
+        if (this.rollback_on_failure) {
+            await this.rollback();
+        } else {
+            this._logger.warn('committing kafka offsets on slice retry - THIS MAY CAUSE DATA LOSS');
+            await this.commit(this.use_commit_sync);
+        }
+    }
+
+    async onFinalizing(): Promise<void> {
+        await this.commit(this.use_commit_sync);
     }
 
     /**
