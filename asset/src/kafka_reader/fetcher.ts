@@ -1,27 +1,39 @@
 import { Fetcher, DataEntity } from '@terascope/job-components';
 import KafkaApi from '../kafka_reader_api/api';
+import { KafkaAPIConfig } from '../kafka_reader_api/interfaces';
 import { KafkaReaderConfig } from './interfaces';
 import { ConsumerClient, ConsumeFn } from '../_kafka_clients';
 
 const DEFAULT_API_NAME = 'kafka_reader_api';
 export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     consumer!: ConsumerClient;
+    consumeConfig!: { size: number; wait: number };
 
     async initialize(): Promise<void> {
         await super.initialize();
-        const api = this.getAPI<KafkaApi>(this.opConfig.api_name || DEFAULT_API_NAME);
-        const consumer = await api.create(this.opConfig.topic, this.opConfig);
-        this.consumer = consumer;
-    }
+        let apiName = DEFAULT_API_NAME;
+        let apiTopic: string | undefined;
 
-    async shutdown(): Promise<void> {
-        this.consumer.handlePendingCommits();
-        await this.consumer.disconnect();
-        await super.shutdown();
+        if (this.opConfig.api_name) {
+            apiName = this.opConfig?.api_name;
+            const apiConfig = this.executionConfig.apis.find((config) => config._name === apiName);
+            if (apiConfig == null) throw new Error(`could not find api configuration for api ${apiName}`);
+            apiTopic = apiConfig.topic;
+        }
+
+        const api = this.getAPI<KafkaApi>(apiName);
+        // this might be undefined, but will throw in the create call if it does not exist
+        const topic = this.opConfig.topic || apiTopic as string;
+        const consumer = await api.create(topic, this.opConfig);
+        // we do this as size and wait might live on the apiConfig, not on the processors opConfig
+        const { size, wait } = api.getConfig(topic) as KafkaAPIConfig;
+
+        this.consumeConfig = { size, wait };
+        this.consumer = consumer;
     }
 
     async fetch(): Promise<DataEntity[]> {
         const tryRecord = this.tryRecord.bind(this) as ConsumeFn;
-        return this.consumer.consume(tryRecord, this.opConfig);
+        return this.consumer.consume(tryRecord, this.consumeConfig);
     }
 }

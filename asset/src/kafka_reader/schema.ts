@@ -1,17 +1,17 @@
-import { ConvictSchema, ValidatedJobConfig, getOpConfig, isNotNil, isNil } from '@terascope/job-components';
+import {
+    ConvictSchema, ValidatedJobConfig, getOpConfig, isNotNil, isNil, DataEncoding
+} from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
 export default class Schema extends ConvictSchema<KafkaReaderConfig> {
     validateJob(job: ValidatedJobConfig): void {
         const secondOp = job.operations[1] && job.operations[1]._op;
 
-        if (secondOp === 'json_protocol') {
-            throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
-        }
-        //  this.validate();
+        if (secondOp === 'json_protocol') throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
+
         const config = getOpConfig(job, 'kafka_reader') as KafkaReaderConfig;
 
-        const apiName = config.api_name;
+        const apiName = config?.api_name;
 
         if (isNotNil(apiName)) {
             const kafkaReaderAPI = job.apis.find((api) => api._name === apiName);
@@ -33,7 +33,7 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
             topic: {
                 doc: 'Name of the Kafka topic to process',
                 default: '',
-                format: 'required_String'
+                format: 'optional_String'
             },
             api_name: {
                 doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
@@ -43,7 +43,7 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
             group: {
                 doc: 'Name of the Kafka consumer group',
                 default: '',
-                format: 'required_String'
+                format: 'optional_String'
             },
             offset_reset: {
                 doc: 'How offset resets should be handled when there are no valid offsets for the consumer group.',
@@ -74,7 +74,7 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
             connection: {
                 doc: 'The Kafka consumer connection to use.',
                 default: 'default',
-                format: 'required_String'
+                format: 'optional_String'
             },
             use_commit_sync: {
                 doc: 'Use commit sync instead of async (usually not recommended)',
@@ -96,6 +96,11 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
                 doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
                 default: '',
                 format: ['range', 'roundrobin', '']
+            },
+            _encoding: {
+                doc: 'How the data is parsed from buffer, default to JSON',
+                default: DataEncoding.JSON,
+                format: Object.values(DataEncoding)
             }
         };
     }

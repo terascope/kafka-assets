@@ -1,11 +1,36 @@
 import {
-    APIFactory, AnyObject, ConnectionConfig, isNotNil
+    APIFactory,
+    AnyObject,
+    ConnectionConfig,
+    isNotNil,
+    isNil,
+    isString,
+    getTypeOf,
+    isNumber,
+    isBoolean
 } from '@terascope/job-components';
 import { ConsumerClient } from '../_kafka_clients';
+import { KafkaAPIConfig } from './interfaces';
 
-export default class KafkaReaderApi extends APIFactory<ConsumerClient, AnyObject> {
-    // TODO: check with schmea here
-    private clientConfig(clientConfig: AnyObject) {
+export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaAPIConfig> {
+    clientConfigMapping = new Map<string, KafkaAPIConfig>();
+
+    private validateConfig(config: AnyObject): KafkaAPIConfig {
+        if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
+        if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
+        if (isNil(config.group) || !isString(config.group)) throw new Error(`Parameter group must be provided and be of type string, got ${getTypeOf(config.group)}`);
+        if (isNil(config.offset_reset) || !isString(config.offset_reset)) throw new Error(`Parameter offset_reset must be provided and be of type string, got ${getTypeOf(config.offset_reset)}`);
+        if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
+        if (isNil(config.wait) || !isNumber(config.wait)) throw new Error(`Parameter wait must be provided and be of type number, got ${getTypeOf(config.wait)}`);
+        if (isNil(config.max_poll_interval) || !isNumber(config.max_poll_interval)) throw new Error(`Parameter max_poll_interval must be provided and be of type number, got ${getTypeOf(config.max_poll_interval)}`);
+        if (isNil(config.use_commit_sync) || !isBoolean(config.use_commit_sync)) throw new Error(`Parameter use_commit_sync must be provided and be of type boolean, got ${getTypeOf(config.use_commit_sync)}`);
+        if (isNil(config.rollback_on_failure) || !isBoolean(config.rollback_on_failure)) throw new Error(`Parameter rollback_on_failure must be provided and be of type boolean, got ${getTypeOf(config.rollback_on_failure)}`);
+        if (isNil(config.partition_assignment_strategy) || !isString(config.partition_assignment_strategy)) throw new Error(`Parameter partition_assignment_strategy must be provided and be of type string, got ${getTypeOf(config.partition_assignment_strategy)}`);
+        if (isNotNil(config._encoding) && !isString(config._encoding)) throw new Error(`Parameter _encoding must be provided and be of type string, got ${getTypeOf(config._encoding)}`);
+        return config;
+    }
+
+    private clientConfig(clientConfig: AnyObject = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
         const config = {
             type: 'kafka',
@@ -35,7 +60,7 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, AnyObject
             autoconnect: false
         };
 
-        const assignmentStrategy = this.apiConfig.partition_assignment_strategy;
+        const assignmentStrategy = kafkaConfig.partition_assignment_strategy;
         if (assignmentStrategy) {
             config.rdkafka_options['partition.assignment.strategy'] = assignmentStrategy;
         }
@@ -43,17 +68,25 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, AnyObject
         return config as ConnectionConfig;
     }
 
-    async create(topic: string, config: AnyObject = {}): Promise<ConsumerClient> {
+    async create(
+        topic: string, config: AnyObject = {}
+    ): Promise<{ client: ConsumerClient, config: KafkaAPIConfig }> {
         const { logger } = this;
-        const clientConfig = Object.assign(
-            {}, this.apiConfig, config, this.clientConfig(config), { logger, topic }
+        const newConfig = Object.assign(
+            {}, this.apiConfig, config, { logger, topic }
         );
+
+        const validConfig = this.validateConfig(newConfig);
+        const clientConfig = this.clientConfig(validConfig);
+
+        this.clientConfigMapping.set(topic, validConfig);
+
         const kafkaClient = this.context.foundation.getConnection(clientConfig).client;
-        const client = new ConsumerClient(kafkaClient, clientConfig);
+        const client = new ConsumerClient(kafkaClient, { ...validConfig, topic, logger });
 
         await client.connect();
 
-        return client;
+        return { client, config: validConfig };
     }
 
     async shutdown(): Promise<void> {
