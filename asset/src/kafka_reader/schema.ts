@@ -17,15 +17,10 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
             const kafkaReaderAPI = job.apis.find((api) => api._name === apiName);
             if (isNil(kafkaReaderAPI)) throw new Error(`kafka_reader parameter for api_name: "${kafkaReaderAPI}" was not found listed in the apis of this execution ${JSON.stringify(job, null, 4)}`);
         } else {
-            this.injectApi(job);
-            // this.validate(newJob);
+            job.apis.push({
+                _name: 'kafka_reader_api'
+            });
         }
-    }
-
-    injectApi(config: ValidatedJobConfig): void {
-        config.apis.push({
-            _name: 'kafka_reader_api'
-        });
     }
 
     build(): Record<string, any> {

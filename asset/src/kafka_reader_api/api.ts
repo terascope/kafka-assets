@@ -10,12 +10,10 @@ import {
     isBoolean
 } from '@terascope/job-components';
 import { ConsumerClient } from '../_kafka_clients';
-import { KafkaAPIConfig } from './interfaces';
+import { KafkaReaderAPIConfig } from './interfaces';
 
-export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaAPIConfig> {
-    clientConfigMapping = new Map<string, KafkaAPIConfig>();
-
-    private validateConfig(config: AnyObject): KafkaAPIConfig {
+export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaReaderAPIConfig> {
+    private validateConfig(config: AnyObject): KafkaReaderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
         if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
         if (isNil(config.group) || !isString(config.group)) throw new Error(`Parameter group must be provided and be of type string, got ${getTypeOf(config.group)}`);
@@ -70,7 +68,7 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaAPIC
 
     async create(
         topic: string, config: AnyObject = {}
-    ): Promise<{ client: ConsumerClient, config: KafkaAPIConfig }> {
+    ): Promise<{ client: ConsumerClient, config: KafkaReaderAPIConfig }> {
         const { logger } = this;
         const newConfig = Object.assign(
             {}, this.apiConfig, config, { logger, topic }
@@ -78,8 +76,6 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaAPIC
 
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
-
-        this.clientConfigMapping.set(topic, validConfig);
 
         const kafkaClient = this.context.foundation.getConnection(clientConfig).client;
         const client = new ConsumerClient(kafkaClient, { ...validConfig, topic, logger });

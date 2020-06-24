@@ -56,4 +56,9 @@ export interface KafkaSenderConfig extends OpConfig {
      * partition keys to terafoundation kafka connector names
     */
     connection_map: Record<string, string>;
+    /**
+     * Name of kafka api used for sender, if none is provided, then one is made
+     * and the name is kafka_reader_api, and is injected into the execution
+    */
+    api_name?: string;
 }

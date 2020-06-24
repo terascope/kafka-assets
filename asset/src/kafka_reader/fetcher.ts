@@ -1,9 +1,9 @@
 import { Fetcher, DataEntity, APIFactoryRegistry } from '@terascope/job-components';
-import { KafkaAPIConfig } from '../kafka_reader_api/interfaces';
+import { KafkaReaderAPIConfig } from '../kafka_reader_api/interfaces';
 import { KafkaReaderConfig } from './interfaces';
 import { ConsumerClient, ConsumeFn } from '../_kafka_clients';
 
-type KafkaFactoryAPI = APIFactoryRegistry<ConsumerClient, KafkaAPIConfig>
+type KafkaReaderFactoryAPI = APIFactoryRegistry<ConsumerClient, KafkaReaderAPIConfig>
 
 const DEFAULT_API_NAME = 'kafka_reader_api';
 export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
@@ -22,12 +22,12 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
             apiTopic = apiConfig.topic;
         }
 
-        const api = this.getAPI<KafkaFactoryAPI>(apiName);
+        const api = this.getAPI<KafkaReaderFactoryAPI>(apiName);
         // this might be undefined, but will throw in the create call if it does not exist
         const topic = this.opConfig.topic || apiTopic as string;
         const consumer = await api.create(topic, this.opConfig);
         // we do this as size and wait might live on the apiConfig, not on the processors opConfig
-        const { size, wait } = api.getConfig(topic) as KafkaAPIConfig;
+        const { size, wait } = api.getConfig(topic) as KafkaReaderAPIConfig;
 
         this.consumeConfig = { size, wait };
         this.consumer = consumer;

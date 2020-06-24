@@ -1,5 +1,11 @@
 import {
-    ConvictSchema, ValidatedJobConfig, getOpConfig, get, isPlainObject
+    ConvictSchema,
+    ValidatedJobConfig,
+    getOpConfig,
+    get,
+    isPlainObject,
+    isNil,
+    isNotNil
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
 
@@ -22,6 +28,17 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
                     throw new Error(`A connection for [${value}] was set on the kafka_sender connection_map but is not found in the system configuration [terafoundation.connectors.kafka]`);
                 }
             }
+        }
+
+        const apiName = opConfig?.api_name;
+
+        if (isNotNil(apiName)) {
+            const kafkaSenderAPI = job.apis.find((api) => api._name === apiName);
+            if (isNil(kafkaSenderAPI)) throw new Error(`kafka_sender parameter for api_name: "${kafkaSenderAPI}" was not found listed in the apis of this execution ${JSON.stringify(job, null, 4)}`);
+        } else {
+            job.apis.push({
+                _name: 'kafka_sender_api'
+            });
         }
     }
 
@@ -92,7 +109,12 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
                 doc: 'The number of required broker acknowledgements for a given request, set to -1 for all.',
                 default: 1,
                 format: 'int'
-            }
+            },
+            api_name: {
+                doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
+                default: null,
+                format: 'optional_String'
+            },
         };
     }
 }

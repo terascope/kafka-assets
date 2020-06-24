@@ -48,3 +48,7 @@ export interface FatalError extends Error {
 export type ConsumeFn = (
     fn: (msg: KafkaMessage) => DataEntity
 ) => (msg: KafkaMessage) => DataEntity
+
+export type ProduceFn = (
+    fn: (msg: KafkaMessage) => DataEntity
+) => (msg: KafkaMessage) => void
