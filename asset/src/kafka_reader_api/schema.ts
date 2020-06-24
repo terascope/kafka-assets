@@ -1,9 +1,9 @@
 import {
     ConvictSchema, DataEncoding
 } from '@terascope/job-components';
-import { KafkaAPIConfig } from './interfaces';
+import { KafkaReaderAPIConfig } from './interfaces';
 
-export default class Schema extends ConvictSchema<KafkaAPIConfig> {
+export default class Schema extends ConvictSchema<KafkaReaderAPIConfig> {
     build(): Record<string, any> {
         return {
             topic: {

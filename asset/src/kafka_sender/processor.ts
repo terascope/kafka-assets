@@ -10,16 +10,17 @@ import {
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
 import { ProduceFn } from '../_kafka_clients';
-import KafkaSenderApi from '../kafka_sender_api/kafka_sender';
+import KafkaRouteSender from '../kafka_sender_api/kafka-route-sender';
 
 interface Endpoint {
-    sender: KafkaSender;
+    sender: KafkaRouteSender;
     data: any[];
 }
 
 interface ConnectorMapping {
     connection: string;
     topic: string;
+    _key?: string
 }
 
 type TopicMap = Map<string, Endpoint>
@@ -27,7 +28,7 @@ type ConnectorMap = Map<string, ConnectorMapping>
 
 const DEFAULT_API_NAME = 'kafka_sender_api';
 // TODO: this is wrong config
-type KafkaSenderFactoryAPI = APIFactoryRegistry<KafkaSenderApi, KafkaSenderConfig>
+type KafkaSenderFactoryAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderConfig>
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     topicMap: TopicMap = new Map();
@@ -83,7 +84,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
                     const newTopic = (key === '*' || key === '**') ? topic : `${topic}-${key}`;
                     const topicSettings: ConnectorMapping = {
                         connection: connectionMap[keyset],
-                        topic: newTopic
+                        topic: newTopic,
+                        _key: key
                     };
                     this.connectorDict.set(key, topicSettings);
                 }
@@ -95,15 +97,23 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     private async createTopic(route: string, topicOverride?: string) {
-        const { connection, topic } = this.connectorDict.get(route) as ConnectorMapping;
+        const { connection, topic, _key } = this.connectorDict.get(route) as ConnectorMapping;
+        const finalTopic = topicOverride || topic;
         let sender = this.senderApi.get(connection);
 
         if (isNil(sender)) {
             const { opConfig } = this;
             sender = await this.senderApi.create(
-                connection,
-                { ...opConfig, connection, topic: topicOverride || topic }
-            ) as KafkaSenderApi;
+                finalTopic,
+                {
+                    ...opConfig,
+                    connection,
+                    topic: finalTopic,
+                    _key,
+                    tryFn: this.tryFn,
+                    logger: this.kafkaLogger
+                }
+            );
         }
 
         this.topicMap.set(route, { sender, data: [] });
@@ -161,9 +171,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             }
         }
 
-        for (const [topicKey, { data, sender }] of this.topicMap) {
+        for (const [, { data, sender }] of this.topicMap) {
             if (data.length > 0) {
-                senders.push(sender.send(data, this.mapFn(topicKey)));
+                senders.push(sender.send(data));
             }
         }
 

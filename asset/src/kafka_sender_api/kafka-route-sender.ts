@@ -6,16 +6,20 @@ import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 
 export default class KafkaSender implements RouteSenderAPI {
     producer: ProducerClient;
-    hasConnected = false;
-    config: AnyObject = {};
+    readonly hasConnected = false;
+    readonly config: AnyObject = {};
+    readonly isWildcard: boolean;
+    private tryFn: (msg: any, err: any) => DataEntity|null;
 
     constructor(client: kafka.Producer, config: AnyObject) {
         const producer = new ProducerClient(client, {
-            logger: config.kafkaLogger,
+            logger: config.logger,
             topic: config.topicOverride || config.topic,
             bufferSize: config.bufferSize,
         });
+        this.isWildcard = config._key && config._key === '**';
         this.producer = producer;
+        this.tryFn = config.tryFn;
     }
 
     async initialize(): Promise<void> {
@@ -27,25 +31,24 @@ export default class KafkaSender implements RouteSenderAPI {
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    async send(data: DataEntity[], tryFN: any, topicKey?: string): Promise<void> {
-        const resutls = await this.producer.produce(data, this.mapFn(tryFN, topicKey));
+    async send(data: DataEntity[]): Promise<void> {
+        const mapper = this.mapFn.bind(this);
+        const resutls = await this.producer.produce(data, mapper);
         return resutls;
     }
 
-    private mapFn(tryFN: any, topicKey?: string) {
-        return (msg: DataEntity): ProduceMessage => {
-            const key = this.getKey(msg, tryFN);
-            const timestamp = this.getTimestamp(msg, tryFN);
-            const data = msg.toBuffer();
-            const topic = this.getRouteTopic(msg, topicKey);
+    private mapFn(msg: DataEntity): ProduceMessage {
+        const key = this.getKey(msg);
+        const timestamp = this.getTimestamp(msg);
+        const data = msg.toBuffer();
+        const topic = this.getRouteTopic(msg);
 
-            return {
-                timestamp, key, data, topic
-            };
+        return {
+            timestamp, key, data, topic
         };
     }
 
-    private getKey(msg: DataEntity, tryFN: any): string|null {
+    private getKey(msg: DataEntity): string|null {
         if (this.config.id_field) {
             const key = msg[this.config.id_field];
 
@@ -53,7 +56,7 @@ export default class KafkaSender implements RouteSenderAPI {
 
             if (!key || !isString(key)) {
                 const err = new Error(`invalid id_field on record ${this.config.id_field}`);
-                tryFN(msg, err);
+                this.tryFn(msg, err);
                 return null;
             }
 
@@ -63,13 +66,13 @@ export default class KafkaSender implements RouteSenderAPI {
         return DataEntity.getMetadata(msg, '_key') || null;
     }
 
-    private getTimestamp(msg: DataEntity, tryFn: any): number|null {
+    private getTimestamp(msg: DataEntity): number|null {
         if (this.config.timestamp_field) {
             const date = getValidDate(msg[this.config.timestamp_field]);
             if (date) return date.getTime();
 
             const err = new Error(`invalid timestamp_field on record ${this.config.timestamp_field}`);
-            tryFn(msg, err);
+            this.tryFn(msg, err);
         } else if (this.config.timestamp_now) {
             return Date.now();
         }
@@ -77,8 +80,8 @@ export default class KafkaSender implements RouteSenderAPI {
         return null;
     }
 
-    private getRouteTopic(msg: DataEntity, topicKey?: string): string|null {
-        if (topicKey === '**') {
+    private getRouteTopic(msg: DataEntity): string|null {
+        if (this.isWildcard) {
             const route = msg.getMetadata('standard:route');
             if (route) {
                 return `${this.config.topic}-${route}`;
@@ -88,7 +91,8 @@ export default class KafkaSender implements RouteSenderAPI {
         return null;
     }
 
-    async verify(): Promise<void> {
-        await this.producer.getMetadata(this.config.topic);
+    async verify(route?: string): Promise<void> {
+        const topic = route ? `${this.config.topic}-${route}` : this.config.topic;
+        await this.producer.getMetadata(topic);
     }
 }

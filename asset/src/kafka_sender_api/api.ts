@@ -10,24 +10,26 @@ import {
     isBoolean
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
-import KafkaSender from './kafka_sender';
+import KafkaRouteSender from './kafka-route-sender';
 import { KafkaSenderAPIConfig } from './interfaces';
 
-export default class KafkaSenderApi extends APIFactory<KafkaSender, KafkaSenderAPIConfig> {
+export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSenderAPIConfig> {
     private validateConfig(config: AnyObject): KafkaSenderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
         if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
         // TODO: note the change of size vs bufferSize
-        if (isNotNil(config.bufferSize) && !isNumber(config.bufferSize)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
+        if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
         if (isNil(config.id_field) || !isString(config.id_field)) throw new Error(`Parameter id_field must be provided and be of type string, got ${getTypeOf(config.id_field)}`);
-        if (isNotNil(config.timestamp_field) && !isString(config.timestamp_field)) throw new Error(`Parameter timestamp_field must be provided and be of type string, got ${getTypeOf(config.offset_reset)}`);
-        if (isNotNil(config.timestamp_now) && !isBoolean(config.timestamp_field)) throw new Error(`Parameter timestamp_field must be provided and be of type string, got ${getTypeOf(config.offset_reset)}`);
+        if (isNotNil(config.timestamp_field) && !isString(config.timestamp_field)) throw new Error(`Parameter timestamp_field must be provided and be of type string, got ${getTypeOf(config.timestamp_field)}`);
+        if (isNotNil(config.timestamp_now) && !isBoolean(config.timestamp_now)) throw new Error(`Parameter timestamp_now must be provided and be of type string, got ${getTypeOf(config.timestamp_now)}`);
         if (isNil(config.partition_assignment_strategy) || !isString(config.partition_assignment_strategy)) throw new Error(`Parameter partition_assignment_strategy must be provided and be of type string, got ${getTypeOf(config.partition_assignment_strategy)}`);
         if (isNil(config.compression) || !isString(config.compression)) throw new Error(`Parameter compression must be provided and be of type string, got ${getTypeOf(config.compression)}`);
         if (isNil(config.wait) || !isNumber(config.wait)) throw new Error(`Parameter wait must be provided and be of type number, got ${getTypeOf(config.wait)}`);
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
+        if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
 
+        config.bufferSize = config.size * 5;
         return config;
     }
 
@@ -63,7 +65,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaSender, KafkaSenderA
 
     async create(
         topic: string, config: AnyObject = {}
-    ): Promise<{ client: KafkaSender, config: KafkaSenderAPIConfig }> {
+    ): Promise<{ client: KafkaRouteSender, config: KafkaSenderAPIConfig }> {
         const { logger } = this;
         const newConfig = Object.assign(
             {}, this.apiConfig, config, { logger, topic }
@@ -75,7 +77,8 @@ export default class KafkaSenderApi extends APIFactory<KafkaSender, KafkaSenderA
         const kafkaClient = this.context.foundation.getConnection(
             clientConfig
         ).client as kafka.Producer;
-        const client = new KafkaSender(kafkaClient, validConfig);
+
+        const client = new KafkaRouteSender(kafkaClient, validConfig);
 
         await client.initialize();
 

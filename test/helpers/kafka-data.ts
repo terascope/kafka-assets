@@ -82,21 +82,7 @@ export async function readData(topic: string, size: number): Promise<any[]> {
 
     await client.connect();
 
-    const parseTestData = (msg: any): any => {
-        try {
-            return JSON.parse((msg.value as string | Buffer).toString('utf8'));
-        } catch (err) {
-            if (Buffer.isBuffer(msg.value)) {
-                return msg.value.toString('utf8');
-            }
-            return msg.value;
-        }
-    };
-
-    const messages = await client.consume((fn: any): any => (msg: any) => {
-        const data = parseTestData(msg);
-        return fn(data);
-    }, {
+    const messages = await client.consume((fn: any): any => (msg: any) => fn(msg), {
         size,
         wait: 10000
     });
