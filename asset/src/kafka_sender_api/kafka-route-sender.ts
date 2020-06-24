@@ -31,7 +31,7 @@ export default class KafkaSender implements RouteSenderAPI {
             try {
                 return fn(input);
             } catch (err) {
-                this.logger.warn(`Error computing ${toString(input)}, error: ${err.message}`)
+                this.logger.warn(`Error computing ${toString(input)}, error: ${err.message}`);
                 return null;
             }
         };

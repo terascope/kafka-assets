@@ -61,96 +61,88 @@ describe('Kafka Sender', () => {
     const admin = new KafkaAdmin();
 
     let harness: WorkerTestHarness;
-    let sender: KafkaSender;
+    let kafkaSender: KafkaSender;
     let results: DataEntity[] = [];
     let consumed: Record<string, any>[] = [];
     let runs = 0;
 
-    // beforeAll(async () => {
-    //     jest.clearAllMocks();
+    beforeAll(async () => {
+        jest.clearAllMocks();
 
-    //     await admin.ensureTopic(topic);
+        await admin.ensureTopic(topic);
 
-    //     harness = new WorkerTestHarness(job, {
-    //         clients,
-    //     });
+        harness = new WorkerTestHarness(job, {
+            clients,
+        });
 
-    //     // FIXME: using "as any" is hack, we should properly fix it
-    //     sender = harness.getOperation('kafka_sender') as any;
+        // FIXME: using "as any" is hack, we should properly fix it
+        kafkaSender = harness.getOperation('kafka_sender') as any;
 
-    //     await harness.initialize();
+        await harness.initialize();
 
-    //     const initList = [];
+        while (results.length < targetSize) {
+            if (runs > targetRuns) {
+                return;
+            }
+            runs++;
+            const batch = await harness.runSlice({});
+            results = results.concat(batch);
+        }
 
-    //     for (const { producer } of sender.topicMap.values()) {
-    //         initList.push(producer.connect());
-    //     }
+        consumed = await readData(topic, results.length);
+    });
 
-    //     await Promise.all(initList);
+    afterAll(async () => {
+        jest.clearAllMocks();
 
-    //     while (results.length < targetSize) {
-    //         if (runs > targetRuns) {
-    //             return;
-    //         }
-    //         runs++;
-    //         const batch = await harness.runSlice({});
-    //         results = results.concat(batch);
-    //     }
+        admin.disconnect();
 
-    //     consumed = await readData(topic, results.length);
-    // });
+        // it should be able to disconnect twice
+        const shutdownList = [];
 
-    // afterAll(async () => {
-    //     jest.clearAllMocks();
+        for (const { sender } of kafkaSender.topicMap.values()) {
+            shutdownList.push(sender.disconnect());
+        }
 
-    //     admin.disconnect();
+        await Promise.all(shutdownList);
+        await harness.shutdown();
+    });
 
-    //     // it should be able to disconnect twice
-    //     const shutdownList = [];
+    it('should have produced the correct amount of records', () => {
+        expect(consumed).toBeArrayOfSize(results.length);
+        expect(DataEntity.isDataEntityArray(results)).toBeTrue();
+        expect(results).toBeArrayOfSize(targetSize);
+        expect(runs).toBe(targetRuns);
 
-    //     for (const { sender } of sender.topicMap.values()) {
-    //         shutdownList.push(producer.disconnect());
-    //     }
+        for (let i = 0; i < results.length; i++) {
+            const actual = consumed[i];
+            const expected = results[i];
 
-    //     await Promise.all(shutdownList);
-    //     await harness.shutdown();
-    // });
+            expect(actual).toEqual(expected);
+        }
+    });
 
-    // it('should able to call _clientEvents without double listening', () => {
-    //     const expectedTopic = sender.topicMap.get('default');
-    //     // @ts-expect-error
-    //     const expected = expectedTopic.producer._client.listenerCount('error');
+    it('should able to call _clientEvents without double listening', () => {
+        const expectedTopic = kafkaSender.topicMap.get('*');
+        // @ts-expect-error
+        const expected = expectedTopic.sender.producer._client.listenerCount('error');
 
-    //     expect(() => {
-    //         const testTopic = sender.topicMap.get('default');
-    //         // @ts-expect-error
-    //         testTopic.producer._clientEvents();
-    //     }).not.toThrowError();
+        expect(() => {
+            const testTopic = kafkaSender.topicMap.get('*');
+            // @ts-expect-error
+            testTopic.sender.producer._clientEvents();
+        }).not.toThrowError();
 
-    //     const actualTopic = sender.topicMap.get('default');
-    //     // @ts-expect-error
-    //     const actual = actualTopic.producer._client.listenerCount('error');
+        const actualTopic = kafkaSender.topicMap.get('*');
+        // @ts-expect-error
+        const actual = actualTopic.sender.producer._client.listenerCount('error');
 
-    //     expect(actual).toEqual(expected);
-    // });
+        expect(actual).toEqual(expected);
+    });
 
-    // it('should have produced the correct amount of records', () => {
-    //     expect(consumed).toBeArrayOfSize(results.length);
-    //     expect(DataEntity.isDataEntityArray(results)).toBeTrue();
-    //     expect(results).toBeArrayOfSize(targetSize);
-    //     expect(runs).toBe(targetRuns);
-
-    //     for (let i = 0; i < results.length; i++) {
-    //         const actual = consumed[i];
-    //         const expected = results[i];
-
-    //         expect(actual).toEqual(expected);
-    //     }
-    // });
-
-    // it('should call flush once per run and before the buffer is full', () => {
-    //     const bufferSize = batchSize * 5;
-    //     const expected = runs + Math.floor(results.length / bufferSize);
-    //     expect(mockFlush).toHaveBeenCalledTimes(expected);
-    // });
+    it('should call flush once per run and before the buffer is full', () => {
+        const bufferSize = batchSize * 5;
+        const expected = runs + Math.floor(results.length / bufferSize);
+        expect(mockFlush).toHaveBeenCalledTimes(expected);
+    });
 });

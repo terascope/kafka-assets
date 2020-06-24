@@ -92,7 +92,8 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             }
         // the connection specified on opConfig must be on topicMap
         } else {
-            this.connectorDict.set(connection, { connection, topic });
+            // a topic without a connectionMap is semantically the same as a * with a connectionMap
+            this.connectorDict.set('*', { connection, topic, _key: '*' });
         }
     }
 
