@@ -47,7 +47,7 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
             topic: {
                 doc: 'Name of the Kafka topic to send data to',
                 default: '',
-                format: 'required_String'
+                format: 'optional_String'
             },
             connection_map: {
                 doc: 'Mapping from ID prefix to connection names. Routes data to multiple topics '

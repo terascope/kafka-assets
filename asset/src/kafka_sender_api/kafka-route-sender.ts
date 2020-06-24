@@ -1,10 +1,11 @@
 import {
-    RouteSenderAPI, AnyObject, DataEntity, getValidDate, isString
+    RouteSenderAPI, AnyObject, DataEntity, getValidDate, isString, Logger, toString
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 
 export default class KafkaSender implements RouteSenderAPI {
+    logger: Logger;
     producer: ProducerClient;
     readonly hasConnected = false;
     readonly config: AnyObject = {};
@@ -17,9 +18,23 @@ export default class KafkaSender implements RouteSenderAPI {
             topic: config.topicOverride || config.topic,
             bufferSize: config.bufferSize,
         });
+
+        this.config = config;
         this.isWildcard = config._key && config._key === '**';
         this.producer = producer;
-        this.tryFn = config.tryFn;
+        this.tryFn = config.tryFn || this.tryCatch;
+        this.logger = config.logger;
+    }
+
+    private tryCatch(fn: any) {
+        return (input: any) => {
+            try {
+                return fn(input);
+            } catch (err) {
+                this.logger.warn(`Error computing ${toString(input)}, error: ${err.message}`)
+                return null;
+            }
+        };
     }
 
     async initialize(): Promise<void> {

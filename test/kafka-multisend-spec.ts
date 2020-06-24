@@ -17,7 +17,6 @@ describe('Kafka Sender', () => {
     const firstTopic = `${senderTopic}-${topicMeta1}`;
     const secondTopic = `${senderTopic}-${topicMeta2}`;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const connectorMap: Record<string, string> = {
         'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p': connectionEndpoint1,
         'q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I': connectionEndpoint2,
