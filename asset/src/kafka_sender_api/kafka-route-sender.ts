@@ -98,6 +98,7 @@ export default class KafkaSender implements RouteSenderAPI {
     private getRouteTopic(msg: DataEntity): string|null {
         if (this.isWildcard) {
             const route = msg.getMetadata('standard:route');
+
             if (route) {
                 return `${this.config.topic}-${route}`;
             }

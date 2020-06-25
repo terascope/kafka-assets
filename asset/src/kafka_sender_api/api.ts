@@ -10,6 +10,7 @@ import {
     isBoolean
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
+import { KafkaSenderConfig } from '../kafka_sender/interfaces';
 import KafkaRouteSender from './kafka-route-sender';
 import { KafkaSenderAPIConfig } from './interfaces';
 
@@ -33,7 +34,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         return config;
     }
 
-    private clientConfig(clientConfig: AnyObject = {}) {
+    private clientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
         const config = {
             type: 'kafka',
@@ -64,11 +65,16 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
     }
 
     async create(
-        topic: string, config: AnyObject = {}
+        topic: string, config: Partial<KafkaSenderConfig> = {}
     ): Promise<{ client: KafkaRouteSender, config: KafkaSenderAPIConfig }> {
-        const { logger } = this;
+        const logger = config.logger || this.logger;
+        // if not set we treat as default
+        if (isNil(config._key)) config._key = '*';
+
+        const newTopic = (config._key === '*' || config._key === '**') ? topic : `${topic}-${config._key}`;
+
         const newConfig = Object.assign(
-            {}, this.apiConfig, config, { logger, topic }
+            {}, this.apiConfig, config, { logger, topic: newTopic }
         );
 
         const validConfig = this.validateConfig(newConfig);

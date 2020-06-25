@@ -81,10 +81,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
                 const keys = keyset.split(',');
 
                 for (const key of keys) {
-                    const newTopic = (key === '*' || key === '**') ? topic : `${topic}-${key}`;
                     const topicSettings: ConnectorMapping = {
                         connection: connectionMap[keyset],
-                        topic: newTopic,
+                        topic,
                         _key: key
                     };
                     this.connectorDict.set(key, topicSettings);
@@ -97,19 +96,18 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         }
     }
 
-    private async createTopic(route: string, topicOverride?: string) {
+    private async createTopic(route: string) {
         const { connection, topic, _key } = this.connectorDict.get(route) as ConnectorMapping;
-        const finalTopic = topicOverride || topic;
         let sender = this.senderApi.get(connection);
 
         if (isNil(sender)) {
             const { opConfig } = this;
             sender = await this.senderApi.create(
-                finalTopic,
+                topic,
                 {
                     ...opConfig,
                     connection,
-                    topic: finalTopic,
+                    topic,
                     _key,
                     tryFn: this.tryFn,
                     logger: this.kafkaLogger
@@ -145,18 +143,16 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
                 if (!this.topicMap.has('*')) {
                     await this.createTopic('*');
                 }
+
                 const routeConfig = this.topicMap.get('*') as Endpoint;
                 routeConfig.data.push(record);
             } else if (this.connectorDict.has('**')) {
                 if (!this.topicMap.has('**')) {
-                    await this.createTopic('**', '');
+                    await this.createTopic('**');
                 }
-                const config = this.senderApi.getConfig('**') as KafkaSenderConfig;
-                const routeTopic = route ? `${config.topic}-${route}` : config.topic;
-
                 const routeConfig = this.topicMap.get('**') as Endpoint;
 
-                await routeConfig.sender.verify(routeTopic);
+                await routeConfig.sender.verify(route);
 
                 routeConfig.data.push(record);
             } else {

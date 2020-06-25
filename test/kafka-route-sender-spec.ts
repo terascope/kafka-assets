@@ -63,7 +63,7 @@ describe('KafkaRouteSender', () => {
         // @ts-expect-error
         const api = harness.getOperationAPI(API_NAME) as KafkaAPI;
 
-        return api.create(topic, {});
+        return api.create(topic, apiSender);
     }
 
     beforeAll(async () => admin.ensureTopic(topic));
