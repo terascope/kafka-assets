@@ -10,6 +10,7 @@ import {
     isBoolean
 } from '@terascope/job-components';
 import { ConsumerClient } from '../_kafka_clients';
+import { KafkaReaderConfig } from '../kafka_reader/interfaces';
 import { KafkaReaderAPIConfig } from './interfaces';
 
 export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaReaderAPIConfig> {
@@ -28,7 +29,7 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaRead
         return config;
     }
 
-    private clientConfig(clientConfig: AnyObject = {}) {
+    private clientConfig(clientConfig: KafkaReaderAPIConfig = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
         const config = {
             type: 'kafka',
@@ -67,7 +68,7 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaRead
     }
 
     async create(
-        topic: string, config: AnyObject = {}
+        topic: string, config: Partial<KafkaReaderConfig> = {}
     ): Promise<{ client: ConsumerClient, config: KafkaReaderAPIConfig }> {
         const { logger } = this;
         const newConfig = Object.assign(

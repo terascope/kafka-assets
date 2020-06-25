@@ -1,18 +1,21 @@
 import {
-    RouteSenderAPI, AnyObject, DataEntity, getValidDate, isString, Logger, toString
+    RouteSenderAPI, DataEntity, getValidDate, isString, Logger, toString
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
+import { KafkaSenderAPIConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
+
+type FN = (input: any) => any;
 
 export default class KafkaSender implements RouteSenderAPI {
     logger: Logger;
     producer: ProducerClient;
     readonly hasConnected = false;
-    readonly config: AnyObject = {};
+    readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
     private tryFn: (msg: any, err: any) => DataEntity|null;
 
-    constructor(client: kafka.Producer, config: AnyObject) {
+    constructor(client: kafka.Producer, config: KafkaSenderAPIConfig) {
         const producer = new ProducerClient(client, {
             logger: config.logger,
             topic: config.topicOverride || config.topic,
@@ -26,7 +29,7 @@ export default class KafkaSender implements RouteSenderAPI {
         this.logger = config.logger;
     }
 
-    private tryCatch(fn: any) {
+    private tryCatch(fn: FN) {
         return (input: any) => {
             try {
                 return fn(input);

@@ -9,6 +9,8 @@ import {
     isNil
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
+import { KafkaSenderAPIConfig } from '../kafka_sender_api/interfaces';
+
 import { ProduceFn } from '../_kafka_clients';
 import KafkaRouteSender from '../kafka_sender_api/kafka-route-sender';
 
@@ -27,8 +29,8 @@ type TopicMap = Map<string, Endpoint>
 type ConnectorMap = Map<string, ConnectorMapping>
 
 const DEFAULT_API_NAME = 'kafka_sender_api';
-// TODO: this is wrong config
-type KafkaSenderFactoryAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderConfig>
+
+type KafkaSenderFactoryAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     topicMap: TopicMap = new Map();
@@ -97,18 +99,16 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     private async createTopic(route: string) {
-        const { connection, topic, _key } = this.connectorDict.get(route) as ConnectorMapping;
-        let sender = this.senderApi.get(connection);
+        const config = this.connectorDict.get(route) as ConnectorMapping;
+        let sender = this.senderApi.get(config.connection);
 
         if (isNil(sender)) {
             const { opConfig } = this;
             sender = await this.senderApi.create(
-                topic,
+                config.topic,
                 {
                     ...opConfig,
-                    connection,
-                    topic,
-                    _key,
+                    ...config,
                     tryFn: this.tryFn,
                     logger: this.kafkaLogger
                 }
