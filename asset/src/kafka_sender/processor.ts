@@ -100,12 +100,13 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
     private async createTopic(route: string) {
         const config = this.connectorDict.get(route) as ConnectorMapping;
+        if (isNil(config)) throw new Error(`Could not get config for route ${route}, please verify that this is in the connector_map`);
         let sender = this.senderApi.get(config.connection);
 
         if (isNil(sender)) {
             const { opConfig } = this;
             sender = await this.senderApi.create(
-                config.topic,
+                config.connection,
                 {
                     ...opConfig,
                     ...config,

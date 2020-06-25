@@ -12,7 +12,7 @@ type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
 describe('kafak-sender-api', () => {
     jest.setTimeout(15 * 1000);
     const mockFlush = jest.fn();
-
+    const connection = 'default';
     const topicMeta = 'h';
 
     const topic = `${senderTopic}-${topicMeta}`;
@@ -33,7 +33,7 @@ describe('kafak-sender-api', () => {
                 .bind(result.client);
             return result;
         },
-        endpoint: 'default'
+        endpoint: connection
     };
 
     const clients = [kafkaConfig];
@@ -79,11 +79,14 @@ describe('kafak-sender-api', () => {
 
         expect(test.size).toEqual(0);
 
-        const sender = await test.create(topic, {});
+        const sender = await test.create(connection, { topic });
 
         expect(test.size).toEqual(1);
 
         expect(sender.send).toBeDefined();
         expect(sender.verify).toBeDefined();
+
+        const fetchedSender = test.get(connection);
+        expect(fetchedSender).toBeDefined();
     });
 });
