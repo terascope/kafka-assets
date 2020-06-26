@@ -41,7 +41,7 @@ describe('kafak-sender-api', () => {
 
     async function makeTest() {
         const job = newTestJobConfig({
-            apis: [{ _name: API_NAME }],
+            apis: [{ _name: API_NAME, topic: 'hello' }],
             operations: [
                 {
                     _op: 'test-reader',

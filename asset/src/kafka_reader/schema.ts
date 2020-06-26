@@ -3,6 +3,83 @@ import {
 } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
+export const schema = {
+    topic: {
+        doc: 'Name of the Kafka topic to process',
+        default: '',
+        format: 'optional_String'
+    },
+    api_name: {
+        doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
+        default: null,
+        format: 'optional_String'
+    },
+    group: {
+        doc: 'Name of the Kafka consumer group',
+        default: '',
+        format: 'optional_String'
+    },
+    offset_reset: {
+        doc: 'How offset resets should be handled when there are no valid offsets for the consumer group.',
+        default: 'smallest',
+        format: ['smallest', 'earliest', 'beginning', 'largest', 'latest', 'error']
+    },
+    size: {
+        doc: 'How many records to read before a slice is considered complete.',
+        default: 10000,
+        format: Number
+    },
+    wait: {
+        doc: 'How long to wait for a full chunk of data to be available. Specified in milliseconds.',
+        default: '30 seconds',
+        format: 'duration'
+    },
+    max_poll_interval: {
+        doc: [
+            'The maximum delay between invocations of poll() when using consumer group management.',
+            'This places an upper bound on the amount of time that the consumer can be idle before fetching more records.',
+            'If poll() is not called before expiration of this timeout,',
+            'then the consumer is considered failed',
+            'and the group will rebalance in order to reassign the partitions to another member.',
+        ].join(' '),
+        default: '5 minutes',
+        format: 'duration'
+    },
+    connection: {
+        doc: 'The Kafka consumer connection to use.',
+        default: 'default',
+        format: 'optional_String'
+    },
+    use_commit_sync: {
+        doc: 'Use commit sync instead of async (usually not recommended)',
+        default: false,
+        format: Boolean
+    },
+    rollback_on_failure: {
+        doc: [
+            'Controls whether the consumer state is rolled back on failure.',
+            'This will protect against data loss,',
+            'however this can have an unintended side effect of blocking the job from moving if failures are minor and persistent.',
+            '**NOTE:** This currently defaults to `false` due to the side effects of the behavior,',
+            'at some point in the future it is expected this will default to `true`.',
+        ].join(' '),
+        default: false,
+        format: Boolean
+    },
+    partition_assignment_strategy: {
+        doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
+        default: '',
+        format: ['range', 'roundrobin', '']
+    },
+    _encoding: {
+        doc: 'How the data is parsed from buffer, default to JSON',
+        default: DataEncoding.JSON,
+        format: Object.values(DataEncoding)
+    }
+};
+
+const DEFAULT_API_NAME = 'kafka_reader_api';
+
 export default class Schema extends ConvictSchema<KafkaReaderConfig> {
     validateJob(job: ValidatedJobConfig): void {
         const secondOp = job.operations[1] && job.operations[1]._op;
@@ -10,93 +87,24 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
         if (secondOp === 'json_protocol') throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
 
         const config = getOpConfig(job, 'kafka_reader') as KafkaReaderConfig;
+        const { api_name, ...apiConfig } = config;
+        const kafkaReaderAPI = job.apis.find((jobApi) => jobApi._name === DEFAULT_API_NAME);
 
-        const apiName = config?.api_name;
-
-        if (isNotNil(apiName)) {
-            const kafkaReaderAPI = job.apis.find((api) => api._name === apiName);
+        if (isNotNil(api_name) || kafkaReaderAPI) {
             if (isNil(kafkaReaderAPI)) throw new Error(`kafka_reader parameter for api_name: "${kafkaReaderAPI}" was not found listed in the apis of this execution ${JSON.stringify(job, null, 4)}`);
+            if (isNotNil(config.topic) || isNotNil(config.group)) throw new Error('Cannot specify topic and group in kafka_reader if you have specified an kafka_reader_api');
         } else {
+            if (isNil(apiConfig.topic)) throw new Error('Parameter topic needs to be defined in operation');
+            if (isNil(apiConfig.group)) throw new Error('Parameter group needs to be defined in operation');
+
             job.apis.push({
-                _name: 'kafka_reader_api'
+                _name: DEFAULT_API_NAME,
+                ...apiConfig
             });
         }
     }
 
     build(): Record<string, any> {
-        return {
-            topic: {
-                doc: 'Name of the Kafka topic to process',
-                default: '',
-                format: 'optional_String'
-            },
-            api_name: {
-                doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
-                default: null,
-                format: 'optional_String'
-            },
-            group: {
-                doc: 'Name of the Kafka consumer group',
-                default: '',
-                format: 'optional_String'
-            },
-            offset_reset: {
-                doc: 'How offset resets should be handled when there are no valid offsets for the consumer group.',
-                default: 'smallest',
-                format: ['smallest', 'earliest', 'beginning', 'largest', 'latest', 'error']
-            },
-            size: {
-                doc: 'How many records to read before a slice is considered complete.',
-                default: 10000,
-                format: Number
-            },
-            wait: {
-                doc: 'How long to wait for a full chunk of data to be available. Specified in milliseconds.',
-                default: '30 seconds',
-                format: 'duration'
-            },
-            max_poll_interval: {
-                doc: [
-                    'The maximum delay between invocations of poll() when using consumer group management.',
-                    'This places an upper bound on the amount of time that the consumer can be idle before fetching more records.',
-                    'If poll() is not called before expiration of this timeout,',
-                    'then the consumer is considered failed',
-                    'and the group will rebalance in order to reassign the partitions to another member.',
-                ].join(' '),
-                default: '5 minutes',
-                format: 'duration'
-            },
-            connection: {
-                doc: 'The Kafka consumer connection to use.',
-                default: 'default',
-                format: 'optional_String'
-            },
-            use_commit_sync: {
-                doc: 'Use commit sync instead of async (usually not recommended)',
-                default: false,
-                format: Boolean
-            },
-            rollback_on_failure: {
-                doc: [
-                    'Controls whether the consumer state is rolled back on failure.',
-                    'This will protect against data loss,',
-                    'however this can have an unintended side effect of blocking the job from moving if failures are minor and persistent.',
-                    '**NOTE:** This currently defaults to `false` due to the side effects of the behavior,',
-                    'at some point in the future it is expected this will default to `true`.',
-                ].join(' '),
-                default: false,
-                format: Boolean
-            },
-            partition_assignment_strategy: {
-                doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
-                default: '',
-                format: ['range', 'roundrobin', '']
-            },
-            _encoding: {
-                doc: 'How the data is parsed from buffer, default to JSON',
-                default: DataEncoding.JSON,
-                format: Object.values(DataEncoding)
-            }
-        };
+        return schema;
     }
 }

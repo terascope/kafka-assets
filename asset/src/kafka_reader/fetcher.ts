@@ -25,7 +25,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         const api = this.getAPI<KafkaReaderFactoryAPI>(apiName);
         // this might be undefined, but will throw in the create call if it does not exist
         const topic = this.opConfig.topic || apiTopic as string;
-        const consumer = await api.create(topic, this.opConfig);
+        const consumer = await api.create(topic, {});
         // we do this as size and wait might live on the apiConfig, not on the processors opConfig
         const { size, wait } = api.getConfig(topic) as KafkaReaderAPIConfig;
 

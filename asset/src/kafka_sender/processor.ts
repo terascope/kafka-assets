@@ -53,7 +53,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     }
 
     async initialize(): Promise<void> {
-        await super.initialize();
+        super.initialize();
         let apiName = DEFAULT_API_NAME;
         let apiTopic: string | undefined;
         let apiConnection: string | undefined;
@@ -104,11 +104,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         let sender = this.senderApi.get(config.connection);
 
         if (isNil(sender)) {
-            const { opConfig } = this;
             sender = await this.senderApi.create(
                 config.connection,
                 {
-                    ...opConfig,
                     ...config,
                     tryFn: this.tryFn,
                     logger: this.kafkaLogger

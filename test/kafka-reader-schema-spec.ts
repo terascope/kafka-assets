@@ -45,6 +45,8 @@ describe('Kafka Reader Schema', () => {
                 operations: [
                     {
                         _op: 'kafka_reader',
+                        topic: 'hello',
+                        group: 'hi'
                     },
                     {
                         _op: 'noop',
@@ -61,6 +63,8 @@ describe('Kafka Reader Schema', () => {
                 operations: [
                     {
                         _op: 'kafka_reader',
+                        topic: 'hello',
+                        group: 'hi'
                     },
                     {
                         _op: 'noop',
@@ -70,8 +74,69 @@ describe('Kafka Reader Schema', () => {
             expect(() => {
                 schema.validateJob(job);
                 expect(job.apis).toBeArrayOfSize(1);
-                expect(job.apis[0]).toMatchObject({ _name: 'kafka_reader_api' });
+                expect(job.apis[0]).toMatchObject({ _name: 'kafka_reader_api', topic: 'hello', group: 'hi' });
             }).not.toThrowError();
+        });
+
+        it('should throw if topic/group is specified in opConfig if api is set with api_name', () => {
+            const job = newTestJobConfig({
+                apis: [
+                    { _name: 'kafka_reader_api', topic: 'hello', group: 'hi' }
+                ],
+                operations: [
+                    {
+                        _op: 'kafka_reader',
+                        topic: 'hello',
+                        group: 'hi',
+                        api_name: 'kafka_reader_api'
+                    },
+                    {
+                        _op: 'noop',
+                    }
+                ]
+            });
+            expect(() => {
+                schema.validateJob(job);
+            }).toThrowError('Cannot specify topic and group in kafka_reader if you have specified an kafka_reader_api');
+        });
+
+        it('should assocaite with default kafka sender if no api_name is specified', () => {
+            const job = newTestJobConfig({
+                apis: [
+                    { _name: 'kafka_reader_api', topic: 'hello', group: 'hi' }
+                ],
+                operations: [
+                    {
+                        _op: 'kafka_reader',
+                    },
+                    {
+                        _op: 'noop',
+                    }
+                ]
+            });
+            expect(() => {
+                schema.validateJob(job);
+            }).not.toThrowError();
+        });
+
+        it('should assocaite with default kafka sender and throw if configs are inncorect', () => {
+            const job = newTestJobConfig({
+                apis: [
+                    { _name: 'kafka_reader_api', topic: 'hello', group: 'hi' }
+                ],
+                operations: [
+                    {
+                        _op: 'kafka_reader',
+                        topic: 'hello',
+                    },
+                    {
+                        _op: 'noop',
+                    }
+                ]
+            });
+            expect(() => {
+                schema.validateJob(job);
+            }).toThrowError();
         });
     });
 
