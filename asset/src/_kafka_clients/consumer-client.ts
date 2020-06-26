@@ -43,8 +43,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
     private _pendingOffsets: CountPerPartition = {};
     private _rebalanceTimeout: NodeJS.Timer|undefined;
-    private rollback_on_failure = false;
-    private use_commit_sync = false
+    private rollbackOnFailure = false;
+    private useCommitSync = false
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
@@ -54,11 +54,11 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this.encoding._encoding = _encoding;
 
         if (isNotNil(rollback_on_failure) && isBoolean(rollback_on_failure)) {
-            this.rollback_on_failure = rollback_on_failure;
+            this.rollbackOnFailure = rollback_on_failure;
         }
 
         if (isNotNil(use_commit_sync) && isBoolean(use_commit_sync)) {
-            this.use_commit_sync = use_commit_sync;
+            this.useCommitSync = use_commit_sync;
         }
 
         this.processKafkaRecord = (msg: KafkaMessage): DataEntity => {
@@ -103,7 +103,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /**
      * Committed to the last known offsets stored.
     */
-    async commit(useSync = false): Promise<void> {
+    async commit(): Promise<void> {
         const errors: Error[] = [];
 
         const promises = this._flushOffsets('ended')
@@ -112,7 +112,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
                 return this._try(async () => {
                     // add a random delay to stagger commits
                     await pDelay(i * getRandom(2, 30));
-                    if (useSync) {
+                    if (this.useCommitSync) {
                         await this._client.commitSync(offset);
                     } else {
                         await this._client.commit(offset);
@@ -135,17 +135,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         }
     }
 
-    async onRetry(): Promise<void> {
-        if (this.rollback_on_failure) {
+    async retry(): Promise<void> {
+        if (this.rollbackOnFailure) {
             await this.rollback();
         } else {
             this._logger.warn('committing kafka offsets on slice retry - THIS MAY CAUSE DATA LOSS');
-            await this.commit(this.use_commit_sync);
+            await this.commit();
         }
-    }
-
-    async onFinalizing(): Promise<void> {
-        await this.commit(this.use_commit_sync);
     }
 
     /**

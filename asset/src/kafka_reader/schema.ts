@@ -1,5 +1,5 @@
 import {
-    ConvictSchema, ValidatedJobConfig, getOpConfig, isNotNil, isNil, DataEncoding
+    ConvictSchema, ValidatedJobConfig, getOpConfig, isNotNil, isNil
 } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
@@ -70,11 +70,6 @@ export const schema = {
         doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
         default: '',
         format: ['range', 'roundrobin', '']
-    },
-    _encoding: {
-        doc: 'How the data is parsed from buffer, default to JSON',
-        default: DataEncoding.JSON,
-        format: Object.values(DataEncoding)
     }
 };
 

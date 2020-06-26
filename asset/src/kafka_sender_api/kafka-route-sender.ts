@@ -48,11 +48,9 @@ export default class KafkaSender implements RouteSenderAPI {
         await this.producer.disconnect();
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     async send(data: DataEntity[]): Promise<void> {
         const mapper = this.mapFn.bind(this);
-        const resutls = await this.producer.produce(data, mapper);
-        return resutls;
+        await this.producer.produce(data, mapper);
     }
 
     private mapFn(msg: DataEntity): ProduceMessage {

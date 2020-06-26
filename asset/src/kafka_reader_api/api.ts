@@ -102,7 +102,7 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaRead
         const actions: Promise<void>[] = [];
 
         for (const consumer of this._registry.values()) {
-            actions.push(consumer.onFinalizing());
+            actions.push(consumer.commit());
         }
 
         await Promise.all(actions);
@@ -113,7 +113,7 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaRead
         const actions: Promise<void>[] = [];
 
         for (const consumer of this._registry.values()) {
-            actions.push(consumer.onRetry());
+            actions.push(consumer.retry());
         }
 
         await Promise.all(actions);

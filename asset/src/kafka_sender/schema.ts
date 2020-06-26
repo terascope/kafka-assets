@@ -110,7 +110,7 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
         const kafkaSenderAPI = job.apis.find((jobApi) => jobApi._name === DEFAULT_API_NAME);
 
         if (isNotNil(api_name) || kafkaSenderAPI) {
-            if (isNil(kafkaSenderAPI)) throw new Error(`kafka_sender parameter for api_name: "${kafkaSenderAPI}" was not found listed in the apis of this execution ${JSON.stringify(job, null, 4)}`);
+            if (isNil(kafkaSenderAPI)) throw new Error(`kafka_sender parameter for api_name: "${kafkaSenderAPI}" was not found listed in the apis`);
             if (isNotNil(opConfig.topic)) throw new Error('Cannot specify topic and group in kafka_reader if you have specified an kafka_reader_api');
         } else {
             if (isNil(apiConfig.topic)) throw new Error('Parameter topic needs to be defined in operation');

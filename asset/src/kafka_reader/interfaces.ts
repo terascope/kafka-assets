@@ -1,4 +1,4 @@
-import { OpConfig, DataEncoding } from '@terascope/job-components';
+import { OpConfig } from '@terascope/job-components';
 
 export interface KafkaReaderConfig extends OpConfig {
     /**
@@ -65,9 +65,4 @@ export interface KafkaReaderConfig extends OpConfig {
      * and the name is kafka_reader_api, and is injected into the execution
     */
     api_name?: string;
-    /**
-     * How to decode data from buffer, defaults to JSON
-     *
-    */
-    _encoding?: DataEncoding
 }
