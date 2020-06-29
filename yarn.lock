@@ -554,6 +554,16 @@
     datemath-parser "^1.0.6"
     uuid "^8.1.0"
 
+"@terascope/job-components@^0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.36.0.tgz#89f2f83306ce736f258af1b2a26126614baaeef5"
+  integrity sha512-8FjwGhx2XK/UpU4b0ipGDK8M+PJG/7ElmidPteaYjGfsfATI493oDkqNRv3gKQ1ctYqISMyDruOyy6lJ28vA6A==
+  dependencies:
+    "@terascope/utils" "^0.28.0"
+    convict "^4.4.1"
+    datemath-parser "^1.0.6"
+    uuid "^8.1.0"
+
 "@terascope/teraslice-op-test-harness@^1.19.0":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.19.0.tgz#089daf67f71883c76ea39e1ded3c9ba4b7d78e2e"
