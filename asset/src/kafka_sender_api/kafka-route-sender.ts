@@ -1,5 +1,11 @@
 import {
-    RouteSenderAPI, DataEntity, getValidDate, isString, Logger, toString
+    RouteSenderAPI,
+    DataEntity,
+    getValidDate,
+    isString,
+    Logger,
+    toString,
+    TSError
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderAPIConfig } from './interfaces';
@@ -34,8 +40,7 @@ export default class KafkaSender implements RouteSenderAPI {
             try {
                 return fn(input);
             } catch (err) {
-                this.logger.warn(`Error computing ${toString(input)}, error: ${err.message}`);
-                return null;
+                throw new TSError(`Error computing ${toString(input)}`, { reason: err.message });
             }
         };
     }

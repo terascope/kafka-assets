@@ -44,7 +44,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _pendingOffsets: CountPerPartition = {};
     private _rebalanceTimeout: NodeJS.Timer|undefined;
     private rollbackOnFailure = false;
-    private useCommitSync = false
+    private useCommitSync: boolean;
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
@@ -59,6 +59,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         if (isNotNil(use_commit_sync) && isBoolean(use_commit_sync)) {
             this.useCommitSync = use_commit_sync;
+        } else {
+            this.useCommitSync = false;
         }
 
         this.processKafkaRecord = (msg: KafkaMessage): DataEntity => {

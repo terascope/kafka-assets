@@ -3,7 +3,6 @@ import {
     ValidatedJobConfig,
     getOpConfig,
     get,
-    isPlainObject,
     isNil,
     isNotNil
 } from '@terascope/job-components';
@@ -20,17 +19,6 @@ export const schema = {
         doc: 'Name of the Kafka topic to send data to',
         default: null,
         format: 'optional_String'
-    },
-    connection_map: {
-        doc: 'Mapping from ID prefix to connection names. Routes data to multiple topics '
-        + 'based on the incoming partition metadata. The key name can be a '
-        + 'comma separated list of prefixes that will map to the same connection.',
-        default: null,
-        format: (val: unknown): void => {
-            if (val !== null) {
-                if (!isPlainObject(val)) throw new Error('Invalid parameter, connection_map must be an object');
-            }
-        }
     },
     id_field: {
         doc: 'Field in the incoming record that contains keys',
