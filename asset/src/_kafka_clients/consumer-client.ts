@@ -246,28 +246,6 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         return results;
     }
 
-    processKafkaRecord(msg: KafkaMessage): DataEntity {
-        const now = Date.now();
-
-        const metadata: KafkaMessageMetadata = {
-            _key: keyToString(msg.key),
-            _ingestTime: msg.timestamp || now,
-            _processTime: now,
-            // TODO this should be based of an actual value
-            _eventTime: now,
-            topic: msg.topic,
-            partition: msg.partition,
-            offset: msg.offset,
-            size: msg.size,
-        };
-
-        return DataEntity.fromBuffer(
-            msg.value as string|Buffer,
-            this.encoding,
-            metadata
-        );
-    }
-
     /**
      * Consume messages from kafka, and transform them, and track the offsets.
      */
