@@ -45,6 +45,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _rebalanceTimeout: NodeJS.Timer|undefined;
     private rollbackOnFailure = false;
     private useCommitSync: boolean;
+    processKafkaRecord: (msg: KafkaMessage) => DataEntity
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
