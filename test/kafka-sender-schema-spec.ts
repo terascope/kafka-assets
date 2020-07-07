@@ -65,37 +65,37 @@ describe('Kafka Sender Schema', () => {
 
     describe('when validating the schema', () => {
         it('should throw an error if no topic is specified', async () => {
-            expect(async () => makeTest({
+            await expect(makeTest({
                 _op: 'kafka_sender'
             })).toReject();
         });
 
-        it('should not throw an error if valid config is given', () => {
-            expect(async () => makeTest({
+        it('should not throw an error if valid config is given', async () => {
+            await expect(makeTest({
                 _op: 'kafka_sender',
                 topic: 'hello'
             })).toResolve();
         });
 
-        it('should not throw an error if api and sender make a valid config', () => {
+        it('should not throw an error if api and sender make a valid config', async () => {
             const opConfig = { _op: 'kafka_sender' };
             const apiConfig = { _name: 'kafka_sender_api', topic: 'hello' };
 
-            expect(async () => makeTest(opConfig, apiConfig)).toResolve();
+            await expect(makeTest(opConfig, apiConfig)).toResolve();
         });
 
         it('should throw an error if opConfig topic is specified and api is set', async () => {
             const opConfig = { _op: 'kafka_sender', topic: 'hello', api_name: 'kafka_sender_api' };
             const apiConfig = { _name: 'kafka_sender_api', topic: 'hello' };
 
-            expect(async () => makeTest(opConfig, apiConfig)).toReject();
+            await expect(makeTest(opConfig, apiConfig)).toReject();
         });
 
         it('should throw an error topic is specified and api is set when api is indirectly referenced', async () => {
             const opConfig = { _op: 'kafka_sender', topic: 'hello' };
             const apiConfig = { _name: 'kafka_sender_api', topic: 'hello' };
 
-            expect(async () => makeTest(opConfig, apiConfig)).toReject();
+            await expect(makeTest(opConfig, apiConfig)).toReject();
         });
 
         it('should set the required_acks default to 1', () => {

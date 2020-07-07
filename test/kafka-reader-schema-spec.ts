@@ -163,27 +163,27 @@ describe('Kafka Reader Schema', () => {
         }
 
         it('should throw an error if no topic is specified', async () => {
-            expect(async () => makeTest({ _op: 'kafka_reader' })).toReject();
+            await expect(makeTest({ _op: 'kafka_reader' })).toReject();
         });
 
-        it('should throw an error if no group is specified', () => {
-            expect(async () => makeTest({ _op: 'kafka_reader', topic: 'hello' })).toReject();
+        it('should throw an error if no group is specified', async () => {
+            await expect(makeTest({ _op: 'kafka_reader', topic: 'hello' })).toReject();
         });
 
-        it('should not throw an error if valid config is given', () => {
-            expect(async () => makeTest({ _op: 'kafka_reader', topic: 'hello', group: 'hello' })).toResolve();
+        it('should not throw an error if valid config is given', async () => {
+            await expect(makeTest({ _op: 'kafka_reader', topic: 'hello', group: 'hello' })).toResolve();
         });
 
-        it('should not throw an error if topic is provided in api', () => {
+        it('should not throw an error if topic is provided in api', async () => {
             const opConfig = { _op: 'kafka_reader', group: 'hello' };
             const apiConfig: APIConfig = { _name: 'kafka_reader_api', topic: 'hello' };
-            expect(async () => makeTest(opConfig, apiConfig)).toResolve();
+            await expect(makeTest(opConfig, apiConfig)).toResolve();
         });
 
-        it('should not throw an error if group is provided in api', () => {
+        it('should not throw an error if group is provided in api', async () => {
             const opConfig = { _op: 'kafka_reader' };
             const apiConfig: APIConfig = { _name: 'kafka_reader_api', topic: 'hello', group: 'hello' };
-            expect(async () => makeTest(opConfig, apiConfig)).toResolve();
+            await expect(makeTest(opConfig, apiConfig)).toResolve();
         });
     });
 });
