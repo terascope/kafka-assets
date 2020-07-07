@@ -64,5 +64,5 @@ export interface KafkaReaderConfig extends OpConfig {
      * Name of kafka api used for reader, if none is provided, then one is made
      * and the name is kafka_reader_api, and is injected into the execution
     */
-    api_name?: string;
+    api_name: string;
 }

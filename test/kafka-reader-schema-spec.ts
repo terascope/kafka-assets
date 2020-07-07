@@ -1,9 +1,17 @@
 import 'jest-extended';
 import {
-    TestContext, newTestJobConfig, OpConfig, APIConfig, ValidatedJobConfig
+    TestContext,
+    newTestJobConfig,
+    OpConfig,
+    APIConfig,
+    ValidatedJobConfig,
+    TestClientConfig,
+    Logger
 } from '@terascope/job-components';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Schema from '../asset/src/kafka_reader/schema';
+import Connector from '../packages/terafoundation_kafka_connector/dist';
+import { kafkaBrokers } from './helpers/config';
 
 describe('Kafka Reader Schema', () => {
     let context: TestContext;
@@ -141,6 +149,16 @@ describe('Kafka Reader Schema', () => {
     });
 
     describe('when validating the schema', () => {
+        const clientConfig: TestClientConfig = {
+            type: 'kafka',
+            config: {
+                brokers: kafkaBrokers,
+            },
+            create(config: any, _logger: Logger, settings: any) {
+                return Connector.create(config, _logger, settings);
+            }
+        };
+        const clients = [clientConfig];
         async function makeTest(config: OpConfig, apiConfig?: APIConfig) {
             const testJob: Partial<ValidatedJobConfig> = {
                 analytics: true,
@@ -157,13 +175,13 @@ describe('Kafka Reader Schema', () => {
 
             const job = newTestJobConfig(testJob);
 
-            harness = new WorkerTestHarness(job);
+            harness = new WorkerTestHarness(job, { clients });
 
             await harness.initialize();
         }
 
         it('should throw an error if no topic is specified', async () => {
-            await expect(makeTest({ _op: 'kafka_reader' })).toReject();
+            await expect(makeTest({ _op: 'kafka_reader', group: 'hello' })).toReject();
         });
 
         it('should throw an error if no group is specified', async () => {
@@ -174,15 +192,10 @@ describe('Kafka Reader Schema', () => {
             await expect(makeTest({ _op: 'kafka_reader', topic: 'hello', group: 'hello' })).toResolve();
         });
 
-        it('should not throw an error if topic is provided in api', async () => {
-            const opConfig = { _op: 'kafka_reader', group: 'hello' };
-            const apiConfig: APIConfig = { _name: 'kafka_reader_api', topic: 'hello' };
-            await expect(makeTest(opConfig, apiConfig)).toResolve();
-        });
-
-        it('should not throw an error if group is provided in api', async () => {
+        it('should not throw an error if topic or group is provided in api', async () => {
             const opConfig = { _op: 'kafka_reader' };
             const apiConfig: APIConfig = { _name: 'kafka_reader_api', topic: 'hello', group: 'hello' };
+
             await expect(makeTest(opConfig, apiConfig)).toResolve();
         });
     });
