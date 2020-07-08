@@ -123,19 +123,19 @@ describe('Kafka Sender', () => {
     });
 
     it('should able to call _clientEvents without double listening', () => {
-        const expectedTopic = kafkaSender.topicMap.get('*');
+        const expectedTopic = kafkaSender.api;
         // @ts-expect-error
-        const expected = expectedTopic.sender.producer._client.listenerCount('error');
+        const expected = expectedTopic.producer._client.listenerCount('error');
 
         expect(() => {
-            const testTopic = kafkaSender.topicMap.get('*');
+            const testTopic = kafkaSender.api;
             // @ts-expect-error
-            testTopic.sender.producer._clientEvents();
+            testTopic.producer._clientEvents();
         }).not.toThrowError();
 
-        const actualTopic = kafkaSender.topicMap.get('*');
+        const actualTopic = kafkaSender.api;
         // @ts-expect-error
-        const actual = actualTopic.sender.producer._client.listenerCount('error');
+        const actual = actualTopic.producer._client.listenerCount('error');
 
         expect(actual).toEqual(expected);
     });
