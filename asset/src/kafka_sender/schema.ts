@@ -14,6 +14,8 @@ function fetchConfig(job: ValidatedJobConfig) {
     return opConfig as KafkaSenderConfig;
 }
 
+const DEFAULT_API_NAME = 'kafka_sender_api';
+
 export const schema = {
     topic: {
         doc: 'Name of the Kafka topic to send data to',
@@ -72,12 +74,10 @@ export const schema = {
     },
     api_name: {
         doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
-        default: null,
+        default: DEFAULT_API_NAME,
         format: 'optional_String'
     },
 };
-
-const DEFAULT_API_NAME = 'kafka_sender_api';
 
 export default class Schema extends ConvictSchema<KafkaSenderConfig> {
     validateJob(job: ValidatedJobConfig): void {
@@ -97,8 +97,7 @@ export default class Schema extends ConvictSchema<KafkaSenderConfig> {
         const { api_name, ...apiConfig } = opConfig;
         const kafkaSenderAPI = job.apis.find((jobApi) => jobApi._name === DEFAULT_API_NAME);
 
-        if (isNotNil(api_name) || kafkaSenderAPI) {
-            if (isNil(kafkaSenderAPI)) throw new Error(`kafka_sender parameter for api_name: "${kafkaSenderAPI}" was not found listed in the apis`);
+        if (kafkaSenderAPI) {
             if (isNotNil(opConfig.topic)) throw new Error('Cannot specify topic and group in kafka_reader if you have specified an kafka_reader_api');
         } else {
             if (isNil(apiConfig.topic)) throw new Error('Parameter topic needs to be defined in operation');
