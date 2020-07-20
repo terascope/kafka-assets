@@ -554,12 +554,21 @@
     datemath-parser "^1.0.6"
     uuid "^8.1.0"
 
-"@terascope/teraslice-op-test-harness@^1.19.0":
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.19.0.tgz#089daf67f71883c76ea39e1ded3c9ba4b7d78e2e"
-  integrity sha512-OV9vT+Zs5NjeKmGWnHATJZmXpVxqgzhre2j+1SgfhH4zLKZcGoLt9rOtVofq8CxB4CHUsihn/gC79CvcLDUriQ==
+"@terascope/job-components@^0.38.0":
+  version "0.38.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.38.1.tgz#e060dfd4f387ccf19c2525706f0e2c253a7e937b"
+  integrity sha512-V95y+Tv0oqYia/Erm2WqC5B7UouwCrHYGD0U5JiezDBa60xPUCpR44/CLBesBItGBv0r73+dmYb+0SELPjlEkQ==
   dependencies:
-    "@terascope/job-components" "^0.35.0"
+    "@terascope/utils" "^0.29.1"
+    convict "^4.4.1"
+    datemath-parser "^1.0.6"
+    uuid "^8.2.0"
+
+"@terascope/teraslice-op-test-harness@^1.22.0":
+  version "1.22.1"
+  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.22.1.tgz#c6f8fee22e5cc5fc2b7508fe1a612c5471e9c4d2"
+  integrity sha512-Q/lSueDNQQItvlP1rgb2DeUt1+oIOE0a8t9H06o62aJ+l8aT1G1KU0S5NrchiUhgLIuMeYhXQKJ5wajU8oRdMA==
+  dependencies:
     bluebird "^3.7.2"
 
 "@terascope/types@^0.4.0":
@@ -575,6 +584,24 @@
     "@terascope/types" "^0.4.0"
     debug "^4.1.1"
     is-plain-object "^3.0.0"
+    js-string-escape "^1.0.1"
+    kind-of "^6.0.3"
+    latlon-geohash "^1.1.0"
+    lodash.get "^4.4.2"
+    lodash.has "^4.5.2"
+    lodash.set "^4.3.2"
+    lodash.unset "^4.5.2"
+    p-map "^4.0.0"
+    shallow-clone "^3.0.1"
+
+"@terascope/utils@^0.29.1":
+  version "0.29.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.29.1.tgz#b1529541277f0897c0e9c2a370551399cb7f91db"
+  integrity sha512-2H8IzccRY+D3RodBcFneZXocugSk83s4oJti04JWWEX+fGN1anCy/IVit2l6Mw14RMwsIE3munJ1KY76I1oLmw==
+  dependencies:
+    "@terascope/types" "^0.4.0"
+    debug "^4.1.1"
+    is-plain-object "^3.0.1"
     js-string-escape "^1.0.1"
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
@@ -2597,6 +2624,11 @@ is-plain-object@^3.0.0:
   integrity sha512-tZIpofR+P05k8Aocp7UI/2UTa9lTJSebCXpFFoR9aibpokDj/uXBsJ8luUu0tTVYKkMU6URDUuOfJZ7koewXvg==
   dependencies:
     isobject "^4.0.0"
+
+is-plain-object@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-3.0.1.tgz#662d92d24c0aa4302407b0d45d21f2251c85f85b"
+  integrity sha512-Xnpx182SBMrr/aBik8y+GuR4U1L9FqMSojwDQwPMmxyC6bvEqly9UBCxhauBF5vNh2gwWJNX6oDV7O+OM4z34g==
 
 is-potential-custom-element-name@^1.0.0:
   version "1.0.0"
@@ -4791,13 +4823,13 @@ table@^5.2.3:
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
 
-teraslice-test-harness@^0.21.0:
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.21.0.tgz#cf11b57163491caae9c4496e0d6fb0428226279f"
-  integrity sha512-e5+nB2IEih5tQTumvNRSTGsQxk1RLUZQoTU59ruIAVf4LVypFv0lEpXG0/vgN4IqNNT0G+Dd4XjcEnZAFKbP4A==
+teraslice-test-harness@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.24.0.tgz#afbc4fe857c045c2e9277ac3484d110a821d2bba"
+  integrity sha512-MW/IxTSp+VblGwhwoZhcWXz1dgKpeaegt5P0+HP97vO/oZYNuQNT9yGhTN6Or3/BbJ4g4HQ3rNj9grrnI8Nfvg==
   dependencies:
-    "@terascope/job-components" "^0.35.0"
-    "@terascope/teraslice-op-test-harness" "^1.19.0"
+    "@terascope/job-components" "^0.38.0"
+    "@terascope/teraslice-op-test-harness" "^1.22.0"
 
 terminal-link@^2.0.0:
   version "2.1.1"
@@ -5061,6 +5093,11 @@ uuid@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.1.0.tgz#6f1536eb43249f473abc6bd58ff983da1ca30d8d"
   integrity sha512-CI18flHDznR0lq54xBycOVmphdCYnQLKn8abKn7PXUiKUGdEd+/l9LWNJmugXel4hXq7S+RMNl34ecyC9TntWg==
+
+uuid@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.2.0.tgz#cb10dd6b118e2dada7d0cd9730ba7417c93d920e"
+  integrity sha512-CYpGiFTUrmI6OBMkAdjSDM0k5h8SkkiTP4WAjQgDgNB1S3Ou9VBEvr6q0Kv2H1mMk7IWfxYGpMH5sd5AvcIV2Q==
 
 v8-compile-cache@^2.0.3:
   version "2.1.1"
