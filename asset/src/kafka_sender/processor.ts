@@ -9,7 +9,6 @@ import {
 import { KafkaSenderConfig } from './interfaces';
 import { KafkaSenderAPIConfig } from '../kafka_sender_api/interfaces';
 
-import { ProduceFn } from '../_kafka_clients';
 import KafkaRouteSender from '../kafka_sender_api/kafka-route-sender';
 
 interface Endpoint {
@@ -35,7 +34,6 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     connectorDict: ConnectorMap = new Map();
     hasConnectionMap = false;
     kafkaLogger: Logger
-    tryFn: ProduceFn;
     api!: KafkaRouteSender;
 
     constructor(
@@ -47,7 +45,6 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
         const logger = this.logger.child({ module: 'kafka-producer' });
         this.kafkaLogger = logger;
-        this.tryFn = this.tryRecord.bind(this) as ProduceFn;
     }
 
     async initialize(): Promise<void> {
@@ -73,7 +70,6 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             {
                 connection,
                 topic,
-                tryFn: this.tryFn,
                 logger: this.kafkaLogger
             }
         );

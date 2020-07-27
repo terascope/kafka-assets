@@ -9,11 +9,11 @@ import {
     isNumber,
     isBoolean
 } from '@terascope/job-components';
-import { ConsumerClient } from '../_kafka_clients';
+import { APIConsumer } from '../_kafka_clients';
 import { KafkaReaderConfig } from '../kafka_reader/interfaces';
 import { KafkaReaderAPIConfig } from './interfaces';
 
-export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaReaderAPIConfig> {
+export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderAPIConfig> {
     private validateConfig(config: AnyObject): KafkaReaderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
         if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
@@ -69,7 +69,7 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaRead
 
     async create(
         topic: string, config: Partial<KafkaReaderConfig> = {}
-    ): Promise<{ client: ConsumerClient, config: KafkaReaderAPIConfig }> {
+    ): Promise<{ client: APIConsumer, config: KafkaReaderAPIConfig }> {
         const { logger } = this;
         const newConfig = Object.assign(
             {}, this.apiConfig, config, { logger, topic }
@@ -79,7 +79,13 @@ export default class KafkaReaderApi extends APIFactory<ConsumerClient, KafkaRead
         const clientConfig = this.clientConfig(validConfig);
 
         const kafkaClient = this.context.foundation.getConnection(clientConfig).client;
-        const client = new ConsumerClient(kafkaClient, { ...validConfig, topic, logger });
+        const tryFn = this.tryRecord.bind(this);
+        const client = new APIConsumer(kafkaClient, {
+            ...validConfig,
+            topic,
+            logger,
+            tryFn
+        });
 
         await client.connect();
 

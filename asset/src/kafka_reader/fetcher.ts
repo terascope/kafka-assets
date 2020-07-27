@@ -1,13 +1,13 @@
 import { Fetcher, DataEntity, APIFactoryRegistry } from '@terascope/job-components';
 import { KafkaReaderAPIConfig } from '../kafka_reader_api/interfaces';
 import { KafkaReaderConfig } from './interfaces';
-import { ConsumerClient, ConsumeFn } from '../_kafka_clients';
+import { APIConsumer } from '../_kafka_clients';
 
-type KafkaReaderFactoryAPI = APIFactoryRegistry<ConsumerClient, KafkaReaderAPIConfig>
+type KafkaReaderFactoryAPI = APIFactoryRegistry<APIConsumer, KafkaReaderAPIConfig>
 
 const DEFAULT_API_NAME = 'kafka_reader_api';
 export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
-    consumer!: ConsumerClient;
+    consumer!: APIConsumer;
     consumeConfig!: { size: number; wait: number };
 
     async initialize(): Promise<void> {
@@ -34,7 +34,6 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     }
 
     async fetch(): Promise<DataEntity[]> {
-        const tryRecord = this.tryRecord.bind(this) as ConsumeFn;
-        return this.consumer.consume(tryRecord, this.consumeConfig);
+        return this.consumer.consume(this.consumeConfig);
     }
 }

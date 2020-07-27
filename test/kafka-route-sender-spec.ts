@@ -60,8 +60,8 @@ describe('KafkaRouteSender', () => {
         harness = new WorkerTestHarness(job, { clients });
 
         await harness.initialize();
-        // @ts-expect-error
-        const api = harness.getOperationAPI(API_NAME) as KafkaAPI;
+
+        const api = harness.getAPI(API_NAME) as KafkaAPI;
 
         return api.create(topic, apiSender);
     }

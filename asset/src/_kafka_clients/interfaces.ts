@@ -26,6 +26,7 @@ export interface ConsumerClientConfig {
     _encoding?: DataEncoding,
     rollback_on_failure?: boolean;
     use_commit_sync?: boolean;
+    tryFn?: (input: any) => any
 }
 
 export interface ProduceMessage {

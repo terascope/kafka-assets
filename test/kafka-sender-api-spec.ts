@@ -56,8 +56,8 @@ describe('kafak-sender-api', () => {
         harness = new WorkerTestHarness(job, { clients });
 
         await harness.initialize();
-        // @ts-expect-error
-        return harness.getOperationAPI(API_NAME) as KafkaAPI;
+
+        return harness.getAPI(API_NAME) as KafkaAPI;
     }
 
     afterEach(async () => {
@@ -80,6 +80,22 @@ describe('kafak-sender-api', () => {
         expect(test.size).toEqual(0);
 
         const sender = await test.create(connection, { topic });
+
+        expect(test.size).toEqual(1);
+
+        expect(sender.send).toBeDefined();
+        expect(sender.verify).toBeDefined();
+
+        const fetchedSender = test.get(connection);
+        expect(fetchedSender).toBeDefined();
+    });
+
+    it('can create a sender using api topic', async () => {
+        const test = await makeTest();
+
+        expect(test.size).toEqual(0);
+
+        const sender = await test.create(connection, {});
 
         expect(test.size).toEqual(1);
 

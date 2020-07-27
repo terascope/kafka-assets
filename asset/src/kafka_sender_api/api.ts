@@ -68,22 +68,23 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         _connection: string, config: Partial<KafkaSenderConfig> = {}
     ): Promise<{ client: KafkaRouteSender, config: KafkaSenderAPIConfig }> {
         const logger = config.logger || this.logger;
-        const { topic } = config;
         // if not set we treat as default
         if (isNil(config._key)) config._key = '*';
 
-        const newTopic = (config._key === '*' || config._key === '**') ? topic : `${topic}-${config._key}`;
-
         const newConfig = Object.assign(
-            {}, this.apiConfig, config, { logger, topic: newTopic }
+            {}, this.apiConfig, config, { logger }
         );
 
+        const newTopic = (newConfig._key === '*' || newConfig._key === '**') ? newConfig.topic : `${newConfig.topic}-${config._key}`;
+        newConfig.topic = newTopic;
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
 
         const kafkaClient = this.context.foundation.getConnection(
             clientConfig
         ).client as kafka.Producer;
+
+        validConfig.tryFn = this.tryRecord.bind(this);
 
         const client = new KafkaRouteSender(kafkaClient, validConfig);
 
