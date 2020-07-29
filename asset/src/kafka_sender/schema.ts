@@ -4,7 +4,9 @@ import {
     getOpConfig,
     get,
     isNil,
-    isNotNil
+    isNotNil,
+    isNumber,
+    getTypeOf
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
 
@@ -24,13 +26,13 @@ export const schema = {
     },
     id_field: {
         doc: 'Field in the incoming record that contains keys',
-        default: '',
-        format: String
+        default: null,
+        format: 'optional_String'
     },
     timestamp_field: {
         doc: 'Field in the incoming record that contains a timestamp to set on the record',
-        default: '',
-        format: String
+        default: null,
+        format: 'optional_String'
     },
     timestamp_now: {
         doc: 'Set to true to have a timestamp generated as records are added to the topic',
@@ -55,7 +57,13 @@ export const schema = {
     size: {
         doc: 'How many messages will be batched and sent to kafka together.',
         default: 10000,
-        format: Number
+        format: (val: unknown):void => {
+            if (isNumber(val)) {
+                if (val <= 0) throw new Error('Invalid parameter size, it must be a positive number');
+            } else {
+                throw new Error(`Invalid parameter size, it must be a number, got ${getTypeOf(val)}`);
+            }
+        }
     },
     metadata_refresh: {
         doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',

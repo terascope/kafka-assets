@@ -1,5 +1,11 @@
 import {
-    ConvictSchema, ValidatedJobConfig, getOpConfig, isNotNil, isNil
+    ConvictSchema,
+    ValidatedJobConfig,
+    getOpConfig,
+    isNotNil,
+    isNil,
+    isNumber,
+    getTypeOf
 } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces';
 
@@ -29,7 +35,13 @@ export const schema = {
     size: {
         doc: 'How many records to read before a slice is considered complete.',
         default: 10000,
-        format: Number
+        format: (val: unknown):void => {
+            if (isNumber(val)) {
+                if (val <= 0) throw new Error('Invalid parameter size, it must be a positive number');
+            } else {
+                throw new Error(`Invalid parameter size, it must be a number, got ${getTypeOf(val)}`);
+            }
+        }
     },
     wait: {
         doc: 'How long to wait for a full chunk of data to be available. Specified in milliseconds.',

@@ -1,6 +1,6 @@
 import 'jest-extended';
-import { wrapError, KafkaError, isOkayError } from '../asset/src/_kafka_helpers';
-import * as codes from '../asset/src/_kafka_helpers/error-codes';
+import { wrapError, KafkaError, isOkayError } from '../../asset/src/_kafka_helpers';
+import * as codes from '../../asset/src/_kafka_helpers/error-codes';
 
 describe('wrapError helper', () => {
     describe('when given a Error', () => {

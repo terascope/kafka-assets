@@ -6,13 +6,13 @@ import {
     TestClientConfig, Logger, DataEntity, parseJSON
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import KafkaSender from '../asset/src/kafka_sender/processor';
-import { readData } from './helpers/kafka-data';
-import Connector from '../packages/terafoundation_kafka_connector/dist';
-import { kafkaBrokers, senderTopic } from './helpers/config';
-import KafkaAdmin from './helpers/kafka-admin';
+import KafkaSender from '../../asset/src/kafka_sender/processor';
+import { readData } from '../helpers/kafka-data';
+import Connector from '../../packages/terafoundation_kafka_connector/dist';
+import { kafkaBrokers, senderTopic } from '../helpers/config';
+import KafkaAdmin from '../helpers/kafka-admin';
 
-const testFetcherFile = path.join(__dirname, 'fixtures', 'test-fetcher-data.json');
+const testFetcherFile = path.join(__dirname, '../fixtures', 'test-fetcher-data.json');
 const testFetcherData: Record<string, any>[] = parseJSON(fs.readFileSync(testFetcherFile));
 
 describe('Kafka Sender', () => {

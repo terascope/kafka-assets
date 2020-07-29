@@ -9,9 +9,9 @@ import {
     Logger
 } from '@terascope/job-components';
 import { WorkerTestHarness } from 'teraslice-test-harness';
-import Schema from '../asset/src/kafka_reader/schema';
-import Connector from '../packages/terafoundation_kafka_connector/dist';
-import { kafkaBrokers } from './helpers/config';
+import Schema from '../../asset/src/kafka_reader/schema';
+import Connector from '../../packages/terafoundation_kafka_connector/dist';
+import { kafkaBrokers } from '../helpers/config';
 
 describe('Kafka Reader Schema', () => {
     let context: TestContext;

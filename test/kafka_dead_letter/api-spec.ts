@@ -7,12 +7,12 @@ import {
     NoopProcessor,
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import { readData } from './helpers/kafka-data';
-import Connector from '../packages/terafoundation_kafka_connector/dist';
-import { kafkaBrokers, deadLetterTopic } from './helpers/config';
-import KafkaAdmin from './helpers/kafka-admin';
+import { readData } from '../helpers/kafka-data';
+import Connector from '../../packages/terafoundation_kafka_connector/dist';
+import { kafkaBrokers, deadLetterTopic } from '../helpers/config';
+import KafkaAdmin from '../helpers/kafka-admin';
 
-const testFetcherFile = path.join(__dirname, 'fixtures', 'test-fetcher-data.json');
+const testFetcherFile = path.join(__dirname, '../fixtures', 'test-fetcher-data.json');
 
 describe('Kafka Dead Letter', () => {
     jest.setTimeout(15 * 1000);

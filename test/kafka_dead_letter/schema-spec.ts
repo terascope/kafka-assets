@@ -1,6 +1,6 @@
 import 'jest-extended';
 import { TestContext } from '@terascope/job-components';
-import Schema from '../asset/src/kafka_dead_letter/schema';
+import Schema from '../../asset/src/kafka_dead_letter/schema';
 
 describe('Kafka Dead Letter Schema', () => {
     const context = new TestContext('kafka-sender');

@@ -20,6 +20,7 @@ export default class KafkaSender implements RouteSenderAPI {
     readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
     private tryFn: (msg: any, err: any) => DataEntity|null;
+    readonly pathList = new Map<string, boolean>();
 
     constructor(client: kafka.Producer, config: KafkaSenderAPIConfig) {
         const producer = new ProducerClient(client, {

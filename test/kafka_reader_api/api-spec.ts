@@ -1,13 +1,13 @@
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, Logger, APIFactoryRegistry } from '@terascope/job-components';
-import { KafkaSenderAPIConfig } from '../asset/src/kafka_sender_api/interfaces';
+import { KafkaReaderAPIConfig } from '../../asset/src/kafka_reader_api/interfaces';
 
-import KafkaRouteSender from '../asset/src/kafka_sender_api/kafka-route-sender';
+import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender';
 
-import Connector from '../packages/terafoundation_kafka_connector/dist';
-import { kafkaBrokers, senderTopic } from './helpers/config';
+import Connector from '../../packages/terafoundation_kafka_connector/dist';
+import { kafkaBrokers, senderTopic } from '../helpers/config';
 
-type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
+type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaReaderAPIConfig>;
 
 describe('kafak-sender-api', () => {
     jest.setTimeout(15 * 1000);

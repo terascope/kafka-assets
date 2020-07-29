@@ -4,12 +4,11 @@ import {
     WorkerContext,
     ExecutionConfig,
     Logger,
-    APIFactoryRegistry,
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces';
-import { KafkaSenderAPIConfig } from '../kafka_sender_api/interfaces';
+import { KafkaSenderAPI, DEFAULT_API_NAME } from '../kafka_sender_api/interfaces';
 
-import KafkaRouteSender from '../kafka_sender_api/kafka-route-sender';
+import KafkaRouteSender from '../kafka_sender_api/sender';
 
 interface Endpoint {
     sender: KafkaRouteSender;
@@ -24,10 +23,6 @@ interface ConnectorMapping {
 
 type TopicMap = Map<string, Endpoint>
 type ConnectorMap = Map<string, ConnectorMapping>
-
-const DEFAULT_API_NAME = 'kafka_sender_api';
-
-type KafkaSenderFactoryAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     topicMap: TopicMap = new Map();
@@ -61,7 +56,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             apiConnection = apiConfig.connection;
         }
 
-        const factoryApi = this.getAPI<KafkaSenderFactoryAPI>(apiName);
+        const factoryApi = this.getAPI<KafkaSenderAPI>(apiName);
 
         const topic = this.opConfig.topic || apiTopic as string;
         const connection = this.opConfig.connection || apiConnection as string;
