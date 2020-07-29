@@ -21,6 +21,7 @@ describe('KafkaRouteSender', () => {
     const topic = `${senderTopic}-${topicMeta}`;
 
     let harness: WorkerTestHarness;
+    let producerMetadataCalls = 0;
 
     const kafkaConfig: TestClientConfig = {
         type: 'kafka',
@@ -45,7 +46,6 @@ describe('KafkaRouteSender', () => {
     const defaultConfigs = {
         _name: API_NAME,
         topic,
-
     };
 
     async function makeTest(apiConfig: AnyObject = {}) {
@@ -69,12 +69,19 @@ describe('KafkaRouteSender', () => {
 
         const api = harness.getAPI(API_NAME) as KafkaAPI;
 
-        return api.create(topic, apiSender);
+        const sender = await api.create(topic, apiSender);
+
+        sender.producer.getMetadata = async (): Promise<void> => {
+            producerMetadataCalls += 1;
+        };
+
+        return sender;
     }
 
     beforeAll(async () => admin.ensureTopic(topic));
 
     afterEach(async () => {
+        producerMetadataCalls = 0;
         if (harness) await harness.shutdown();
     });
 
@@ -88,6 +95,17 @@ describe('KafkaRouteSender', () => {
 
         expect(sender.send).toBeDefined();
         expect(sender.verify).toBeDefined();
+    });
+
+    it('verify will only check if route is not in cache', async () => {
+        const sender = await makeTest();
+        expect(producerMetadataCalls).toEqual(0);
+
+        await sender.verify('something');
+        expect(producerMetadataCalls).toEqual(1);
+
+        await sender.verify('something');
+        expect(producerMetadataCalls).toEqual(1);
     });
 
     it('can send data to a topic', async () => {

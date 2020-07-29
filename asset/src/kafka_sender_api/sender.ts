@@ -116,6 +116,9 @@ export default class KafkaSender implements RouteSenderAPI {
 
     async verify(route?: string): Promise<void> {
         const topic = route ? `${this.config.topic}-${route}` : this.config.topic;
-        await this.producer.getMetadata(topic);
+        if (!this.pathList.has(topic)) {
+            await this.producer.getMetadata(topic);
+            this.pathList.set(topic, true);
+        }
     }
 }
