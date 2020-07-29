@@ -48,8 +48,8 @@ export default class APIConsumer extends Consumer {
     }
 
     // @ts-expect-error
-    async consume(max: { size: number; wait: number }): Promise<DataEntity[]> {
-        return super.consume<DataEntity>(this.mapper as any, max);
+    async consume(query: { size: number; wait: number }): Promise<DataEntity[]> {
+        return super.consume<DataEntity>(this.mapper as any, query);
     }
 }
 

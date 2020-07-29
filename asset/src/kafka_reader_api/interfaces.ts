@@ -1,8 +1,9 @@
-import { Omit, APIFactoryRegistry } from '@terascope/job-components';
+import { APIFactoryRegistry } from '@terascope/job-components';
 import { KafkaReaderConfig } from '../kafka_reader/interfaces';
 import { APIConsumer } from '../_kafka_clients';
 
-export type KafkaReaderAPIConfig = Omit<KafkaReaderConfig, 'api_name'>
+declare const { api_name, ...config }: KafkaReaderConfig;
+export type KafkaReaderAPIConfig = typeof config
 
 export type KafkaReaderAPI = APIFactoryRegistry<APIConsumer, KafkaReaderAPIConfig>
 

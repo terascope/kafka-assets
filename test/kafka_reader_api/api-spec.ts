@@ -1,21 +1,22 @@
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import { TestClientConfig, Logger, APIFactoryRegistry } from '@terascope/job-components';
-import { KafkaReaderAPIConfig } from '../../asset/src/kafka_reader_api/interfaces';
-
-import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender';
-
+import { TestClientConfig, Logger } from '@terascope/job-components';
+import { DEFAULT_API_NAME, KafkaReaderAPI } from '../../asset/src/kafka_reader_api/interfaces';
 import Connector from '../../packages/terafoundation_kafka_connector/dist';
-import { kafkaBrokers, senderTopic } from '../helpers/config';
+import { kafkaBrokers, fetcherAPITopic, fetcherGroup } from '../helpers/config';
+import { loadData } from '../helpers/kafka-data';
+import KafkaAdmin from '../helpers/kafka-admin';
 
-type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaReaderAPIConfig>;
+describe('kafka_reader_api', () => {
+    jest.setTimeout(30 * 1000);
 
-describe('kafak-sender-api', () => {
-    jest.setTimeout(15 * 1000);
     const mockFlush = jest.fn();
     const connection = 'default';
-    const topicMeta = 'h';
 
-    const topic = `${senderTopic}-${topicMeta}`;
+    const topic = fetcherAPITopic;
+    const group = fetcherGroup;
+    const apiName = DEFAULT_API_NAME;
+
+    let exampleData: Record<string, any>[];
 
     let harness: WorkerTestHarness;
 
@@ -37,11 +38,16 @@ describe('kafak-sender-api', () => {
     };
 
     const clients = [kafkaConfig];
-    const API_NAME = 'kafka_sender_api';
 
     async function makeTest() {
         const job = newTestJobConfig({
-            apis: [{ _name: API_NAME, topic: 'hello' }],
+            apis: [{
+                _name: apiName,
+                topic,
+                group,
+                rollback_on_failure: true,
+                _dead_letter_action: 'log'
+            }],
             operations: [
                 {
                     _op: 'test-reader',
@@ -57,52 +63,47 @@ describe('kafak-sender-api', () => {
 
         await harness.initialize();
 
-        return harness.getAPI(API_NAME) as KafkaAPI;
+        return harness.getAPI<KafkaReaderAPI>(apiName);
     }
+
+    const admin = new KafkaAdmin();
+
+    beforeAll(async () => {
+        await admin.ensureTopic(topic);
+        exampleData = await loadData(topic, 'example-data.txt');
+    });
 
     afterEach(async () => {
         if (harness) await harness.shutdown();
     });
 
-    it('can create the api', async () => {
-        const test = await makeTest();
-
-        expect(test.size).toBeDefined();
-        expect(test.get).toBeDefined();
-        expect(test.create).toBeDefined();
-        expect(test.getConfig).toBeDefined();
-        expect(test.remove).toBeDefined();
+    afterAll(async () => {
+        jest.resetAllMocks();
+        admin.disconnect();
     });
 
-    it('can create a sender', async () => {
-        const test = await makeTest();
+    it('can create the factory api', async () => {
+        const apiManager = await makeTest();
 
-        expect(test.size).toEqual(0);
-
-        const sender = await test.create(connection, { topic });
-
-        expect(test.size).toEqual(1);
-
-        expect(sender.send).toBeDefined();
-        expect(sender.verify).toBeDefined();
-
-        const fetchedSender = test.get(connection);
-        expect(fetchedSender).toBeDefined();
+        expect(apiManager.size).toBeDefined();
+        expect(apiManager.get).toBeDefined();
+        expect(apiManager.create).toBeDefined();
+        expect(apiManager.getConfig).toBeDefined();
+        expect(apiManager.remove).toBeDefined();
     });
 
-    it('can create a sender using api topic', async () => {
-        const test = await makeTest();
+    it('can read data', async () => {
+        const apiManager = await makeTest();
+        const client = await apiManager.create('test', {});
+        const config = apiManager.getConfig('test');
 
-        expect(test.size).toEqual(0);
+        if (!config) throw new Error('config is supposed to be present');
 
-        const sender = await test.create(connection, {});
+        expect(client).toBeDefined();
+        expect(apiManager.size).toEqual(1);
 
-        expect(test.size).toEqual(1);
+        const results = await client.consume({ size: exampleData.length, wait: config.wait });
 
-        expect(sender.send).toBeDefined();
-        expect(sender.verify).toBeDefined();
-
-        const fetchedSender = test.get(connection);
-        expect(fetchedSender).toBeDefined();
+        expect(results.length).toEqual(exampleData.length);
     });
 });

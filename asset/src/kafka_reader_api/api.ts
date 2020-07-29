@@ -26,10 +26,10 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         if (isNil(config.rollback_on_failure) || !isBoolean(config.rollback_on_failure)) throw new Error(`Parameter rollback_on_failure must be provided and be of type boolean, got ${getTypeOf(config.rollback_on_failure)}`);
         if (isNil(config.partition_assignment_strategy) || !isString(config.partition_assignment_strategy)) throw new Error(`Parameter partition_assignment_strategy must be provided and be of type string, got ${getTypeOf(config.partition_assignment_strategy)}`);
         if (isNotNil(config._encoding) && !isString(config._encoding)) throw new Error(`Parameter _encoding must be provided and be of type string, got ${getTypeOf(config._encoding)}`);
-        return config;
+        return config as KafkaReaderAPIConfig;
     }
 
-    private clientConfig(clientConfig: KafkaReaderAPIConfig = {}) {
+    private clientConfig(clientConfig: KafkaReaderAPIConfig) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
         const config = {
             type: 'kafka',
@@ -68,11 +68,11 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
     }
 
     async create(
-        topic: string, config: Partial<KafkaReaderConfig> = {}
+        _name: string, config: Partial<KafkaReaderConfig> = {}
     ): Promise<{ client: APIConsumer, config: KafkaReaderAPIConfig }> {
         const { logger } = this;
         const newConfig = Object.assign(
-            {}, this.apiConfig, config, { logger, topic }
+            {}, this.apiConfig, config, { logger }
         );
 
         const validConfig = this.validateConfig(newConfig);
@@ -82,9 +82,8 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         const tryFn = this.tryRecord.bind(this);
         const client = new APIConsumer(kafkaClient, {
             ...validConfig,
-            topic,
             logger,
-            tryFn
+            tryFn,
         });
 
         await client.connect();

@@ -4,7 +4,7 @@ import { KafkaSenderAPI } from '../../asset/src/kafka_sender_api/interfaces';
 import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers, senderTopic } from '../helpers/config';
 
-describe('kafak-sender-api', () => {
+describe('kafak_sender_api', () => {
     jest.setTimeout(15 * 1000);
     const mockFlush = jest.fn();
     const connection = 'default';

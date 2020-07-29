@@ -1,7 +1,9 @@
 import 'jest-extended';
 import { newTestJobConfig, WorkerTestHarness } from 'teraslice-test-harness';
-import { ValidatedJobConfig, TestClientConfig, Logger } from '@terascope/job-components';
-import { KafkaReaderAPIConfig, DEFAULT_API_NAME } from '../../asset/src/kafka_reader_api/interfaces';
+import {
+    ValidatedJobConfig, TestClientConfig, Logger, AnyObject
+} from '@terascope/job-components';
+import { DEFAULT_API_NAME } from '../../asset/src/kafka_reader_api/interfaces';
 import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers } from '../helpers/config';
 
@@ -27,7 +29,7 @@ describe('Kafka Reader API Schema', () => {
 
     const clients = [clientConfig];
 
-    async function makeTest(apiConfig: Partial<KafkaReaderAPIConfig> = {}) {
+    async function makeTest(apiConfig: AnyObject = {}) {
         const config = Object.assign(
             { _name: DEFAULT_API_NAME },
             apiConfig
