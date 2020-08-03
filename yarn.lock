@@ -544,15 +544,15 @@
     eslint-plugin-react "^7.20.3"
     eslint-plugin-react-hooks "^4.0.8"
 
-"@terascope/job-components@^0.38.1":
-  version "0.38.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.38.1.tgz#e060dfd4f387ccf19c2525706f0e2c253a7e937b"
-  integrity sha512-V95y+Tv0oqYia/Erm2WqC5B7UouwCrHYGD0U5JiezDBa60xPUCpR44/CLBesBItGBv0r73+dmYb+0SELPjlEkQ==
+"@terascope/job-components@^0.39.0":
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.39.0.tgz#19ca9f7a8c28633fbf0049dc3ffd76e41ff607f3"
+  integrity sha512-GM2l43sRga70K5Al5AyjW6nwvXVnp71He/LFgXWxnVosAljpsuAq9WaisKy0d71VoVBgGRWTp/khXMsIFX8wjg==
   dependencies:
-    "@terascope/utils" "^0.29.1"
+    "@terascope/utils" "^0.29.2"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
-    uuid "^8.2.0"
+    uuid "^8.3.0"
 
 "@terascope/teraslice-op-test-harness@^1.22.1":
   version "1.22.1"
@@ -566,14 +566,14 @@
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.4.0.tgz#63a6e2c8f1487c5b6f781092431aa10386519010"
   integrity sha512-WOSuYZ0x7WRC1L6zLqFqbqqr95UZ/SQnWNN6uA14pyq67s782gXsmxrqgs/MsR7jOuggVGQQBUoxB7dk7E56sA==
 
-"@terascope/utils@^0.29.1":
-  version "0.29.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.29.1.tgz#b1529541277f0897c0e9c2a370551399cb7f91db"
-  integrity sha512-2H8IzccRY+D3RodBcFneZXocugSk83s4oJti04JWWEX+fGN1anCy/IVit2l6Mw14RMwsIE3munJ1KY76I1oLmw==
+"@terascope/utils@^0.29.2":
+  version "0.29.2"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.29.2.tgz#14b76615e5ee2d8f13d54da664801cf1f8dfee99"
+  integrity sha512-sYWgF5WxtkP/hPOFXIyZY90hiiNQN+Lo5i0zGJNc6SPgNzJzPIphwra8l2Ct88ulsWo9UQxR//lML621n00wLA==
   dependencies:
     "@terascope/types" "^0.4.0"
     debug "^4.1.1"
-    is-plain-object "^3.0.1"
+    is-plain-object "^4.1.1"
     js-string-escape "^1.0.1"
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
@@ -2645,10 +2645,10 @@ is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   dependencies:
     isobject "^3.0.1"
 
-is-plain-object@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-3.0.1.tgz#662d92d24c0aa4302407b0d45d21f2251c85f85b"
-  integrity sha512-Xnpx182SBMrr/aBik8y+GuR4U1L9FqMSojwDQwPMmxyC6bvEqly9UBCxhauBF5vNh2gwWJNX6oDV7O+OM4z34g==
+is-plain-object@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-4.1.1.tgz#1a14d6452cbd50790edc7fdaa0aed5a40a35ebb5"
+  integrity sha512-5Aw8LLVsDlZsETVMhoMXzqsXwQqr/0vlnBYzIXJbYo2F4yYlhLHs+Ez7Bod7IIQKWkJbJfxrWD7pA1Dw1TKrwA==
 
 is-potential-custom-element-name@^1.0.0:
   version "1.0.0"
@@ -5130,10 +5130,10 @@ uuid@^7.0.3:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
-uuid@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.2.0.tgz#cb10dd6b118e2dada7d0cd9730ba7417c93d920e"
-  integrity sha512-CYpGiFTUrmI6OBMkAdjSDM0k5h8SkkiTP4WAjQgDgNB1S3Ou9VBEvr6q0Kv2H1mMk7IWfxYGpMH5sd5AvcIV2Q==
+uuid@^8.2.0, uuid@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
+  integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
 
 v8-compile-cache@^2.0.3:
   version "2.1.1"
