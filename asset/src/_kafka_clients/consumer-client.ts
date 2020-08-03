@@ -1,5 +1,7 @@
 import type * as kafka from 'node-rdkafka';
-import { pDelay, toHumanTime } from '@terascope/job-components';
+import {
+    pDelay, toHumanTime, EncodingConfig, isBoolean, isNotNil
+} from '@terascope/job-components';
 import {
     wrapError,
     AnyKafkaError,
@@ -33,15 +35,31 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         started: {},
         ended: {},
     };
-
+    protected encoding: EncodingConfig = {};
     /** last known assignments */
     protected _assignments: TopicPartition[] = [];
 
     private _pendingOffsets: CountPerPartition = {};
     private _rebalanceTimeout: NodeJS.Timer|undefined;
+    private rollbackOnFailure = false;
+    private useCommitSync: boolean;
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
+        const {
+            _encoding, rollback_on_failure, use_commit_sync
+        } = config;
+        this.encoding._encoding = _encoding;
+
+        if (isNotNil(rollback_on_failure) && isBoolean(rollback_on_failure)) {
+            this.rollbackOnFailure = rollback_on_failure;
+        }
+
+        if (isNotNil(use_commit_sync) && isBoolean(use_commit_sync)) {
+            this.useCommitSync = use_commit_sync;
+        } else {
+            this.useCommitSync = false;
+        }
     }
 
     /**
@@ -63,7 +81,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /**
      * Committed to the last known offsets stored.
     */
-    async commit(useSync = false): Promise<void> {
+    async commit(): Promise<void> {
         const errors: Error[] = [];
 
         const promises = this._flushOffsets('ended')
@@ -72,7 +90,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
                 return this._try(async () => {
                     // add a random delay to stagger commits
                     await pDelay(i * getRandom(2, 30));
-                    if (useSync) {
+                    if (this.useCommitSync) {
                         await this._client.commitSync(offset);
                     } else {
                         await this._client.commit(offset);
@@ -92,6 +110,15 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         if (errors.length) {
             this._logger.error('kafka failed to commit', errors);
             throw new Error('Kafka failed to commit');
+        }
+    }
+
+    async retry(): Promise<void> {
+        if (this.rollbackOnFailure) {
+            await this.rollback();
+        } else {
+            this._logger.warn('committing kafka offsets on slice retry - THIS MAY CAUSE DATA LOSS');
+            await this.commit();
         }
     }
 
@@ -161,6 +188,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * @param max.size - the target size of messages to consume
      * @param max.wait - the maximum time to wait before resolving the messages
      */
+
     async consume<T>(
         map: (msg: KafkaMessage) => T,
         max: { size: number; wait: number }
@@ -168,14 +196,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this.handlePendingCommits();
         const start = Date.now();
         const endAt = start + max.wait;
-
         this._logger.trace('consuming...', { size: max.size, wait: max.wait });
 
         let results: T[] = [];
 
         while (results.length < max.size && endAt > Date.now()) {
             const remaining = max.size - results.length;
-            const consumed = await this._consume(remaining, map);
+            const consumed = await this._consume<T>(remaining, map);
 
             results = results.concat(consumed);
         }

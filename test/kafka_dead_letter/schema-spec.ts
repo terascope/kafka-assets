@@ -1,10 +1,10 @@
 import 'jest-extended';
 import { TestContext } from '@terascope/job-components';
-import Schema from '../asset/src/kafka_sender/schema';
+import Schema from '../../asset/src/kafka_dead_letter/schema';
 
-describe('Kafka Sender Schema', () => {
+describe('Kafka Dead Letter Schema', () => {
     const context = new TestContext('kafka-sender');
-    const schema = new Schema(context);
+    const schema = new Schema(context, 'api');
 
     afterAll(() => {
         context.apis.foundation.getSystemEvents().removeAllListeners();
@@ -14,28 +14,18 @@ describe('Kafka Sender Schema', () => {
         it('should throw an error if no topic is specified', () => {
             expect(() => {
                 schema.validate({
-                    _op: 'kafka_sender'
+                    _name: 'kafka_deader_letter'
                 });
-            }).toThrowError(/kafka_sender - topic: This field is required and must by of type string/);
+            }).toThrowError(/kafka_deader_letter - topic: This field is required and must by of type string/);
         });
 
         it('should not throw an error if valid config is given', () => {
             expect(() => {
                 schema.validate({
-                    _op: 'kafka_sender',
+                    _name: 'kafka_deader_letter',
                     topic: 'hello'
                 });
             }).not.toThrowError();
-        });
-
-        it('should set the required_acks default to 1', () => {
-            expect(schema.validate({
-                _op: 'kafka_sender',
-                topic: 'hello',
-                size: 1
-            })).toMatchObject({
-                required_acks: 1
-            });
         });
     });
 });

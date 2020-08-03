@@ -1,24 +1,29 @@
 import 'jest-extended';
-import fs from 'fs';
-import path from 'path';
-import {
-    TestClientConfig, Logger, DataEntity, parseJSON
-} from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import KafkaSender from '../asset/src/kafka_sender/processor';
-import { readData } from './helpers/kafka-data';
-import Connector from '../packages/terafoundation_kafka_connector/dist';
-import { kafkaBrokers, senderTopic } from './helpers/config';
-import KafkaAdmin from './helpers/kafka-admin';
+import {
+    TestClientConfig, Logger, APIFactoryRegistry, DataEntity, AnyObject
+} from '@terascope/job-components';
+import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces';
+import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender';
+import Connector from '../../packages/terafoundation_kafka_connector/dist';
+import { kafkaBrokers, senderTopic } from '../helpers/config';
+import KafkaAdmin from '../helpers/kafka-admin';
+import { readData } from '../helpers/kafka-data';
 
-const testFetcherFile = path.join(__dirname, 'fixtures', 'test-fetcher-data.json');
-const testFetcherData: Record<string, any>[] = parseJSON(fs.readFileSync(testFetcherFile));
+type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
 
-describe('Kafka Sender', () => {
+describe('KafkaRouteSender', () => {
     jest.setTimeout(15 * 1000);
     const mockFlush = jest.fn();
 
-    const clientConfig: TestClientConfig = {
+    const admin = new KafkaAdmin();
+    const topicMeta = 'h';
+    const topic = `${senderTopic}-${topicMeta}`;
+
+    let harness: WorkerTestHarness;
+    let producerMetadataCalls = 0;
+
+    const kafkaConfig: TestClientConfig = {
         type: 'kafka',
         config: {
             brokers: kafkaBrokers,
@@ -31,141 +36,112 @@ describe('Kafka Sender', () => {
                 .mockImplementation(result.client.flush)
                 .bind(result.client);
             return result;
-        }
+        },
+        endpoint: 'default'
     };
 
-    const topic = senderTopic;
+    const clients = [kafkaConfig];
+    const API_NAME = 'kafka_sender_api';
 
-    const clients = [clientConfig];
-    const batchSize = 10;
-    const targetRuns = 3;
-    const targetSize = testFetcherData.length * targetRuns;
+    const defaultConfigs = {
+        _name: API_NAME,
+        topic,
+    };
 
-    const job = newTestJobConfig({
-        max_retries: 3,
-        operations: [
-            {
-                _op: 'test-reader',
-                fetcher_data_file_path: testFetcherFile
-            },
-            {
-                _op: 'kafka_sender',
-                topic,
-                size: batchSize,
-                _dead_letter_action: 'log'
-            }
-        ],
-    });
-
-    const admin = new KafkaAdmin();
-
-    let harness: WorkerTestHarness;
-    let sender: KafkaSender;
-    let results: DataEntity[] = [];
-    let consumed: Record<string, any>[] = [];
-    let runs = 0;
-
-    beforeAll(async () => {
-        jest.clearAllMocks();
-
-        await admin.ensureTopic(topic);
-
-        harness = new WorkerTestHarness(job, {
-            clients,
+    async function makeTest(apiConfig: AnyObject = {}) {
+        const apiSender = Object.assign({}, defaultConfigs, apiConfig);
+        const job = newTestJobConfig({
+            apis: [apiSender],
+            operations: [
+                {
+                    _op: 'test-reader',
+                    passthrough_slice: true
+                },
+                {
+                    _op: 'noop'
+                }
+            ]
         });
 
-        // FIXME: using "as any" is hack, we should properly fix it
-        sender = harness.getOperation('kafka_sender') as any;
+        harness = new WorkerTestHarness(job, { clients });
 
         await harness.initialize();
 
-        const initList = [];
+        const api = harness.getAPI(API_NAME) as KafkaAPI;
 
-        for (const { producer } of sender.topicMap.values()) {
-            initList.push(producer.connect());
-        }
+        const sender = await api.create(topic, apiSender);
 
-        await Promise.all(initList);
+        sender.producer.getMetadata = async (): Promise<void> => {
+            producerMetadataCalls += 1;
+        };
 
-        while (results.length < targetSize) {
-            if (runs > targetRuns) {
-                return;
-            }
-            runs++;
-            const batch = await harness.runSlice({});
-            results = results.concat(batch);
-        }
+        return sender;
+    }
 
-        consumed = await readData(topic, results.length);
+    beforeAll(async () => admin.ensureTopic(topic));
+
+    afterEach(async () => {
+        producerMetadataCalls = 0;
+        if (harness) await harness.shutdown();
     });
 
     afterAll(async () => {
         jest.clearAllMocks();
-
         admin.disconnect();
-
-        // it should be able to disconnect twice
-        const shutdownList = [];
-
-        for (const { producer } of sender.topicMap.values()) {
-            shutdownList.push(producer.disconnect());
-        }
-
-        await Promise.all(shutdownList);
-        await harness.shutdown();
     });
 
-    it('should able to call _clientEvents without double listening', () => {
-        const expectedTopic = sender.topicMap.get('default');
-        // @ts-expect-error
-        const expected = expectedTopic.producer._client.listenerCount('error');
+    it('can initialize', async () => {
+        const sender = await makeTest();
 
-        expect(() => {
-            const testTopic = sender.topicMap.get('default');
-            // @ts-expect-error
-            testTopic.producer._clientEvents();
-        }).not.toThrowError();
-
-        const actualTopic = sender.topicMap.get('default');
-        // @ts-expect-error
-        const actual = actualTopic.producer._client.listenerCount('error');
-
-        expect(actual).toEqual(expected);
+        expect(sender.send).toBeDefined();
+        expect(sender.verify).toBeDefined();
     });
 
-    it('should have produced the correct amount of records', () => {
-        expect(consumed).toBeArrayOfSize(results.length);
-        expect(DataEntity.isDataEntityArray(results)).toBeTrue();
-        expect(results).toBeArrayOfSize(targetSize);
-        expect(runs).toBe(targetRuns);
+    it('verify will only check if route is not in cache', async () => {
+        const sender = await makeTest();
+        expect(producerMetadataCalls).toEqual(0);
 
-        for (let i = 0; i < results.length; i++) {
-            const actual = consumed[i];
-            const expected = results[i];
+        await sender.verify('something');
+        expect(producerMetadataCalls).toEqual(1);
 
-            expect(actual).toEqual(expected);
-        }
+        await sender.verify('something');
+        expect(producerMetadataCalls).toEqual(1);
     });
 
-    it('should call flush once per run and before the buffer is full', () => {
-        const bufferSize = batchSize * 5;
-        const expected = runs + Math.floor(results.length / bufferSize);
-        expect(mockFlush).toHaveBeenCalledTimes(expected);
+    it('can send data to a topic', async () => {
+        const sender = await makeTest();
+        const obj1 = { hello: 'world' };
+        const obj2 = { foo: 'bar' };
+
+        const data = [
+            DataEntity.make(obj1, { 'standard:route': topicMeta }),
+            DataEntity.make(obj2, { 'standard:route': topicMeta })
+        ];
+
+        await sender.send(data);
+
+        const topicResults = await readData(topic, 100);
+
+        expect(topicResults).toBeArrayOfSize(2);
     });
 
     describe('->getKey', () => {
+        let sender: KafkaRouteSender;
+
+        beforeAll(async () => {
+            sender = await makeTest();
+        });
+
         describe('when id_field is set', () => {
             let ogIdField: string;
 
             beforeAll(() => {
-                ogIdField = sender.opConfig.id_field;
-                // @ts-expect-error
-                sender.opConfig.id_field = 'ip';
+                ogIdField = sender.config.id_field;
+                sender.config.id_field = 'ip';
             });
 
             afterAll(() => {
-                // @ts-expect-error
-                sender.opConfig.id_field = ogIdField;
+                sender.config.id_field = ogIdField;
             });
 
             it('should return the key if the field exists', () => {
@@ -213,8 +189,7 @@ describe('Kafka Sender', () => {
             });
 
             it('should return metadata _key if _key is present', () => {
-                // @ts-expect-error
-                delete sender.opConfig.id_field;
+                delete sender.config.id_field;
 
                 const entity = new DataEntity({
                     id: '7da04627-f786-5d1f-a18c-2735684efd3d',
@@ -231,8 +206,7 @@ describe('Kafka Sender', () => {
             });
 
             it('should return opConfig.id_field, if specified', () => {
-                // @ts-expect-error
-                sender.opConfig.id_field = 'ip';
+                sender.config.id_field = 'ip';
 
                 const entity = new DataEntity({
                     id: '7da04627-f786-5d1f-a18c-2735684efd3d',
@@ -253,15 +227,12 @@ describe('Kafka Sender', () => {
             let ogIdField: string;
 
             beforeAll(() => {
-                ogIdField = sender.opConfig.id_field;
-
-                // @ts-expect-error
-                sender.opConfig.id_field = '';
+                ogIdField = sender.config.id_field;
+                sender.config.id_field = '';
             });
 
             afterAll(() => {
-                // @ts-expect-error
-                sender.opConfig.id_field = ogIdField;
+                sender.config.id_field = ogIdField;
             });
 
             it('should return null', () => {
@@ -283,19 +254,12 @@ describe('Kafka Sender', () => {
 
     describe('->getRouteTopic', () => {
         describe('when "**" is not in the topic map', () => {
-            let ogTopicMap: Map<string, any>;
+            let sender: KafkaRouteSender;
 
-            beforeAll(() => {
-                ogTopicMap = sender.topicMap;
-
-                sender.topicMap = new Map();
-                // @ts-expect-error
-                sender.topicMap.set('*', {});
+            beforeAll(async () => {
+                sender = await makeTest({ _key: '*' });
             });
 
-            afterAll(() => {
-                sender.topicMap = ogTopicMap;
-            });
             it('returns null', () => {
                 const entity = new DataEntity({
                     id: '7dab1337-f786-5d1f-a18c-2735684efd3d',
@@ -303,25 +267,20 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi'
                 });
+
                 // @ts-expect-error
                 const routeTopic = sender.getRouteTopic(entity);
                 expect(routeTopic).toEqual(null);
             });
         });
+
         describe('when "**" is in the topic map', () => {
-            let ogTopicMap: Map<string, any>;
+            let sender: KafkaRouteSender;
 
-            beforeAll(() => {
-                ogTopicMap = sender.topicMap;
-
-                sender.topicMap = new Map();
-                // @ts-expect-error
-                sender.topicMap.set('**', {});
+            beforeAll(async () => {
+                sender = await makeTest({ _key: '**' });
             });
 
-            afterAll(() => {
-                sender.topicMap = ogTopicMap;
-            });
             it('sets the topic based on the opConfig and the record\'s "standard:route"', () => {
                 const entity = new DataEntity({
                     id: '7dab1337-f786-5d1f-a18c-2735684efd3d',
@@ -330,10 +289,12 @@ describe('Kafka Sender', () => {
                     url: 'http://bijupnag.cv/owi'
                 });
                 entity.setMetadata('standard:route', 'endor');
+
                 // @ts-expect-error
-                const routeTopic = sender.getRouteTopic(entity, '**');
-                expect(routeTopic).toEqual('kafka-test-sender-endor');
+                const routeTopic = sender.getRouteTopic(entity);
+                expect(routeTopic).toEqual(`${topic}-endor`);
             });
+
             it('sets the topic to default when missing record\'s "standard:route"', () => {
                 const entity = new DataEntity({
                     id: '7dab1337-f786-5d1f-a18c-2735684efd3d',
@@ -341,27 +302,32 @@ describe('Kafka Sender', () => {
                     ip: '235.99.183.52',
                     url: 'http://bijupnag.cv/owi'
                 });
+
                 // @ts-expect-error
-                const routeTopic = sender.getRouteTopic(entity, '**');
-                expect(routeTopic).toEqual('kafka-test-sender');
+                const routeTopic = sender.getRouteTopic(entity);
+
+                expect(routeTopic).toEqual(topic);
             });
         });
     });
 
     describe('->getTimestamp', () => {
+        let sender: KafkaRouteSender;
+
+        beforeAll(async () => {
+            sender = await makeTest();
+        });
+
         describe('when timestamp_field is set', () => {
             let ogTimestampField: string;
 
             beforeAll(() => {
-                ogTimestampField = sender.opConfig.timestamp_field;
-
-                // @ts-expect-error
-                sender.opConfig.timestamp_field = 'created';
+                ogTimestampField = sender.config.timestamp_field;
+                sender.config.timestamp_field = 'created';
             });
 
             afterAll(() => {
-                // @ts-expect-error
-                sender.opConfig.timestamp_field = ogTimestampField;
+                sender.config.timestamp_field = ogTimestampField;
             });
 
             it('should return the key if the field exists', () => {
@@ -414,14 +380,12 @@ describe('Kafka Sender', () => {
             let ogTimestampField: string;
 
             beforeAll(() => {
-                ogTimestampField = sender.opConfig.timestamp_field;
-                // @ts-expect-error
-                sender.opConfig.timestamp_field = '';
+                ogTimestampField = sender.config.timestamp_field;
+                sender.config.timestamp_field = '';
             });
 
             afterAll(() => {
-                // @ts-expect-error
-                sender.opConfig.timestamp_field = ogTimestampField;
+                sender.config.timestamp_field = ogTimestampField;
             });
 
             it('should return null', () => {
@@ -444,14 +408,12 @@ describe('Kafka Sender', () => {
             let ogTimestampNow: boolean;
 
             beforeAll(() => {
-                ogTimestampNow = sender.opConfig.timestamp_now;
-                // @ts-expect-error
-                sender.opConfig.timestamp_now = true;
+                ogTimestampNow = sender.config.timestamp_now;
+                sender.config.timestamp_now = true;
             });
 
             afterAll(() => {
-                // @ts-expect-error
-                sender.opConfig.timestamp_now = ogTimestampNow;
+                sender.config.timestamp_now = ogTimestampNow;
             });
 
             it('should return the key if the field exists', () => {

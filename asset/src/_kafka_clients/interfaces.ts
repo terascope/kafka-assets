@@ -1,4 +1,5 @@
-import { Logger } from '@terascope/job-components';
+import { Logger, DataEncoding, DataEntity } from '@terascope/job-components';
+import { KafkaMessage } from '../_kafka_helpers';
 
 export interface OffsetByPartition {
     [partition: number]: number;
@@ -22,6 +23,10 @@ export interface TopicPartition {
 export interface ConsumerClientConfig {
     topic: string;
     logger: Logger;
+    _encoding?: DataEncoding,
+    rollback_on_failure?: boolean;
+    use_commit_sync?: boolean;
+    tryFn?: (input: any) => any
 }
 
 export interface ProduceMessage {
@@ -40,3 +45,11 @@ export interface ProducerClientConfig {
 export interface FatalError extends Error {
     fatalError: true;
 }
+
+export type ConsumeFn = (
+    fn: (msg: KafkaMessage) => DataEntity
+) => (msg: KafkaMessage) => DataEntity
+
+export type ProduceFn = (
+    fn: (msg: KafkaMessage) => DataEntity
+) => (msg: KafkaMessage) => void

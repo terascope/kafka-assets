@@ -10,3 +10,4 @@ export const fetcherTopic = 'kafka-test-fetcher';
 export const fetcherGroup = uuidv4();
 export const senderTopic = 'kafka-test-sender';
 export const deadLetterTopic = 'kafka-dead-letter';
+export const fetcherAPITopic = 'kafka-api-fetcher';
