@@ -4880,10 +4880,10 @@ table@^5.2.3:
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
 
-teraslice-test-harness@^0.24.1:
-  version "0.24.1"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.24.1.tgz#c2a6034df113a82c5cf15eb0b1bd48aed1dc2686"
-  integrity sha512-+ebGrxw8JBGnZ4z/W/MQpwti23BAewlsVCUZ26OFZjmKrf/0e1JKGLef49gKre3ZkBXVYDslV7VPKcukqleHdg==
+teraslice-test-harness@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.25.0.tgz#91f9acb90003c7130d18a4f3cda22aef358775d3"
+  integrity sha512-+NapvEKCY0yTpZZ5V9KLu1d/fkmN/TbBGQnebIZbnH/g7HTki2kEDiSzpI7/dn9eo8ApEBX2hJ+kxqVoSs6Haw==
   dependencies:
     "@terascope/teraslice-op-test-harness" "^1.22.1"
 
