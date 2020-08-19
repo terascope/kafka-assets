@@ -549,10 +549,10 @@
     eslint-plugin-react "^7.20.5"
     eslint-plugin-react-hooks "^4.0.8"
 
-"@terascope/job-components@^0.39.0":
-  version "0.39.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.39.0.tgz#19ca9f7a8c28633fbf0049dc3ffd76e41ff607f3"
-  integrity sha512-GM2l43sRga70K5Al5AyjW6nwvXVnp71He/LFgXWxnVosAljpsuAq9WaisKy0d71VoVBgGRWTp/khXMsIFX8wjg==
+"@terascope/job-components@^0.39.1":
+  version "0.39.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.39.1.tgz#c837f97561ff0af5990ad8bde2a3a9c64fb53f9d"
+  integrity sha512-GNMAhRt2Cak7x7twKQgqELYDOq0ion8APTMRxKgf8jnAZbOzkaiqCBlxGOmOIxeZZcUOho2AUiJko+3QlJImxA==
   dependencies:
     "@terascope/utils" "^0.29.2"
     convict "^4.4.1"
