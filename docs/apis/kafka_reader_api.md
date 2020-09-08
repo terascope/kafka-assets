@@ -1,9 +1,9 @@
 # kafka_reader_api
-This is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which encapsulates a specific functionality that can be utilized by any processor, reader or slicer.
+This is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides an API to read messages from a Kafka topic and can be utilized by any processor, reader or slicer.
 
 The `kafka_reader_api` will provide an [api factory](https://terascope.github.io/teraslice/docs/packages/job-components/api/classes/apifactory), which is a singleton that can create, cache and manage multiple kafka readers that can be accessed in any operation through the `getAPI` method on the operation.
 
-The kafka_reader_api is used to read data from a kafka cluster. This is a high throughput operation. This reader handles all the complexity of balancing writes across partitions and managing ever-changing brokers.
+This is a high throughput operation. This reader handles all the complexity of balancing writes across partitions and managing ever-changing brokers.
 
 This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
 

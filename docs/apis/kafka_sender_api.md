@@ -1,13 +1,11 @@
 # kafka_sender_api
-This is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which encapsulates a specific functionality that can be utilized by any processor, reader or slicer.
+This is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides an API to send messages to a Kafka topic and can be utilized by any processor, reader or slicer.
 
  The `kafka_sender_api` will provide an [api factory](https://terascope.github.io/teraslice/docs/packages/job-components/api/classes/apifactory), which is a singleton that can create, cache and manage multiple kafka senders that can be accessed in any operation through the `getAPI` method on the operation.
 
 This api is the core of the [kafka_sender](../operations/kafka_sender.md). This contains all the same behavior, functionality and configuration of that reader
 
-The kafka_sender_api is used to send data to a kafka topic. This is a high throughput operation.
-
-This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
+This is a high throughput operation and uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
 
 For this sender to function properly, you will need a running kafka cluster and configure this job with the correct topic and producer configurations.
 
