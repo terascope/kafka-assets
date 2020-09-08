@@ -33,8 +33,6 @@
         "eslint": "^7.7.0",
         "jest": "^26.4.0",
         "jest-extended": "^0.11.5",
-        "markdown-table": "^2.0.0",
-        "markdown-toc": "^1.2.0",
         "teraslice-test-harness": "^0.25.0",
         "ts-jest": "^26.2.0",
         "ts-node": "^8.10.2",
