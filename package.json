@@ -31,7 +31,7 @@
         "@types/uuid": "^8.3.0",
         "bunyan": "^1.8.14",
         "eslint": "^7.7.0",
-        "jest": "^26.4.0",
+        "jest": "^26.4.2",
         "jest-extended": "^0.11.5",
         "teraslice-test-harness": "^0.25.0",
         "ts-jest": "^26.3.0",
