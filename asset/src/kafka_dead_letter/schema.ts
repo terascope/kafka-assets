@@ -6,7 +6,7 @@ export default class Schema extends ConvictSchema<KafkaDeadLetterConfig> {
         return {
             topic: {
                 doc: 'Name of the Kafka topic to send data to',
-                default: '',
+                default: null,
                 format: 'required_String'
             },
             connection: {

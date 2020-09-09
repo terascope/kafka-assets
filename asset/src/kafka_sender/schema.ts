@@ -83,7 +83,7 @@ export const schema = {
     api_name: {
         doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
         default: DEFAULT_API_NAME,
-        format: 'optional_String'
+        format: 'required_String'
     },
 };
 
