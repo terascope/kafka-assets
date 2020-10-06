@@ -586,12 +586,12 @@
     eslint-plugin-react "^7.20.6"
     eslint-plugin-react-hooks "^4.1.0"
 
-"@terascope/job-components@^0.40.0":
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.40.0.tgz#0c9869328a45a185041087aad5482c0b1aa76bfd"
-  integrity sha512-fCL9xRRO000+oDCZVdxRtqk559mNg2cnyZjbKvx8m10CtLuaBxen78WpmNM8nMEX/eYSZtMu8zqJzDaFTzrALg==
+"@terascope/job-components@^0.42.0":
+  version "0.42.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.42.0.tgz#2ec6ec29132a2f7ce4a962464d01d1b6bed30a48"
+  integrity sha512-8XM2qhsnojkWuEcnuryMiMkJ7y21ovbAYZkpTfpMn7c3E+eHrp3wWA19EywlgMvnUc+oH4LkVU1QZg5eDU8qpw==
   dependencies:
-    "@terascope/utils" "^0.30.0"
+    "@terascope/utils" "^0.32.0"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.0"
@@ -603,17 +603,17 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.5.0.tgz#b8d1a65a8943276aa3e6652baed3dadf4f5323eb"
-  integrity sha512-C3QnRtSsgR96WAkWFRCAx3lZjg2WXMScvFzFnTVSgk8srRBtBe0EiL4aD07z/VE6Ajxq7RBzD0SRoiZ57LjYxw==
+"@terascope/types@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.6.0.tgz#0d759ab7b26f6fc25af4b9727462b1d264761a1b"
+  integrity sha512-I+E4m1wneMaiUslcl0Al0j2gjDcgUsFKhwurImYZh60+h10YMLfifbFSiJ18CUBnjy5A2rbaiKxt+OiOxQEkrA==
 
-"@terascope/utils@^0.30.0":
-  version "0.30.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.30.0.tgz#b6793ab20a382d3ccf724f4a6b7b83d077c59bf8"
-  integrity sha512-pl2DMpYFNeMpVpN7oKw6cB/uXmtqeOWV0sH6QoJSuVQAT4x7+mwftFiv9jkrGDA+LhFpOxT4HKzJgyxwM2K36w==
+"@terascope/utils@^0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.32.0.tgz#8edf29c594f70ada3b14bc9bfdd0210a507a20fb"
+  integrity sha512-Puq+egueCxOvf5AVInxdk8x1aiZbcyBBBiISaw5v5Eg7D6BiEM3SZNsCsIIPy/XkBow3LlC5u7a2dJzN5oLZaA==
   dependencies:
-    "@terascope/types" "^0.5.0"
+    "@terascope/types" "^0.6.0"
     debug "^4.1.1"
     is-plain-object "^4.1.1"
     js-string-escape "^1.0.1"
