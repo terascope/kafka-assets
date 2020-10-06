@@ -10,7 +10,7 @@
     "description": "Teraslice asset for kafka operations",
     "main": "index.js",
     "dependencies": {
-        "@terascope/job-components": "^0.40.0"
+        "@terascope/job-components": "^0.42.0"
     },
     "devDependencies": {},
     "scripts": {
