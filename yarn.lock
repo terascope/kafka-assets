@@ -596,10 +596,10 @@
     datemath-parser "^1.0.6"
     uuid "^8.3.0"
 
-"@terascope/teraslice-op-test-harness@^1.22.1":
-  version "1.22.1"
-  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.22.1.tgz#c6f8fee22e5cc5fc2b7508fe1a612c5471e9c4d2"
-  integrity sha512-Q/lSueDNQQItvlP1rgb2DeUt1+oIOE0a8t9H06o62aJ+l8aT1G1KU0S5NrchiUhgLIuMeYhXQKJ5wajU8oRdMA==
+"@terascope/teraslice-op-test-harness@^1.23.0":
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.23.0.tgz#184f19e97c0a9560f9aba141d523154f7c65f19d"
+  integrity sha512-E1OV8AflrjRc/9ACL4I11HYHzT+9z2DQl4YX9Qm40P+FsFxTYWT5T7orggN+irGGTu6ab9+QPNj44JR6VAgSLQ==
   dependencies:
     bluebird "^3.7.2"
 
@@ -4771,12 +4771,12 @@ table@^5.2.3:
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
 
-teraslice-test-harness@^0.25.0:
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.25.0.tgz#91f9acb90003c7130d18a4f3cda22aef358775d3"
-  integrity sha512-+NapvEKCY0yTpZZ5V9KLu1d/fkmN/TbBGQnebIZbnH/g7HTki2kEDiSzpI7/dn9eo8ApEBX2hJ+kxqVoSs6Haw==
+teraslice-test-harness@^0.26.0:
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.26.0.tgz#933291b7a030ee2e906d810cd109a53f427b1454"
+  integrity sha512-9Jj+uExN5H7qwtPg7MOHmSRRxi7tUi5/TfjFha8vR4BrzrKO70J1MCu5zeYoZ4+QjtzUJw/JYLCzVVbRcSsHcA==
   dependencies:
-    "@terascope/teraslice-op-test-harness" "^1.22.1"
+    "@terascope/teraslice-op-test-harness" "^1.23.0"
 
 terminal-link@^2.0.0:
   version "2.1.1"
