@@ -64,9 +64,25 @@ describe('Kafka Sender API Schema', () => {
         it('should throw an error if configs are incorrect', async () => {
             await expect(makeTest({ id_field: 1234 })).toReject();
             await expect(makeTest({ timestamp_field: 123423 })).toReject();
-            await expect(makeTest({ compression: 'someother' })).toReject();
-            await expect(makeTest({ size: 'someother' })).toReject();
+            await expect(makeTest({ compression: 'someOther' })).toReject();
+            await expect(makeTest({ size: 'someOther' })).toReject();
             await expect(makeTest({ size: -1231 })).toReject();
+        });
+
+        it('should set the required_acks default to 1', async () => {
+            const apiManager = await makeTest({
+                _name: 'kafka_sender_api',
+                topic: 'hello',
+                size: 1
+            });
+
+            await apiManager.create('test', {});
+
+            expect(apiManager.getConfig('test')).toMatchObject({
+                topic: 'hello',
+                size: 1,
+                required_acks: 1
+            });
         });
     });
 });
