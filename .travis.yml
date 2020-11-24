@@ -62,9 +62,6 @@ after_failure:
   - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:
   - teraslice-cli assets build
-  # This was renamed or something, not sure what it should be, disabling to make
-  # CI work.
-  # - cp ./docs/CONNECTORS.md packages/terafoundation_kafka_connector/README.md
   - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 deploy:
   - provider: script
