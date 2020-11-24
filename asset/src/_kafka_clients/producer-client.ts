@@ -33,7 +33,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
      * @param topic - topic to query metadata for
     */
     async getMetadata(topic: string): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this._client.getMetadata({ topic }, (err: AnyKafkaError) => {
                 /* istanbul ignore if */
                 if (err) reject(wrapError(`Failed to get topic metadata for topic "${topic}"`, err));
@@ -104,7 +104,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
      * uses `this.flushTimeout` as the as the timeout
     */
     private _flush(): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this._client.flush(this.flushTimeout, (err: AnyKafkaError) => {
                 /* istanbul ignore if */
                 if (err) reject(wrapError('Failed to flush messages', err));

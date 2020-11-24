@@ -32,7 +32,7 @@ export default class KafkaAdmin {
     }
 
     private createTopic(topic: string) {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this._client.createTopic({
                 topic,
                 num_partitions: 1,
@@ -46,7 +46,7 @@ export default class KafkaAdmin {
     }
 
     private deleteTopic(topic: string) {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this._client.deleteTopic(topic, (err) => {
                 if (err) reject(err);
                 else resolve();

@@ -106,7 +106,7 @@ describe('Kafka Fetcher', () => {
             await runSlice();
 
             // disconnect in-order to prove the connection can reconnect
-            await new Promise((resolve, reject) => {
+            await new Promise<void>((resolve, reject) => {
                 logger.debug('disconnecting...');
                 // @ts-expect-error
                 fetcher.consumer._client.disconnect((err) => {
