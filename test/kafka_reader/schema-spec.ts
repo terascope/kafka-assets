@@ -13,6 +13,9 @@ import Schema from '../../asset/src/kafka_reader/schema';
 import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers } from '../helpers/config';
 
+// increase the timeout because CI has been failing a bit
+jest.setTimeout(15_000);
+
 describe('Kafka Reader Schema', () => {
     let context: TestContext;
     let schema: Schema;

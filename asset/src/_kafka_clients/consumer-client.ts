@@ -252,7 +252,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * A promisified version consume
      */
     private _consumeMessages(count: number): Promise<KafkaMessage[]> {
-        return new Promise((resolve, reject) => {
+        return new Promise<KafkaMessage[]>((resolve, reject) => {
             this._client.consume(count, (err: KafkaError, messages: KafkaMessage[]) => {
                 /* istanbul ignore if */
                 if (err) reject(err);
@@ -307,7 +307,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private async _seek(topar: TopicPartition): Promise<void> {
         const { partition, offset } = topar;
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this._client.seek({
                 partition,
                 offset,
@@ -424,7 +424,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
 
         this._logger.debug('waiting for rebalance...');
 
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             let timeoutOff: () => void;
 
             const eventOff = this._once('rebalance:end', () => {

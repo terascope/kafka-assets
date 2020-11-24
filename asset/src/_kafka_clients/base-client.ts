@@ -57,7 +57,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
         this._closed = true;
 
         if (this.isConnected()) {
-            await new Promise((resolve, reject) => {
+            await new Promise<void>((resolve, reject) => {
                 this._client.disconnect((err: AnyKafkaError) => {
                     if (err) reject(wrapError('Failed to disconnect', err));
                     else resolve();
@@ -89,7 +89,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
 
         if (this.isConnected()) return;
 
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
             const metadataOptions: kafka.MetadataOptions = {
                 topic: this._topic,
             };
