@@ -1,6 +1,6 @@
 {
     "name": "terafoundation_kafka_connector",
-    "version": "0.6.1",
+    "version": "0.7.0",
     "description": "Terafoundation connector for Kafka producer and consumer clients.",
     "publishConfig": {
         "access": "public"
@@ -29,6 +29,6 @@
         "convict": "^4.4.1"
     },
     "engines": {
-        "node": ">=8.0.0"
+        "node": ">=10.16.0"
     }
 }
