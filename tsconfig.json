@@ -4,7 +4,7 @@
         "outDir": "asset/dist",
         "module": "commonjs",
         "moduleResolution": "node",
-        "target": "es2017",
+        "target": "es2018",
         "skipLibCheck": true,
         "experimentalDecorators": true,
         "strict": true,
