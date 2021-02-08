@@ -608,15 +608,15 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.44.1":
-  version "0.44.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.44.1.tgz#b959b7e2064e59870866948a211b79ff13ec7cd3"
-  integrity sha512-0jebGRhXoXQWqCr/LT8I7E5eKNpUdN40IqNAnF6hxzULsawnnks6i+FKRrLKbHdVkkuQ4nH6viG+QFG8n0rEOg==
+"@terascope/job-components@^0.46.2":
+  version "0.46.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.46.2.tgz#6b845f2cc44d3b5801ceb482b898f427dd715a9f"
+  integrity sha512-xTAVV7osPDGDrWiWoF43YkPh155477440P8poXBFwoYS4So2OhAe5uSVstUkfXy9aeFNEkGwEnFzckqA8ddQPA==
   dependencies:
-    "@terascope/utils" "^0.34.1"
+    "@terascope/utils" "^0.36.2"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
-    uuid "^8.3.1"
+    uuid "^8.3.2"
 
 "@terascope/teraslice-op-test-harness@^1.23.0":
   version "1.23.0"
@@ -625,26 +625,23 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.7.0":
+"@terascope/types@^0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.7.1.tgz#0712b34e148db0bd19bea219d386f49e833e703d"
   integrity sha512-cbayopONnDam37C6qn4ARl2K0UdXbxs9ObPUQ2IeV7gMia6dPZ+QByvw3qDYuUFLpS1VTxhxd4nKu2KiNxxDgw==
 
-"@terascope/utils@^0.34.1":
-  version "0.34.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.34.1.tgz#3e52d35f29a6bbb8bd93d99c708e99ada2c15d91"
-  integrity sha512-GzRnQeoNrx41FohJy02ToPrjXHy3XxrMQwuJ0FHM3ncq6Iy6wPQoX5XR0ID/lcusLNghm6Ew4ioJv+jxcYs6hA==
+"@terascope/utils@^0.36.2":
+  version "0.36.2"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.36.2.tgz#c0772b5e68109f24bb310fc83fc83d9ff5c15e6a"
+  integrity sha512-C1lcSXfiPviSzNHvdzWWXtVO9S7z4ll/b3TCPHDR8GhW8xxoT03fjlMlGXnPNfbzOaCD8o8K9ba/mgpvVjSO6Q==
   dependencies:
-    "@terascope/types" "^0.7.0"
+    "@terascope/types" "^0.7.1"
     debug "^4.3.1"
     is-plain-object "^5.0.0"
     js-string-escape "^1.0.1"
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
-    lodash.get "^4.4.2"
-    lodash.has "^4.5.2"
-    lodash.set "^4.3.2"
-    lodash.unset "^4.5.2"
+    lodash "^4.17.20"
     p-map "^4.0.0"
     shallow-clone "^3.0.1"
 
@@ -3813,30 +3810,10 @@ lodash.clonedeep@4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
-lodash.get@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
-  integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
-
-lodash.has@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/lodash.has/-/lodash.has-4.5.2.tgz#d19f4dc1095058cccbe2b0cdf4ee0fe4aa37c862"
-  integrity sha1-0Z9NwQlQWMzL4rDN9O4P5Ko3yGI=
-
-lodash.set@^4.3.2:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
-  integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
-
 lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
-
-lodash.unset@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/lodash.unset/-/lodash.unset-4.5.2.tgz#370d1d3e85b72a7e1b0cdf2d272121306f23e4ed"
-  integrity sha1-Nw0dPoW3Kn4bDN8tJyEhMG8j5O0=
 
 lodash@4.x, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20:
   version "4.17.20"
@@ -5537,7 +5514,7 @@ uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuid@^8.3.0, uuid@^8.3.1:
+uuid@^8.3.0, uuid@^8.3.1, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
