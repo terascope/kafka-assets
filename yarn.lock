@@ -614,10 +614,10 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.47.1":
-  version "0.47.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.47.1.tgz#d1df4aa718ba9831dd13100de86eca5772cb29a2"
-  integrity sha512-XCaYkO8L7xh4z4zmC5wookr4+GHUqVVMQRNqpTC48Q6JeC7UMibI06l+5HNL21AjqWs+4Bb8TAzzVwQsi6tDPw==
+"@terascope/job-components@^0.48.0":
+  version "0.48.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.48.0.tgz#85ef4527a3ad3ce05c23d0cc08cbcee860d05379"
+  integrity sha512-GVjj6+k+VToOKqclqvplPfJZCLACUOsts46Gkm7pnTptAE3ckd4iTVKlSZjoUsB2V0/rsCuv41HfoUrbYrRbrA==
   dependencies:
     "@terascope/utils" "^0.36.3"
     convict "^4.4.1"
