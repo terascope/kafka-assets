@@ -614,12 +614,12 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.48.2":
-  version "0.48.2"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.48.2.tgz#d368f168ac173078727e56bc99d24dedc8cfd6c4"
-  integrity sha512-0DPFBUj/cLWGfy71kixHF07nNPshniWy3lo6VpeqiDDV+bMaD1/+kj4m4U3QMj611kKpY9uR1/iufQL4LyN9Vg==
+"@terascope/job-components@^0.48.4":
+  version "0.48.4"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.48.4.tgz#5bc76413e5db04268aa8492217401ca53fe1ad29"
+  integrity sha512-N3C4tvIRjRuxxS1Al1MSgTyM9QVNoEbE0jnXOMhRs4tJKn1ifGMJhH7eKVqfHIze6F1FHmdzdKWGdQhjD4TcrA==
   dependencies:
-    "@terascope/utils" "^0.36.5"
+    "@terascope/utils" "^0.36.7"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
@@ -631,17 +631,17 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.7.1.tgz#0712b34e148db0bd19bea219d386f49e833e703d"
-  integrity sha512-cbayopONnDam37C6qn4ARl2K0UdXbxs9ObPUQ2IeV7gMia6dPZ+QByvw3qDYuUFLpS1VTxhxd4nKu2KiNxxDgw==
+"@terascope/types@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.7.2.tgz#f51a6ba0125b4fc01b71286e400a9972ba10b2d5"
+  integrity sha512-t9XkD846mYij370GW/NEtRkcSeWKaC7DdnIx58aX6GoZ8LNSogXK7vAguhjMaIcXs2+q+xCZEl1OVCwKap95ag==
 
-"@terascope/utils@^0.36.5":
-  version "0.36.5"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.36.5.tgz#0221aa096b8ae7b64fc69bedcf5862a2eeb64d50"
-  integrity sha512-PY4be0PVrJHkhXVYN97UyU/qJI1zotJHXFwvmk9VuxiW/EQoXfpnOgPTYWosQcr9iWbgqZuzmn1JL9+3HDt4lg==
+"@terascope/utils@^0.36.7":
+  version "0.36.7"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.36.7.tgz#6ef681d103a50e38fb7ce7c3f5a69778b9f3048a"
+  integrity sha512-U7ptfskAU6dv1AHOJ5xvUNSm2DfBoKHEL0gHSinVRi4Eswy5lB70upACnHna2M6UQR+IrFKuJoUSzHWT8SceOA==
   dependencies:
-    "@terascope/types" "^0.7.1"
+    "@terascope/types" "^0.7.2"
     debug "^4.3.1"
     is-plain-object "^5.0.0"
     js-string-escape "^1.0.1"
