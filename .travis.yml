@@ -63,7 +63,6 @@ after_success:
 after_failure:
   - tail -n 100 $KAFKA_HOME/*.log
 before_deploy:
-  - teraslice-cli assets build
   - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 deploy:
   - provider: script
