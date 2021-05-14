@@ -2,16 +2,16 @@
 dist: bionic
 language: node_js
 node_js:
-  - '10.19'
-  - '12.20'
+  - '12.22'
+  - '14.17'
 os:
   - linux
   - osx
 osx_image: xcode10
 branches:
   only:
-  - master
-  - /^v\d+\.\d+\.\d+/
+    - master
+    - /^v\d+\.\d+\.\d+/
 addons:
   apt:
     packages:
@@ -55,7 +55,9 @@ script:
   - yarn test:all
   - yarn lint
   # Attempt to build the asset (so it doesn't blow up when it deploys)
+  - teraslice-cli -v
   - teraslice-cli assets build
+  - teraslice-cli assets build --bundle
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 after_failure:
