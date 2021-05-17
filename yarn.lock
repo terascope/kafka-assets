@@ -614,12 +614,12 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.50.1":
-  version "0.50.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.50.1.tgz#270a28fd052649589e40c68c534c50537b048322"
-  integrity sha512-U4SukJgKgnPzzinLPA41dP0JNPCUl5VsGhQa/GcyXy+59+fcCpFNNbPKDEYEtsMj6mmQvjMblwk91YYVxG854A==
+"@terascope/job-components@^0.50.2":
+  version "0.50.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.50.2.tgz#d68063d14ab1d46c61262adc29607316382e0ed2"
+  integrity sha512-QGdJ47XBMj+nhUtCKXnhHNumC1JQzhUUTVehe5mNzdPN19nXxKX2T4fni9hlyaxmyauk/fOVZKlsLrv0olmv4w==
   dependencies:
-    "@terascope/utils" "^0.37.0"
+    "@terascope/utils" "^0.38.1"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
@@ -636,10 +636,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.8.0.tgz#ad93c634e2741055848063a124e41ec51f563b12"
   integrity sha512-S/gU8pwdE23kbJ5vSG5NxcxdZMYBu2T7weDZxccQwcPvH2KcmqnZ5DK161k8iqc0c3oUaOgsgm5l3oBc0qq6EQ==
 
-"@terascope/utils@^0.37.0":
-  version "0.37.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.37.0.tgz#2747ee019646fbb976e68a99ce15e6806e41175b"
-  integrity sha512-vLI8VUSCtTIQ3IzkFrM5KVEiq4LLFm/WGnm6fvcv5wyLpPy5ljhiUYgVszYOIsqGWr5XfTFzNnqvHwdhSU1O6g==
+"@terascope/utils@^0.38.1":
+  version "0.38.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.38.1.tgz#bedffb022522ade4b059dd3b831ca9c0c467a3d6"
+  integrity sha512-JzoRJ7EWaIXNhWMzuavS9+KlPI8cjkO+ClsAv3BjGd/4hW1TRJ/cF4/B9RXY9kJRoxmuIjOhf0JI1+yh6HQ72Q==
   dependencies:
     "@terascope/types" "^0.8.0"
     debug "^4.3.1"
@@ -648,6 +648,7 @@
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
     lodash "^4.17.21"
+    mnemonist "^0.38.3"
     p-map "^4.0.0"
     shallow-clone "^3.0.1"
 
@@ -4093,6 +4094,13 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.5"
 
+mnemonist@^0.38.3:
+  version "0.38.3"
+  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.38.3.tgz#35ec79c1c1f4357cfda2fe264659c2775ccd7d9d"
+  integrity sha512-2K9QYubXx/NAjv4VLq1d1Ly8pWNC5L3BrixtdkyTegXWJIqY+zLNDhhX/A+ZwWt70tB1S8H4BE8FLYEFyNoOBw==
+  dependencies:
+    obliterator "^1.6.1"
+
 moment@2.22.2:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
@@ -4332,6 +4340,11 @@ object.values@^1.1.3:
     define-properties "^1.1.3"
     es-abstract "^1.18.0-next.2"
     has "^1.0.3"
+
+obliterator@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-1.6.1.tgz#dea03e8ab821f6c4d96a299e17aef6a3af994ef3"
+  integrity sha512-9WXswnqINnnhOG/5SLimUlzuU1hFJUc8zkwyD59Sd+dPOMf05PmnYG/d6Q7HZ+KmgkZJa1PxRso6QdM3sTNHig==
 
 once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"
