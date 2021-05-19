@@ -585,19 +585,19 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@terascope/eslint-config@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-0.5.5.tgz#c4cceaee3b2f3da8994257f0ba8c084237277615"
-  integrity sha512-ET4oc5ER8+Gc1U2cLQQtMPbsEjBgbCtP6lLarphDEMj3/IWb/totUzr8HFemdbsXP+YWhLdNft4WLvrPTI6zIw==
+"@terascope/eslint-config@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-0.6.0.tgz#a759821f97049585c9851737caab643e184ec882"
+  integrity sha512-kwQzawat77p49gjEcmY5qGK8aqkSpNc9tsQS/mQviwsNg6QaY5sDg7XT42xj6PXvUPUnENR1ZvDygupMf0UWCg==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.20.0"
     "@typescript-eslint/parser" "^4.20.0"
     eslint-config-airbnb "^18.2.1"
     eslint-config-airbnb-base "^14.2.0"
     eslint-plugin-import "~2.22.0"
-    eslint-plugin-jest "^24.3.4"
+    eslint-plugin-jest "^24.3.6"
     eslint-plugin-jsx-a11y "^6.4.1"
-    eslint-plugin-react "^7.23.1"
+    eslint-plugin-react "^7.23.2"
     eslint-plugin-react-hooks "^4.2.0"
 
 "@terascope/fetch-github-release@^0.7.7":
@@ -2122,10 +2122,10 @@ eslint-plugin-import@~2.22.0:
     resolve "^1.17.0"
     tsconfig-paths "^3.9.0"
 
-eslint-plugin-jest@^24.3.4:
-  version "24.3.5"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-24.3.5.tgz#71f0b580f87915695c286c3f0eb88cf23664d044"
-  integrity sha512-XG4rtxYDuJykuqhsOqokYIR84/C8pRihRtEpVskYLbIIKGwPNW2ySxdctuVzETZE+MbF/e7wmsnbNVpzM0rDug==
+eslint-plugin-jest@^24.3.6:
+  version "24.3.6"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-24.3.6.tgz#5f0ca019183c3188c5ad3af8e80b41de6c8e9173"
+  integrity sha512-WOVH4TIaBLIeCX576rLcOgjNXqP+jNlCiEmRgFTfQtJ52DpwnIQKAVGlGPAN7CZ33bW6eNfHD6s8ZbEUTQubJg==
   dependencies:
     "@typescript-eslint/experimental-utils" "^4.0.1"
 
@@ -2151,7 +2151,7 @@ eslint-plugin-react-hooks@^4.2.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.2.0.tgz#8c229c268d468956334c943bb45fc860280f5556"
   integrity sha512-623WEiZJqxR7VdxFCKLI6d6LLpwJkGPYKODnkH3D7WpOG5KM8yWueBd8TLsNAetEJNF5iJmolaAKO3F8yzyVBQ==
 
-eslint-plugin-react@^7.23.1:
+eslint-plugin-react@^7.23.2:
   version "7.23.2"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.23.2.tgz#2d2291b0f95c03728b55869f01102290e792d494"
   integrity sha512-AfjgFQB+nYszudkxRkTFu0UR1zEQig0ArVMPloKhxwlwkzaw/fBiH0QWcBBhZONlXqQC51+nfqFrkn4EzHcGBw==
