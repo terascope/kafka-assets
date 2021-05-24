@@ -15,6 +15,7 @@
         "asset:build": "yarn && yarn --cwd ./asset build",
         "build": "yarn workspaces run build",
         "build:watch": "yarn build --watch",
+        "setup": "yarn && yarn build",
         "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
         "test:all": "yarn workspaces run test",
         "test:watch": "jest --forceExit --coverage=false --notify --watch --onlyChanged",
@@ -35,7 +36,6 @@
         "jest-extended": "^0.11.5",
         "teraslice-test-harness": "^0.28.0",
         "ts-jest": "^26.5.6",
-        "ts-node": "^9.1.1",
         "typescript": "^4.2.4",
         "uuid": "^8.3.1"
     },
