@@ -140,7 +140,7 @@ describe('Kafka Sender', () => {
     });
 
     it('should call flush once per run and before the buffer is full', () => {
-        const bufferSize = batchSize * 5;
+        const bufferSize = 1000000;
         const expected = runs + Math.floor(results.length / bufferSize);
         expect(mockFlush).toHaveBeenCalledTimes(expected);
     });
