@@ -67,6 +67,7 @@ describe('Kafka Sender API Schema', () => {
             await expect(makeTest({ compression: 'someOther' })).toReject();
             await expect(makeTest({ size: 'someOther' })).toReject();
             await expect(makeTest({ size: -1231 })).toReject();
+            await expect(makeTest({ max_buffer_size: -1231 })).toReject();
         });
 
         it('should set the required_acks default to 1', async () => {

@@ -18,8 +18,8 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
     private validateConfig(config: AnyObject): KafkaSenderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
         if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
-        // TODO: note the change of size vs bufferSize
         if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
+        if (isNil(config.buffer_size) || !isNumber(config.buffer_size)) throw new Error(`Parameter buffer_size must be provided and be of type number, got ${getTypeOf(config.size)}`);
         if (isNotNil(config.id_field) && !isString(config.id_field)) throw new Error(`Parameter id_field must be provided and be of type string, got ${getTypeOf(config.id_field)}`);
         if (isNotNil(config.timestamp_field) && !isString(config.timestamp_field)) throw new Error(`Parameter timestamp_field must be provided and be of type string, got ${getTypeOf(config.timestamp_field)}`);
         if (isNotNil(config.timestamp_now) && !isBoolean(config.timestamp_now)) throw new Error(`Parameter timestamp_now must be provided and be of type string, got ${getTypeOf(config.timestamp_now)}`);
@@ -30,7 +30,6 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
 
-        config.bufferSize = config.size * 5;
         return config;
     }
 
@@ -44,7 +43,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
             },
             rdkafka_options: {
                 'compression.codec': kafkaConfig.compression,
-                'queue.buffering.max.messages': kafkaConfig.bufferSize,
+                'queue.buffering.max.messages': kafkaConfig.max_buffer_size,
                 'queue.buffering.max.ms': kafkaConfig.wait,
                 'batch.num.messages': kafkaConfig.size,
                 'topic.metadata.refresh.interval.ms': kafkaConfig.metadata_refresh,
