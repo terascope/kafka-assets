@@ -25,7 +25,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
 
         const logger = this.logger.child({ module: 'kafka-producer' });
 
-        this._bufferSize = this.apiConfig.size * 5;
+        this._bufferSize = this.apiConfig.max_buffer_size;
 
         this.producer = new ProducerClient(this.createClient(), {
             logger,
