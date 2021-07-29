@@ -1,5 +1,5 @@
 # kafka_sender_api
-The kafka_sender_api is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides the functionality to send messages to a Kafka topic that can be utilized by any processor, reader or slicer.  It is a high throughput operation that uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood and is the core of the [kafka_sender](../operations/kafka_sender.md).  It contains the same behavior, functionality, and configuration properties of the kafka_sender.
+The kafka_sender_api is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides the functionality to send messages to a kafka topic and can be utilized by any processor, reader or slicer.  It is a high throughput operation that uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood and is the core of the [kafka_sender](../operations/kafka_sender.md).  It contains the same behavior, functionality, and configuration properties of the kafka_sender.
 
  The `kafka_sender_api` provides an [api factory](https://terascope.github.io/teraslice/docs/packages/job-components/api/classes/apifactory), which is a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that can create, cache and manage multiple kafka senders.  These api functions can then be accessed in any operation through the `getAPI` method.
 
@@ -15,7 +15,7 @@ Example Job
     "name" : "testing",
     "workers" : 1,
     "slicers" : 1,
-    "lifecycle" : "once",
+    "lifecycle" : "persistent",
     "assets" : [
         "kafka"
     ],
@@ -24,6 +24,7 @@ Example Job
             "_name": "kafka_sender_api",
             "topic": "test_topic",
             "size": 10000,
+            "id_field": "uuid",
             "timestamp_field": "created",
             "connection": "default"
         }
@@ -39,7 +40,7 @@ Example Job
     ]
 }
 ```
-Here is a custom processor for the job described above
+The custom processor for the job above
 
 ```javascript
 // located at /some_sender/processor.ts
@@ -66,19 +67,19 @@ export default class SomeSender extends BatchProcessor {
 
 ### size
 
-Returns how many separate sender apis are in the cache
+Returns the number of separate sender apis in the cache.
 
 ### get
 parameters:
 - name: String
 
-Fetches any sender api that is associated with the name provided
+Fetches the sender api associated with the name provided.
 
 ### getConfig
 parameters:
 - name: String
 
-Fetches any sender api config that is associated with the name provided
+Fetches the sender api config associated with the name provided.
 
 ### create (async)
 parameters:
@@ -95,15 +96,15 @@ Removes an instance of a sender api from the cache and will follow any cleanup c
 
 ### entries
 
-Allows you to iterate over the cache names and clients in the cache
+Iterates over the names and clients in the cache.
 
 ### keys
 
-Allows you to iterate over the cache names in the cache
+Iterates over the names in the cache
 
 ### values
 
-Allows you to iterate over the values in the cache
+Iterates over the values in the cache
 
 
 ## Example of using the factory methods in a processor
@@ -122,19 +123,19 @@ const apiManager = this.getAPI<ElasticReaderFactoryAPI>(apiName);
 
 apiManager.size() === 0
 
-// this will return an api cached at "normalClient" and it will use the default api config
+// creates and returns an api named "normalClient" which uses the default api config
 const normalClient = await apiManager.create('normalClient', {})
 
 apiManager.size() === 1
 
 apiManager.get('normalClient') === normalClient
 
-// this will return an api cached at "overrideClient" and it will use the api config but override the index to "other_index" in the new instance.
+// creates and returns an api named "overrideClient" which overrides the default configuration's topic setting with "other_topic" and the connection setting with "other"
 const overrideClient = await apiManager.create('overrideClient', { topic: 'other_topic', connection: "other"})
 
 apiManager.size() === 2
 
-// this will return the full configuration for this client
+// returns the configuration for the overrideClient sender api
 apiManger.getConfig('overrideClient') === {
     _name: 'kafka_sender_api',
     topic: 'other_topic',
@@ -153,7 +154,7 @@ apiManager.get('normalClient') === undefined
 ```
 
 ## Kafka Sender Instance
-This is the sender class that is returned from the create method of the APIFactory. This returns a [sender api](https://terascope.github.io/teraslice/docs/packages/job-components/api/interfaces/routesenderapi), which is a common interface used for sender apis.
+The [sender api](https://terascope.github.io/teraslice/docs/packages/job-components/api/interfaces/routesenderapi) returned from the APIFactory's create method.
 
 ### send (async)
 ```(records: DataEntities[]) => Promise<void>```
@@ -172,6 +173,10 @@ parameters:
 
 ### Usage of the kafka sender instance
 ```js
+const apiManager = this.getAPI<ElasticReaderFactoryAPI>(apiName);
+
+const api = await apiManager.create('client', {})
+
 await api.verify();
 
 await api.send([
@@ -191,7 +196,7 @@ await api.send([
 | topic | Name of the Kafka topic to send records | String | required |
 | size | How many messages will be batched and sent to kafka together. | Number | optional, defaults to `10,000` |
 | max_batch_size | Maximum number of messages allowed on the producer queue | Number | optional, defaults to `100,000` |
-| id_field | Field in the incoming record that will be used to assign the record to a partition. | String | optional, if not set, it will check for the `_key` metadata value. If no key is found the sender uses a round robin method to assign records to partitions.|
+| id_field | Field in the incoming record that will be used to assign the record to a topic partition. | String | optional, if not set, it will check for the `_key` metadata value. If no key is found the sender uses a round robin method to assign records to partitions.|
 | timestamp_field | Field in the incoming record that contains a timestamp to set on the record | String | optional, it will take precedence over `timestamp_now` if this is set |
 | timestamp_now | Set to true to have a timestamp generated as records are added to the topic | Boolean | optional, defaults to `false` |
 | compression | Type of compression to use on record sent to topic, may be set to `none`, `gzip`, `snappy`, `lz4` and `inherit` | String | optional, defaults to `gzip` |
