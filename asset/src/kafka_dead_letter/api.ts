@@ -14,7 +14,6 @@ import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer: ProducerClient;
     collector: Collector<ProduceMessage>;
-    private _bufferSize: number;
 
     constructor(
         context: WorkerContext,
@@ -25,12 +24,10 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
 
         const logger = this.logger.child({ module: 'kafka-producer' });
 
-        this._bufferSize = this.apiConfig.max_buffer_size;
-
         this.producer = new ProducerClient(this.createClient(), {
             logger,
             topic: this.apiConfig.topic,
-            bufferSize: this._bufferSize,
+            bufferSize: this.apiConfig.max_buffer_size,
         });
 
         this.collector = new Collector({
@@ -96,7 +93,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
             },
             rdkafka_options: {
                 'compression.codec': this.apiConfig.compression,
-                'queue.buffering.max.messages': this._bufferSize,
+                'queue.buffering.max.messages': this.apiConfig.max_buffer_size,
                 'queue.buffering.max.ms': this.apiConfig.wait,
                 'batch.num.messages': this.apiConfig.size,
                 'topic.metadata.refresh.interval.ms': this.apiConfig.metadata_refresh,

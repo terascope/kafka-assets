@@ -56,7 +56,7 @@ export const schema = {
     },
     max_buffer_size: {
         doc: 'Maximum number of messages allowed on the producer queue',
-        default: 1000000,
+        default: 250000,
         format: (val: unknown):void => {
             if (isNumber(val)) {
                 if (val <= 0) throw new Error('Invalid parameter max_buffer_size, it must be a positive number');
