@@ -54,6 +54,17 @@ export const schema = {
             }
         }
     },
+    max_buffer_size: {
+        doc: 'Maximum number of messages allowed on the producer queue',
+        default: 100000,
+        format: (val: unknown):void => {
+            if (isNumber(val)) {
+                if (val <= 0) throw new Error('Invalid parameter max_buffer_size, it must be a positive number');
+            } else {
+                throw new Error(`Invalid parameter max_buffer_size, it must be a number, got ${getTypeOf(val)}`);
+            }
+        }
+    },
     metadata_refresh: {
         doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
         default: '5 minutes',
