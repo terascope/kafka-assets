@@ -661,12 +661,12 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.52.5":
-  version "0.52.5"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.52.5.tgz#8ebdf22cc1845aa668d03aacb3085c6f971b6e13"
-  integrity sha512-n1Y3xZfnfUTlkPA+Ewvz3AiyWx4gZzmCvwFFx8U4TEkNuN8b3PpU83M+VMRrVhvO3PNTocPDFqhP+W3pR4aQnA==
+"@terascope/job-components@^0.52.7":
+  version "0.52.7"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.52.7.tgz#2e0304e74c4691abbceaa558ac28e70ac4edc314"
+  integrity sha512-Xb3IjQnj5pEhdiyhWQwoXRmOcskhAfUiGpaSwUvkyvmvhZKzUjBqubEg9iSlD3xoqS5yoG+wIXJTZvH0KZvdgQ==
   dependencies:
-    "@terascope/utils" "^0.40.5"
+    "@terascope/utils" "^0.40.7"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
@@ -678,17 +678,17 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.10.0.tgz#ed0f2e5614dcb45bfebc38e029ad880f9b868874"
-  integrity sha512-vRX1wDbjGqw+IiUB5ldbGWd9S4PX2roXFC9Ne2lv0Bo7oilwxCLOnMNUA0Na/59kXJQum489v4r4PZLGRTeiRA==
+"@terascope/types@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.10.1.tgz#5a1d3993e84d98a2b841218d5f301d30ce290d39"
+  integrity sha512-IL28o1zVXWLlLhF3STeQJmrBqEy3+h2MKRctcWw3ZvBd39opC1RUHzblvkOFCxnF4e1uTQ8kuNvlQXWE/HFLoQ==
 
-"@terascope/utils@^0.40.5":
-  version "0.40.5"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.40.5.tgz#dab621817cd7ab0cddc5385a1cd6e9f7663b431f"
-  integrity sha512-UYB3hb2W8s3MEeLTUs6mbK+tdPpsN9kteQX2dMyiJWiF9IgxEDRJy3wH3lPknJkdahXcRdl8HQxB0l6s5Yw2ug==
+"@terascope/utils@^0.40.7":
+  version "0.40.7"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.40.7.tgz#5257d8d8aa0e794f8a75b9200d66f4dd276befda"
+  integrity sha512-B438mTbURghYNDwZNpKwXm/2dIg1JldHHJ4XBa5CiZr1xIkbrIC9rAYWesavyGwxGiG/f5xOEdOahkRYDxg65g==
   dependencies:
-    "@terascope/types" "^0.10.0"
+    "@terascope/types" "^0.10.1"
     "@turf/bbox" "^6.4.0"
     "@turf/bbox-polygon" "^6.4.0"
     "@turf/boolean-contains" "^6.4.0"
@@ -702,8 +702,8 @@
     "@turf/invariant" "^6.2.0"
     "@turf/line-to-polygon" "^6.4.0"
     awesome-phonenumber "^2.54.0"
-    date-fns "^2.22.1"
-    date-fns-tz "^1.1.4"
+    date-fns "^2.23.0"
+    date-fns-tz "^1.1.5"
     datemath-parser "^1.0.6"
     debug "^4.3.2"
     geo-tz "^6.0.1"
@@ -1996,15 +1996,15 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-date-fns-tz@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-1.1.4.tgz#38282c2bfab08946a4e9bb89d733451e5525048b"
-  integrity sha512-lQ+FF7xUxxRuRqIY7H/lagnT3PhhSnnvtGHzjE5WZKwRyLU7glJfLys05SZ7zHlEr6RXWiqkmgWq4nCkcElR+g==
+date-fns-tz@^1.1.5:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-1.1.6.tgz#93cbf354e2aeb2cd312ffa32e462c1943cf20a8e"
+  integrity sha512-nyy+URfFI3KUY7udEJozcoftju+KduaqkVfwyTIE0traBiVye09QnyWKLZK7drRr5h9B7sPJITmQnS3U6YOdQg==
 
-date-fns@^2.22.1:
-  version "2.22.1"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.22.1.tgz#1e5af959831ebb1d82992bf67b765052d8f0efc4"
-  integrity sha512-yUFPQjrxEmIsMqlHhAhmxkuH769baF21Kk+nZwZGyrMoyLA+LugaQtC0+Tqf9CBUUULWwUJt6Q5ySI3LJDDCGg==
+date-fns@^2.23.0:
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
+  integrity sha512-5ycpauovVyAk0kXNZz6ZoB9AYMZB4DObse7P3BPWmyEjXNORTI8EJ6X0uaSAq4sCHzM1uajzrkr6HnsLQpxGXA==
 
 datemath-parser@^1.0.6:
   version "1.0.6"
