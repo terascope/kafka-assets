@@ -27,7 +27,7 @@
     "license": "MIT",
     "devDependencies": {
         "@terascope/eslint-config": "^0.6.0",
-        "@types/jest": "^26.0.24",
+        "@types/jest": "^27.0.0",
         "@types/node": "^15.12.2",
         "@types/uuid": "^8.3.1",
         "bunyan": "^1.8.15",
