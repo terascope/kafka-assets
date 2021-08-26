@@ -36,6 +36,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
         this._client = client;
         this._logger = logger;
 
+        // @ts-expect-error because the types got screwed up in 2.11.0
         this._client.on('disconnected', () => {
             this._connected = false;
 
@@ -46,6 +47,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
         });
 
         // catch unwanted errors
+        // @ts-expect-error because the types got screwed up in 2.11.0
         this._client.on('error', this._logOrEmit('client:error'));
         this._events.on('error', this._logOrEmit('client:error'));
     }
