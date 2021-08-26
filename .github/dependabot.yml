@@ -1,37 +1,18 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "04:00"
-    timezone: US/Arizona
-  open-pull-requests-limit: 3
-  assignees:
-  - peterdemartini
-  ignore:
-  - dependency-name: convict
-    versions:
-    - "> 4.4.1"
-  - dependency-name: "@types/convict"
-    versions:
-    - "> 4.2.1"
-  - dependency-name: "@types/node"
-    versions:
-    - "> 14.14.25"
-  - dependency-name: "@types/jest"
-    versions:
-    - 26.0.21
-  - dependency-name: ts-jest
-    versions:
-    - 26.5.0
-    - 26.5.3
-  - dependency-name: "@types/node"
-    versions:
-    - 14.14.25
-  - dependency-name: "@terascope/job-components"
-    versions:
-    - 0.45.0
-  - dependency-name: eslint
-    versions:
-    - 7.19.0
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: daily
+      time: '04:00'
+      timezone: US/Arizona
+    open-pull-requests-limit: 3
+    assignees:
+      - peterdemartini
+    ignore:
+      - dependency-name: convict
+        versions:
+          - '> 4.4.1'
+      - dependency-name: '@types/convict'
+        versions:
+          - '> 4.2.1'
