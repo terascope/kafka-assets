@@ -5,7 +5,8 @@ import {
     isString,
     Logger,
     toString,
-    TSError
+    TSError,
+    isError
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderAPIConfig } from './interfaces';
@@ -41,7 +42,9 @@ export default class KafkaSender implements RouteSenderAPI {
             try {
                 return fn(input);
             } catch (err) {
-                throw new TSError(`Error computing ${toString(input)}`, { reason: err.message });
+                throw new TSError(`Error computing ${toString(input)}`, {
+                    reason: isError(err) ? err.message : String(err)
+                });
             }
         };
     }

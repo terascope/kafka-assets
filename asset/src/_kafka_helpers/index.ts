@@ -6,7 +6,7 @@ export type AnyKafkaError = Error|KafkaError|number|string|null;
 
 export type KafkaError = LibrdKafkaError;
 
-export function wrapError(message: string, err: AnyKafkaError): KafkaError {
+export function wrapError(message: string, err: AnyKafkaError|unknown): KafkaError {
     const cause = getErrorCause(err);
     const error = new Error(`${message}${cause}`) as any as KafkaError;
 
@@ -81,7 +81,7 @@ export function isKafkaError(err: unknown): err is KafkaError {
     return isError(err) && err.code != null;
 }
 
-export function isOkayError(err?: AnyKafkaError, action = 'any'): boolean {
+export function isOkayError(err?: AnyKafkaError|unknown|undefined, action = 'any'): boolean {
     if (err == null) return false;
     const code = isKafkaError(err) ? err.code : err as number;
     if (action === 'retryable') {
