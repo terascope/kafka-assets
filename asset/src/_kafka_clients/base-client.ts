@@ -265,7 +265,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
 
             // if get an invalid state, increase the count
             // and if it is past the threshold,
-            if (err && err.code === ERR__STATE) {
+            if (isKafkaError(err) && err.code === ERR__STATE) {
                 this._incBackOff();
                 this._invalidStateCount++;
             }

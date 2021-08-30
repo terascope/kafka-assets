@@ -1,5 +1,7 @@
 import type * as kafka from 'node-rdkafka';
-import { DataEntity, TSError, toString } from '@terascope/job-components';
+import {
+    DataEntity, TSError, toString, isError
+} from '@terascope/job-components';
 import Consumer from './consumer-client';
 import { KafkaMessage, KafkaMessageMetadata } from '../_kafka_helpers';
 import { ConsumerClientConfig, ConsumeFn } from './interfaces';
@@ -42,7 +44,9 @@ export default class APIConsumer extends Consumer {
             try {
                 return fn(input);
             } catch (err) {
-                throw new TSError(`Error computing ${toString(input)}`, { reason: err.message });
+                throw new TSError(`Error computing ${toString(input)}`, {
+                    reason: isError(err) ? err.message : String(err)
+                });
             }
         };
     }

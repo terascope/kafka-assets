@@ -430,7 +430,7 @@ describe('Base Client (internal)', () => {
                     // @ts-expect-error because it is private
                     await client._try(async () => fn(), 'any');
                 } catch (err) {
-                    expect(err.message).toStartWith('Failure, caused by error: Fatal Error');
+                    expect((err as any).message).toStartWith('Failure, caused by error: Fatal Error');
                     expect(fn).toHaveBeenCalledTimes(3);
                 }
             });
@@ -452,7 +452,7 @@ describe('Base Client (internal)', () => {
                     // @ts-expect-error because it is private
                     await client._try(async () => fn(), 'any');
                 } catch (err) {
-                    expect(err.message).toStartWith('Failure after retries, caused by error: ERR__WAIT_CACHE');
+                    expect((err as any).message).toStartWith('Failure after retries, caused by error: ERR__WAIT_CACHE');
                     expect(fn).toHaveBeenCalledTimes(3);
                 }
             });
@@ -508,7 +508,7 @@ describe('Base Client (internal)', () => {
                         return fn();
                     });
                 } catch (err) {
-                    expect(err.message).toStartWith('Failure after retries, caused by error: Uh oh');
+                    expect((err as any).message).toStartWith('Failure after retries, caused by error: Uh oh');
                 }
 
                 // @ts-expect-error
