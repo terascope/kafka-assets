@@ -122,7 +122,7 @@ describe('Kafka Fetcher', () => {
 
             fatalError = null;
         } catch (err) {
-            fatalError = err;
+            fatalError = err as FatalError;
         }
     });
 
@@ -198,7 +198,7 @@ describe('Kafka Fetcher', () => {
                     offset: 0,
                 });
             } catch (err) {
-                fatalError = err;
+                fatalError = err as FatalError;
             }
         });
 
@@ -218,7 +218,7 @@ describe('Kafka Fetcher', () => {
                     retryResults = retryResults.concat(await harness.runSlice({}));
                     retryResults = retryResults.concat(await harness.runSlice({}));
                 } catch (_err) {
-                    fatalError = _err;
+                    fatalError = _err as FatalError;
                 }
             });
 

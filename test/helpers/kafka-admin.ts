@@ -1,6 +1,7 @@
 import { debugLogger, pDelay, castArray } from '@terascope/job-components';
 import { AdminClient, IAdminClient } from 'node-rdkafka';
 import { ERR_UNKNOWN_TOPIC_OR_PART } from '../../asset/src/_kafka_helpers/error-codes';
+import { isKafkaError } from '../../asset/src/_kafka_helpers';
 import { kafkaBrokers } from './config';
 
 const logger = debugLogger('test-kafka-admin');
@@ -21,7 +22,7 @@ export default class KafkaAdmin {
             await this.deleteTopic(topic);
             await pDelay(500);
         } catch (err) {
-            if (err.code !== ERR_UNKNOWN_TOPIC_OR_PART) {
+            if (!isKafkaError(err) || err.code !== ERR_UNKNOWN_TOPIC_OR_PART) {
                 throw err;
             }
         }
