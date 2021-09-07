@@ -661,12 +661,12 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.54.1":
-  version "0.54.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.54.1.tgz#aebcf2fea776cdba1a8a8ae60dbe14eb0feb7e6b"
-  integrity sha512-Joa44vCStALUSIk2kuBAR+ut02gRTFY0d6aGd9j7RHxEueznF/fFYRZcGU3bd81vYI0KvAXadds2bv5sZwRngg==
+"@terascope/job-components@^0.54.5":
+  version "0.54.5"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.54.5.tgz#59fe7c6ee4dfbd6e45d0c47033e1342e53c2e62e"
+  integrity sha512-Q3P7Qq0hphVPZax3B/O/vIG+9ZIbNFAJK0l2+EBy8VlICd/OvVL5UWOwsfcEKLcA76J2HisIvjli9mcwJ6LWbA==
   dependencies:
-    "@terascope/utils" "^0.42.1"
+    "@terascope/utils" "^0.42.5"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
@@ -683,10 +683,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.10.1.tgz#5a1d3993e84d98a2b841218d5f301d30ce290d39"
   integrity sha512-IL28o1zVXWLlLhF3STeQJmrBqEy3+h2MKRctcWw3ZvBd39opC1RUHzblvkOFCxnF4e1uTQ8kuNvlQXWE/HFLoQ==
 
-"@terascope/utils@^0.42.1":
-  version "0.42.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.42.1.tgz#05b9a9bd0df67bd6534151c891d52d441156c8a9"
-  integrity sha512-QvgAjRyDfvwfjjJxlvHvHEmE7PRH2OklVVIE98AUCA4TwYuVvplqIdJgxV85oYIZRikR7BBnQGRXnvocHsg1UA==
+"@terascope/utils@^0.42.5":
+  version "0.42.5"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.42.5.tgz#98513a49cb5c31c1bac8fd27870b113c247b72f3"
+  integrity sha512-lpZa3hI6wtMkAazS06jD/Olfwr/JI/TCdUiVR2Y8BO+5KoqRA2sJcbXu2oVqYX98upZrYB0JabOBleqJqSISoA==
   dependencies:
     "@terascope/types" "^0.10.1"
     "@turf/bbox" "^6.4.0"
@@ -701,7 +701,7 @@
     "@turf/helpers" "^6.2.0"
     "@turf/invariant" "^6.2.0"
     "@turf/line-to-polygon" "^6.4.0"
-    awesome-phonenumber "^2.57.0"
+    awesome-phonenumber "^2.58.0"
     date-fns "^2.23.0"
     date-fns-tz "^1.1.5"
     datemath-parser "^1.0.6"
@@ -1379,10 +1379,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-awesome-phonenumber@^2.57.0:
-  version "2.57.0"
-  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.57.0.tgz#0d2986247553b0e3d97e459bb365a82c13a4f259"
-  integrity sha512-RWrCCQpnmkYeL3AGFdlUOpWkpkTauZm7FE9kgDz6xJG6PNUiiIm+rKI95wnre0TSV01PHvgFFwQZhDixPCM9ZA==
+awesome-phonenumber@^2.58.0:
+  version "2.58.0"
+  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.58.0.tgz#eaa788910b567abd6c1283025bcf491ac5b55d85"
+  integrity sha512-rsbIn7Htq/QqUfJ7E53oGiGnLca5SUJEshg8zG5h9WK+fTxoGA12/NDKC5eCvkK2eaP8gR/RVA1yuf0Arib7vg==
 
 axe-core@^4.0.2:
   version "4.3.3"
