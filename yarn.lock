@@ -661,12 +661,12 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.54.5":
-  version "0.54.5"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.54.5.tgz#59fe7c6ee4dfbd6e45d0c47033e1342e53c2e62e"
-  integrity sha512-Q3P7Qq0hphVPZax3B/O/vIG+9ZIbNFAJK0l2+EBy8VlICd/OvVL5UWOwsfcEKLcA76J2HisIvjli9mcwJ6LWbA==
+"@terascope/job-components@^0.54.6":
+  version "0.54.6"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.54.6.tgz#590180da14f3f78c745746ccbbaf51b4e1601a99"
+  integrity sha512-H/MGAc7hEMyW+iyJ2p6KgTKuS0Q1r+7/qVwFAp8N7I1b+Z3raHaJy9xlNlJInvL3JHe0+herVfuwkAReNJgybQ==
   dependencies:
-    "@terascope/utils" "^0.42.5"
+    "@terascope/utils" "^0.42.6"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
@@ -678,17 +678,17 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.10.1.tgz#5a1d3993e84d98a2b841218d5f301d30ce290d39"
-  integrity sha512-IL28o1zVXWLlLhF3STeQJmrBqEy3+h2MKRctcWw3ZvBd39opC1RUHzblvkOFCxnF4e1uTQ8kuNvlQXWE/HFLoQ==
+"@terascope/types@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.10.2.tgz#022cbd6c75b036f4af4366244cc0589ca93f6535"
+  integrity sha512-SFZosbIyGtjiB/Wa32pIgycahZMIqrvZ73iVWhHyWFs7WQGJvHZDX1pPm6Wb91Pxa/+6s9yS8L6IueXnkyJZAQ==
 
-"@terascope/utils@^0.42.5":
-  version "0.42.5"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.42.5.tgz#98513a49cb5c31c1bac8fd27870b113c247b72f3"
-  integrity sha512-lpZa3hI6wtMkAazS06jD/Olfwr/JI/TCdUiVR2Y8BO+5KoqRA2sJcbXu2oVqYX98upZrYB0JabOBleqJqSISoA==
+"@terascope/utils@^0.42.6":
+  version "0.42.6"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.42.6.tgz#e4a387e2e6e4c6a3f25c4e39fc1b8e0dc4d040e4"
+  integrity sha512-uSDA1o15vw2Ggno4vxQTTq0eJb6IbzeUKNaRVYh82t2k6xdywuFN8sdTvTUXI24Ct999ay8dRrnIkV07SOoaQg==
   dependencies:
-    "@terascope/types" "^0.10.1"
+    "@terascope/types" "^0.10.2"
     "@turf/bbox" "^6.4.0"
     "@turf/bbox-polygon" "^6.4.0"
     "@turf/boolean-contains" "^6.4.0"
@@ -701,8 +701,8 @@
     "@turf/helpers" "^6.2.0"
     "@turf/invariant" "^6.2.0"
     "@turf/line-to-polygon" "^6.4.0"
-    awesome-phonenumber "^2.58.0"
-    date-fns "^2.23.0"
+    awesome-phonenumber "^2.59.0"
+    date-fns "^2.24.0"
     date-fns-tz "^1.1.5"
     datemath-parser "^1.0.6"
     debug "^4.3.2"
@@ -1379,10 +1379,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-awesome-phonenumber@^2.58.0:
-  version "2.58.0"
-  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.58.0.tgz#eaa788910b567abd6c1283025bcf491ac5b55d85"
-  integrity sha512-rsbIn7Htq/QqUfJ7E53oGiGnLca5SUJEshg8zG5h9WK+fTxoGA12/NDKC5eCvkK2eaP8gR/RVA1yuf0Arib7vg==
+awesome-phonenumber@^2.59.0:
+  version "2.59.0"
+  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.59.0.tgz#9a45f08167d92b1c177cbe2a3df313f8b19d8ebe"
+  integrity sha512-ySAF+Xe0M1NWvj8FMYcgsMMWGuFJAH1DJL9T/juFfozV6bOe0IifP50W+MdyBMQI2rQsNm5mNXBwdVGuwATkmQ==
 
 axe-core@^4.0.2:
   version "4.3.3"
@@ -1924,10 +1924,10 @@ date-fns-tz@^1.1.5:
   resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-1.1.6.tgz#93cbf354e2aeb2cd312ffa32e462c1943cf20a8e"
   integrity sha512-nyy+URfFI3KUY7udEJozcoftju+KduaqkVfwyTIE0traBiVye09QnyWKLZK7drRr5h9B7sPJITmQnS3U6YOdQg==
 
-date-fns@^2.23.0:
-  version "2.23.0"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
-  integrity sha512-5ycpauovVyAk0kXNZz6ZoB9AYMZB4DObse7P3BPWmyEjXNORTI8EJ6X0uaSAq4sCHzM1uajzrkr6HnsLQpxGXA==
+date-fns@^2.24.0:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.24.0.tgz#7d86dc0d93c87b76b63d213b4413337cfd1c105d"
+  integrity sha512-6ujwvwgPID6zbI0o7UbURi2vlLDR9uP26+tW6Lg+Ji3w7dd0i3DOcjcClLjLPranT60SSEFBwdSyYwn/ZkPIuw==
 
 datemath-parser@^1.0.6:
   version "1.0.6"
