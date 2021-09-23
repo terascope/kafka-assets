@@ -647,10 +647,10 @@
     eslint-plugin-react "^7.23.2"
     eslint-plugin-react-hooks "^4.2.0"
 
-"@terascope/fetch-github-release@^0.7.7":
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/@terascope/fetch-github-release/-/fetch-github-release-0.7.7.tgz#03da853c80b420b312880140600839b64fccc35b"
-  integrity sha512-v4BSVK36N1LZj015y3DpL6dh0AWaFcmBbFd4oTTbLNZkZurolJ9RMCBUB/FsR93T3EZnWehiSw9b3WcRtOF6lg==
+"@terascope/fetch-github-release@^0.7.9":
+  version "0.7.9"
+  resolved "https://registry.yarnpkg.com/@terascope/fetch-github-release/-/fetch-github-release-0.7.9.tgz#2f745185e371aecd903aa36ea6ebd0447ca4686d"
+  integrity sha512-Yxuo7gvh9GqPq8/s9xmk4V2dKZC5SULuAXeIyYLVfm2eoSOxTqVWgfgW9WK4mxGfwb0+uyufp4m2HcuW9Qm4IA==
   dependencies:
     commander "^7.0.0"
     core-js "^3.6.5"
@@ -671,10 +671,10 @@
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
 
-"@terascope/teraslice-op-test-harness@^1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.24.0.tgz#3c24709aef627e39d8d1f47813b59c0be9447b6b"
-  integrity sha512-4GURTbJbKCczvpTxl+MaenUqV2uAY+5QqRQDbDzXDVw9KLg2kqXBhY9hBWzwa200NC6jA7QUHrQ+oPffTNLFgg==
+"@terascope/teraslice-op-test-harness@^1.24.1":
+  version "1.24.1"
+  resolved "https://registry.yarnpkg.com/@terascope/teraslice-op-test-harness/-/teraslice-op-test-harness-1.24.1.tgz#f3170cb5f659c927fb907d34c940181f9bfe48fa"
+  integrity sha512-T7tQ35S//2SY2gOgZxs7uPCEfLH0wAig2YV6gVTYLVBj7NivRtKgJx2EbwJGGQb0n3gNhNj/zn6AUKZ03+Q41A==
   dependencies:
     bluebird "^3.7.2"
 
@@ -1368,11 +1368,6 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
-
-at-least-node@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
-  integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
 atob@^2.1.2:
   version "2.1.2"
@@ -2746,12 +2741,11 @@ fs-constants@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
   integrity sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==
 
-fs-extra@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-9.1.0.tgz#5954460c764a8da2094ba3554bf839e6b9a7c86d"
-  integrity sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==
+fs-extra@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-10.0.0.tgz#9ff61b655dde53fb34a82df84bb214ce802e17c1"
+  integrity sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==
   dependencies:
-    at-least-node "^1.0.0"
     graceful-fs "^4.2.0"
     jsonfile "^6.0.1"
     universalify "^2.0.0"
@@ -5546,15 +5540,15 @@ tar-stream@^1.5.2:
     to-buffer "^1.1.1"
     xtend "^4.0.0"
 
-teraslice-test-harness@^0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.28.0.tgz#8c187ca6f11d50b4d77209de70e17d15b646dbdb"
-  integrity sha512-RznpOQo5QU08vf+Nf6L2+OZdbt7zrtKcC/7jxcDK+mC6R8uCPdSwB/rIniryl/5QIkcRVmWaVQLzoGPP+xwquA==
+teraslice-test-harness@^0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.28.1.tgz#029ff5326a93ea472448ff54dc1a62c4af89d74e"
+  integrity sha512-53iPP42f75qZ1bRXEhjfQeyVnjoOvuzeG1JYZYXz/CQNIxYlnUWwoGPCRMp0zrgidoErDUPyaEGlIGfZWQq2Rw==
   dependencies:
-    "@terascope/fetch-github-release" "^0.7.7"
-    "@terascope/teraslice-op-test-harness" "^1.24.0"
+    "@terascope/fetch-github-release" "^0.7.9"
+    "@terascope/teraslice-op-test-harness" "^1.24.1"
     decompress "^4.2.1"
-    fs-extra "^9.1.0"
+    fs-extra "^10.0.0"
 
 terminal-link@^2.0.0:
   version "2.1.1"
