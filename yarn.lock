@@ -660,12 +660,12 @@
     progress "^2.0.3"
     regenerator-runtime "^0.13.5"
 
-"@terascope/job-components@^0.54.7":
-  version "0.54.7"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.54.7.tgz#f0886a9285ed101abdde57ad7e32cd2daa3d1eab"
-  integrity sha512-YyuYxo7+/65VxvLeo91tpqouZI9bNnjXIUEDa5NxtF53kXKK+hp0abuEu4QhMXGO6TX4p/tN282cyVN+tomZhQ==
+"@terascope/job-components@^0.55.0":
+  version "0.55.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.55.0.tgz#8292a52fc3753ce87304995d376ab3bde74b9a02"
+  integrity sha512-sGlapi7Vycu4Zs1jTvSLvjdUqXkVg4e+iesyfEl36nGylwczkUaaR5fIdKRTuNi4KepBdSp2BiJVexYYQS/0eA==
   dependencies:
-    "@terascope/utils" "^0.42.7"
+    "@terascope/utils" "^0.43.0"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
@@ -682,10 +682,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.10.2.tgz#022cbd6c75b036f4af4366244cc0589ca93f6535"
   integrity sha512-SFZosbIyGtjiB/Wa32pIgycahZMIqrvZ73iVWhHyWFs7WQGJvHZDX1pPm6Wb91Pxa/+6s9yS8L6IueXnkyJZAQ==
 
-"@terascope/utils@^0.42.7":
-  version "0.42.7"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.42.7.tgz#39053fe4b529edb0fa56a65c82160989ca110ca4"
-  integrity sha512-uq3Ez4kBrEtmUEPTwpaFr2HyUX/YFPUZmitMp+XP/LqV4ynnxE259uP8lJu1zJPUNHKSbvfy9GOAtJaLvEUcBQ==
+"@terascope/utils@^0.43.0":
+  version "0.43.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.43.0.tgz#d66d37476ba018aee8361f3a8aa78908debf3863"
+  integrity sha512-pP6T5CTssQ0rivUsuQhiAdeugK1dBkUDLW+LUxREYdyh0ayO6eCL1ifMi9TGkfgkc38yxfv2WRX7ehpETO0iSw==
   dependencies:
     "@terascope/types" "^0.10.2"
     "@turf/bbox" "^6.4.0"
@@ -702,8 +702,8 @@
     "@turf/line-to-polygon" "^6.4.0"
     "@types/lodash" "^4.14.173"
     "@types/validator" "^13.6.3"
-    awesome-phonenumber "^2.59.0"
-    date-fns "^2.24.0"
+    awesome-phonenumber "^2.62.1"
+    date-fns "^2.25.0"
     date-fns-tz "^1.1.5"
     datemath-parser "^1.0.6"
     debug "^4.3.2"
@@ -718,7 +718,7 @@
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
     lodash "^4.17.21"
-    mnemonist "^0.38.3"
+    mnemonist "^0.38.4"
     p-map "^4.0.0"
     shallow-clone "^3.0.1"
     validator "^13.6.0"
@@ -1386,10 +1386,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-awesome-phonenumber@^2.59.0:
-  version "2.62.0"
-  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.62.0.tgz#5162be662f009d4ff030f7cb20f18dcad115e838"
-  integrity sha512-PjfuNAcsQ3OeHrf3hMYSHwtGUXkkfb7ZW792MZZtXzRddRvKPnq3AFn0nfl+8e9aVHwr2WmexUrWhVYgsutlZg==
+awesome-phonenumber@^2.62.1:
+  version "2.62.1"
+  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.62.1.tgz#43b7d99f1b52aa5898899b62cc4ade4bacb88d70"
+  integrity sha512-oPke1mCiOO2EKloS+3lgWesfhIElqfsf2jitkPhcUC1+2u8rFYOtNtERKR2KByzTUoaDGRtu3odkj4fzX3BxRw==
 
 axe-core@^4.0.2:
   version "4.3.3"
@@ -1928,10 +1928,10 @@ date-fns-tz@^1.1.5:
   resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-1.1.6.tgz#93cbf354e2aeb2cd312ffa32e462c1943cf20a8e"
   integrity sha512-nyy+URfFI3KUY7udEJozcoftju+KduaqkVfwyTIE0traBiVye09QnyWKLZK7drRr5h9B7sPJITmQnS3U6YOdQg==
 
-date-fns@^2.24.0:
-  version "2.24.0"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.24.0.tgz#7d86dc0d93c87b76b63d213b4413337cfd1c105d"
-  integrity sha512-6ujwvwgPID6zbI0o7UbURi2vlLDR9uP26+tW6Lg+Ji3w7dd0i3DOcjcClLjLPranT60SSEFBwdSyYwn/ZkPIuw==
+date-fns@^2.25.0:
+  version "2.25.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.25.0.tgz#8c5c8f1d958be3809a9a03f4b742eba894fc5680"
+  integrity sha512-ovYRFnTrbGPD4nqaEqescPEv1mNwvt+UTqI3Ay9SzNtey9NZnYu6E2qCcBBgJ6/2VF1zGGygpyTDITqpQQ5e+w==
 
 datemath-parser@^1.0.6:
   version "1.0.6"
@@ -4381,7 +4381,7 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.5"
 
-mnemonist@^0.38.3:
+mnemonist@^0.38.4:
   version "0.38.4"
   resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.38.4.tgz#5d2f2dc4386aef78bfadeea60ce704dcf0ef8f3d"
   integrity sha512-mflgW0gEWmVLbDDE2gJbOh3+RltTN7CgV9jV25qyCnyLN9FtoltWr7ZtAEDeD9u8W4oFAoolR6fBWieXdn3u8Q==
