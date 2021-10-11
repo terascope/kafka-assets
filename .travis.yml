@@ -46,12 +46,6 @@ before_install:
   - sleep 3
   # Make it colorful
   - export FORCE_COLOR=1
-  # yarn doesn't exist in the base image for osx anymore, so this should fix it
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-    npm install -g yarn
-    else
-    echo "* skipping install yarn for $TRAVIS_OS_NAME";
-    fi
   # Install teraslice-cli
   - yarn global add teraslice-cli
 install:
