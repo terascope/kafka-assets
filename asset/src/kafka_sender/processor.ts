@@ -28,7 +28,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     topicMap: TopicMap = new Map();
     connectorDict: ConnectorMap = new Map();
     hasConnectionMap = false;
-    kafkaLogger: Logger
+    kafkaLogger: Logger;
     api!: KafkaRouteSender;
 
     constructor(
