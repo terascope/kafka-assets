@@ -1,6 +1,6 @@
 {
     "name": "kafka-asset-bundle",
-    "version": "3.2.3",
+    "version": "3.2.4",
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "private": true,
     "workspaces": {
@@ -27,7 +27,7 @@
     "license": "MIT",
     "devDependencies": {
         "@terascope/eslint-config": "^0.7.0",
-        "@terascope/job-components": "^0.55.2",
+        "@terascope/job-components": "^0.55.3",
         "@types/jest": "^27.0.2",
         "@types/node": "^16.11.7",
         "@types/uuid": "^8.3.1",

@@ -6,7 +6,6 @@ import {
     Logger,
     toString,
     TSError,
-    isError
 } from '@terascope/job-components';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderAPIConfig } from './interfaces';
@@ -22,6 +21,7 @@ export default class KafkaSender implements RouteSenderAPI {
     readonly isWildcard: boolean;
     private tryFn: (msg: any, err: any) => DataEntity|null;
     readonly pathList = new Map<string, boolean>();
+    readonly mapper: (msg: DataEntity) => ProduceMessage;
 
     constructor(client: kafka.Producer, config: KafkaSenderAPIConfig) {
         const producer = new ProducerClient(client, {
@@ -34,6 +34,7 @@ export default class KafkaSender implements RouteSenderAPI {
         this.isWildcard = config._key && config._key === '**';
         this.producer = producer;
         this.tryFn = config.tryFn || this.tryCatch;
+        this.mapper = this.mapFn.bind(this);
         this.logger = config.logger;
     }
 
@@ -42,8 +43,8 @@ export default class KafkaSender implements RouteSenderAPI {
             try {
                 return fn(input);
             } catch (err) {
-                throw new TSError(`Error computing ${toString(input)}`, {
-                    reason: isError(err) ? err.message : String(err)
+                throw new TSError(err, {
+                    message: `Error computing ${toString(input)}`
                 });
             }
         };
@@ -57,9 +58,10 @@ export default class KafkaSender implements RouteSenderAPI {
         await this.producer.disconnect();
     }
 
-    async send(data: DataEntity[]): Promise<void> {
-        const mapper = this.mapFn.bind(this);
-        await this.producer.produce(data, mapper);
+    async send(data: Iterable<DataEntity>): Promise<number> {
+        const records = Array.isArray(data) ? data : Array.from(data);
+        await this.producer.produce(records, this.mapper);
+        return records.length;
     }
 
     private mapFn(msg: DataEntity): ProduceMessage {
@@ -88,7 +90,20 @@ export default class KafkaSender implements RouteSenderAPI {
             return key;
         }
 
-        return DataEntity.getMetadata(msg, '_key') || null;
+        if (DataEntity.isDataEntity(msg)) {
+            if (typeof msg.getKey === 'function') {
+                try {
+                    return String(msg.getKey());
+                } catch (err) {
+                    // ignore the error
+                }
+            }
+            const metadataKey = msg.getMetadata('_key');
+            if (metadataKey != null) return String(metadataKey);
+        }
+
+        if ('_key' in msg) return msg._key;
+        return null;
     }
 
     private getTimestamp(msg: DataEntity): number|null {
