@@ -9,8 +9,8 @@ import {
     Logger
 } from '@terascope/job-components';
 import { WorkerTestHarness } from 'teraslice-test-harness';
+import Connector from 'terafoundation_kafka_connector';
 import Schema from '../../asset/src/kafka_reader/schema';
-import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers } from '../helpers/config';
 
 // increase the timeout because CI has been failing a bit

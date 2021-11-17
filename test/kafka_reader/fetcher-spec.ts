@@ -3,11 +3,11 @@ import {
     TestClientConfig, Logger, DataEntity, NoopProcessor, debugLogger
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
+import Connector from 'terafoundation_kafka_connector';
 import { FatalError } from '../../asset/src/_kafka_clients';
 import KafkaFetcher from '../../asset/src/kafka_reader/fetcher';
 import { loadData } from '../helpers/kafka-data';
 import { kafkaBrokers, fetcherTopic, fetcherGroup } from '../helpers/config';
-import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import KafkaAdmin from '../helpers/kafka-admin';
 
 const logger = debugLogger('test-kafka-fetcher');
