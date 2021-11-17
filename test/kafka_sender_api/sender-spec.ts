@@ -3,9 +3,9 @@ import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import {
     TestClientConfig, Logger, APIFactoryRegistry, DataEntity, AnyObject
 } from '@terascope/job-components';
+import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces';
 import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender';
-import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers, senderTopic } from '../helpers/config';
 import KafkaAdmin from '../helpers/kafka-admin';
 import { readData } from '../helpers/kafka-data';

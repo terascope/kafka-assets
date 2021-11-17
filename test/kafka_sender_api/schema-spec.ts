@@ -1,8 +1,8 @@
 import 'jest-extended';
 import { newTestJobConfig, WorkerTestHarness } from 'teraslice-test-harness';
 import { ValidatedJobConfig, TestClientConfig, Logger } from '@terascope/job-components';
+import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig, DEFAULT_API_NAME } from '../../asset/src/kafka_sender_api/interfaces';
-import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers } from '../helpers/config';
 
 describe('Kafka Sender API Schema', () => {

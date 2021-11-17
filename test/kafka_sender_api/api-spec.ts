@@ -1,7 +1,7 @@
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, Logger } from '@terascope/job-components';
+import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPI } from '../../asset/src/kafka_sender_api/interfaces';
-import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers, senderTopic } from '../helpers/config';
 
 describe('kafka_sender_api', () => {

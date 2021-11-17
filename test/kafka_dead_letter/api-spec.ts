@@ -7,8 +7,8 @@ import {
     NoopProcessor,
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
+import Connector from 'terafoundation_kafka_connector';
 import { readData } from '../helpers/kafka-data';
-import Connector from '../../packages/terafoundation_kafka_connector/dist';
 import { kafkaBrokers, deadLetterTopic } from '../helpers/config';
 import KafkaAdmin from '../helpers/kafka-admin';
 
