@@ -616,12 +616,12 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@^0.56.0":
-  version "0.56.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.56.0.tgz#64869beab80b31c7b62236e317b78360b0f7876c"
-  integrity sha512-j+824EJ+W8IJOtQnAR8HMPK6eNI1ZdcXuosMvcKNuvOTgOF6PD6t00k1877kQK0D78C7Xbpo7tfkdOGOMIzKsg==
+"@terascope/job-components@^0.56.1":
+  version "0.56.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.56.1.tgz#b3969e0b3aee8f404c07fb1bc6cc2b0f1f4de312"
+  integrity sha512-Ia7Y6wWe8yh3tQJvLoGPhepwLd+LVZpyLA50X2V3RksFGx/gGE0tC/h4qxGBWz1g7cdtY2jGIX2Bu56ikgabvw==
   dependencies:
-    "@terascope/utils" "^0.44.0"
+    "@terascope/utils" "^0.44.1"
     convict "^4.4.1"
     datemath-parser "^1.0.6"
     uuid "^8.3.2"
@@ -638,10 +638,10 @@
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.10.2.tgz#022cbd6c75b036f4af4366244cc0589ca93f6535"
   integrity sha512-SFZosbIyGtjiB/Wa32pIgycahZMIqrvZ73iVWhHyWFs7WQGJvHZDX1pPm6Wb91Pxa/+6s9yS8L6IueXnkyJZAQ==
 
-"@terascope/utils@^0.44.0":
-  version "0.44.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.44.0.tgz#4e419aa359186658308de045471ab0f4b938f2f8"
-  integrity sha512-Ajgcw9UAV+CPjcKwnr7aQ/q/Z2m266Js60dDuap83265alFw1Ig+7H+hsEZ8SBbKYMRvw67wEGnZBWwGwN4d6g==
+"@terascope/utils@^0.44.1":
+  version "0.44.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.44.1.tgz#072daf31b7f03dece70bf01e6b78b6e3f63b374c"
+  integrity sha512-1MwUFIrMXFzTyEPy03/Rn+BcYW6+kjgXjqmM0Rr6b06IoBC/i1Mc8bU6xlibK50y4IsAG45+Y5QyT+NvPmPRtA==
   dependencies:
     "@terascope/types" "^0.10.2"
     "@turf/bbox" "^6.4.0"
@@ -657,13 +657,13 @@
     "@turf/invariant" "^6.2.0"
     "@turf/line-to-polygon" "^6.4.0"
     "@types/lodash" "^4.14.173"
-    "@types/validator" "^13.6.6"
+    "@types/validator" "^13.7.0"
     awesome-phonenumber "^2.64.0"
-    date-fns "^2.25.0"
+    date-fns "^2.26.0"
     date-fns-tz "^1.1.5"
     datemath-parser "^1.0.6"
     debug "^4.3.2"
-    geo-tz "^6.0.1"
+    geo-tz "^7.0.1"
     ip-bigint "^3.0.3"
     ip6addr "^0.2.4"
     ipaddr.js "^2.0.1"
@@ -674,7 +674,7 @@
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
     lodash "^4.17.21"
-    mnemonist "^0.38.5"
+    mnemonist "^0.39.0"
     p-map "^4.0.0"
     shallow-clone "^3.0.1"
     validator "^13.7.0"
@@ -740,7 +740,7 @@
     "@turf/helpers" "^6.5.0"
     "@turf/meta" "^6.5.0"
 
-"@turf/boolean-point-in-polygon@^6.0.1", "@turf/boolean-point-in-polygon@^6.4.0", "@turf/boolean-point-in-polygon@^6.5.0":
+"@turf/boolean-point-in-polygon@^6.4.0", "@turf/boolean-point-in-polygon@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/boolean-point-in-polygon/-/boolean-point-in-polygon-6.5.0.tgz#6d2e9c89de4cd2e4365004c1e51490b7795a63cf"
   integrity sha512-DtSuVFB26SI+hj0SjrvXowGTUCHlgevPAIsukssW6BG5MlNSBQAo70wpICBNJL6RjukXg8d2eXaAWuD/CqL00A==
@@ -798,7 +798,7 @@
     "@turf/helpers" "^6.5.0"
     "@turf/invariant" "^6.5.0"
 
-"@turf/helpers@6.x", "@turf/helpers@^6.1.4", "@turf/helpers@^6.2.0", "@turf/helpers@^6.5.0":
+"@turf/helpers@6.x", "@turf/helpers@^6.2.0", "@turf/helpers@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-6.5.0.tgz#f79af094bd6b8ce7ed2bd3e089a8493ee6cae82e"
   integrity sha512-VbI1dV5bLFzohYYdgqwikdMVpe7pJ9X3E+dlr425wa2/sMJqYDhTO++ec38/pcPvPE6oD9WEEeU3Xu3gza+VPw==
@@ -996,10 +996,10 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.1.tgz#1a32969cf8f0364b3d8c8af9cc3555b7805df14f"
   integrity sha512-Y2mHTRAbqfFkpjldbkHGY8JIzRN6XqYRliG8/24FcHm2D2PwW24fl5xMRTVGdrb7iMrwCaIEbLWerGIkXuFWVg==
 
-"@types/validator@^13.6.6":
-  version "13.6.6"
-  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.6.6.tgz#6e6e2d086148db5ae14851614971b715670cbd52"
-  integrity sha512-+qogUELb4gMhrMjSh/seKmGVvN+uQLfyqJAqYRWqVHsvBsUO2xDBCL8CJ/ZSukbd8vXaoYbpIssAmfLEzzBHEw==
+"@types/validator@^13.7.0":
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.7.0.tgz#fa25263656d234473025c2d48249a900053c355a"
+  integrity sha512-+jBxVvXVuggZOrm04NR8z+5+bgoW4VZyLzUO+hmPPW1mVFL/HaitLAkizfv4yg9TbG8lkfHWVMQ11yDqrVVCzA==
 
 "@types/yargs-parser@*":
   version "20.2.1"
@@ -1792,10 +1792,10 @@ date-fns-tz@^1.1.5:
   resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-1.1.6.tgz#93cbf354e2aeb2cd312ffa32e462c1943cf20a8e"
   integrity sha512-nyy+URfFI3KUY7udEJozcoftju+KduaqkVfwyTIE0traBiVye09QnyWKLZK7drRr5h9B7sPJITmQnS3U6YOdQg==
 
-date-fns@^2.25.0:
-  version "2.25.0"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.25.0.tgz#8c5c8f1d958be3809a9a03f4b742eba894fc5680"
-  integrity sha512-ovYRFnTrbGPD4nqaEqescPEv1mNwvt+UTqI3Ay9SzNtey9NZnYu6E2qCcBBgJ6/2VF1zGGygpyTDITqpQQ5e+w==
+date-fns@^2.26.0:
+  version "2.27.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.27.0.tgz#e1ff3c3ddbbab8a2eaadbb6106be2929a5a2d92b"
+  integrity sha512-sj+J0Mo2p2X1e306MHq282WS4/A8Pz/95GIFcsPNMPMZVI3EUrAdSv90al1k+p74WGLCruMXk23bfEDZa71X9Q==
 
 datemath-parser@^1.0.6:
   version "1.0.6"
@@ -2564,13 +2564,13 @@ gensync@^1.0.0-beta.2:
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
 
-geo-tz@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-6.0.1.tgz#8049b590395c1340cb96676e3a0b14588d2834fd"
-  integrity sha512-eJCWV973A/FB9zr4eSh71BFRHXaWJX3VOw8cAMun8o5H8jrOUMWCtORfXU784e1R84re1uHqdGhCvINWBj/USw==
+geo-tz@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-7.0.1.tgz#16665dd3bde358d875dacc59231cbd3b4e0e0793"
+  integrity sha512-nv6iVPE8WLE6I+KNNHTN7HTo18F5ZJfcdSHhXaPF2OH/z5CDzeSxcht1dUFj+pvzmb69kIv2Hni/+JdhcM3X3Q==
   dependencies:
-    "@turf/boolean-point-in-polygon" "^6.0.1"
-    "@turf/helpers" "^6.1.4"
+    "@turf/boolean-point-in-polygon" "^6.5.0"
+    "@turf/helpers" "^6.5.0"
     geobuf "^3.0.2"
     pbf "^3.2.1"
 
@@ -3926,12 +3926,12 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.5"
 
-mnemonist@^0.38.5:
-  version "0.38.5"
-  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.38.5.tgz#4adc7f4200491237fe0fa689ac0b86539685cade"
-  integrity sha512-bZTFT5rrPKtPJxj8KSV0WkPyNxl72vQepqqVUAW2ARUpUSF2qXMB6jZj7hW5/k7C1rtpzqbD/IIbJwLXUjCHeg==
+mnemonist@^0.39.0:
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.39.0.tgz#4c83dd22e8d9d05dfb721ff66a905fec4c460041"
+  integrity sha512-7v08Ldk1lnlywnIShqfKYN7EW4WKLUnkoWApdmR47N1xA2xmEtWERfEvyRCepbuFCETG5OnfaGQpp/p4Bus6ZQ==
   dependencies:
-    obliterator "^2.0.0"
+    obliterator "^2.0.1"
 
 moment@2.22.2:
   version "2.22.2"
@@ -4100,10 +4100,10 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
-obliterator@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.0.tgz#fdff649d1131a1a90b51cc97c865b5560dcb3dfa"
-  integrity sha512-DJaXYKqe9Rs7c2+Xu08Knkt8P60rTeByyy7IWoXLqyc6ln9ph9NAo6ZbiylDpAshsygzBr81pZL5q6/dqi0RtQ==
+obliterator@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.1.tgz#fbdd873bf39fc4f365a53b1fc86617a22526987c"
+  integrity sha512-XnkiCrrBcIZQitJPAI36mrrpEUvatbte8hLcTcQwKA1v9NkCKasSi+UAguLsLDs/out7MoRzAlmz7VXvY6ph6w==
 
 once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"
