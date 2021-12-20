@@ -6,7 +6,7 @@ updates:
       interval: weekly
       time: '04:00'
       timezone: US/Arizona
-    open-pull-requests-limit: 6
+    open-pull-requests-limit: 3
     assignees:
       - godber
       - jsnoble
