@@ -3,12 +3,13 @@ updates:
   - package-ecosystem: npm
     directory: '/'
     schedule:
-      interval: daily
+      interval: weekly
       time: '04:00'
       timezone: US/Arizona
     open-pull-requests-limit: 3
     assignees:
-      - peterdemartini
+      - godber
+      - jsnoble
     ignore:
       - dependency-name: convict
         versions:
@@ -16,3 +17,6 @@ updates:
       - dependency-name: '@types/convict'
         versions:
           - '> 4.2.1'
+      - dependency-name: '@types/node'
+        versions:
+          - '>= 17.0.0'
