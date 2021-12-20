@@ -3,10 +3,13 @@ updates:
   - package-ecosystem: npm
     directory: '/'
     schedule:
-      interval: monthly
+      interval: weekly
       time: '04:00'
       timezone: US/Arizona
     open-pull-requests-limit: 6
+    assignees:
+      - godber
+      - jsnoble
     ignore:
       - dependency-name: convict
         versions:
