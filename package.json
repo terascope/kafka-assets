@@ -32,7 +32,7 @@
         "@types/node": "^16.11.12",
         "@types/uuid": "^8.3.4",
         "bunyan": "^1.8.15",
-        "eslint": "^8.6.0",
+        "eslint": "^8.7.0",
         "jest": "^27.4.7",
         "jest-extended": "^1.2.0",
         "terafoundation_kafka_connector": "^0.8.0",
