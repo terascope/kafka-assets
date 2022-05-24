@@ -125,7 +125,7 @@ results === data;
 | \_op| Name of operation, it must reflect the exact name of the file | String | required |
 | topic | Name of the Kafka topic to send records | String | required, though if the [kafka_sender_api](../apis/kafka_sender_api.md) is specified then `topic` must be specified on the api and not on the opConfig, please check the [API usage](#api-usage) section |
 | size | How many messages will be batched and sent to kafka together. | Number | optional, defaults to `10000` |
-| id_field | Field in the incoming record that will be used to create the id of the record | String | optional, if not set, it will check for the `_key` metadata value. If nothing is set, then kafka will generate a key for it |
+| id_field | Field in the incoming record that will be used to assign the record to a topic partition. | String | optional, if not set, it will check for the `_key` metadata value. If no key is found the sender uses a round robin method to assign records to partitions.|
 | timestamp_field | Field in the incoming record that contains a timestamp to set on the record | String | optional, it will take precedence over `timestamp_now` if this is set |
 | timestamp_now | Set to true to have a timestamp generated as records are added to the topic | Boolean | optional, defaults to `false` |
 | compression | Type of compression to use on record sent to topic, may be set to `none`, `gzip`, `snappy`, `lz4` and `inherit` | String | optional, defaults to `gzip` |
