@@ -59,6 +59,6 @@ export default class APIConsumer extends Consumer {
 
 /** Safely convert a buffer or string to a string */
 function keyToString(str?: kafka.MessageKey) {
-    if (!str) return null;
+    if (!str) return undefined;
     return str.toString('utf8');
 }

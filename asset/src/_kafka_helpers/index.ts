@@ -1,5 +1,5 @@
 import type { LibrdKafkaError, Message } from 'node-rdkafka';
-import { toString, isString, isError } from '@terascope/job-components';
+import { toString, isString, isError, DataEntityMetadata } from '@terascope/job-components';
 import { codeToMessage, okErrors } from './error-codes';
 
 export type AnyKafkaError = Error|KafkaError|number|string|null;
@@ -55,9 +55,9 @@ function getErrorCause(err: any): string {
     return message;
 }
 
-export interface KafkaMessageMetadata {
+export interface KafkaMessageMetadata extends DataEntityMetadata {
     /** the message key */
-    _key: string|null;
+    _key: string|undefined;
     /** The time at which the data was ingested into the source data */
     _ingestTime: number;
     /** The time at which the data was consumed by the reader */
