@@ -1,5 +1,8 @@
 import type { LibrdKafkaError, Message } from 'node-rdkafka';
-import { toString, isString, isError, DataEntityMetadata } from '@terascope/job-components';
+import {
+    toString, isString, isError,
+    DataEntityMetadata
+} from '@terascope/job-components';
 import { codeToMessage, okErrors } from './error-codes';
 
 export type AnyKafkaError = Error|KafkaError|number|string|null;
