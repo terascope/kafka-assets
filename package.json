@@ -30,7 +30,7 @@
         "@terascope/job-components": "^0.58.1",
         "@types/jest": "^29.2.5",
         "@types/node": "^18.11.18",
-        "@types/uuid": "^8.3.4",
+        "@types/uuid": "^9.0.0",
         "bunyan": "^1.8.15",
         "eslint": "^8.31.0",
         "jest": "^29.3.1",
