@@ -1,5 +1,5 @@
 import convict from 'convict';
-import { debugLogger } from '@terascope/job-components';
+import { debugLogger, addFormats } from '@terascope/job-components';
 import connector from '../src';
 import { KafkaConsumerSettings, KafkaProducerSettings } from '../src/interfaces';
 import { kafkaBrokers } from './config';
@@ -12,6 +12,8 @@ describe('Kafka Connector', () => {
     const config = {
         brokers: kafkaBrokers
     };
+
+    addFormats();
 
     describe('when using a consumer', () => {
         // Not sure if should be enabled by default since depends on a kafka broker.
