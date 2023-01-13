@@ -16,18 +16,29 @@
         "build": "yarn workspaces run build",
         "build:watch": "yarn build --watch",
         "setup": "yarn && yarn build",
-        "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
-        "test:all": "yarn workspaces run test",
-        "test:watch": "jest --forceExit --coverage=false --notify --watch --onlyChanged",
-        "test:debug": "env DEBUG=\"${DEBUG:-*teraslice*}\" jest --colors --detectOpenHandles --forceExit --coverage=false --runInBand",
+        "test": "ts-scripts test . --",
+        "test:all": "ts-scripts test",
+        "test:watch": "ts-scripts test --watch . --",
+        "test:debug": "ts-scripts test --debug . --",
         "publish:changed": "./scripts/publish.sh"
     },
     "repository": "git@github.com:terascope/kafka-assets.git",
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT",
+    "terascope": {
+        "root": true,
+        "testSuite": "kafka",
+        "tests": {
+            "suites": {
+                "unit": [],
+                "kafka": ["kafka"]
+            }
+        }
+    },
     "devDependencies": {
         "@terascope/eslint-config": "^0.7.1",
         "@terascope/job-components": "^0.56.1",
+        "@terascope/scripts": "^0.50.0",
         "@types/jest": "^27.4.1",
         "@types/node": "^16.11.12",
         "@types/uuid": "^8.3.4",
@@ -42,6 +53,6 @@
         "uuid": "^8.3.2"
     },
     "engines": {
-        "node": ">=10.16.0"
+        "node": ">=14.17.0"
     }
 }
