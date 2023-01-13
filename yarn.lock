@@ -3821,7 +3821,7 @@ node-int64@^0.4.0:
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
   integrity sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==
 
-node-rdkafka@^2.14.2:
+node-rdkafka@^2.14.0:
   version "2.14.2-1.HEAD"
   resolved "https://registry.yarnpkg.com/node-rdkafka/-/node-rdkafka-2.14.0.tgz#e8a27bee62e2abf85a4fb3439692cc8203789574"
   integrity sha512-g/I6e1/07uuy3Tjeka7JKZDhbeKeDsX0P9Lj2gsZqsfqWXnwbEfLs3AaKs2/QPts62RWiXLoBhxI7W4cREZXyw==
