@@ -1,5 +1,5 @@
-import convict from 'convict';
-import { debugLogger, addFormats } from '@terascope/job-components';
+import convict, { addFormat } from 'convict';
+import { debugLogger, formats } from '@terascope/job-components';
 import connector from '../src';
 import { KafkaConsumerSettings, KafkaProducerSettings } from '../src/interfaces';
 import { kafkaBrokers } from './config';
@@ -7,6 +7,10 @@ import { kafkaBrokers } from './config';
 const logger = debugLogger('terafoundation-kafka-connector');
 
 jest.setTimeout(5000);
+
+function addFormats(): void {
+    formats.forEach(addFormat);
+}
 
 describe('Kafka Connector', () => {
     const config = {
