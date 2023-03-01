@@ -2,8 +2,9 @@
 dist: bionic
 language: node_js
 node_js:
-  - '14.17'
-  - '16.17.1'
+  - '14.21.3'
+  - '16.19.1'
+  - '18.14.2'
 os:
   - linux
   - osx
