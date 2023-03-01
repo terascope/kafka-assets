@@ -1,6 +1,6 @@
 {
     "name": "kafka-assets",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "private": true,
     "workspaces": {
         "nohoist": [
@@ -10,7 +10,7 @@
     "description": "Teraslice asset for kafka operations",
     "main": "index.js",
     "dependencies": {
-        "@terascope/job-components": "^0.58.1"
+        "@terascope/job-components": "^0.58.5"
     },
     "devDependencies": {},
     "scripts": {
