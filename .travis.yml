@@ -57,7 +57,6 @@ script:
   # Attempt to build the asset (so it doesn't blow up when it deploys)
   - teraslice-cli -v
   - teraslice-cli assets build
-  - teraslice-cli assets build --bundle
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 after_failure:
