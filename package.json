@@ -13,9 +13,9 @@
     "scripts": {
         "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "lint:fix": "yarn lint --fix",
-        "asset:build": "yarn && yarn --cwd ./asset build",
-        "build": "yarn workspaces run build",
-        "build:watch": "yarn build --watch",
+        "asset:build": "yarn && yarn run build",
+        "build": "tsc --build",
+        "build:watch": "tsc --build --watch",
         "setup": "yarn && yarn build",
         "test": "ts-scripts test . --",
         "test:all": "ts-scripts test",
