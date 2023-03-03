@@ -6,7 +6,8 @@
     "workspaces": {
         "packages": [
             "packages/*",
-            "asset"
+            "asset",
+            "."
         ]
     },
     "scripts": {
@@ -52,7 +53,7 @@
             "suites": {
                 "unit": [],
                 "stream": [
-                    "stream"
+                    "kafka"
                 ]
             }
         },
