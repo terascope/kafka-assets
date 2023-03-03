@@ -19,33 +19,13 @@ addons:
 cache:
   npm: false
   yarn: false
+services:
+  - docker
 if: NOT (branch = master AND type = push AND tag IS blank AND os = osx)
 before_install:
   # Install latest yarn
   - npm install --global yarn
   - export PATH="$HOME/.yarn/bin:$PATH"
-  # brew install openssl seems to be broken now
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install openssl; fi
-  # we still need to set the openssl flags for building
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CPPFLAGS=-I/usr/local/opt/openssl/include; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export LDFLAGS=-L/usr/local/opt/openssl/lib; fi
-  # Install Kafka
-  - export KAFKA_HOME="$HOME/.kafka"
-  - export KAFKA_TMP="$HOME/.kafka-downloads"
-  - mkdir -p "$KAFKA_HOME"
-  - mkdir -p "$KAFKA_TMP"
-  - '[[ ! -f "$KAFKA_TMP/kafka.tgz" ]] && wget https://archive.apache.org/dist/kafka/3.2.0/kafka-3.2.0-src.tgz -O "$KAFKA_TMP/kafka.tgz" || echo "* using cache"'
-  - tar xzf "$KAFKA_TMP/kafka.tgz" -C $KAFKA_HOME --strip-components 1
-  # add bin to path for ease of use
-  - export PATH="$KAFKA_HOME/bin:$PATH"
-  # Run Zookeeper on localhost:2181
-  - zookeeper-server-start.sh "$KAFKA_HOME/config/zookeeper.properties" > "$KAFKA_HOME/zookeeper.log" &
-  - sleep 3
-  # Run Kafka on localhost:9092
-  - kafka-server-start.sh "$KAFKA_HOME/config/server.properties" > "$KAFKA_HOME/kafka.log" &
-  - sleep 3
-  # Make it colorful
-  - export FORCE_COLOR=1
   # Install teraslice-cli
   - yarn global add teraslice-cli
 install:
