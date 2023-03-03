@@ -24,7 +24,7 @@ module.exports = {
         '<rootDir>/test/*-spec.{ts,js}',
     ],
     moduleNameMapper: {
-        '^@terascope/file-asset-apis$': path.join(__dirname, '/packages/terafoundation_kafka_connector/src/index.ts'),
+        '^terafoundation_elasticsearch_connector$': path.join(__dirname, '/packages/terafoundation_kafka_connector/src/index.ts'),
     },
     preset: 'ts-jest',
     globals: {

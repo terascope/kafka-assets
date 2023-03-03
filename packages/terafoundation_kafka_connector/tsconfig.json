@@ -1,14 +1,9 @@
 {
     "extends": "../../tsconfig",
     "compilerOptions": {
-        "baseUrl": ".",
-        "rootDir": "src",
         "outDir": "dist",
-        "declaration": true,
-        "sourceMap": false,
-        "inlineSourceMap": true
+        "rootDir": "."
     },
-    "include": [
-        "src/**/*"
-    ]
+    "include": ["src", "test"]
 }
+
