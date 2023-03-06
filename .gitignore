@@ -67,7 +67,7 @@ builds/
 packages/**/dist
 asset/dist
 
-dist/
+dist/**
 
 tsconfig.tsbuildinfo
 

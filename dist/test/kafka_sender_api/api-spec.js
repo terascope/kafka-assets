@@ -10,7 +10,7 @@ describe('kafka_sender_api', () => {
     jest.setTimeout(15 * 1000);
     const mockFlush = jest.fn();
     const connection = 'default';
-    const topicMeta = 'h';
+    const topicMeta = 'a';
     const topic = `${config_1.senderTopic}-${topicMeta}`;
     let harness;
     const kafkaConfig = {
