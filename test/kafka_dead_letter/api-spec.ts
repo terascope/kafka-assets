@@ -1,9 +1,7 @@
 import 'jest-extended';
 import path from 'path';
 import {
-    TestClientConfig,
-    Logger,
-    DataEntity,
+    TestClientConfig, Logger, DataEntity,
     NoopProcessor,
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
