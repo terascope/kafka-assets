@@ -23,7 +23,6 @@
             "./node_modules/@types"
         ]
     },
-    "include": ["test"],
     "references": [
         {
             "path": "packages/terafoundation_kafka_connector"
@@ -31,5 +30,6 @@
         {
             "path": "asset"
         }
-    ]
+    ],
+    "include": ["test"],
 }
