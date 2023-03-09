@@ -6,11 +6,8 @@
         "access": "public"
     },
     "srcMain": "src/index.ts",
-    "main": "dist/src/index.js",
-    "typings": "dist/src/index.d.ts",
-    "files": [
-        "dist/src/**/*"
-    ],
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
     "scripts": {
         "prepare": "yarn build",
         "build": "tsc --project ./tsconfig.json",
