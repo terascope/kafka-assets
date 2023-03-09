@@ -20,8 +20,7 @@
     "devDependencies": {},
     "scripts": {
         "test": "yarn --cwd ../ test",
-        "build": "tsc --project tsconfig.json",
-        "build:watch": "yarn build --watch"
+        "build": "rm -rf dist; tsc --project ../tsconfig.json"
     },
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT"
