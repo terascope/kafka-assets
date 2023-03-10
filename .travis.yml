@@ -6,8 +6,6 @@ node_js:
   - '16.19.1'
 os:
   - linux
-  - osx
-osx_image: xcode10
 branches:
   only:
     - master
