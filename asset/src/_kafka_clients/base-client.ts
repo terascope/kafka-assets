@@ -119,6 +119,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
         return (...args: any[]): void => {
             fn();
             const hasListener = this._events.listenerCount(event) > 0;
+
             if (hasListener) {
                 this._events.emit(event, ...args);
                 return;

@@ -1,6 +1,6 @@
 {
     "name": "terafoundation_kafka_connector",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "description": "Terafoundation connector for Kafka producer and consumer clients.",
     "publishConfig": {
         "access": "public"
@@ -10,11 +10,11 @@
     "typings": "dist/index.d.ts",
     "scripts": {
         "prepare": "yarn build",
-        "build": "tsc --project tsconfig.json",
+        "build": "tsc --project ./tsconfig.json",
         "build:watch": "yarn build --watch",
-        "test": "jest",
-        "test:watch": "jest --coverage=false --notify --watch --onlyChanged",
-        "test:debug": "env DEBUG='*teraslice*' jest --detectOpenHandles --coverage=false --runInBand"
+        "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
+        "test:watch": "ts-scripts test --watch . --",
+        "test:debug": "ts-scripts test --debug . --"
     },
     "homepage": "https://github.com/terascope/kafka-assets",
     "repository": "git@github.com:terascope/kafka-assets.git",
@@ -24,7 +24,7 @@
         "node-rdkafka": "^2.14.0"
     },
     "devDependencies": {
-        "@terascope/job-components": "^0.58.1",
+        "@terascope/job-components": "^0.58.5",
         "@types/convict": "^6.1.1",
         "convict": "^6.2.4"
     },

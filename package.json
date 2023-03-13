@@ -1,25 +1,26 @@
 {
     "name": "kafka-asset-bundle",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "private": true,
     "workspaces": {
         "packages": [
             "packages/*",
-            "asset"
+            "asset",
+            "."
         ]
     },
     "scripts": {
         "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "lint:fix": "yarn lint --fix",
         "asset:build": "yarn && yarn --cwd ./asset build",
-        "build": "yarn workspaces run build",
+        "build": "tsc --project ./tsconfig.json && yarn --cwd ./packages/terafoundation_kafka_connector build",
         "build:watch": "yarn build --watch",
         "setup": "yarn && yarn build",
-        "test": "jest --colors --maxWorkers=2 --detectOpenHandles --forceExit",
+        "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
         "test:all": "yarn workspaces run test",
-        "test:watch": "jest --forceExit --coverage=false --notify --watch --onlyChanged",
-        "test:debug": "env DEBUG=\"${DEBUG:-*teraslice*}\" jest --colors --detectOpenHandles --forceExit --coverage=false --runInBand",
+        "test:watch": "ts-scripts test --watch . --",
+        "test:debug": "ts-scripts test --debug . --",
         "publish:changed": "./scripts/publish.sh"
     },
     "repository": "git@github.com:terascope/kafka-assets.git",
@@ -27,21 +28,42 @@
     "license": "MIT",
     "devDependencies": {
         "@terascope/eslint-config": "^0.7.1",
-        "@terascope/job-components": "^0.58.1",
-        "@types/jest": "^29.2.5",
-        "@types/node": "^18.11.18",
-        "@types/uuid": "^9.0.0",
+        "@terascope/job-components": "^0.58.5",
+        "@terascope/scripts": "^0.50.6",
+        "@types/jest": "^29.4.0",
+        "@types/node": "^18.14.2",
+        "@types/uuid": "^9.0.1",
         "bunyan": "^1.8.15",
-        "eslint": "^8.31.0",
-        "jest": "^29.3.1",
-        "jest-extended": "^3.2.3",
-        "terafoundation_kafka_connector": "^0.9.0",
+        "eslint": "^8.35.0",
+        "jest": "^29.4.3",
+        "jest-extended": "^3.2.4",
+        "terafoundation_kafka_connector": "^0.9.1",
         "teraslice-test-harness": "^0.28.2",
-        "ts-jest": "^29.0.4",
-        "typescript": "^4.8.4",
+        "ts-jest": "^29.0.5",
+        "typescript": "^4.9.5",
         "uuid": "^9.0.0"
     },
     "engines": {
         "node": ">=14.17.0"
+    },
+    "terascope": {
+        "root": true,
+        "testSuite": "stream",
+        "tests": {
+            "suites": {
+                "unit": [],
+                "stream": [
+                    "kafka"
+                ]
+            }
+        },
+        "docker": {
+            "registries": [
+                "terascope/teraslice"
+            ]
+        },
+        "npm": {
+            "registry": "https://registry.npmjs.org/"
+        }
     }
 }

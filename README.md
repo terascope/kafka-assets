@@ -17,15 +17,6 @@
   - [Contributing](#contributing)
   - [License](#license)
 
-- Operations:
-  - [kafka_reader](./docs/operations/kafka_reader.md)
-  - [kafka_sender](./docs/operations/kafka_sender.md)
-
-- API:
-  - [kafka_reader_api](./docs/apis/kafka_reader_api.md)
-  - [kafka_sender_api](./docs/apis/kafka_sender_api.md)
-  - [kafka_dead_letter](./docs/apis/kafka_dead_letter.md)
-
 ## Releases
 
 You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/terascope/kafka-assets/releases).
@@ -149,7 +140,7 @@ Run the kafka tests
 
 **Environment:**
 
-- `KAFKA_BROKERS` - Defaults to `localhost:9091`
+- `KAFKA_BROKERS` - Defaults to `localhost:9092`
 
 ```bash
 yarn test

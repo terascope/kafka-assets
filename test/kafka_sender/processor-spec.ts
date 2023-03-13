@@ -3,7 +3,8 @@ import 'jest-extended';
 import fs from 'fs';
 import path from 'path';
 import {
-    TestClientConfig, Logger, DataEntity, parseJSON
+    TestClientConfig, Logger, DataEntity,
+    parseJSON,
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
