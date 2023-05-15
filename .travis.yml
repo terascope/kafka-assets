@@ -20,6 +20,12 @@ cache:
 services:
   - docker
 if: NOT (branch = master AND type = push AND tag IS blank AND os = osx)
+before_script:
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+    else
+    echo "* skipping docker login for macos...";
+    fi
 before_install:
   # Install latest yarn
   - npm install --global yarn
@@ -30,11 +36,17 @@ install:
   - yarn
   - yarn build
 script:
-  - yarn test:all
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    yarn test:all;
+    else
+    echo "* skipping tests for macos...";
+    fi
   - yarn lint
   # Attempt to build the asset (so it doesn't blow up when it deploys)
   - teraslice-cli -v
-  - teraslice-cli assets build
+  - teraslice-cli assets build --bundle-target node14
+  - teraslice-cli assets build --bundle-target node16
+  - teraslice-cli assets build --bundle-target node18
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 after_failure:

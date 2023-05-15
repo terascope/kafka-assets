@@ -21,7 +21,7 @@
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT",
     "dependencies": {
-        "node-rdkafka": "^2.14.0"
+        "node-rdkafka": "^2.16.0"
     },
     "devDependencies": {
         "@terascope/job-components": "^0.58.5",
