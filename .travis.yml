@@ -2,6 +2,9 @@
 dist: focal
 os:
   - linux
+language: node_js
+node_js:
+  - '14.21.3'
 branches:
   only:
     - master
@@ -35,19 +38,16 @@ jobs:
 
     - stage: 'Tests'
     - name: 'Node 14.21.3'
-      language: node_js
-      node_js: '14.21.3'
+      {}
       if: branch = master AND type IN (pull_request)
       script: yarn test:all; teraslice-cli -v; teraslice-cli assets build --bundle-target node14
 
     - name: 'Node 16.19.1'
-      language: node_js
       node_js: '16.19.1'
       if: branch = master AND type IN (pull_request)
       script: yarn test:all; teraslice-cli -v; teraslice-cli assets build --bundle-target node16
 
     - name: 'Node 18.16.0'
-      language: node_js
       node_js: '18.16.0'
       if: branch = master AND type IN (pull_request)
       script: yarn test:all; teraslice-cli -v; teraslice-cli assets build --bundle-target node18
