@@ -1,18 +1,12 @@
 # set the dist to bionic
 dist: focal
 language: node_js
-node_js:
-  - '14.21.3'
 os:
   - linux
 branches:
   only:
     - master
     - /^v\d+\.\d+\.\d+/
-addons:
-  apt:
-    packages:
-      - jq
 cache:
   npm: false
   yarn: false
