@@ -1,40 +1,63 @@
-# set the dist to bionic
 dist: focal
+os:
+  - linux
 language: node_js
 node_js:
   - '14.21.3'
-  - '16.19.1'
-os:
-  - linux
+
 branches:
   only:
     - master
     - /^v\d+\.\d+\.\d+/
-addons:
-  apt:
-    packages:
-      - jq
+
 cache:
   npm: false
   yarn: false
+
 services:
   - docker
+
 if: NOT (branch = master AND type = push AND tag IS blank AND os = osx)
+
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
 before_install:
   # Install latest yarn
   - npm install --global yarn
   - export PATH="$HOME/.yarn/bin:$PATH"
   # Install teraslice-cli
   - yarn global add teraslice-cli
+
 install:
   - yarn
   - yarn build
-script:
-  - yarn test:all
-  - yarn lint
-  # Attempt to build the asset (so it doesn't blow up when it deploys)
-  - teraslice-cli -v
-  - teraslice-cli assets build
+
+jobs:
+  fast_finish: true
+
+  include:
+    - stage: 'Lint'
+      name: 'Lint'
+      language: node_js
+      node_js: '14.21.3'
+      script: 'yarn lint'
+
+    - stage: 'Tests'
+    - name: 'Node 14.21.3'
+      node_js: '14.21.3'
+      if: branch = master AND type IN (pull_request)
+      script: yarn test:all; teraslice-cli -v; teraslice-cli assets build --bundle-target node14
+
+    - name: 'Node 16.19.1'
+      node_js: '16.19.1'
+      if: branch = master AND type IN (pull_request)
+      script: yarn test:all; teraslice-cli -v; teraslice-cli assets build --bundle-target node16
+
+    - name: 'Node 18.16.0'
+      node_js: '18.16.0'
+      if: branch = master AND type IN (pull_request)
+      script: yarn test:all; teraslice-cli -v; teraslice-cli assets build --bundle-target node18
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 after_failure:
