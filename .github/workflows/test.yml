@@ -1,0 +1,68 @@
+name: Kafka CI Tests
+run-name: Kafka Tests
+on: push
+jobs:
+  linux-node-14:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.21.3
+          cache: 'npm'
+      - name: install yarn
+        run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
+      - name: install and build packages
+        run: yarn setup
+      - name: test
+        run: yarn test:all
+  linux-node-16:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.19.1
+          cache: 'npm'
+      - name: install yarn
+        run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
+      - name: install and build packages
+        run: yarn setup
+      - name: test
+        run: yarn test:all
+  linux-node-18:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
+          cache: 'npm'
+      - name: install yarn
+        run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
+      - name: install and build packages
+        run: yarn setup
+      - name: test
+        run: yarn test:all
+  mac-node-18:
+    runs-on:  macos-12
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
+          cache: 'npm'
+      - name: install yarn
+        run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
+      - name: install and build packages
+        run: yarn setup
+      - name: test
+        run: yarn test:all
