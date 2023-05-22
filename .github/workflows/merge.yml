@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14.21.3
-          cache: 'npm'
+          cache: 'yarn'
       - name: install yarn
         run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
       - name: install teraslice-cli
@@ -43,7 +43,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.19.1
-          cache: 'npm'
+          cache: 'yarn'
       - name: install yarn
         run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
       - name: install teraslice-cli
@@ -67,7 +67,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.16.0
-          cache: 'npm'
+          cache: 'yarn'
       - name: install yarn
         run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
       - name: install teraslice-cli
