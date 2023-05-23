@@ -76,3 +76,5 @@ packages/*/dist
 
 # @TODO REMOVE NEXT LINE
 asset/**/_old.js
+
+.travis.yml
