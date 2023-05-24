@@ -55,7 +55,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
                 // Enable partition EOF because node-rdkafka
                 // requires this work for consuming batches
                 'enable.partition.eof': true,
-            },
+            } as Record<string, any>,
             autoconnect: false
         };
 

@@ -6,7 +6,7 @@ import { kafkaBrokers } from './config';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
-jest.setTimeout(5000);
+jest.setTimeout(30 * 1000);
 
 function addFormats(): void {
     formats.forEach(addFormat);

@@ -1,20 +1,17 @@
 import type * as kafka from 'node-rdkafka';
+import { } from 'terafoundation_kafka_connector';
 import {
-    pDelay, toHumanTime, EncodingConfig, isBoolean, isNotNil
+    pDelay, toHumanTime, EncodingConfig,
+    isBoolean, isNotNil
 } from '@terascope/job-components';
 import {
-    wrapError,
-    AnyKafkaError,
-    KafkaMessage,
+    wrapError, AnyKafkaError, KafkaMessage,
     KafkaError,
 } from '../_kafka_helpers';
 import BaseClient, { getRandom } from './base-client';
 import {
-    TrackedOffsets,
-    TopicPartition,
-    ConsumerClientConfig,
-    CountPerPartition,
-    FatalError,
+    TrackedOffsets, TopicPartition, ConsumerClientConfig,
+    CountPerPartition, FatalError, OffsetByPartition,
 } from './interfaces';
 import {
     ERR__ASSIGN_PARTITIONS,
@@ -32,8 +29,8 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _rebalancing = false;
     private _hasClientEvents = false;
     private _offsets: TrackedOffsets = {
-        started: {},
-        ended: {},
+        started: {} as OffsetByPartition,
+        ended: {} as OffsetByPartition,
     };
     protected encoding: EncodingConfig = {};
     /** last known assignments */
@@ -270,7 +267,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _flushOffsets(key: keyof TrackedOffsets) {
         const partitions: TopicPartition[] = [];
         for (const partition of Object.keys(this._offsets[key])) {
-            const offset = this._offsets[key][partition];
+            const offset = this._offsets[key][partition as any];
 
             partitions.push({
                 partition: parseInt(partition, 10),

@@ -19,7 +19,7 @@
     },
     "devDependencies": {},
     "scripts": {
-        "test": "yarn --cwd ../ test",
+        "test": "echo 'run top level tests'",
         "build": "rm -rf dist; tsc --project ../tsconfig.json"
     },
     "author": "Terascope, LLC <info@terascope.io>",

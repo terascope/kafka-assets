@@ -54,7 +54,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 // librdkafka >1.0.0 changed the default broker acknowledgement
                 // to all brokers, but this has performance issues
                 'request.required.acks': kafkaConfig.required_acks
-            },
+            } as Record<string, any>,
             autoconnect: false
         };
 

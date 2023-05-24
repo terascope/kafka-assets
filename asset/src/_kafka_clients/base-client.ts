@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import {
-    Logger, isError, pDelay, once
+    Logger, isError, pDelay, once,
+    get
 } from '@terascope/job-components';
 import type * as kafka from 'node-rdkafka';
 import {
@@ -10,7 +11,8 @@ import {
     AnyKafkaError,
 } from '../_kafka_helpers';
 import {
-    ERR__STATE
+    ERR__STATE,
+    OkErrorKeys
 } from '../_kafka_helpers/error-codes';
 
 export default class BaseClient<T extends kafka.Client<any>> {
@@ -128,12 +130,12 @@ export default class BaseClient<T extends kafka.Client<any>> {
             const [err] = args;
 
             if (err && isError(err)) {
-                if (isOkayError(err, 'retryable')) {
+                if (isOkayError(err, OkErrorKeys.retryable)) {
                     this._logger.warn(err, `kafka client warning for event "${event}"`);
                     return;
                 }
 
-                if (!isKafkaError(err) || !isOkayError(err, 'any')) {
+                if (!isKafkaError(err) || !isOkayError(err, OkErrorKeys.any)) {
                     this._logger.error(err, `kafka client error for event "${event}"`);
                     return;
                 }
@@ -206,7 +208,11 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Perform an action, fail if the function fails,
      * or the event emits an error
     */
-    protected async _failIfEvent<F extends TryFn>(event: string, fn: F, action = 'any'): RetryResult<F> {
+    protected async _failIfEvent<F extends TryFn>(
+        event: string,
+        fn: F,
+        action = 'any'
+    ): RetryResult<F> {
         return this._tryWithEvent(event, fn, action, 0);
     }
 
@@ -244,7 +250,11 @@ export default class BaseClient<T extends kafka.Client<any>> {
      *
      * **NOTE:** It will only retry if it is a retryable kafka error
     */
-    protected async _try<F extends TryFn>(fn: F, action = 'any', retries = BaseClient.DEFAULT_MAX_RETRIES): RetryResult<F> {
+    protected async _try<F extends TryFn>(
+        fn: F,
+        action = 'any',
+        retries = BaseClient.DEFAULT_MAX_RETRIES
+    ): RetryResult<F> {
         const actionStr = action === 'any' ? '' : ` when performing ${action}`;
         if (this._closed) {
             this._logger.error(`Kafka client closed${actionStr}`);
@@ -260,7 +270,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
             }
             return result;
         } catch (err) {
-            if (isOkayError(err, action)) {
+            if (isOkayError(err, get(OkErrorKeys, action))) {
                 return null;
             }
 
@@ -271,7 +281,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
                 this._invalidStateCount++;
             }
 
-            const isRetryableError = isOkayError(err, 'retryable');
+            const isRetryableError = isOkayError(err, OkErrorKeys.retryable);
 
             if (retries > 0 && isRetryableError) {
                 this._incBackOff();
