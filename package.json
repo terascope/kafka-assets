@@ -14,7 +14,7 @@
         "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "lint:fix": "yarn lint --fix",
         "asset:build": "yarn && yarn --cwd ./asset build",
-        "build": "tsc --project ./tsconfig.json && yarn --cwd ./packages/terafoundation_kafka_connector build",
+        "build": "tsc --build",
         "build:watch": "yarn build --watch",
         "setup": "yarn && yarn build",
         "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
