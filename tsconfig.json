@@ -1,22 +1,34 @@
 {
     "compilerOptions": {
-        "rootDir": "asset/src",
-        "outDir": "asset/dist",
+        "baseUrl": ".",
+        "outDir": "dist",
         "module": "commonjs",
         "moduleResolution": "node",
         "target": "es2019",
         "skipLibCheck": true,
         "experimentalDecorators": true,
         "strict": true,
-        "sourceMap": true,
-        "inlineSourceMap": false,
-        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
         "preserveConstEnums": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "suppressImplicitAnyIndexErrors": true
+        "forceConsistentCasingInFileNames": true,
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "disableReferencedProjectLoad": true,
+        "typeRoots": [
+            "./node_modules/@types"
+        ]
     },
-    "include": [
-        "asset/src/**/*"
+    "include": ["test"],
+    "references": [
+        {
+            "path": "packages/terafoundation_kafka_connector"
+        },
+        {
+            "path": "asset"
+        }
     ]
 }
