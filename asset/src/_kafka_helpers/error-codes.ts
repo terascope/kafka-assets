@@ -73,7 +73,7 @@ export const codeToMessage = {
     29: 'Topic authorization failed',
     30: 'Group authorization failed',
     31: 'Cluster authorization failed'
-};
+} as Record<(string|number), any>;
 
 export const KAFKA_NO_OFFSET_STORED = -168;
 export const ERR__WAIT_COORD = -180;
@@ -98,13 +98,22 @@ export interface OkErrorSet {
     [prop: number]: boolean;
 }
 
+export enum OkErrorKeys {
+    'consume' = 'consume',
+    'commit' = 'commit',
+    'produce' = 'produce',
+    'connect' = 'connect',
+    'retryable' = 'retryable',
+    'any' = 'any'
+}
+
 export interface OkErrors {
-    consume: OkErrorSet;
-    commit: OkErrorSet;
-    produce: OkErrorSet;
-    connect: OkErrorSet;
-    retryable: OkErrorSet;
-    any: OkErrorSet;
+    [OkErrorKeys.consume] : OkErrorSet;
+    [OkErrorKeys.commit] : OkErrorSet;
+    [OkErrorKeys.produce] : OkErrorSet;
+    [OkErrorKeys.connect] : OkErrorSet;
+    [OkErrorKeys.retryable]: OkErrorSet;
+    [OkErrorKeys.any] : OkErrorSet;
 }
 
 export const okErrors: OkErrors = {

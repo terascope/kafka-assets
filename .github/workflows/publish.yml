@@ -1,0 +1,37 @@
+name: Publish Assets
+run-name: Publish assets to npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  fetch-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Register npm token
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Install jq tool for publishing
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download all build versions
+        uses: actions/download-artifact@v3
+        with:
+          name: kafka-node-14 kafka-node-16 kafka-node-18
+          path: ./build
+
+      - name: Publish to npm
+        shell: bash
+        run: './scripts/publish.sh'
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/*.zip

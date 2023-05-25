@@ -4,9 +4,7 @@ module.exports = {
     verbose: true,
     testEnvironment: 'node',
     setupFilesAfterEnv: ['jest-extended/all'],
-    collectCoverage: true,
-    coverageReporters: ['json', 'lcov', 'text', 'html'],
-    coverageDirectory: 'coverage',
+    collectCoverage: false,
     testMatch: [
         '<rootDir>/test/**/*-spec.{ts,js}',
         '<rootDir>/test/*-spec.{ts,js}',

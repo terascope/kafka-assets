@@ -1,5 +1,8 @@
 import 'jest-extended';
-import { wrapError, KafkaError, isOkayError } from '../../asset/src/_kafka_helpers';
+import {
+    wrapError, KafkaError, isOkayError,
+    OkErrorKeys
+} from '../../asset/src/_kafka_helpers';
 import * as codes from '../../asset/src/_kafka_helpers/error-codes';
 
 describe('wrapError helper', () => {
@@ -69,8 +72,8 @@ describe('isOkayError helper', () => {
             const err = new Error('Uh oh') as any as KafkaError;
             err.code = code as number;
 
-            expect(isOkayError(err, 'consume')).toBeTrue();
-            expect(isOkayError(code, 'consume')).toBeTrue();
+            expect(isOkayError(err, OkErrorKeys.consume)).toBeTrue();
+            expect(isOkayError(code, OkErrorKeys.consume)).toBeTrue();
         });
     });
 
@@ -79,8 +82,8 @@ describe('isOkayError helper', () => {
             const err = new Error('Uh oh') as any as KafkaError;
             err.code = code as number;
 
-            expect(isOkayError(err, 'consume')).toBeFalse();
-            expect(isOkayError(code, 'consume')).toBeFalse();
+            expect(isOkayError(err, OkErrorKeys.consume)).toBeFalse();
+            expect(isOkayError(code, OkErrorKeys.consume)).toBeFalse();
         });
     });
 
@@ -93,8 +96,8 @@ describe('isOkayError helper', () => {
             const err = new Error('Uh oh') as any as KafkaError;
             err.code = code as number;
 
-            expect(isOkayError(err, 'commit')).toBeTrue();
-            expect(isOkayError(code, 'commit')).toBeTrue();
+            expect(isOkayError(err, OkErrorKeys.commit)).toBeTrue();
+            expect(isOkayError(code, OkErrorKeys.commit)).toBeTrue();
         });
     });
 
@@ -107,8 +110,8 @@ describe('isOkayError helper', () => {
             const err = new Error('Uh oh') as any as KafkaError;
             err.code = code as number;
 
-            expect(isOkayError(err, 'produce')).toBeTrue();
-            expect(isOkayError(code, 'produce')).toBeTrue();
+            expect(isOkayError(err, OkErrorKeys.produce)).toBeTrue();
+            expect(isOkayError(code, OkErrorKeys.produce)).toBeTrue();
         });
     });
 });

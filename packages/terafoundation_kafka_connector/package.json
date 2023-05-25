@@ -6,8 +6,11 @@
         "access": "public"
     },
     "srcMain": "src/index.ts",
-    "main": "dist/index.js",
-    "typings": "dist/index.d.ts",
+    "main": "dist/src/index.js",
+    "typings": "dist/src/index.d.ts",
+    "files": [
+        "dist/src/**/*"
+    ],
     "scripts": {
         "prepare": "yarn build",
         "build": "tsc --project ./tsconfig.json",
@@ -30,5 +33,9 @@
     },
     "engines": {
         "node": ">=10.16.0"
+    },
+    "terascope": {
+        "enableTypedoc": true,
+        "testSuite": "stream"
     }
 }

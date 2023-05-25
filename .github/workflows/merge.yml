@@ -1,0 +1,84 @@
+name: Kafka CI Build
+run-name: Build Kafka Packages
+# run when merged to master branch
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  build-linux-node-14:
+    # make sure to only run if its a merge call
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.21.3
+          cache: 'yarn'
+      - name: Install and setup yarn
+        run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
+      - name: Install teraslice-cli
+        run: yarn global add teraslice-cli
+      - name: Install and build packages
+        run: yarn setup
+      - name: Build asset
+        run: teraslice-cli assets build --bundle-target node14
+      - name: Upload built asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: kafka-node-14
+          path: 'build/*'
+  build-linux-node-16:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.19.1
+          cache: 'yarn'
+      - name: Install and setup yarn
+        run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
+      - name: Install teraslice-cli
+        run: yarn global add teraslice-cli
+      - name: Install and build packages
+        run: yarn setup
+      - name: Build asset
+        run: teraslice-cli assets build --bundle-target node16
+      - name: Upload built asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: kafka-node-16
+          path: 'build/*'
+  build-linux-node-18:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
+          cache: 'yarn'
+      - name: Install and setup yarn
+        run: npm install --global yarn; export PATH="$HOME/.yarn/bin:$PATH"
+      - name: Install teraslice-cli
+        run: yarn global add teraslice-cli
+      - name: Install and build packages
+        run: yarn setup
+      - name: Build asset
+        run: teraslice-cli assets build --bundle-target node18
+      - name: Upload built asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: kafka-node-18
+          path: 'build/*'
