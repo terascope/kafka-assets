@@ -2,9 +2,8 @@ name: Publish Assets
 run-name: Publish assets to npm
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  release:
+    types: [published]
 
 jobs:
   fetch-assets:

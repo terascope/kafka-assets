@@ -4,7 +4,7 @@ run-name: Build Kafka Packages
 on:
   pull_request:
     branches:
-      - main
+      - master
     types:
       - closed
 
