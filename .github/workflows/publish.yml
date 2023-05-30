@@ -102,6 +102,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install and build packages
+        run: yarn setup
+
       - name: Download all build versions
         uses: actions/download-artifact@v3
         with:
@@ -114,4 +117,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/*.zip
+          files: build/**/*.zip
