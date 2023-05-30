@@ -114,4 +114,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/*.zip
+          files: build/**/*.zip
