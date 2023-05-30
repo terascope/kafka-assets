@@ -1,6 +1,6 @@
 {
     "name": "kafka-asset-bundle",
-    "version": "3.3.5",
+    "version": "3.3.6",
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "private": true,
     "workspaces": {
