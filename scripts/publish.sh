@@ -19,7 +19,7 @@ publish() {
     fi
 
     targetVersion="$(jq -r '.version' package.json)"
-    currentVersion="$(npm info --json 2> /dev/null | jq -r '.version // "0.0.0"')"
+    currentVersion="$(npm info --json | jq -r '.version // "0.0.0"')"
     echo "$currentVersion"
     echo "$(npm info --json 2> /dev/null | jq -r '.version')"
 
