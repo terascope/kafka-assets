@@ -1,13 +1,13 @@
-name: Publish Assets Test
-run-name: Publish assets to npm
+name: Publish Test
+run-name: publish test
 
 on:
-  release:
-    types: [published]
+  pull_request:
+    branches: [ master ]
 
 jobs:
 
-  release-assets:
+  publish-test:
     runs-on: ubuntu-latest
     steps:
       - name: Register npm token
