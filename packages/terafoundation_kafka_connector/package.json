@@ -3,7 +3,8 @@
     "version": "0.9.3",
     "description": "Terafoundation connector for Kafka producer and consumer clients.",
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
     },
     "srcMain": "src/index.ts",
     "main": "dist/src/index.js",

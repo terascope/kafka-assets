@@ -46,6 +46,10 @@
     "engines": {
         "node": ">=14.17.0"
     },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
     "terascope": {
         "root": true,
         "testSuite": "stream",
