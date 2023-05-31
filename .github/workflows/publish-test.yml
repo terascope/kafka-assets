@@ -1,0 +1,23 @@
+name: Publish Assets Test
+run-name: Publish assets to npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  release-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Register npm token
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install and build packages
+        run: yarn setup
+
+      - name: Publish to npm
+        run: 'yarn publish:changed'

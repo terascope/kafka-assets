@@ -94,11 +94,6 @@ jobs:
       - name: Register npm token
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      - name: Install jq tool for publishing
-        run: |
-          sudo apt-get update
-          sudo apt-get install jq
-
       - name: Checkout code
         uses: actions/checkout@v3
 
