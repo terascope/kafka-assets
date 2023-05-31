@@ -20,7 +20,7 @@ publish() {
 
     targetVersion="$(jq -r '.version' package.json)"
     currentVersion="$(npm info --json 2> /dev/null | jq -r '.version // "0.0.0"')"
-
+    echo "$(npm info --json)"
     if [ "$currentVersion" != "$targetVersion" ]; then
         echo "$name@$currentVersion -> $targetVersion"
         if [ "$dryRun" == "false" ]; then
