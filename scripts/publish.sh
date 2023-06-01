@@ -13,15 +13,14 @@ publish() {
 
     name="$(jq -r '.name' package.json)"
     isPrivate="$(jq -r '.private' package.json)"
+
     if [ "$isPrivate" == 'true' ]; then
         echo "* $name is a private module skipping..."
         return;
     fi
 
     targetVersion="$(jq -r '.version' package.json)"
-    currentVersion="$(npm info --json | jq -r '.version // "0.0.0"')"
-    echo "$currentVersion"
-    echo "$(npm info --json 2> /dev/null | jq -r '.version')"
+    currentVersion="$(npm info --json 2> /dev/null | jq -r 'first(.[]) | .version // "0.0.0"')"
 
     if [ "$currentVersion" != "$targetVersion" ]; then
         echo "$name@$currentVersion -> $targetVersion"
