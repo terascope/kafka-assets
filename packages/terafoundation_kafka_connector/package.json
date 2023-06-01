@@ -1,6 +1,6 @@
 {
     "name": "terafoundation_kafka_connector",
-    "version": "0.9.3",
+    "version": "0.10.0",
     "description": "Terafoundation connector for Kafka producer and consumer clients.",
     "publishConfig": {
         "access": "public"
@@ -24,11 +24,11 @@
     "author": "Terascope, LLC <info@terascope.io>",
     "license": "MIT",
     "dependencies": {
-        "node-rdkafka": "^2.16.0"
+        "node-rdkafka": "^2.16.1"
     },
     "devDependencies": {
         "@terascope/job-components": "^0.58.5",
-        "@types/convict": "^6.1.1",
+        "@types/convict": "^6.1.2",
         "convict": "^6.2.4"
     },
     "engines": {
