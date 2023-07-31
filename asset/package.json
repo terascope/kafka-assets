@@ -1,6 +1,6 @@
 {
     "name": "kafka-assets",
-    "version": "3.4.0",
+    "version": "3.5.0",
     "private": true,
     "workspaces": {
         "nohoist": [
@@ -15,7 +15,7 @@
         "dist/src/**/*"
     ],
     "dependencies": {
-        "@terascope/job-components": "^0.58.5"
+        "@terascope/job-components": "^0.59.0"
     },
     "devDependencies": {},
     "scripts": {
