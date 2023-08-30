@@ -10,6 +10,8 @@ updates:
     assignees:
       - godber
       - jsnoble
+      - busma13
+      - sotojn
     ignore:
       - dependency-name: convict
         versions:
