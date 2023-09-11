@@ -17,7 +17,7 @@
         "build": "tsc --build",
         "build:watch": "yarn build --watch",
         "setup": "yarn && yarn build",
-        "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
+        "test": "KAFKA_VERSION=3.3 ts-scripts test . --",
         "test:all": "yarn workspaces run test",
         "test:watch": "ts-scripts test --watch . --",
         "test:debug": "ts-scripts test --debug . --",
