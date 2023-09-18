@@ -28,7 +28,7 @@
     "license": "MIT",
     "devDependencies": {
         "@terascope/eslint-config": "^0.7.1",
-        "@terascope/job-components": "^0.59.0",
+        "@terascope/job-components": "^0.62.0",
         "@terascope/scripts": "^0.53.1",
         "@types/jest": "^29.5.3",
         "@types/node": "^18.14.2",
