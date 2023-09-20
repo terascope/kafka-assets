@@ -1,28 +1,25 @@
 {
     "name": "terafoundation_kafka_connector",
+    "displayName": "Terafoundation Kafka Connector",
     "version": "0.11.0",
     "description": "Terafoundation connector for Kafka producer and consumer clients.",
-    "publishConfig": {
-        "access": "public"
-    },
-    "srcMain": "src/index.ts",
+    "homepage": "https://github.com/terascope/kafka-assets",
+    "repository": "git@github.com:terascope/kafka-assets.git",
+    "license": "MIT",
+    "author": "Terascope, LLC <info@terascope.io>",
     "main": "dist/src/index.js",
     "typings": "dist/src/index.d.ts",
     "files": [
         "dist/src/**/*"
     ],
     "scripts": {
-        "prepare": "yarn build",
         "build": "tsc --project ./tsconfig.json",
         "build:watch": "yarn build --watch",
+        "prepare": "yarn build",
         "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
-        "test:watch": "ts-scripts test --watch . --",
-        "test:debug": "ts-scripts test --debug . --"
+        "test:debug": "ts-scripts test --debug . --",
+        "test:watch": "ts-scripts test --watch . --"
     },
-    "homepage": "https://github.com/terascope/kafka-assets",
-    "repository": "git@github.com:terascope/kafka-assets.git",
-    "author": "Terascope, LLC <info@terascope.io>",
-    "license": "MIT",
     "dependencies": {
         "node-rdkafka": "^2.17.0"
     },
@@ -32,8 +29,14 @@
         "convict": "^6.2.4"
     },
     "engines": {
-        "node": ">=10.16.0"
+        "node": ">=14.17.0",
+        "yarn": ">=1.16.0"
     },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "srcMain": "src/index.ts",
     "terascope": {
         "enableTypedoc": true,
         "testSuite": "stream"

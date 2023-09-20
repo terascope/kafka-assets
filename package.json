@@ -1,8 +1,12 @@
 {
     "name": "kafka-asset-bundle",
+    "displayName": "Kafka Asset Bundle",
     "version": "3.5.0",
-    "description": "A bundle of Kafka operations and processors for Teraslice",
     "private": true,
+    "description": "A bundle of Kafka operations and processors for Teraslice",
+    "repository": "git@github.com:terascope/kafka-assets.git",
+    "license": "MIT",
+    "author": "Terascope, LLC <info@terascope.io>",
     "workspaces": {
         "packages": [
             "packages/*",
@@ -11,25 +15,24 @@
         ]
     },
     "scripts": {
-        "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
-        "lint:fix": "yarn lint --fix",
         "asset:build": "yarn && yarn --cwd ./asset build",
         "build": "tsc --build",
         "build:watch": "yarn build --watch",
+        "bump": "ts-scripts bump",
+        "bump-asset": "ts-scripts bump-asset",
+        "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
+        "lint:fix": "yarn lint --fix",
+        "publish:changed": "./scripts/publish.sh",
         "setup": "yarn && yarn build",
         "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
         "test:all": "yarn workspaces run test",
-        "test:watch": "ts-scripts test --watch . --",
         "test:debug": "ts-scripts test --debug . --",
-        "publish:changed": "./scripts/publish.sh"
+        "test:watch": "ts-scripts test --watch . --"
     },
-    "repository": "git@github.com:terascope/kafka-assets.git",
-    "author": "Terascope, LLC <info@terascope.io>",
-    "license": "MIT",
     "devDependencies": {
         "@terascope/eslint-config": "^0.7.1",
         "@terascope/job-components": "^0.59.0",
-        "@terascope/scripts": "^0.53.1",
+        "@terascope/scripts": "^0.57.0",
         "@types/jest": "^29.5.3",
         "@types/node": "^18.14.2",
         "@types/uuid": "^9.0.2",
@@ -44,7 +47,8 @@
         "uuid": "^9.0.0"
     },
     "engines": {
-        "node": ">=14.17.0"
+        "node": ">=14.17.0",
+        "yarn": ">=1.16.0"
     },
     "terascope": {
         "root": true,
