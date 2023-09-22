@@ -10,8 +10,7 @@
     "workspaces": {
         "packages": [
             "packages/*",
-            "asset",
-            "."
+            "asset"
         ]
     },
     "scripts": {
@@ -24,10 +23,10 @@
         "lint:fix": "yarn lint --fix",
         "publish:changed": "./scripts/publish.sh",
         "setup": "yarn && yarn build",
-        "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
+        "test": "KAFKA_VERSION=3.2 ts-scripts test asset --",
         "test:all": "yarn workspaces run test",
-        "test:debug": "ts-scripts test --debug . --",
-        "test:watch": "ts-scripts test --watch . --"
+        "test:debug": "ts-scripts test --debug asset --",
+        "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
         "@terascope/eslint-config": "^0.7.1",
@@ -48,7 +47,7 @@
     },
     "engines": {
         "node": ">=14.17.0",
-        "yarn": ">=1.16.0"
+        "yarn": ">=1.22.19"
     },
     "terascope": {
         "root": true,
