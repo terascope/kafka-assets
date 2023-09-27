@@ -15,7 +15,7 @@
     },
     "scripts": {
         "asset:build": "yarn && yarn --cwd ./asset build",
-        "build": "tsc --build --force",
+        "build": "tsc --build",
         "build:watch": "yarn build --watch",
         "bump": "ts-scripts bump",
         "bump-asset": "ts-scripts bump-asset",
