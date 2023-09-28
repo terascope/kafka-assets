@@ -1,7 +1,7 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "3.5.0",
+    "version": "3.5.1",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "repository": "git@github.com:terascope/kafka-assets.git",
@@ -22,7 +22,7 @@
         "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "lint:fix": "yarn lint --fix",
         "publish:changed": "./scripts/publish.sh",
-        "setup": "yarn && yarn build",
+        "setup": "yarn && yarn build --force",
         "test": "KAFKA_VERSION=3.2 ts-scripts test asset --",
         "test:all": "ts-scripts test",
         "test:debug": "ts-scripts test --debug asset --",
