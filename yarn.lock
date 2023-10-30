@@ -706,15 +706,15 @@
     datemath-parser "^1.0.6"
     uuid "^9.0.0"
 
-"@terascope/scripts@^0.59.0":
-  version "0.59.0"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.59.0.tgz#bec8491358e1e4365682041bf98fb43a51dd192c"
-  integrity sha512-NRb3TYFleFAhXvb0kn3rrZIvl3WupFJn/X4IV+xtrmI3IgL/oCLmI+bjru6W5Wg1LwuyhJ4qbcKGfQZkKzK9gQ==
+"@terascope/scripts@^0.60.0":
+  version "0.60.0"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.60.0.tgz#9e8a2c50c9cfd9cc1fb22a9aa3f43d5fee56541f"
+  integrity sha512-+1RcnuS2SaFS4F0RxgdIswx6tciUvHknWqEpdRMs0NhpBXId8Az8LFiRxFatBDKiYU89iYRnR4Z3u61rAoa0Mg==
   dependencies:
     "@terascope/utils" "^0.51.0"
     codecov "^3.8.3"
     execa "^5.1.0"
-    fs-extra "^10.1.0"
+    fs-extra "^11.1.1"
     globby "^11.0.4"
     got "^11.8.3"
     ip "^1.1.8"
@@ -2572,6 +2572,15 @@ fs-extra@^10.1.0:
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-10.1.0.tgz#02873cfbc4084dde127eaa5f9905eef2325d1abf"
   integrity sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==
+  dependencies:
+    graceful-fs "^4.2.0"
+    jsonfile "^6.0.1"
+    universalify "^2.0.0"
+
+fs-extra@^11.1.1:
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-11.1.1.tgz#da69f7c39f3b002378b0954bb6ae7efdc0876e2d"
+  integrity sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==
   dependencies:
     graceful-fs "^4.2.0"
     jsonfile "^6.0.1"
