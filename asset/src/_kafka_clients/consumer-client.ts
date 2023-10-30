@@ -37,7 +37,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     protected _assignments: TopicPartition[] = [];
 
     private _pendingOffsets: CountPerPartition = {};
-    private _rebalanceTimeout: NodeJS.Timer|undefined;
+    private _rebalanceTimeout: NodeJS.Timeout|undefined;
     private rollbackOnFailure = false;
     private useCommitSync: boolean;
 
