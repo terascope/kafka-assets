@@ -48,7 +48,7 @@ describe('Kafka Reader Schema', () => {
             });
             expect(() => {
                 schema.validateJob(job);
-            }).toThrowError('Kafka Reader handles serialization, please remove "json_protocol"');
+            }).toThrow('Kafka Reader handles serialization, please remove "json_protocol"');
         });
 
         it('should not throw if a valid job is given', () => {
@@ -66,7 +66,7 @@ describe('Kafka Reader Schema', () => {
             });
             expect(() => {
                 schema.validateJob(job);
-            }).not.toThrowError();
+            }).not.toThrow();
         });
 
         it('should inject an api if none is specified', () => {
@@ -90,7 +90,7 @@ describe('Kafka Reader Schema', () => {
 
                 expect(apiConfig._name.startsWith('kafka_reader_api')).toBeTrue();
                 expect(job.apis[0]).toMatchObject({ topic: 'hello', group: 'hi' });
-            }).not.toThrowError();
+            }).not.toThrow();
         });
 
         it('should throw if topic/group is specified differently in opConfig if api is set with api_name', () => {
@@ -112,7 +112,7 @@ describe('Kafka Reader Schema', () => {
             });
             expect(() => {
                 schema.validateJob(job);
-            }).toThrowError();
+            }).toThrow();
         });
 
         it('should associate with default kafka sender if no api_name is specified', () => {
@@ -131,7 +131,7 @@ describe('Kafka Reader Schema', () => {
             });
             expect(() => {
                 schema.validateJob(job);
-            }).not.toThrowError();
+            }).not.toThrow();
         });
 
         it('should associate with default kafka sender and throw if configs are incorrect', () => {
@@ -151,7 +151,7 @@ describe('Kafka Reader Schema', () => {
             });
             expect(() => {
                 schema.validateJob(job);
-            }).toThrowError();
+            }).toThrow();
         });
     });
 
