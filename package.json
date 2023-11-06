@@ -56,7 +56,8 @@
             "suites": {
                 "unit": [],
                 "stream": [
-                    "kafka"
+                    "kafka",
+                    "zookeeper"
                 ]
             }
         },
