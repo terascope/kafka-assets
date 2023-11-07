@@ -8,8 +8,6 @@ updates:
       timezone: US/Arizona
     open-pull-requests-limit: 3
     assignees:
-      - godber
-      - jsnoble
       - busma13
       - sotojn
     ignore:
