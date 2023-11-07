@@ -137,7 +137,7 @@ describe('Kafka Fetcher', () => {
 
         // @ts-expect-error
         // eslint-disable-next-line jest/no-standalone-expect
-        await expect(fetcher.consumer._beforeTry()).rejects.toThrowError('Client is closed');
+        await expect(fetcher.consumer._beforeTry()).rejects.toThrow('Client is closed');
 
         await harness.shutdown();
     });
@@ -150,7 +150,7 @@ describe('Kafka Fetcher', () => {
         expect(() => {
             // @ts-expect-error
             fetcher.consumer._clientEvents();
-        }).not.toThrowError();
+        }).not.toThrow();
 
         // @ts-expect-error
         const actual = fetcher.consumer._client.listenerCount('error');

@@ -156,7 +156,7 @@ describe('Kafka Connector', () => {
             expect(() => {
                 // @ts-expect-error
                 connector.create(config, logger, settings);
-            }).toThrowError('Unsupport client type of wrong');
+            }).toThrow('Unsupport client type of wrong');
         });
     });
 });

@@ -131,7 +131,7 @@ describe('Kafka Sender', () => {
             const testTopic = kafkaSender.api;
             // @ts-expect-error
             testTopic.producer._clientEvents();
-        }).not.toThrowError();
+        }).not.toThrow();
 
         const actualTopic = kafkaSender.api;
         // @ts-expect-error

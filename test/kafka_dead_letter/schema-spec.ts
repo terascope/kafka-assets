@@ -16,7 +16,7 @@ describe('Kafka Dead Letter Schema', () => {
                 schema.validate({
                     _name: 'kafka_deader_letter'
                 });
-            }).toThrowError(/kafka_deader_letter - topic: This field is required and must by of type string/);
+            }).toThrow(/kafka_deader_letter - topic: This field is required and must by of type string/);
         });
 
         it('should not throw an error if valid config is given', () => {
@@ -25,7 +25,7 @@ describe('Kafka Dead Letter Schema', () => {
                     _name: 'kafka_deader_letter',
                     topic: 'hello'
                 });
-            }).not.toThrowError();
+            }).not.toThrow();
         });
     });
 });
