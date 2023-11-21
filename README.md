@@ -34,7 +34,6 @@ yarn global add teraslice-cli
 teraslice-cli asset deploy ...
 ```
 
-
 **IMPORTANT:** Additionally make sure have installed the required [connectors](#connectors).
 
 ## Connectors
