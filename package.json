@@ -69,5 +69,8 @@
         "npm": {
             "registry": "https://registry.npmjs.org/"
         }
+    },
+    "dependencies": {
+        "node-gyp": "9.4.1"
     }
 }
