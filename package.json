@@ -71,6 +71,6 @@
         }
     },
     "dependencies": {
-        "node-gyp": "9.4.1"
+        "node-gyp": "10.0.1"
     }
 }
