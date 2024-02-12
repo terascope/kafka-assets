@@ -745,17 +745,17 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@^0.66.0":
-  version "0.66.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.66.0.tgz#e4aec4f325c5373315ea81df9939b8cdc5628dbd"
-  integrity sha512-76AfRqRQomKKBvkxcT7lJhq0PWPMQaegi44bBPvNmRTtigEHzTo0n0nluQ5r7CUUQI3rOLOzr42Xy+2pxwRpMQ==
+"@terascope/job-components@^0.66.1":
+  version "0.66.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.66.1.tgz#a5f9dcb168026c9059dd42891c245c5a5f8dcea7"
+  integrity sha512-JRQgGVyDkcki7m99NdmuBAXkT2m2jhAzbvTIOAwTCLYSL/tjsiLppeUn4M/MZFGMKqzmHOEMGRmIdizkpXh9rQ==
   dependencies:
-    "@terascope/utils" "^0.53.0"
+    "@terascope/utils" "^0.53.1"
     convict "^6.2.4"
     convict-format-with-moment "^6.2.0"
     convict-format-with-validator "^6.2.0"
     datemath-parser "^1.0.6"
-    uuid "^9.0.0"
+    uuid "^9.0.1"
 
 "@terascope/scripts@^0.69.0":
   version "0.69.0"
@@ -793,17 +793,17 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.12.1.tgz#03631226caa16da6cb154e589dcae919e0b617b6"
-  integrity sha512-G4OIVPIxngetkPoFL+rwA4F6L2uoBHyDbFvWFihnkeqihYGJcQk388TN2ffJjyI0r/j0oMaJ1aSe0JyoUycUig==
+"@terascope/types@^0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.12.2.tgz#aa245bd996b8105eda3a30dcdaefa64502e6fbcb"
+  integrity sha512-yKvFtvT0pnK6boVzu8o0Q6Wypsi3R2U5/BjQSdwF/CFsmXiOeqcFQGhCxp4TZhKijVyVwJr+nV7rlXg4SyL3WQ==
 
-"@terascope/utils@^0.53.0":
-  version "0.53.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.53.0.tgz#120dddb70ef0be165f4416132a2ac33109208911"
-  integrity sha512-RSwyaaPWcnhGMuC5W0qJ99y0GczPoU9NgH8JjM7+vKYT3i3Wt6CZuxHhHP9Aa8Vs3W+96BLmZwaqX5XSHu0zHw==
+"@terascope/utils@^0.53.0", "@terascope/utils@^0.53.1":
+  version "0.53.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.53.1.tgz#aca85b8c5f05be57e521c04d6497f625b5c34287"
+  integrity sha512-7bfeJ6tAneyfqpM9Qub9GWQ/bfDWOwNEBQIh0ZNXOEMSiFKeEutTVK2OSjWzYAcl5QOh4wsdnlruY1izZaSxdQ==
   dependencies:
-    "@terascope/types" "^0.12.1"
+    "@terascope/types" "^0.12.2"
     "@turf/bbox" "^6.4.0"
     "@turf/bbox-polygon" "^6.4.0"
     "@turf/boolean-contains" "^6.4.0"
@@ -816,8 +816,8 @@
     "@turf/helpers" "^6.2.0"
     "@turf/invariant" "^6.2.0"
     "@turf/line-to-polygon" "^6.4.0"
-    "@types/lodash" "^4.14.195"
-    "@types/validator" "^13.11.7"
+    "@types/lodash" "^4.14.202"
+    "@types/validator" "^13.11.9"
     awesome-phonenumber "^2.70.0"
     date-fns "^2.30.0"
     date-fns-tz "^1.3.7"
@@ -835,7 +835,7 @@
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
     lodash "^4.17.21"
-    mnemonist "^0.39.5"
+    mnemonist "^0.39.8"
     p-map "^4.0.0"
     shallow-clone "^3.0.1"
     validator "^13.11.0"
@@ -1155,10 +1155,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash@^4.14.195":
-  version "4.14.196"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.196.tgz#a7c3d6fc52d8d71328b764e28e080b4169ec7a95"
-  integrity sha512-22y3o88f4a94mKljsZcanlNWPzO0uBsBdzLAngf2tp533LzZcQzb6+eZPJ+vCTt+bqF2XnvT9gejTLsAcJAJyQ==
+"@types/lodash@^4.14.202":
+  version "4.14.202"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.202.tgz#f09dbd2fb082d507178b2f2a5c7e74bd72ff98f8"
+  integrity sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==
 
 "@types/minimatch@*":
   version "5.1.2"
@@ -1223,10 +1223,10 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.8.tgz#7545ba4fc3c003d6c756f651f3bf163d8f0f29ba"
   integrity sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==
 
-"@types/validator@^13.11.7":
-  version "13.11.7"
-  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.11.7.tgz#99e19760297667ae46b7069ec8b96cbfe0a08b98"
-  integrity sha512-q0JomTsJ2I5Mv7dhHhQLGjMvX0JJm5dyZ1DXQySIUzU1UlwzB8bt+R6+LODUbz0UDIOvEzGc28tk27gBJw2N8Q==
+"@types/validator@^13.11.9":
+  version "13.11.9"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.11.9.tgz#adfe96520b437a0eaa798a475877bf2f75ee402d"
+  integrity sha512-FCTsikRozryfayPuiI46QzH3fnrOoctTjvOYZkho9BTFLCOZ2rgZJHMOVgCOfttjPJcgOx52EpkY0CMfy87MIw==
 
 "@types/ws@^8.5.3":
   version "8.5.10"
@@ -4834,6 +4834,13 @@ mnemonist@^0.39.5:
   dependencies:
     obliterator "^2.0.1"
 
+mnemonist@^0.39.8:
+  version "0.39.8"
+  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.39.8.tgz#9078cd8386081afd986cca34b52b5d84ea7a4d38"
+  integrity sha512-vyWo2K3fjrUw8YeeZ1zF0fy6Mu59RHokURlld8ymdUPjMlD9EC9ov1/YPqTgqRvUN9nTr3Gqfz29LYAmu0PHPQ==
+  dependencies:
+    obliterator "^2.0.1"
+
 moment@^2.19.3, moment@^2.22.2, moment@^2.29.1:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
@@ -6466,7 +6473,7 @@ uuid@^8.0.0:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
-uuid@^9.0.0:
+uuid@^9.0.0, uuid@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
   integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
