@@ -1,3 +1,6 @@
+TESTING
+
+
 # Kafka Asset Bundle
 
 [![Build Status](https://travis-ci.org/terascope/kafka-assets.svg?branch=master)](https://travis-ci.org/terascope/kafka-assets)
