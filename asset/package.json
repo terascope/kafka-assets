@@ -25,7 +25,7 @@
     },
     "devDependencies": {},
     "engines": {
-        "node": ">=16.19.0",
+        "node": ">=18.0.0",
         "yarn": ">=1.22.19"
     },
     "srcMain": "src/index.ts",

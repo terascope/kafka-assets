@@ -29,7 +29,7 @@
         "convict": "^6.2.4"
     },
     "engines": {
-        "node": ">=16.19.0",
+        "node": ">=18.0.0",
         "yarn": ">=1.22.19"
     },
     "publishConfig": {
