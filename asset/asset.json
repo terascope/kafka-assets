@@ -1,5 +1,5 @@
 {
     "name": "kafka",
     "description": "Kafka reader and writer support.",
-    "version": "3.5.3"
+    "version": "3.5.4"
 }
