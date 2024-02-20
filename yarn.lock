@@ -757,10 +757,10 @@
     datemath-parser "^1.0.6"
     uuid "^9.0.1"
 
-"@terascope/scripts@^0.71.0":
-  version "0.71.0"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.71.0.tgz#bdd700a4f1734b1f82bcaf35ee696e7585a2d61a"
-  integrity sha512-khXiIL6QD7lruf+VVMVBYg9rRH3vZkNqGyBNI4+sB3D+z7nVwEp6lhGEwfAfcMxnqOh6xikiDQv4eH7YQa/4IA==
+"@terascope/scripts@^0.71.1":
+  version "0.71.1"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.71.1.tgz#70f217a8c81df20990486a4662b69eb25690b5d3"
+  integrity sha512-7NUjFytx9gef8ySlWYJvdCttmGHDb95g7+zCriYtvvRgDVf+6yvCFQHatWT4gtBZUugTxmruQZAIJMJJspnx0A==
   dependencies:
     "@kubernetes/client-node" "^0.20.0"
     "@terascope/utils" "^0.54.0"
