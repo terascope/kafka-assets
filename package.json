@@ -1,7 +1,7 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "3.5.4",
+    "version": "3.5.5",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "repository": "git@github.com:terascope/kafka-assets.git",
