@@ -7,5 +7,5 @@ on:
 
 jobs:
   call-asset-build:
-    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@bb318f6a11fa77b714c16ee3f4c7c02689d5bef9
+    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@f6b34eb9b2ea5d113078381237ca81e5520e6f5b
     secrets: inherit
