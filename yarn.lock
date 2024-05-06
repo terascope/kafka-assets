@@ -757,13 +757,13 @@
     datemath-parser "^1.0.6"
     uuid "^9.0.1"
 
-"@terascope/scripts@^0.75.1":
-  version "0.75.1"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.75.1.tgz#a42833700d1b48d45961202082687f2b118eabe3"
-  integrity sha512-mkEXBRHrEKOwZcE/uwodyE+Gfx/qt3hrcuLSZI+35QKx04tElHDf2ns80sI2vStZIVuAdkPNX705m9IfRKhP4g==
+"@terascope/scripts@^0.76.0":
+  version "0.76.0"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.76.0.tgz#95ce61423a7bba93cea12f76dfac7e3a1fe8467a"
+  integrity sha512-yIWVXdCVBuR89hfnJuOy0uUmQKQn+B7LEiUca7UoXCEivYdpfbrPYDvOh9KSbs08BJW4z9lNRVCIt4oTpV1S5Q==
   dependencies:
     "@kubernetes/client-node" "^0.20.0"
-    "@terascope/utils" "^0.57.0"
+    "@terascope/utils" "^0.58.0"
     codecov "^3.8.3"
     execa "^5.1.0"
     fs-extra "^11.2.0"
@@ -793,57 +793,10 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.15.0.tgz#820d6aa9fd76bdedfaad0e5b1cc5b77b5490b8dd"
-  integrity sha512-z5mfmFOXMEjq6S3WZANXBIEeM7FK/XSON+9kR6RX7GNHW/a6qNif9pSIAARQz4420JoYDliccSLJX9v0r6DfKg==
-
 "@terascope/types@^0.16.0":
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.16.0.tgz#c9d69496ce2784a9d7704a7d848fb6ccf0cd627a"
   integrity sha512-W+D0c3XuGws25nXcig3WD/bx3c3GMP9dgwF76+CryqX+l+rnvRmjM1nNWIBBGUJHSmtOAX0iX3HofUIDrH5hCQ==
-
-"@terascope/utils@^0.57.0":
-  version "0.57.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.57.0.tgz#2395eadff80fe5193e7bc5724cf4a4ffa044fc61"
-  integrity sha512-YDnG9ouWCt3JJLD5NsxsEqABHgPdMZiZ2cwKDPjoqxpLBjgMWlsl0D7/0xOBWVg/RzVIwbWBk3xnLKY8ivocKw==
-  dependencies:
-    "@terascope/types" "^0.15.0"
-    "@turf/bbox" "^6.4.0"
-    "@turf/bbox-polygon" "^6.4.0"
-    "@turf/boolean-contains" "^6.4.0"
-    "@turf/boolean-disjoint" "^6.4.0"
-    "@turf/boolean-equal" "^6.4.0"
-    "@turf/boolean-intersects" "^6.4.0"
-    "@turf/boolean-point-in-polygon" "^6.4.0"
-    "@turf/boolean-within" "^6.4.0"
-    "@turf/circle" "^6.4.0"
-    "@turf/helpers" "^6.2.0"
-    "@turf/invariant" "^6.2.0"
-    "@turf/line-to-polygon" "^6.4.0"
-    "@types/lodash" "^4.14.202"
-    "@types/validator" "^13.11.9"
-    awesome-phonenumber "^2.70.0"
-    date-fns "^2.30.0"
-    date-fns-tz "^1.3.7"
-    datemath-parser "^1.0.6"
-    debug "^4.3.4"
-    geo-tz "^7.0.7"
-    ip-bigint "^3.0.3"
-    ip-cidr "^3.1.0"
-    ip6addr "^0.2.5"
-    ipaddr.js "^2.0.1"
-    is-cidr "^4.0.2"
-    is-ip "^3.1.0"
-    is-plain-object "^5.0.0"
-    js-string-escape "^1.0.1"
-    kind-of "^6.0.3"
-    latlon-geohash "^1.1.0"
-    lodash "^4.17.21"
-    mnemonist "^0.39.8"
-    p-map "^4.0.0"
-    shallow-clone "^3.0.1"
-    validator "^13.11.0"
 
 "@terascope/utils@^0.58.0":
   version "0.58.0"
