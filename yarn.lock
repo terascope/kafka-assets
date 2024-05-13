@@ -3045,15 +3045,6 @@ fs-constants@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
   integrity sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==
 
-fs-extra@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-10.1.0.tgz#02873cfbc4084dde127eaa5f9905eef2325d1abf"
-  integrity sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==
-  dependencies:
-    graceful-fs "^4.2.0"
-    jsonfile "^6.0.1"
-    universalify "^2.0.0"
-
 fs-extra@^11.2.0:
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-11.2.0.tgz#e70e17dfad64232287d01929399e0ea7c86b0e5b"
@@ -6219,15 +6210,15 @@ teeny-request@7.1.1:
     stream-events "^1.0.5"
     uuid "^8.0.0"
 
-teraslice-test-harness@^0.29.0:
-  version "0.29.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.29.0.tgz#17fd8c1689e067a5945daf5fbeaf7c7f1bb0b34b"
-  integrity sha512-HnMiPTSb/kuUYG1RQen/LeJ5E6f/iDuTBOK800K6xCn8pQXIDDVOcYslGHpvbZA7n7Cbi/6zw0dJD2laMIsSWQ==
+teraslice-test-harness@^0.30.0:
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-0.30.0.tgz#76ee0a3d06ecc3711de16edf58827dc0979b2a46"
+  integrity sha512-iIY2z2da7ZfzUl9bMXXQy1LwZpOfe2ICGY1fYQmiOl8UfojO4n/AENXHRIgTw2MOj875jwTDUQV+de38RwRdnA==
   dependencies:
     "@terascope/fetch-github-release" "^0.8.7"
     "@terascope/teraslice-op-test-harness" "^1.24.1"
     decompress "^4.2.1"
-    fs-extra "^10.1.0"
+    fs-extra "^11.2.0"
 
 test-exclude@^6.0.0:
   version "6.0.0"
