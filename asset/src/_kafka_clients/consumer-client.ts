@@ -40,6 +40,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _rebalanceTimeout: NodeJS.Timeout|undefined;
     private rollbackOnFailure = false;
     private useCommitSync: boolean;
+    private _bytesConsumed = 0;
 
     constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
@@ -177,6 +178,23 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     }
 
     /**
+     * Get the number of partitions consumer is connected to for a specific topic
+     * @param topic - topic the partitions belong to
+    */
+    async getPartitionCount(topic: string): Promise<number> {
+        const topicPartitions = await this.topicPositions();
+        const filtered = topicPartitions.filter((toppar) => toppar.topic === topic);
+        return filtered.length;
+    }
+
+    /**
+     * Get the number of bytes consumer has consumed
+    */
+    async getBytesConsumed() {
+        return this._bytesConsumed;
+    }
+
+    /**
      * Consume messages from kafka, and exit after either
      * the specified size is reached or the maximum wait passes.
      *
@@ -234,6 +252,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         for (let i = 0; i < total; i++) {
             const message = messages[i];
 
+            this._bytesConsumed += message.size;
             this._trackOffsets(message);
 
             const entity = map(message);
