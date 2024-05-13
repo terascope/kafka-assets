@@ -687,6 +687,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@opentelemetry/api@^1.4.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.8.0.tgz#5aa7abb48f23f693068ed2999ae627d2f7d902ec"
+  integrity sha512-I/s6F7yKUDdtMsoBWXJe8Qz40Tui5vsuKCWJEWVL+5q9sSWRzzx6v2KeNsOBEwd94j0eWkpWCH4yB6rZg9Mf0w==
+
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
@@ -757,19 +762,19 @@
     datemath-parser "^1.0.6"
     uuid "^9.0.1"
 
-"@terascope/scripts@^0.75.1":
-  version "0.75.1"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.75.1.tgz#a42833700d1b48d45961202082687f2b118eabe3"
-  integrity sha512-mkEXBRHrEKOwZcE/uwodyE+Gfx/qt3hrcuLSZI+35QKx04tElHDf2ns80sI2vStZIVuAdkPNX705m9IfRKhP4g==
+"@terascope/scripts@^0.77.1":
+  version "0.77.1"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.77.1.tgz#d5571e3a7c4f5cdee0b573802455bac2c1ce7888"
+  integrity sha512-zlcnb+QqK76S5TmrBEzXrvBuvnbDUdIduNxYxoOu+RN2QAp5lsU2wLMBoy4P0Hqsgu/ctnilR6Nf76805dZLOQ==
   dependencies:
     "@kubernetes/client-node" "^0.20.0"
-    "@terascope/utils" "^0.57.0"
+    "@terascope/utils" "^0.59.1"
     codecov "^3.8.3"
     execa "^5.1.0"
     fs-extra "^11.2.0"
     globby "^11.0.4"
     got "^11.8.3"
-    ip "^1.1.9"
+    ip "^2.0.1"
     js-yaml "^4.1.0"
     kafkajs "^2.2.4"
     lodash "^4.17.21"
@@ -778,7 +783,7 @@
     ms "^2.1.3"
     package-json "^7.0.0"
     pkg-up "^3.1.0"
-    semver "^7.6.0"
+    semver "^7.6.1"
     signale "^1.4.0"
     sort-package-json "~1.57.0"
     toposort "^2.0.2"
@@ -793,22 +798,24 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.15.0.tgz#820d6aa9fd76bdedfaad0e5b1cc5b77b5490b8dd"
-  integrity sha512-z5mfmFOXMEjq6S3WZANXBIEeM7FK/XSON+9kR6RX7GNHW/a6qNif9pSIAARQz4420JoYDliccSLJX9v0r6DfKg==
-
 "@terascope/types@^0.16.0":
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.16.0.tgz#c9d69496ce2784a9d7704a7d848fb6ccf0cd627a"
   integrity sha512-W+D0c3XuGws25nXcig3WD/bx3c3GMP9dgwF76+CryqX+l+rnvRmjM1nNWIBBGUJHSmtOAX0iX3HofUIDrH5hCQ==
 
-"@terascope/utils@^0.57.0":
-  version "0.57.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.57.0.tgz#2395eadff80fe5193e7bc5724cf4a4ffa044fc61"
-  integrity sha512-YDnG9ouWCt3JJLD5NsxsEqABHgPdMZiZ2cwKDPjoqxpLBjgMWlsl0D7/0xOBWVg/RzVIwbWBk3xnLKY8ivocKw==
+"@terascope/types@^0.17.1":
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.17.1.tgz#7e82d5478cdc7a13ab940f36f985fd918318fbbc"
+  integrity sha512-hVVbwocV19EUY2xNo4c2eRd0i3a3+dmaJlRHHocsI/0cjxRl3jpivla62vEkMDrCqydvTis1kv2+5LmH23+c1A==
   dependencies:
-    "@terascope/types" "^0.15.0"
+    prom-client "^15.1.2"
+
+"@terascope/utils@^0.58.0":
+  version "0.58.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.58.0.tgz#a8f0b85a23c03e322f291a2fd7688c7625fbd2dc"
+  integrity sha512-napysCM9bVRURzUev8iHHHG9naSzY8Jsdl4jjbj3UZK1IK3hRcwRijvRyRw713W8+UFHyZfkHdCsjENxc1Os7g==
+  dependencies:
+    "@terascope/types" "^0.16.0"
     "@turf/bbox" "^6.4.0"
     "@turf/bbox-polygon" "^6.4.0"
     "@turf/boolean-contains" "^6.4.0"
@@ -845,12 +852,12 @@
     shallow-clone "^3.0.1"
     validator "^13.11.0"
 
-"@terascope/utils@^0.58.0":
-  version "0.58.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.58.0.tgz#a8f0b85a23c03e322f291a2fd7688c7625fbd2dc"
-  integrity sha512-napysCM9bVRURzUev8iHHHG9naSzY8Jsdl4jjbj3UZK1IK3hRcwRijvRyRw713W8+UFHyZfkHdCsjENxc1Os7g==
+"@terascope/utils@^0.59.1":
+  version "0.59.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.59.1.tgz#372f960c5c0fc250ed0c481be20bbd49ed6937bb"
+  integrity sha512-lIfRdTQ9nBwBDWM1VnLOjkarPWltZ2RmLvXpxPbma6Kl890mAOzdQyjXx8vi5QEgaApvVT7Ady19bTcJImD5Cw==
   dependencies:
-    "@terascope/types" "^0.16.0"
+    "@terascope/types" "^0.17.1"
     "@turf/bbox" "^6.4.0"
     "@turf/bbox-polygon" "^6.4.0"
     "@turf/boolean-contains" "^6.4.0"
@@ -874,7 +881,7 @@
     ip-bigint "^3.0.3"
     ip-cidr "^3.1.0"
     ip6addr "^0.2.5"
-    ipaddr.js "^2.0.1"
+    ipaddr.js "^2.2.0"
     is-cidr "^4.0.2"
     is-ip "^3.1.0"
     is-plain-object "^5.0.0"
@@ -1745,6 +1752,11 @@ bindings@^1.3.1:
   integrity sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
   dependencies:
     file-uri-to-path "1.0.0"
+
+bintrees@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/bintrees/-/bintrees-1.0.2.tgz#49f896d6e858a4a499df85c38fb399b9aff840f8"
+  integrity sha512-VOMgTMwjAaUG580SXn3LacVgjurrbMme7ZZNYGSSV7mmtY6QQRh0Eg3pwIcntQ77DErK1L0NxkbetjcoXzVwKw==
 
 bl@^1.0.0:
   version "1.2.3"
@@ -3653,12 +3665,7 @@ ip6addr@^0.2.5:
     assert-plus "^1.0.0"
     jsprim "^2.0.2"
 
-ip@^1.1.9:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.9.tgz#8dfbcc99a754d07f425310b86a99546b1151e396"
-  integrity sha512-cyRxvOEpNHNtchU3Ln9KC/auJgup87llfQpQ+t5ghoC/UhL16SWzbueiCsdTnWmqAWl7LadfuwhlqmtOaqMHdQ==
-
-ip@^2.0.0:
+ip@^2.0.0, ip@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ip/-/ip-2.0.1.tgz#e8f3595d33a3ea66490204234b77636965307105"
   integrity sha512-lJUL9imLTNi1ZfXT+DU6rBBdbiKGBuay9B6xGSPVjUeQwaH1RIGqef8RZkUtHioLmSNpPR5M4HVKJGm1j8FWVQ==
@@ -3667,6 +3674,11 @@ ipaddr.js@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-2.0.1.tgz#eca256a7a877e917aeb368b0a7497ddf42ef81c0"
   integrity sha512-1qTgH9NG+IIJ4yfKs2e6Pp1bZg8wbDbKHT21HrLIeYBTRLgMYKnMTPAuI3Lcs61nfx5h1xlXnbJtH1kX5/d/ng==
+
+ipaddr.js@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-2.2.0.tgz#d33fa7bac284f4de7af949638c9d68157c6b92e8"
+  integrity sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==
 
 is-arguments@^1.0.4:
   version "1.1.1"
@@ -5409,6 +5421,14 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
+prom-client@^15.1.2:
+  version "15.1.2"
+  resolved "https://registry.yarnpkg.com/prom-client/-/prom-client-15.1.2.tgz#78d79f12c35d395ca97edf7111c18210cf07f815"
+  integrity sha512-on3h1iXb04QFLLThrmVYg1SChBQ9N1c+nKAjebBjokBqipddH3uxmOUcEkTnzmJ8Jh/5TSUnUqS40i2QB2dJHQ==
+  dependencies:
+    "@opentelemetry/api" "^1.4.0"
+    tdigest "^0.1.1"
+
 promise-inflight@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
@@ -5795,12 +5815,10 @@ semver@^6.3.0, semver@^6.3.1:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
-semver@^7.3.5, semver@^7.3.7, semver@^7.5.3, semver@^7.5.4, semver@^7.6.0:
-  version "7.6.0"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.0.tgz#1a46a4db4bffcccd97b743b5005c8325f23d4e2d"
-  integrity sha512-EnwXhrlwXMk9gKu5/flx5sv/an57AkRplG3hTK68W7FRDN+k+OWBj65M7719OkA82XLBxrcX0KSHj+X5COhOVg==
-  dependencies:
-    lru-cache "^6.0.0"
+semver@^7.3.5, semver@^7.3.7, semver@^7.5.3, semver@^7.5.4, semver@^7.6.1:
+  version "7.6.2"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.2.tgz#1e3b34759f896e8f14d6134732ce798aeb0c6e13"
+  integrity sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==
 
 set-blocking@^2.0.0:
   version "2.0.0"
@@ -6198,6 +6216,13 @@ tar@^6.1.11, tar@^6.1.2:
     minizlib "^2.1.1"
     mkdirp "^1.0.3"
     yallist "^4.0.0"
+
+tdigest@^0.1.1:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/tdigest/-/tdigest-0.1.2.tgz#96c64bac4ff10746b910b0e23b515794e12faced"
+  integrity sha512-+G0LLgjjo9BZX2MfdvPfH+MKLCrxlXSYec5DaPYP1fe6Iyhf0/fSmJ0bFiZ1F8BT6cGXl2LpltQptzjXKWEkKA==
+  dependencies:
+    bintrees "1.0.2"
 
 teeny-request@7.1.1:
   version "7.1.1"
