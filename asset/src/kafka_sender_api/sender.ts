@@ -7,6 +7,7 @@ import {
     toString,
     TSError,
 } from '@terascope/job-components';
+import { Terafoundation as tf } from '@terascope/types';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderAPIConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
@@ -16,6 +17,7 @@ type FN = (input: any) => any;
 export default class KafkaSender implements RouteSenderAPI {
     logger: Logger;
     producer: ProducerClient;
+    promMetrics: tf.PromMetrics;
     readonly hasConnected = false;
     readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
@@ -23,7 +25,7 @@ export default class KafkaSender implements RouteSenderAPI {
     readonly pathList = new Map<string, boolean>();
     readonly mapper: (msg: DataEntity) => ProduceMessage;
 
-    constructor(client: kafka.Producer, config: KafkaSenderAPIConfig) {
+    constructor(client: kafka.Producer, config: KafkaSenderAPIConfig, promMetrics: tf.PromMetrics) {
         const producer = new ProducerClient(client, {
             logger: config.logger,
             topic: config.topicOverride || config.topic,
@@ -36,6 +38,7 @@ export default class KafkaSender implements RouteSenderAPI {
         this.tryFn = config.tryFn || this.tryCatch;
         this.mapper = this.mapFn.bind(this);
         this.logger = config.logger;
+        this.promMetrics = promMetrics;
     }
 
     private tryCatch(fn: FN) {
@@ -51,6 +54,21 @@ export default class KafkaSender implements RouteSenderAPI {
     }
 
     async initialize(): Promise<void> {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
+        this.promMetrics.addGauge(
+            'bytes_produced',
+            'Number of bytes producer has produced',
+            ['class'],
+            async function collect() {
+                const bytesProduced = await self.producer.getBytesProduced();
+                const labels = {
+                    class: 'KafkaSender',
+                    ...self.promMetrics.getDefaultLabels()
+                };
+                this.set(labels, bytesProduced);
+            }
+        );
         await this.producer.connect();
     }
 
