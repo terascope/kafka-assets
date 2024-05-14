@@ -29,17 +29,16 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         this.consumeConfig = { size, wait };
         this.consumer = consumer;
 
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const self = this;
+        const { context } = this;
         await this.context.apis.foundation.promMetrics.addGauge(
             'partitions',
             'Number of partitions the Consumer is consuming from',
             ['class'],
             async function collect() {
-                const partitionCount = await self.consumer.getPartitionCount(topic);
+                const partitionCount = await consumer.getPartitionCount(topic);
                 const labels = {
                     class: 'KafkaFetcher',
-                    ...self.context.apis.foundation.promMetrics.getDefaultLabels()
+                    ...context.apis.foundation.promMetrics.getDefaultLabels()
                 };
                 this.set(labels, partitionCount);
             });
@@ -47,10 +46,10 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
             'Number of bytes the Consumer has consumed',
             ['class'],
             async function collect() {
-                const bytesConsumed = await self.consumer.getBytesConsumed();
+                const bytesConsumed = await consumer.getBytesConsumed();
                 const labels = {
                     class: 'KafkaFetcher',
-                    ...self.context.apis.foundation.promMetrics.getDefaultLabels()
+                    ...context.apis.foundation.promMetrics.getDefaultLabels()
                 };
                 this.set(labels, bytesConsumed);
             });

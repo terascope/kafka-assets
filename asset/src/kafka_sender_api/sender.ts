@@ -54,17 +54,16 @@ export default class KafkaSender implements RouteSenderAPI {
     }
 
     async initialize(): Promise<void> {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const self = this;
+        const { promMetrics, producer } = this;
         this.promMetrics.addGauge(
             'bytes_produced',
             'Number of bytes producer has produced',
             ['class'],
             async function collect() {
-                const bytesProduced = await self.producer.getBytesProduced();
+                const bytesProduced = await producer.getBytesProduced();
                 const labels = {
                     class: 'KafkaSender',
-                    ...self.promMetrics.getDefaultLabels()
+                    ...promMetrics.getDefaultLabels()
                 };
                 this.set(labels, bytesProduced);
             }
