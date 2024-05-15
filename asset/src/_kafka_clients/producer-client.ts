@@ -14,6 +14,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
 
     private readonly _bufferSize: number;
     private _hasClientEvents = false;
+    private _bytesProduced = 0;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
         super(client, config.topic, config.logger);
@@ -71,6 +72,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
             for (let i = 0; i < total; i++) {
                 const msg = messages[i];
                 const message: ProduceMessage = (map == null) ? msg : map(msg);
+                this._bytesProduced += Buffer.byteLength(message.data);
 
                 this._client.produce(
                     message.topic || this._topic,
@@ -127,5 +129,12 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
 
         // for event error logs.
         this._client.on('event.error', this._logOrEmit('client:error'));
+    }
+
+    /**
+     * Get the number of bytes producer has produced
+    */
+    async getBytesProduced() {
+        return this._bytesProduced;
     }
 }
