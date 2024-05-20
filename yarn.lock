@@ -798,13 +798,6 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.17.1":
-  version "0.17.1"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.17.1.tgz#7e82d5478cdc7a13ab940f36f985fd918318fbbc"
-  integrity sha512-hVVbwocV19EUY2xNo4c2eRd0i3a3+dmaJlRHHocsI/0cjxRl3jpivla62vEkMDrCqydvTis1kv2+5LmH23+c1A==
-  dependencies:
-    prom-client "^15.1.2"
-
 "@terascope/types@^0.17.2":
   version "0.17.2"
   resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.17.2.tgz#0e8d13c1249dccb0ccf63e691e253337645a205d"
