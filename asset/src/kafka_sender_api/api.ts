@@ -9,7 +9,6 @@ import {
     isNumber,
     isBoolean
 } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces';
 import KafkaRouteSender from './sender';
 import { KafkaSenderAPIConfig } from './interfaces';
@@ -82,9 +81,9 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
 
-        const kafkaClient = this.context.foundation.getConnection(
+        const { client: kafkaClient } = await this.context.apis.foundation.createClient(
             clientConfig
-        ).client as kafka.Producer;
+        );
 
         validConfig.tryFn = this.tryRecord.bind(this);
 

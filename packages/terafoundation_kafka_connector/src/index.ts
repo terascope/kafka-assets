@@ -26,21 +26,21 @@ import {
  */
 
 class KafakConnector {
-    create(
+    async createClient(
         config: KafkaConnectorConfig,
         logger: Logger,
         settings: KafkaConsumerSettings
-    ): KafkaConsumerResult;
-    create(
+    ): Promise<KafkaConsumerResult>;
+    async createClient(
         config: KafkaConnectorConfig,
         logger: Logger,
         settings: KafkaProducerSettings
-    ): KafkaProducerResult;
-    create(
+    ): Promise<KafkaProducerResult>;
+    async createClient(
         config: KafkaConnectorConfig,
         logger: Logger,
         settings: KafkaConsumerSettings|KafkaProducerSettings
-    ): KafkaConsumerResult|KafkaProducerResult {
+    ): Promise<KafkaConsumerResult|KafkaProducerResult> {
         const clientType = getClientType(settings.options && settings.options.type);
 
         if (isConsumerSettings(settings)) {
@@ -53,9 +53,10 @@ class KafakConnector {
             logger.info(`Creating a Kafka consumer for group: ${group}`);
             const client = new KafkaConsumer(clientOptions, topicOptions);
 
-            this._autoconnect(client, logger, settings.autoconnect);
+            await this._autoconnect(client, logger, settings.autoconnect);
             return {
                 client,
+                logger
             };
         }
 
@@ -69,30 +70,34 @@ class KafakConnector {
             const client = new Producer(clientOptions, topicOptions);
             client.setPollInterval(pollInterval);
 
-            this._autoconnect(client, logger, settings.autoconnect);
+            await this._autoconnect(client, logger, settings.autoconnect);
             return {
                 client,
+                logger
             };
         }
 
-        throw new Error(`Unsupport client type of ${clientType}`);
+        throw new Error(`Unsupported client type of ${clientType}`);
     }
 
     config_schema() {
         return schema;
     }
 
-    private _autoconnect(client: Producer|KafkaConsumer, logger: Logger, autoconnect = true) {
+    private async _autoconnect(client: Producer|KafkaConsumer, logger: Logger, autoconnect = true) {
         if (!autoconnect) return;
 
         // Default to autoconnecting but can be disabled.
-        client.connect({}, (err) => {
-            if (err) {
-                logger.error('Error connecting to Kafka', err);
-                throw err;
-            } else {
-                logger.info('Kafka connection initialized.');
-            }
+        return new Promise((resolve, reject) => {
+            client.connect({}, (err) => {
+                if (err) {
+                    logger.error('Error connecting to Kafka', err);
+                    reject(err);
+                } else {
+                    logger.info('Kafka connection initialized.');
+                    resolve(true);
+                }
+            });
         });
     }
 

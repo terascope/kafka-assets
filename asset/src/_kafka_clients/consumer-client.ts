@@ -1,5 +1,4 @@
 import type * as kafka from 'node-rdkafka';
-import { } from 'terafoundation_kafka_connector';
 import {
     pDelay, toHumanTime, EncodingConfig,
     isBoolean, isNotNil
