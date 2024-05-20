@@ -20,8 +20,8 @@ describe('Kafka Dead Letter', () => {
         config: {
             brokers: kafkaBrokers,
         },
-        create(config: any, logger: Logger, settings: any) {
-            return Connector.create(config, logger, settings);
+        createClient(config: any, logger: Logger, settings: any) {
+            return Connector.createClient(config, logger, settings);
         }
     };
 
