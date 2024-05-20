@@ -750,16 +750,17 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@^0.74.1":
-  version "0.74.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.74.1.tgz#374fda9ba69a7ee035110ac13c5fe2a28a2f5bfe"
-  integrity sha512-DjDj2qGUIJVpiw8HGcdVCuEZsM8hi3d8GchNKFbherxyD7rtv3y+56nbT/rtHSoK8RhCuJTxfdaLwzpdLlpQcg==
+"@terascope/job-components@^0.74.2":
+  version "0.74.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-0.74.2.tgz#de875f792644abf3324f74d98e6b7daa046d7fff"
+  integrity sha512-FEliIWkcK43Q+kiONkwutXgV/f9qQMGUjesmJq9IyqYswOd7ZHtlXCjBUziKqdUWZ01OZ3YDzFxeuufJoLflUg==
   dependencies:
     "@terascope/utils" "^0.59.1"
     convict "^6.2.4"
     convict-format-with-moment "^6.2.0"
     convict-format-with-validator "^6.2.0"
     datemath-parser "^1.0.6"
+    prom-client "^15.1.2"
     uuid "^9.0.1"
 
 "@terascope/scripts@^0.77.2":
