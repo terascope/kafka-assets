@@ -144,8 +144,8 @@ describe('Kafka Connector', () => {
         }));
     });
 
-    fdescribe('when using an unsupported client type', () => {
-        fit('should throw an error', async () => {
+    describe('when using an unsupported client type', () => {
+        it('should throw an error', async () => {
             const settings = convict(connector.config_schema()).load({
                 options: {
                     type: 'wrong',
