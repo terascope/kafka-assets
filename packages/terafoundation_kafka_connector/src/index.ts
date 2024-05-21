@@ -25,7 +25,7 @@ import {
  * rdkafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
  */
 
-class KafakConnector {
+class KafkaConnector {
     async createClient(
         config: KafkaConnectorConfig,
         logger: Logger,
@@ -174,4 +174,4 @@ function isProducerSettings(settings: any): settings is KafkaProducerSettings {
     return getClientType(settings.options.type) === 'producer';
 }
 
-export = new KafakConnector();
+export = new KafkaConnector();
