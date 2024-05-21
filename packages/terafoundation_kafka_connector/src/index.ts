@@ -80,6 +80,10 @@ class KafkaConnector {
         throw new Error(`Unsupported client type of ${clientType}`);
     }
 
+    create() {
+        throw new Error('kafka does not support the deprecated "create" method');
+    }
+
     config_schema() {
         return schema;
     }
