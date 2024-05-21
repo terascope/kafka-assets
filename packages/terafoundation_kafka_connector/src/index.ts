@@ -174,4 +174,6 @@ function isProducerSettings(settings: any): settings is KafkaProducerSettings {
     return getClientType(settings.options.type) === 'producer';
 }
 
-export = new KafkaConnector();
+const connector = new KafkaConnector();
+
+export default connector;
