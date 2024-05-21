@@ -29,26 +29,27 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         this.consumeConfig = { size, wait };
         this.consumer = consumer;
 
-        const { context } = this;
+        const { context, opConfig } = this;
         await this.context.apis.foundation.promMetrics.addGauge(
-            'partitions',
-            'Number of partitions the Consumer is consuming from',
-            ['class'],
+            'kafka_partitions',
+            'Number of partitions the kafka consumer is consuming from',
+            ['op_name'],
             async function collect() {
                 const partitionCount = await consumer.getPartitionCount(topic);
                 const labels = {
-                    class: 'KafkaFetcher',
+                    op_name: opConfig._op,
                     ...context.apis.foundation.promMetrics.getDefaultLabels()
                 };
                 this.set(labels, partitionCount);
             });
-        await this.context.apis.foundation.promMetrics.addGauge('bytes_consumed',
-            'Number of bytes the Consumer has consumed',
-            ['class'],
+        await this.context.apis.foundation.promMetrics.addGauge(
+            'kafka_bytes_consumed',
+            'Number of bytes the kafka consumer has consumed',
+            ['op_name'],
             async function collect() {
                 const bytesConsumed = await consumer.getBytesConsumed();
                 const labels = {
-                    class: 'KafkaFetcher',
+                    op_name: opConfig._op,
                     ...context.apis.foundation.promMetrics.getDefaultLabels()
                 };
                 this.set(labels, bytesConsumed);
