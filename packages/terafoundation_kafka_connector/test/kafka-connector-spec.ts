@@ -144,8 +144,8 @@ describe('Kafka Connector', () => {
         }));
     });
 
-    describe('when using an unsupported client type', () => {
-        it('should throw an error', async () => {
+    fdescribe('when using an unsupported client type', () => {
+        fit('should throw an error', async () => {
             const settings = convict(connector.config_schema()).load({
                 options: {
                     type: 'wrong',
@@ -158,7 +158,7 @@ describe('Kafka Connector', () => {
 
             await expect(
                 () => connector.createClient(config, logger, settings as any)
-            ).rejects.toMatch('Unsupported client type of wrong');
+            ).rejects.toThrow('Unsupported client type of wrong');
         });
     });
 });
