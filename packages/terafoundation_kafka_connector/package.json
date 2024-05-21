@@ -17,8 +17,8 @@
         "build:watch": "yarn build --watch",
         "prepare": "yarn build",
         "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
-        "test:debug": "ts-scripts test --debug . --",
-        "test:watch": "ts-scripts test --watch . --"
+        "test:debug": "KAFKA_VERSION=3.2 ts-scripts test --debug . --",
+        "test:watch": "KAFKA_VERSION=3.2 ts-scripts test --watch . --"
     },
     "dependencies": {
         "node-rdkafka": "^3.0.1"

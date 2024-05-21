@@ -88,16 +88,13 @@ class KafakConnector {
         if (!autoconnect) return;
 
         // Default to autoconnecting but can be disabled.
-        return new Promise((resolve, reject) => {
-            client.connect({}, (err) => {
-                if (err) {
-                    logger.error('Error connecting to Kafka', err);
-                    reject(err);
-                } else {
-                    logger.info('Kafka connection initialized.');
-                    resolve(true);
-                }
-            });
+        client.connect({}, (err) => {
+            if (err) {
+                logger.error('Error connecting to Kafka', err);
+                throw (err);
+            } else {
+                logger.info('Kafka connection initialized.');
+            }
         });
     }
 

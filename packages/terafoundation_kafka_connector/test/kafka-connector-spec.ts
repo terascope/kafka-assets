@@ -6,8 +6,6 @@ import { kafkaBrokers } from './config';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
-jest.setTimeout(30 * 1000);
-
 function addFormats(): void {
     formats.forEach(addFormat);
 }
@@ -147,7 +145,7 @@ describe('Kafka Connector', () => {
     });
 
     describe('when using an unsupported client type', () => {
-        it('should throw an error', () => {
+        it('should throw an error', async () => {
             const settings = convict(connector.config_schema()).load({
                 options: {
                     type: 'wrong',
@@ -158,10 +156,9 @@ describe('Kafka Connector', () => {
                 },
             }).getProperties();
 
-            expect(() => {
-                // @ts-expect-error
-                connector.createClient(config, logger, settings);
-            }).toThrow('Unsupported client type of wrong');
+            await expect(
+                () => connector.createClient(config, logger, settings as any)
+            ).rejects.toMatch('Unsupported client type of wrong');
         });
     });
 });

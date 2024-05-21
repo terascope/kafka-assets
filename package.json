@@ -24,9 +24,9 @@
         "publish:changed": "./scripts/publish.sh",
         "setup": "yarn && yarn build --force",
         "test": "KAFKA_VERSION=3.2 ts-scripts test asset --",
-        "test:all": "ts-scripts test",
-        "test:debug": "ts-scripts test --debug asset --",
-        "test:watch": "ts-scripts test --watch asset --"
+        "test:all": "KAFKA_VERSION=3.2 ts-scripts test",
+        "test:debug": "KAFKA_VERSION=3.2 ts-scripts test --debug asset --",
+        "test:watch": "KAFKA_VERSION=3.2 ts-scripts test --watch asset --"
     },
     "dependencies": {
         "node-gyp": "9.4.1"
