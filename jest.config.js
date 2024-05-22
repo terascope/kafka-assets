@@ -22,5 +22,6 @@ module.exports = {
         },
         ignoreDirectories: ['dist'],
         availableExtensions: ['.js', '.ts']
-    }
+    },
+    testTimeout: 60 * 1000
 };

@@ -6,8 +6,6 @@ import { kafkaBrokers } from './config';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
-jest.setTimeout(30 * 1000);
-
 function addFormats(): void {
     formats.forEach(addFormat);
 }
@@ -21,7 +19,7 @@ describe('Kafka Connector', () => {
 
     describe('when using a consumer', () => {
         // Not sure if should be enabled by default since depends on a kafka broker.
-        it('will connect automatically by default', (done) => {
+        it('will connect automatically by default', () => new Promise((resolve) => {
             const settings = convict(connector.config_schema()).load({
                 options: {
                     type: 'consumer',
@@ -40,18 +38,20 @@ describe('Kafka Connector', () => {
             //   Trace: BROKERFAIL [thrd:undefined:9092/bootstrap]:
             //   undefined:9092/bootstrap: failed: err: Local: Host resolution
             //   failure: (errno: Bad address)
-            const conn = connector.create(config, logger, settings as KafkaConsumerSettings);
 
-            conn.client.once('ready', (client) => {
-                logger.trace(client, 'connected');
-                expect(conn.client.isConnected()).toBe(true);
-                conn.client.disconnect(() => {
-                    done();
+            connector.createClient(config, logger, settings as KafkaConsumerSettings)
+                .then((conn) => {
+                    conn.client.once('ready', (client) => {
+                        logger.trace(client, 'connected');
+                        expect(conn.client.isConnected()).toBe(true);
+                        conn.client.disconnect(() => {
+                            resolve(true);
+                        });
+                    });
                 });
-            });
-        });
+        }));
 
-        it('can be configured to not automatically connect', (done) => {
+        it('can be configured to not automatically connect', () => new Promise((resolve, reject) => {
             const settings = convict(connector.config_schema()).load({
                 autoconnect: false,
                 options: {
@@ -63,27 +63,28 @@ describe('Kafka Connector', () => {
                 }
             }).getProperties();
 
-            const conn = connector.create(config, logger, settings as KafkaConsumerSettings);
+            connector.createClient(config, logger, settings as KafkaConsumerSettings)
+                .then((conn) => {
+                    expect(conn.client.isConnected()).toBe(false);
 
-            expect(conn.client.isConnected()).toBe(false);
+                    conn.client.connect({}, (err: any) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
 
-            conn.client.connect({}, (err) => {
-                if (err) {
-                    done(err);
-                    return;
-                }
-
-                expect(conn.client.isConnected()).toBe(true);
-                conn.client.disconnect(() => {
-                    done();
+                        expect(conn.client.isConnected()).toBe(true);
+                        conn.client.disconnect(() => {
+                            resolve(true);
+                        });
+                    });
                 });
-            });
-        });
+        }));
     });
 
     describe('when using a producer', () => {
         // Not sure if should be enabled by default since depends on a kafka broker.
-        it('will connect automatically by default', (done) => {
+        it('will connect automatically by default', () => new Promise((resolve) => {
             const settings = convict(connector.config_schema()).load({
                 options: {
                     type: 'producer',
@@ -101,18 +102,19 @@ describe('Kafka Connector', () => {
             //   Trace: BROKERFAIL [thrd:undefined:9092/bootstrap]:
             //   undefined:9092/bootstrap: failed: err: Local: Host resolution
             //   failure: (errno: Bad address)
-            const conn = connector.create(config, logger, settings as KafkaProducerSettings);
-
-            conn.client.once('ready', (client) => {
-                logger.trace(client, 'connected');
-                expect(conn.client.isConnected()).toBe(true);
-                conn.client.disconnect(() => {
-                    done();
+            connector.createClient(config, logger, settings as KafkaProducerSettings)
+                .then((conn) => {
+                    conn.client.once('ready', (client) => {
+                        logger.trace(client, 'connected');
+                        expect(conn.client.isConnected()).toBe(true);
+                        conn.client.disconnect(() => {
+                            resolve(true);
+                        });
+                    });
                 });
-            });
-        });
+        }));
 
-        it('can be configured to not automatically connect', (done) => {
+        it('can be configured to not automatically connect', () => new Promise((resolve, reject) => {
             const settings = convict(connector.config_schema()).load({
                 autoconnect: false,
                 options: {
@@ -123,26 +125,27 @@ describe('Kafka Connector', () => {
                 }
             }).getProperties();
 
-            const conn = connector.create(config, logger, settings as KafkaProducerSettings);
+            connector.createClient(config, logger, settings as KafkaProducerSettings)
+                .then((conn) => {
+                    expect(conn.client.isConnected()).toBe(false);
 
-            expect(conn.client.isConnected()).toBe(false);
+                    conn.client.connect({}, (err: any) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
 
-            conn.client.connect({}, (err) => {
-                if (err) {
-                    done(err);
-                    return;
-                }
-
-                expect(conn.client.isConnected()).toBe(true);
-                conn.client.disconnect(() => {
-                    done();
+                        expect(conn.client.isConnected()).toBe(true);
+                        conn.client.disconnect(() => {
+                            resolve(true);
+                        });
+                    });
                 });
-            });
-        });
+        }));
     });
 
     describe('when using an unsupported client type', () => {
-        it('should throw an error', () => {
+        it('should throw an error', async () => {
             const settings = convict(connector.config_schema()).load({
                 options: {
                     type: 'wrong',
@@ -153,10 +156,9 @@ describe('Kafka Connector', () => {
                 },
             }).getProperties();
 
-            expect(() => {
-                // @ts-expect-error
-                connector.create(config, logger, settings);
-            }).toThrow('Unsupport client type of wrong');
+            await expect(
+                () => connector.createClient(config, logger, settings as any)
+            ).rejects.toThrow('Unsupported client type of wrong');
         });
     });
 });

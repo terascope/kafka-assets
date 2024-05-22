@@ -6,8 +6,8 @@ import Connector from 'terafoundation_kafka_connector';
 describe('Kafka Slicer', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
-        create(config: any, logger: Logger, settings: any) {
-            return Connector.create(config, logger, settings);
+        createClient(config: any, logger: Logger, settings: any) {
+            return Connector.createClient(config, logger, settings);
         }
     };
 

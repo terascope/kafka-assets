@@ -1,6 +1,4 @@
 import {
-    WorkerContext,
-    ExecutionConfig,
     ConnectionConfig,
     OperationAPI,
     DeadLetterAPIFn,
@@ -12,19 +10,16 @@ import { KafkaDeadLetterConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
 
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
-    producer: ProducerClient;
-    collector: Collector<ProduceMessage>;
+    producer!: ProducerClient;
+    collector!: Collector<ProduceMessage>;
 
-    constructor(
-        context: WorkerContext,
-        apiConfig: KafkaDeadLetterConfig,
-        executionConfig: ExecutionConfig
-    ) {
-        super(context, apiConfig, executionConfig);
-
+    async initialize(): Promise<void> {
+        await super.initialize();
         const logger = this.logger.child({ module: 'kafka-producer' });
 
-        this.producer = new ProducerClient(this.createClient(), {
+        const client = await this.createClient();
+
+        this.producer = new ProducerClient(client, {
             logger,
             topic: this.apiConfig.topic,
             bufferSize: this.apiConfig.max_buffer_size,
@@ -34,10 +29,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
             size: this.apiConfig.size,
             wait: this.apiConfig.wait,
         });
-    }
 
-    async initialize(): Promise<void> {
-        await super.initialize();
         await this.producer.connect();
     }
 
@@ -110,9 +102,9 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         return config as ConnectionConfig;
     }
 
-    private createClient(): kafka.Producer {
+    private async createClient(): Promise<kafka.Producer> {
         const config = this.clientConfig();
-        const connection = this.context.foundation.getConnection(config);
+        const connection = await this.context.apis.foundation.createClient(config);
         return connection.client;
     }
 }

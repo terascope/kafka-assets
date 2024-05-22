@@ -161,8 +161,8 @@ describe('Kafka Reader Schema', () => {
             config: {
                 brokers: kafkaBrokers,
             },
-            create(config: any, _logger: Logger, settings: any) {
-                return Connector.create(config, _logger, settings);
+            createClient(config: any, _logger: Logger, settings: any) {
+                return Connector.createClient(config, _logger, settings);
             }
         };
         const clients = [clientConfig];

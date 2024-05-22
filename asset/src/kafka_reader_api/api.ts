@@ -78,7 +78,9 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
 
-        const kafkaClient = this.context.foundation.getConnection(clientConfig).client;
+        const { client: kafkaClient } = await this.context.apis.foundation.createClient(
+            clientConfig
+        );
         const tryFn = this.tryRecord.bind(this);
         const client = new APIConsumer(kafkaClient, {
             ...validConfig,

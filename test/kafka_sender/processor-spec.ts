@@ -25,8 +25,8 @@ describe('Kafka Sender', () => {
         config: {
             brokers: kafkaBrokers,
         },
-        create(config: any, logger: Logger, settings: any) {
-            const result = Connector.create(config, logger, settings);
+        async createClient(config: any, logger: Logger, settings: any) {
+            const result = await Connector.createClient(config, logger, settings);
             // @ts-expect-error
             result.client.flush = mockFlush
                 // @ts-expect-error
