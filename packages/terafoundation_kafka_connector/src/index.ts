@@ -80,8 +80,60 @@ class KafkaConnector {
         throw new Error(`Unsupported client type of ${clientType}`);
     }
 
-    create() {
-        throw new Error('kafka does not support the deprecated "create" method');
+    // we are leaving this in so that the connector can work with older versions of
+    // teraslice and older kafka assets since this is baked in the teraslice docker image
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaConsumerSettings
+    ): KafkaConsumerResult;
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaProducerSettings
+    ): KafkaProducerResult;
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaConsumerSettings|KafkaProducerSettings
+    ): KafkaConsumerResult|KafkaProducerResult {
+        const clientType = getClientType(settings.options && settings.options.type);
+
+        if (isConsumerSettings(settings)) {
+            const {
+                topicOptions,
+                clientOptions,
+                group
+            } = this._getConsumerOptions(config, settings);
+
+            logger.info(`Creating a Kafka consumer for group: ${group}`);
+            const client = new KafkaConsumer(clientOptions, topicOptions);
+
+            this._autoconnect(client, logger, settings.autoconnect);
+            return {
+                client,
+                logger
+            };
+        }
+
+        if (isProducerSettings(settings)) {
+            const {
+                topicOptions,
+                clientOptions,
+                pollInterval
+            } = this._getProducerOptions(config, settings);
+
+            const client = new Producer(clientOptions, topicOptions);
+            client.setPollInterval(pollInterval);
+
+            this._autoconnect(client, logger, settings.autoconnect);
+            return {
+                client,
+                logger
+            };
+        }
+
+        throw new Error(`Unsupport client type of ${clientType}`);
     }
 
     config_schema() {
