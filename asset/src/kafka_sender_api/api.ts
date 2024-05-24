@@ -90,7 +90,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         const client = new KafkaRouteSender(
             kafkaClient,
             validConfig,
-            this.context.apis.foundation.promMetrics || undefined
+            this.context
         );
 
         await client.initialize();
