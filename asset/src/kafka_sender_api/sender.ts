@@ -6,8 +6,9 @@ import {
     Logger,
     toString,
     TSError,
+    isPromAvailable,
+    Context
 } from '@terascope/job-components';
-import { Terafoundation as tf } from '@terascope/types';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderAPIConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
@@ -17,7 +18,7 @@ type FN = (input: any) => any;
 export default class KafkaSender implements RouteSenderAPI {
     logger: Logger;
     producer: ProducerClient;
-    promMetrics: tf.PromMetrics;
+    context: Context;
     readonly hasConnected = false;
     readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
@@ -25,7 +26,7 @@ export default class KafkaSender implements RouteSenderAPI {
     readonly pathList = new Map<string, boolean>();
     readonly mapper: (msg: DataEntity) => ProduceMessage;
 
-    constructor(client: kafka.Producer, config: KafkaSenderAPIConfig, promMetrics: tf.PromMetrics) {
+    constructor(client: kafka.Producer, config: KafkaSenderAPIConfig, context: Context) {
         const producer = new ProducerClient(client, {
             logger: config.logger,
             topic: config.topicOverride || config.topic,
@@ -38,7 +39,7 @@ export default class KafkaSender implements RouteSenderAPI {
         this.tryFn = config.tryFn || this.tryCatch;
         this.mapper = this.mapFn.bind(this);
         this.logger = config.logger;
-        this.promMetrics = promMetrics;
+        this.context = context;
     }
 
     private tryCatch(fn: FN) {
@@ -54,20 +55,22 @@ export default class KafkaSender implements RouteSenderAPI {
     }
 
     async initialize(): Promise<void> {
-        const { promMetrics, producer, config } = this;
-        this.promMetrics.addGauge(
-            'kafka_bytes_produced',
-            'Number of bytes the kafka producer has produced',
-            ['op_name'],
-            async function collect() {
-                const bytesProduced = await producer.getBytesProduced();
-                const labels = {
-                    op_name: config._op,
-                    ...promMetrics.getDefaultLabels()
-                };
-                this.set(labels, bytesProduced);
-            }
-        );
+        const { context, producer, config } = this;
+        if (isPromAvailable(context)) {
+            context.apis.foundation.promMetrics.addGauge(
+                'kafka_bytes_produced',
+                'Number of bytes the kafka producer has produced',
+                ['op_name'],
+                async function collect() {
+                    const bytesProduced = await producer.getBytesProduced();
+                    const labels = {
+                        op_name: config._op,
+                        ...context.apis.foundation.promMetrics.getDefaultLabels()
+                    };
+                    this.set(labels, bytesProduced);
+                }
+            );
+        }
         await this.producer.connect();
     }
 

@@ -1,7 +1,7 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "4.4.0",
+    "version": "4.4.1",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "repository": "git@github.com:terascope/kafka-assets.git",
@@ -33,7 +33,7 @@
     },
     "devDependencies": {
         "@terascope/eslint-config": "^0.8.0",
-        "@terascope/job-components": "^0.74.2",
+        "@terascope/job-components": "^0.75.0",
         "@terascope/scripts": "^0.77.2",
         "@types/jest": "^29.5.12",
         "@types/node": "^18.14.2",

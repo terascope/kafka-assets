@@ -1,4 +1,4 @@
-import { Fetcher, DataEntity } from '@terascope/job-components';
+import { Fetcher, DataEntity, isPromAvailable } from '@terascope/job-components';
 import { KafkaReaderAPIConfig, KafkaReaderAPI, DEFAULT_API_NAME } from '../kafka_reader_api/interfaces';
 import { KafkaReaderConfig } from './interfaces';
 import { APIConsumer } from '../_kafka_clients';
@@ -30,30 +30,32 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         this.consumer = consumer;
 
         const { context, opConfig } = this;
-        await this.context.apis.foundation.promMetrics.addGauge(
-            'kafka_partitions',
-            'Number of partitions the kafka consumer is consuming from',
-            ['op_name'],
-            async function collect() {
-                const partitionCount = await consumer.getPartitionCount(topic);
-                const labels = {
-                    op_name: opConfig._op,
-                    ...context.apis.foundation.promMetrics.getDefaultLabels()
-                };
-                this.set(labels, partitionCount);
-            });
-        await this.context.apis.foundation.promMetrics.addGauge(
-            'kafka_bytes_consumed',
-            'Number of bytes the kafka consumer has consumed',
-            ['op_name'],
-            async function collect() {
-                const bytesConsumed = await consumer.getBytesConsumed();
-                const labels = {
-                    op_name: opConfig._op,
-                    ...context.apis.foundation.promMetrics.getDefaultLabels()
-                };
-                this.set(labels, bytesConsumed);
-            });
+        if (isPromAvailable(context)) {
+            await this.context.apis.foundation.promMetrics.addGauge(
+                'kafka_partitions',
+                'Number of partitions the kafka consumer is consuming from',
+                ['op_name'],
+                async function collect() {
+                    const partitionCount = await consumer.getPartitionCount(topic);
+                    const labels = {
+                        op_name: opConfig._op,
+                        ...context.apis.foundation.promMetrics.getDefaultLabels()
+                    };
+                    this.set(labels, partitionCount);
+                });
+            await this.context.apis.foundation.promMetrics.addGauge(
+                'kafka_bytes_consumed',
+                'Number of bytes the kafka consumer has consumed',
+                ['op_name'],
+                async function collect() {
+                    const bytesConsumed = await consumer.getBytesConsumed();
+                    const labels = {
+                        op_name: opConfig._op,
+                        ...context.apis.foundation.promMetrics.getDefaultLabels()
+                    };
+                    this.set(labels, bytesConsumed);
+                });
+        }
     }
 
     async fetch(): Promise<DataEntity[]> {
