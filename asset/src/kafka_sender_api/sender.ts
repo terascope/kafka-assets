@@ -9,7 +9,6 @@ import {
     isPromAvailable,
     Context
 } from '@terascope/job-components';
-import { Terafoundation as tf } from '@terascope/types';
 import * as kafka from 'node-rdkafka';
 import { KafkaSenderAPIConfig } from './interfaces';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients';
@@ -19,7 +18,7 @@ type FN = (input: any) => any;
 export default class KafkaSender implements RouteSenderAPI {
     logger: Logger;
     producer: ProducerClient;
-    context: Context
+    context: Context;
     readonly hasConnected = false;
     readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
