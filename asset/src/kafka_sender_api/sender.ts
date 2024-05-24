@@ -38,7 +38,7 @@ export default class KafkaSender implements RouteSenderAPI {
         this.tryFn = config.tryFn || this.tryCatch;
         this.mapper = this.mapFn.bind(this);
         this.logger = config.logger;
-        this.promMetrics = promMetrics;
+        this.promMetrics = promMetrics || undefined;
     }
 
     private tryCatch(fn: FN) {
@@ -55,19 +55,21 @@ export default class KafkaSender implements RouteSenderAPI {
 
     async initialize(): Promise<void> {
         const { promMetrics, producer, config } = this;
-        this.promMetrics.addGauge(
-            'kafka_bytes_produced',
-            'Number of bytes the kafka producer has produced',
-            ['op_name'],
-            async function collect() {
-                const bytesProduced = await producer.getBytesProduced();
-                const labels = {
-                    op_name: config._op,
-                    ...promMetrics.getDefaultLabels()
-                };
-                this.set(labels, bytesProduced);
-            }
-        );
+        if (promMetrics) {
+            this.promMetrics.addGauge(
+                'kafka_bytes_produced',
+                'Number of bytes the kafka producer has produced',
+                ['op_name'],
+                async function collect() {
+                    const bytesProduced = await producer.getBytesProduced();
+                    const labels = {
+                        op_name: config._op,
+                        ...promMetrics.getDefaultLabels()
+                    };
+                    this.set(labels, bytesProduced);
+                }
+            );
+        }
         await this.producer.connect();
     }
 
