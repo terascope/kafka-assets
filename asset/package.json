@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "@terascope/job-components": "^0.75.1",
-        "@terascope/types": "^0.17.2"
+        "@terascope/types": "^0.17.3"
     },
     "devDependencies": {},
     "engines": {

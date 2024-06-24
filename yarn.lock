@@ -799,10 +799,10 @@
   dependencies:
     bluebird "^3.7.2"
 
-"@terascope/types@^0.17.2":
-  version "0.17.2"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.17.2.tgz#0e8d13c1249dccb0ccf63e691e253337645a205d"
-  integrity sha512-GzbxIVjFiViiULc7XK0EiAgT5yubwi2VXvp0wC3ygigTNIsqugncPub2ChpiqTx2JlVGVGJrXPSvPgPTJphYqw==
+"@terascope/types@^0.17.2", "@terascope/types@^0.17.3":
+  version "0.17.3"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.17.3.tgz#a99529ed1dd3aeb28a667e19749e0c2bb34f775f"
+  integrity sha512-4HtoBwWFcOMvtY1khQTalQIu6EfiQNKFJlagJfL7EWrqa1p968tS0NaqpZD8foIHamVEFQ5m0b4TgJeYHjzUbg==
   dependencies:
     prom-client "^15.1.2"
 
