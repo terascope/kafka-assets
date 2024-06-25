@@ -8,6 +8,7 @@
     "license": "MIT",
     "author": "Terascope, LLC <info@terascope.io>",
     "main": "dist/src/index.js",
+    "type": "module",
     "typings": "dist/src/index.d.ts",
     "files": [
         "dist/src/**/*"
@@ -16,9 +17,9 @@
         "build": "tsc --project ./tsconfig.json",
         "build:watch": "yarn build --watch",
         "prepare": "yarn build",
-        "test": "KAFKA_VERSION=3.2 ts-scripts test . --",
-        "test:debug": "KAFKA_VERSION=3.2 ts-scripts test --debug . --",
-        "test:watch": "KAFKA_VERSION=3.2 ts-scripts test --watch . --"
+        "test": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test . --",
+        "test:debug": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test --debug . --",
+        "test:watch": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test --watch . --"
     },
     "dependencies": {
         "node-rdkafka": "^3.0.1"

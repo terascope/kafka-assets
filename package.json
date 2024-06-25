@@ -7,6 +7,7 @@
     "repository": "git@github.com:terascope/kafka-assets.git",
     "license": "MIT",
     "author": "Terascope, LLC <info@terascope.io>",
+    "type": "module",
     "workspaces": {
         "packages": [
             "packages/*",
@@ -23,10 +24,10 @@
         "lint:fix": "yarn lint --fix",
         "publish:changed": "./scripts/publish.sh",
         "setup": "yarn && yarn build --force",
-        "test": "KAFKA_VERSION=3.2 ts-scripts test asset --",
-        "test:all": "KAFKA_VERSION=3.2 ts-scripts test",
-        "test:debug": "KAFKA_VERSION=3.2 ts-scripts test --debug asset --",
-        "test:watch": "KAFKA_VERSION=3.2 ts-scripts test --watch asset --"
+        "test": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test asset --",
+        "test:all": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test",
+        "test:debug": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test --debug asset --",
+        "test:watch": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test --watch asset --"
     },
     "dependencies": {
         "node-gyp": "9.4.1"
