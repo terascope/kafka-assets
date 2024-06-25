@@ -1,7 +1,7 @@
 import * as kafka from 'node-rdkafka';
-import { ProduceMessage, ProducerClientConfig } from './interfaces';
-import { wrapError, AnyKafkaError } from '../_kafka_helpers';
-import BaseClient from './base-client';
+import { ProduceMessage, ProducerClientConfig } from './interfaces.js';
+import { wrapError, AnyKafkaError } from '../_kafka_helpers/index.js';
+import BaseClient from './base-client.js';
 
 /**
  * A Kafka Producer Client that only works with a single topic.

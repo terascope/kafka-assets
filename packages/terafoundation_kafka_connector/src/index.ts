@@ -1,6 +1,6 @@
 import { Logger } from '@terascope/job-components';
 import { KafkaConsumer, Producer } from 'node-rdkafka';
-import schema from './schema';
+import schema from './schema.js';
 import {
     KafkaConnectorConfig,
     KafkaConsumerSettings,
@@ -9,7 +9,7 @@ import {
     KafkaProducerResult,
     ClientType,
     RDKafkaOptions
-} from './interfaces';
+} from './interfaces.js';
 
 /**
  * settings contains a list of options to configure on the client.

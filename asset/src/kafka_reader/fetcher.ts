@@ -1,7 +1,7 @@
 import { Fetcher, DataEntity, isPromAvailable } from '@terascope/job-components';
-import { KafkaReaderAPIConfig, KafkaReaderAPI, DEFAULT_API_NAME } from '../kafka_reader_api/interfaces';
-import { KafkaReaderConfig } from './interfaces';
-import { APIConsumer } from '../_kafka_clients';
+import { KafkaReaderAPIConfig, KafkaReaderAPI, DEFAULT_API_NAME } from '../kafka_reader_api/interfaces.js';
+import { KafkaReaderConfig } from './interfaces.js';
+import { APIConsumer } from '../_kafka_clients/index.js';
 
 export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     consumer!: APIConsumer;

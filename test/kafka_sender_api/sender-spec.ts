@@ -4,11 +4,11 @@ import {
     TestClientConfig, Logger, APIFactoryRegistry, DataEntity, AnyObject
 } from '@terascope/job-components';
 import Connector from 'terafoundation_kafka_connector';
-import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces';
-import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender';
-import { kafkaBrokers, senderTopic } from '../helpers/config';
-import KafkaAdmin from '../helpers/kafka-admin';
-import { readData } from '../helpers/kafka-data';
+import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces.js';
+import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender.js';
+import { kafkaBrokers, senderTopic } from '../helpers/config.js';
+import KafkaAdmin from '../helpers/kafka-admin.js';
+import { readData } from '../helpers/kafka-data.js';
 
 type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
 

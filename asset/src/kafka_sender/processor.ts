@@ -5,10 +5,10 @@ import {
     ExecutionConfig,
     Logger,
 } from '@terascope/job-components';
-import { KafkaSenderConfig } from './interfaces';
-import { KafkaSenderAPI, DEFAULT_API_NAME } from '../kafka_sender_api/interfaces';
+import { KafkaSenderConfig } from './interfaces.js';
+import { KafkaSenderAPI, DEFAULT_API_NAME } from '../kafka_sender_api/interfaces.js';
 
-import KafkaRouteSender from '../kafka_sender_api/sender';
+import KafkaRouteSender from '../kafka_sender_api/sender.js';
 
 interface Endpoint {
     sender: KafkaRouteSender;

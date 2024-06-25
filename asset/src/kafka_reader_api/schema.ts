@@ -1,5 +1,5 @@
 import { ConvictSchema, isNumber, getTypeOf } from '@terascope/job-components';
-import { KafkaReaderAPIConfig } from './interfaces';
+import { KafkaReaderAPIConfig } from './interfaces.js';
 
 export const DEFAULT_API_NAME = 'kafka_reader_api';
 

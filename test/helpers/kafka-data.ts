@@ -1,15 +1,18 @@
 import fs from 'fs';
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { v4 as uuidv4 } from 'uuid';
 import { debugLogger, castArray } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
-import { kafkaBrokers } from './config';
-import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients';
+import { KafkaConsumer, Producer } from 'node-rdkafka';
+import { kafkaBrokers } from './config.js';
+import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients/index.js';
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const logger = debugLogger('kafka-data');
 
 export async function loadData(topic: string, fileName: string): Promise<Record<string, any>[]> {
-    const filePath = path.join(__dirname, '..', 'fixtures', fileName);
+    const filePath = path.join(dirname, '..', 'fixtures', fileName);
     const exampleData = fs.readFileSync(filePath, 'utf8');
 
     const data: Record<string, any>[] = [];
@@ -25,7 +28,7 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
             return Buffer.from(d);
         });
 
-    const producer = new kafka.Producer({
+    const producer = new Producer({
         'compression.codec': 'gzip',
         'queue.buffering.max.messages': messages.length,
         'queue.buffering.max.ms': 20,
@@ -61,7 +64,7 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
 }
 
 export async function readData(topic: string, size: number): Promise<any[]> {
-    const consumer = new kafka.KafkaConsumer({
+    const consumer = new KafkaConsumer({
         // We want to explicitly manage offset commits.
         'enable.auto.commit': false,
         'enable.auto.offset.store': false,

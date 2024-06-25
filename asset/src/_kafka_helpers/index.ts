@@ -3,13 +3,13 @@ import {
     toString, isString, isError,
     DataEntityMetadata
 } from '@terascope/job-components';
-import { codeToMessage, okErrors, OkErrorKeys } from './error-codes';
+import { codeToMessage, okErrors, OkErrorKeys } from './error-codes.js';
 
 export type AnyKafkaError = Error|KafkaError|number|string|null;
 
 export type KafkaError = LibrdKafkaError;
 
-export { OkErrorKeys } from './error-codes';
+export { OkErrorKeys } from './error-codes.js';
 
 export function wrapError(message: string, err: AnyKafkaError|unknown): KafkaError {
     const cause = getErrorCause(err);

@@ -1,16 +1,19 @@
 import 'jest-extended';
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
     TestClientConfig, Logger, DataEntity,
     NoopProcessor,
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
-import { readData } from '../helpers/kafka-data';
-import { kafkaBrokers, deadLetterTopic } from '../helpers/config';
-import KafkaAdmin from '../helpers/kafka-admin';
+import { readData } from '../helpers/kafka-data.js';
+import { kafkaBrokers, deadLetterTopic } from '../helpers/config.js';
+import KafkaAdmin from '../helpers/kafka-admin.js';
 
-const testFetcherFile = path.join(__dirname, '../fixtures', 'test-fetcher-data.json');
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const testFetcherFile = path.join(dirname, '../fixtures', 'test-fetcher-data.json');
 
 describe('Kafka Dead Letter', () => {
     jest.setTimeout(15 * 1000);

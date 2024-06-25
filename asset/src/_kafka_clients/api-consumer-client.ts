@@ -1,17 +1,17 @@
-import type * as kafka from 'node-rdkafka';
+import { KafkaConsumer, MessageKey } from 'node-rdkafka';
 import {
     DataEntity, TSError, toString, isError
 } from '@terascope/job-components';
-import Consumer from './consumer-client';
-import { KafkaMessage, KafkaMessageMetadata } from '../_kafka_helpers';
-import { ConsumerClientConfig, ConsumeFn } from './interfaces';
+import Consumer from './consumer-client.js';
+import { KafkaMessage, KafkaMessageMetadata } from '../_kafka_helpers/index.js';
+import { ConsumerClientConfig, ConsumeFn } from './interfaces.js';
 
 export default class APIConsumer extends Consumer {
     tryFn: ConsumeFn;
     processKafkaRecord: (msg: KafkaMessage) => DataEntity;
     mapper: (msg: KafkaMessage) => DataEntity;
 
-    constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
+    constructor(client: KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config);
         this.tryFn = config.tryFn || this.tryCatch;
         this.processKafkaRecord = (msg: KafkaMessage): DataEntity => {
@@ -58,7 +58,7 @@ export default class APIConsumer extends Consumer {
 }
 
 /** Safely convert a buffer or string to a string */
-function keyToString(str?: kafka.MessageKey) {
+function keyToString(str?: MessageKey) {
     if (!str) return undefined;
     return str.toString('utf8');
 }

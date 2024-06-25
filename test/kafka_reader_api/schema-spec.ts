@@ -4,8 +4,8 @@ import {
     ValidatedJobConfig, TestClientConfig, Logger, AnyObject
 } from '@terascope/job-components';
 import Connector from 'terafoundation_kafka_connector';
-import { DEFAULT_API_NAME } from '../../asset/src/kafka_reader_api/interfaces';
-import { kafkaBrokers } from '../helpers/config';
+import { DEFAULT_API_NAME } from '../../asset/src/kafka_reader_api/interfaces.js';
+import { kafkaBrokers } from '../helpers/config.js';
 
 describe('Kafka Reader API Schema', () => {
     let harness: WorkerTestHarness;
