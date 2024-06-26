@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import 'jest-extended';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import {

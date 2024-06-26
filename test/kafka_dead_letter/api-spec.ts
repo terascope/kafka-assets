@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import 'jest-extended';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

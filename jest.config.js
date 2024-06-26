@@ -36,5 +36,8 @@ export default {
             useESM: true
         }]
     },
-    testTimeout: 60 * 1000
+    testTimeout: 60 * 1000,
+    setupFiles: [
+        '<rootDir>/test/test-setup.js'
+    ]
 };

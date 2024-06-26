@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { jest } from '@jest/globals';
 import 'jest-extended';
 import fs from 'node:fs';
 import path from 'node:path';
