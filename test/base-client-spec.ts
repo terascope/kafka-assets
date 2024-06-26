@@ -1,9 +1,9 @@
 import 'jest-extended';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { debugLogger } from '@terascope/job-components';
-import BaseClient from '../asset/src/_kafka_clients/base-client';
-import { KafkaError, AnyKafkaError } from '../asset/src/_kafka_helpers';
-import * as codes from '../asset/src/_kafka_helpers/error-codes';
+import BaseClient from '../asset/src/_kafka_clients/base-client.js';
+import { KafkaError, AnyKafkaError } from '../asset/src/_kafka_helpers/index.js';
+import * as codes from '../asset/src/_kafka_helpers/error-codes.js';
 
 describe('Base Client (internal)', () => {
     const logger = debugLogger('base-client');
@@ -108,7 +108,7 @@ describe('Base Client (internal)', () => {
 
     describe('->_once', () => {
         it('should fire once and cleanup when off is called', () => {
-            const listener = jest.fn();
+            const listener: jest.Mock = jest.fn();
 
             // @ts-expect-error because it is private
             const off = client._once('test:once:off', listener);
@@ -191,7 +191,7 @@ describe('Base Client (internal)', () => {
 
     describe('->_timeout', () => {
         it('should fire once the timeout is complete and cleanup', (done) => {
-            const cb = jest.fn();
+            const cb: jest.Mock<(err: Error | null) => void> = jest.fn();
 
             // @ts-expect-error because it is private
             client._timeout(cb, 200);
@@ -201,7 +201,7 @@ describe('Base Client (internal)', () => {
 
             setTimeout(() => {
                 expect(cb).toHaveBeenCalledTimes(1);
-                expect(cb.mock.calls[0][0].message).toEqual('Timeout of 200ms');
+                expect(cb.mock.calls[0][0]?.message).toEqual('Timeout of 200ms');
 
                 // @ts-expect-error because it is private
                 expect(client._cleanup).toBeArrayOfSize(0);
@@ -253,9 +253,9 @@ describe('Base Client (internal)', () => {
         const ogError = logger.error;
 
         beforeEach(() => {
-            logger.debug = jest.fn();
-            logger.warn = jest.fn();
-            logger.error = jest.fn();
+            logger.debug = jest.fn(() => true);
+            logger.warn = jest.fn(() => true);
+            logger.error = jest.fn(() => true);
         });
 
         afterEach(() => {
@@ -323,7 +323,7 @@ describe('Base Client (internal)', () => {
             const ogError = logger.error;
 
             beforeEach(() => {
-                logger.error = jest.fn();
+                logger.error = jest.fn(() => true);
             });
 
             afterEach(() => {

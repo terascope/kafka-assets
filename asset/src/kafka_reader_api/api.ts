@@ -9,9 +9,9 @@ import {
     isNumber,
     isBoolean
 } from '@terascope/job-components';
-import { APIConsumer } from '../_kafka_clients';
-import { KafkaReaderConfig } from '../kafka_reader/interfaces';
-import { KafkaReaderAPIConfig } from './interfaces';
+import { APIConsumer } from '../_kafka_clients/index.js';
+import { KafkaReaderConfig } from '../kafka_reader/interfaces.js';
+import { KafkaReaderAPIConfig } from './interfaces.js';
 
 export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderAPIConfig> {
     private validateConfig(config: AnyObject): KafkaReaderAPIConfig {

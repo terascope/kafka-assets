@@ -1,13 +1,13 @@
-import convict, { addFormat } from 'convict';
+import convict from 'convict';
 import { debugLogger, formats } from '@terascope/job-components';
-import connector from '../src';
-import { KafkaConsumerSettings, KafkaProducerSettings } from '../src/interfaces';
-import { kafkaBrokers } from './config';
+import connector from '../src/index.js';
+import { KafkaConsumerSettings, KafkaProducerSettings } from '../src/interfaces.js';
+import { kafkaBrokers } from './config.js';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
 function addFormats(): void {
-    formats.forEach(addFormat);
+    formats.forEach(convict.addFormat);
 }
 
 describe('Kafka Connector', () => {

@@ -1,4 +1,4 @@
-export = {
+export default {
     brokers: {
         doc: 'List of seed brokers for the kafka environment',
         default: ['localhost:9092'],

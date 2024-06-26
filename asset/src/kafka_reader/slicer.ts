@@ -1,5 +1,5 @@
 import { Slicer } from '@terascope/job-components';
-import { KafkaReaderConfig } from './interfaces';
+import { KafkaReaderConfig } from './interfaces.js';
 
 export default class KafkaSlicer extends Slicer<KafkaReaderConfig> {
     isRecoverable(): boolean {

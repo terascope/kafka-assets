@@ -1,8 +1,8 @@
-import ConsumerClient from './consumer-client';
-import ProducerClient from './producer-client';
-import APIConsumer from './api-consumer-client';
+import ConsumerClient from './consumer-client.js';
+import ProducerClient from './producer-client.js';
+import APIConsumer from './api-consumer-client.js';
 
-export * from './interfaces';
+export * from './interfaces.js';
 export {
     ConsumerClient,
     ProducerClient,

@@ -1,6 +1,6 @@
 import { ConvictSchema, ValidatedJobConfig } from '@terascope/job-components';
-import { KafkaReaderConfig } from './interfaces';
-import { DEFAULT_API_NAME } from '../kafka_reader_api/schema';
+import { KafkaReaderConfig } from './interfaces.js';
+import { DEFAULT_API_NAME } from '../kafka_reader_api/schema.js';
 
 const schema = {
     api_name: {

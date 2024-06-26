@@ -9,7 +9,7 @@ import {
 } from '@terascope/job-components';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
-import { kafkaBrokers } from '../helpers/config';
+import { kafkaBrokers } from '../helpers/config.js';
 
 describe('Kafka Sender Schema', () => {
     const mockFlush = jest.fn();

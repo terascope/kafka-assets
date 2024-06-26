@@ -1,8 +1,11 @@
 {
     "extends": "../tsconfig",
     "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
         "outDir": "dist",
-        "rootDir": "src"
+        "rootDir": "src",
+        "esModuleInterop": true
     },
     "include": ["src"]
 }

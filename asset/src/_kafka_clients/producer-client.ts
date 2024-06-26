@@ -1,14 +1,14 @@
-import * as kafka from 'node-rdkafka';
-import { ProduceMessage, ProducerClientConfig } from './interfaces';
-import { wrapError, AnyKafkaError } from '../_kafka_helpers';
-import BaseClient from './base-client';
+import Kafka from 'node-rdkafka';
+import { ProduceMessage, ProducerClientConfig } from './interfaces.js';
+import { wrapError, AnyKafkaError } from '../_kafka_helpers/index.js';
+import BaseClient from './base-client.js';
 
 /**
  * A Kafka Producer Client that only works with a single topic.
  * This client has improved error handling, with retry support,
  * and wraps the API calls with Promises.
 */
-export default class ProducerClient extends BaseClient<kafka.Producer> {
+export default class ProducerClient extends BaseClient<Kafka.Producer> {
     // one minute
     flushTimeout = 60000;
 
@@ -16,7 +16,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     private _hasClientEvents = false;
     private _bytesProduced = 0;
 
-    constructor(client: kafka.Producer, config: ProducerClientConfig) {
+    constructor(client: Kafka.Producer, config: ProducerClientConfig) {
         super(client, config.topic, config.logger);
         this._bufferSize = config.bufferSize;
     }
@@ -53,7 +53,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     async produce(messages: ProduceMessage[]): Promise<void>;
     async produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void>;
     async produce(messages: any[], map?: (msg: any) => ProduceMessage): Promise<void> {
-        let error: kafka.LibrdKafkaError|null = null;
+        let error: Kafka.LibrdKafkaError|null = null;
 
         const off = this._once('client:error', (err) => {
             if (!err) return;

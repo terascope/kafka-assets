@@ -1,8 +1,11 @@
 import 'jest-extended';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const assetJSONFile = path.join(__dirname, '..', 'asset', 'asset.json');
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const assetJSONFile = path.join(dirname, '..', 'asset', 'asset.json');
 const asset = JSON.parse(fs.readFileSync(assetJSONFile, 'utf8'));
 
 describe('A standard asset', () => {

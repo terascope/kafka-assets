@@ -9,9 +9,9 @@ import {
     isNumber,
     isBoolean
 } from '@terascope/job-components';
-import { KafkaSenderConfig } from '../kafka_sender/interfaces';
-import KafkaRouteSender from './sender';
-import { KafkaSenderAPIConfig } from './interfaces';
+import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
+import KafkaRouteSender from './sender.js';
+import { KafkaSenderAPIConfig } from './interfaces.js';
 
 export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSenderAPIConfig> {
     private validateConfig(config: AnyObject): KafkaSenderAPIConfig {
