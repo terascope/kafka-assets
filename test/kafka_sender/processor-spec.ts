@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { jest } from '@jest/globals';
 import 'jest-extended';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -78,6 +79,7 @@ describe('Kafka Sender', () => {
         harness = new WorkerTestHarness(job, {
             clients,
         });
+        await harness.initialize();
 
         kafkaSender = harness.getOperation('kafka_sender');
 

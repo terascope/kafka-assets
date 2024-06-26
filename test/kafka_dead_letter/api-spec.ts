@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import 'jest-extended';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -76,6 +77,7 @@ describe('Kafka Dead Letter', () => {
         harness = new WorkerTestHarness(job, {
             clients,
         });
+        await harness.initialize();
 
         noop = harness.getOperation('noop');
 

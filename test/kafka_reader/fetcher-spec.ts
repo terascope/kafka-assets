@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import 'jest-extended';
 import {
     TestClientConfig, Logger, DataEntity,
@@ -77,12 +78,13 @@ describe('Kafka Fetcher', () => {
         harness = new WorkerTestHarness(job, {
             clients,
         });
+        await harness.initialize();
 
         // FIXME: using "as any" is hack, we should properly fix it
         fetcher = harness.fetcher() as any;
         noop = harness.getOperation('noop');
 
-        noop.onBatch = jest.fn(async (data) => data);
+        noop.onBatch = jest.fn(async (data: DataEntity[]) => data);
 
         await harness.initialize();
 
