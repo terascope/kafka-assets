@@ -3,7 +3,7 @@ import {
     Logger, isError, pDelay, once,
     get
 } from '@terascope/job-components';
-import type * as kafka from 'node-rdkafka';
+import Kafka from 'node-rdkafka';
 import {
     isOkayError,
     wrapError,
@@ -15,7 +15,7 @@ import {
     OkErrorKeys
 } from '../_kafka_helpers/error-codes.js';
 
-export default class BaseClient<T extends kafka.Client<any>> {
+export default class BaseClient<T extends Kafka.Client<any>> {
     /** the random factory of the back of interval, [min, max] */
     static BACKOFF_RANDOM_FACTOR: [number, number] = [3, 9];
     static DEFAULT_BACKOFF = 1000;
@@ -94,7 +94,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
         if (this.isConnected()) return;
 
         await new Promise<void>((resolve, reject) => {
-            const metadataOptions: kafka.MetadataOptions = {
+            const metadataOptions: Kafka.MetadataOptions = {
                 topic: this._topic,
             };
 

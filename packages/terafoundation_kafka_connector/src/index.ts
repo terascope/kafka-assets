@@ -1,5 +1,5 @@
 import { Logger } from '@terascope/job-components';
-import { KafkaConsumer, Producer } from 'node-rdkafka';
+import Kafka from 'node-rdkafka';
 import schema from './schema.js';
 import {
     KafkaConnectorConfig,
@@ -51,7 +51,7 @@ class KafkaConnector {
             } = this._getConsumerOptions(config, settings);
 
             logger.info(`Creating a Kafka consumer for group: ${group}`);
-            const client = new KafkaConsumer(clientOptions, topicOptions);
+            const client = new Kafka.KafkaConsumer(clientOptions, topicOptions);
 
             await this._autoconnect(client, logger, settings.autoconnect);
             return {
@@ -67,7 +67,7 @@ class KafkaConnector {
                 pollInterval
             } = this._getProducerOptions(config, settings);
 
-            const client = new Producer(clientOptions, topicOptions);
+            const client = new Kafka.Producer(clientOptions, topicOptions);
             client.setPollInterval(pollInterval);
 
             await this._autoconnect(client, logger, settings.autoconnect);
@@ -107,7 +107,7 @@ class KafkaConnector {
             } = this._getConsumerOptions(config, settings);
 
             logger.info(`Creating a Kafka consumer for group: ${group}`);
-            const client = new KafkaConsumer(clientOptions, topicOptions);
+            const client = new Kafka.KafkaConsumer(clientOptions, topicOptions);
 
             this._autoconnect(client, logger, settings.autoconnect);
             return {
@@ -123,7 +123,7 @@ class KafkaConnector {
                 pollInterval
             } = this._getProducerOptions(config, settings);
 
-            const client = new Producer(clientOptions, topicOptions);
+            const client = new Kafka.Producer(clientOptions, topicOptions);
             client.setPollInterval(pollInterval);
 
             this._autoconnect(client, logger, settings.autoconnect);
@@ -140,7 +140,11 @@ class KafkaConnector {
         return schema;
     }
 
-    private async _autoconnect(client: Producer|KafkaConsumer, logger: Logger, autoconnect = true) {
+    private async _autoconnect(
+        client: Kafka.Producer|Kafka.KafkaConsumer,
+        logger: Logger,
+        autoconnect = true
+    ) {
         if (!autoconnect) return;
 
         // Default to autoconnecting but can be disabled.

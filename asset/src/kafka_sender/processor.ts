@@ -1,10 +1,10 @@
 import {
     DataEntity,
     BatchProcessor,
-    WorkerContext,
-    ExecutionConfig,
+    Context,
     Logger,
 } from '@terascope/job-components';
+import { ExecutionConfig } from '@terascope/types';
 import { KafkaSenderConfig } from './interfaces.js';
 import { KafkaSenderAPI, DEFAULT_API_NAME } from '../kafka_sender_api/interfaces.js';
 
@@ -32,7 +32,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     api!: KafkaRouteSender;
 
     constructor(
-        context: WorkerContext,
+        context: Context,
         opConfig: KafkaSenderConfig,
         executionConfig: ExecutionConfig
     ) {
@@ -50,7 +50,9 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
 
         if (this.opConfig.api_name) {
             apiName = this.opConfig?.api_name;
-            const apiConfig = this.executionConfig.apis.find((config) => config._name === apiName);
+            const apiConfig = this.executionConfig.apis.find(
+                (config: { _name: string; }) => config._name === apiName
+            );
             if (apiConfig == null) throw new Error(`could not find api configuration for api ${apiName}`);
             apiTopic = apiConfig.topic;
             apiConnection = apiConfig.connection;

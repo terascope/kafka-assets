@@ -1,4 +1,4 @@
-import type { LibrdKafkaError, Message } from 'node-rdkafka';
+import Kafka from 'node-rdkafka';
 import {
     toString, isString, isError,
     DataEntityMetadata
@@ -7,7 +7,7 @@ import { codeToMessage, okErrors, OkErrorKeys } from './error-codes.js';
 
 export type AnyKafkaError = Error|KafkaError|number|string|null;
 
-export type KafkaError = LibrdKafkaError;
+export type KafkaError = Kafka.LibrdKafkaError;
 
 export { OkErrorKeys } from './error-codes.js';
 
@@ -79,7 +79,7 @@ export interface KafkaMessageMetadata extends DataEntityMetadata {
     size: number;
 }
 
-export type KafkaMessage = Message;
+export type KafkaMessage = Kafka.Message;
 
 export function isKafkaError(err: unknown): err is KafkaError {
     // @ts-expect-error
