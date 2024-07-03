@@ -1,13 +1,13 @@
 {
     "name": "kafka-assets",
     "displayName": "Asset",
-    "version": "4.4.1",
+    "version": "5.0.0",
     "private": true,
     "description": "Teraslice asset for kafka operations",
     "license": "MIT",
     "author": "Terascope, LLC <info@terascope.io>",
-    "main": "dist/src/index.js",
     "type": "module",
+    "main": "dist/src/index.js",
     "typings": "dist/src/index.d.ts",
     "files": [
         "dist/src/**/*"
