@@ -83,8 +83,6 @@ describe('Kafka Sender', () => {
 
         kafkaSender = harness.getOperation('kafka_sender');
 
-        await harness.initialize();
-
         while (results.length < targetSize) {
             if (runs > targetRuns) {
                 return;
