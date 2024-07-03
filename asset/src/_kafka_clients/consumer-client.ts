@@ -1,4 +1,4 @@
-import Kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import {
     pDelay, toHumanTime, EncodingConfig,
     isBoolean, isNotNil
@@ -23,7 +23,7 @@ const MAX_INVALID_STATE_COUNT = isProd ? 3 : 1;
 /** Minimum number of empty slices to get before checking the state of the client */
 const MIN_EMPTY_SLICES = isProd ? 5 : 0;
 
-export default class ConsumerClient extends BaseClient<Kafka.KafkaConsumer> {
+export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _emptySlices = 0;
     private _rebalancing = false;
     private _hasClientEvents = false;
@@ -41,7 +41,7 @@ export default class ConsumerClient extends BaseClient<Kafka.KafkaConsumer> {
     private useCommitSync: boolean;
     private _bytesConsumed = 0;
 
-    constructor(client: Kafka.KafkaConsumer, config: ConsumerClientConfig) {
+    constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config.topic, config.logger);
         const {
             _encoding, rollback_on_failure, use_commit_sync
