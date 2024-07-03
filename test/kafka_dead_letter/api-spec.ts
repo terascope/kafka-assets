@@ -89,8 +89,6 @@ describe('Kafka Dead Letter', () => {
             return batch;
         };
 
-        await harness.initialize();
-
         await harness.runSlice({});
 
         consumed = await readData(topic, badRecords.length);
