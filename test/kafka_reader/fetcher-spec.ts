@@ -86,8 +86,6 @@ describe('Kafka Fetcher', () => {
 
         noop.onBatch = jest.fn(async (data: DataEntity[]) => data);
 
-        await harness.initialize();
-
         // it should be able to call connect
         await fetcher.consumer.connect();
 
