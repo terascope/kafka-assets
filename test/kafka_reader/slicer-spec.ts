@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import 'jest-extended';
 import { TestClientConfig, Logger } from '@terascope/job-components';
 import { SlicerTestHarness, newTestJobConfig } from 'teraslice-test-harness';

@@ -1,16 +1,16 @@
 import { debugLogger, pDelay, castArray } from '@terascope/job-components';
-import { AdminClient, IAdminClient } from 'node-rdkafka';
-import { ERR_UNKNOWN_TOPIC_OR_PART } from '../../asset/src/_kafka_helpers/error-codes';
-import { isKafkaError } from '../../asset/src/_kafka_helpers';
-import { kafkaBrokers } from './config';
+import kafka from 'node-rdkafka';
+import { ERR_UNKNOWN_TOPIC_OR_PART } from '../../asset/src/_kafka_helpers/error-codes.js';
+import { isKafkaError } from '../../asset/src/_kafka_helpers/index.js';
+import { kafkaBrokers } from './config.js';
 
 const logger = debugLogger('test-kafka-admin');
 
 export default class KafkaAdmin {
-    private _client: IAdminClient;
+    private _client: kafka.IAdminClient;
 
     constructor() {
-        this._client = AdminClient.create({
+        this._client = kafka.AdminClient.create({
             'metadata.broker.list': castArray(kafkaBrokers).join(','),
         });
     }

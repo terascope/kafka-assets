@@ -1,19 +1,19 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import {
     Logger, isError, pDelay, once,
     get
 } from '@terascope/job-components';
-import type * as kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import {
     isOkayError,
     wrapError,
     isKafkaError,
     AnyKafkaError,
-} from '../_kafka_helpers';
+} from '../_kafka_helpers/index.js';
 import {
     ERR__STATE,
     OkErrorKeys
-} from '../_kafka_helpers/error-codes';
+} from '../_kafka_helpers/error-codes.js';
 
 export default class BaseClient<T extends kafka.Client<any>> {
     /** the random factory of the back of interval, [min, max] */

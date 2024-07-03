@@ -1,13 +1,13 @@
 import {
     ConnectionConfig,
     OperationAPI,
-    DeadLetterAPIFn,
     parseError,
     Collector,
 } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
-import { KafkaDeadLetterConfig } from './interfaces';
-import { ProducerClient, ProduceMessage } from '../_kafka_clients';
+import kafka from 'node-rdkafka';
+import { DeadLetterAPIFn } from '@terascope/types';
+import { KafkaDeadLetterConfig } from './interfaces.js';
+import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer!: ProducerClient;

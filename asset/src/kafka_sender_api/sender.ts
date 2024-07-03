@@ -9,9 +9,9 @@ import {
     isPromAvailable,
     Context
 } from '@terascope/job-components';
-import * as kafka from 'node-rdkafka';
-import { KafkaSenderAPIConfig } from './interfaces';
-import { ProducerClient, ProduceMessage } from '../_kafka_clients';
+import kafka from 'node-rdkafka';
+import { KafkaSenderAPIConfig } from './interfaces.js';
+import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 
 type FN = (input: any) => any;
 

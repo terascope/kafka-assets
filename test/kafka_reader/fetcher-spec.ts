@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import 'jest-extended';
 import {
     TestClientConfig, Logger, DataEntity,
@@ -5,11 +6,11 @@ import {
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
-import { FatalError } from '../../asset/src/_kafka_clients';
-import KafkaFetcher from '../../asset/src/kafka_reader/fetcher';
-import { loadData } from '../helpers/kafka-data';
-import { kafkaBrokers, fetcherTopic, fetcherGroup } from '../helpers/config';
-import KafkaAdmin from '../helpers/kafka-admin';
+import { FatalError } from '../../asset/src/_kafka_clients/index.js';
+import KafkaFetcher from '../../asset/src/kafka_reader/fetcher.js';
+import { loadData } from '../helpers/kafka-data.js';
+import { kafkaBrokers, fetcherTopic, fetcherGroup } from '../helpers/config.js';
+import KafkaAdmin from '../helpers/kafka-admin.js';
 
 const logger = debugLogger('test-kafka-fetcher');
 
@@ -77,14 +78,13 @@ describe('Kafka Fetcher', () => {
         harness = new WorkerTestHarness(job, {
             clients,
         });
+        await harness.initialize();
 
         // FIXME: using "as any" is hack, we should properly fix it
         fetcher = harness.fetcher() as any;
         noop = harness.getOperation('noop');
 
-        noop.onBatch = jest.fn(async (data) => data);
-
-        await harness.initialize();
+        noop.onBatch = jest.fn(async (data: DataEntity[]) => data);
 
         // it should be able to call connect
         await fetcher.consumer.connect();

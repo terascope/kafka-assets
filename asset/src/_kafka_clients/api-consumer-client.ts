@@ -1,10 +1,10 @@
-import type * as kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import {
     DataEntity, TSError, toString, isError
 } from '@terascope/job-components';
-import Consumer from './consumer-client';
-import { KafkaMessage, KafkaMessageMetadata } from '../_kafka_helpers';
-import { ConsumerClientConfig, ConsumeFn } from './interfaces';
+import Consumer from './consumer-client.js';
+import { KafkaMessage, KafkaMessageMetadata } from '../_kafka_helpers/index.js';
+import { ConsumerClientConfig, ConsumeFn } from './interfaces.js';
 
 export default class APIConsumer extends Consumer {
     tryFn: ConsumeFn;

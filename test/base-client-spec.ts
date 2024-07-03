@@ -1,9 +1,10 @@
+import { jest } from '@jest/globals';
 import 'jest-extended';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { debugLogger } from '@terascope/job-components';
-import BaseClient from '../asset/src/_kafka_clients/base-client';
-import { KafkaError, AnyKafkaError } from '../asset/src/_kafka_helpers';
-import * as codes from '../asset/src/_kafka_helpers/error-codes';
+import BaseClient from '../asset/src/_kafka_clients/base-client.js';
+import { KafkaError, AnyKafkaError } from '../asset/src/_kafka_helpers/index.js';
+import * as codes from '../asset/src/_kafka_helpers/error-codes.js';
 
 describe('Base Client (internal)', () => {
     const logger = debugLogger('base-client');
@@ -108,7 +109,7 @@ describe('Base Client (internal)', () => {
 
     describe('->_once', () => {
         it('should fire once and cleanup when off is called', () => {
-            const listener = jest.fn();
+            const listener: jest.Mock = jest.fn();
 
             // @ts-expect-error because it is private
             const off = client._once('test:once:off', listener);
@@ -191,7 +192,7 @@ describe('Base Client (internal)', () => {
 
     describe('->_timeout', () => {
         it('should fire once the timeout is complete and cleanup', (done) => {
-            const cb = jest.fn();
+            const cb: jest.Mock<(err: Error | null) => void> = jest.fn();
 
             // @ts-expect-error because it is private
             client._timeout(cb, 200);
@@ -201,7 +202,7 @@ describe('Base Client (internal)', () => {
 
             setTimeout(() => {
                 expect(cb).toHaveBeenCalledTimes(1);
-                expect(cb.mock.calls[0][0].message).toEqual('Timeout of 200ms');
+                expect(cb.mock.calls[0][0]?.message).toEqual('Timeout of 200ms');
 
                 // @ts-expect-error because it is private
                 expect(client._cleanup).toBeArrayOfSize(0);
@@ -253,9 +254,9 @@ describe('Base Client (internal)', () => {
         const ogError = logger.error;
 
         beforeEach(() => {
-            logger.debug = jest.fn();
-            logger.warn = jest.fn();
-            logger.error = jest.fn();
+            logger.debug = jest.fn(() => true);
+            logger.warn = jest.fn(() => true);
+            logger.error = jest.fn(() => true);
         });
 
         afterEach(() => {
@@ -323,7 +324,7 @@ describe('Base Client (internal)', () => {
             const ogError = logger.error;
 
             beforeEach(() => {
-                logger.error = jest.fn();
+                logger.error = jest.fn(() => true);
             });
 
             afterEach(() => {
@@ -364,7 +365,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__TIMED_OUT') as any as KafkaError;
                 error.code = codes.ERR__TIMED_OUT;
 
-                const fn = jest.fn<any, any[]>(() => 'howdy').mockRejectedValueOnce(error);
+                const fn = jest.fn<any>(() => 'howdy').mockRejectedValueOnce(error);
 
                 // @ts-expect-error because it is private
                 const result = await client._try(async () => fn(), 'commit');
@@ -383,7 +384,7 @@ describe('Base Client (internal)', () => {
                 const okError = new Error('KAFKA_NO_OFFSET_STORED') as any as KafkaError;
                 okError.code = codes.KAFKA_NO_OFFSET_STORED;
 
-                const fn = jest.fn<any, any[]>(() => 'howdy')
+                const fn = jest.fn<any>(() => 'howdy')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(okError);
 
@@ -400,7 +401,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__RESOLVE') as any as KafkaError;
                 error.code = codes.ERR__RESOLVE;
 
-                const fn = jest.fn<any, any[]>(() => 'hello')
+                const fn = jest.fn<any>(() => 'hello')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error);
 
@@ -421,7 +422,7 @@ describe('Base Client (internal)', () => {
 
                 const error = new Error('Fatal Error');
 
-                const fn = jest.fn<any, any[]>(() => 'hi')
+                const fn = jest.fn<any>(() => 'hi')
                     .mockRejectedValueOnce(retryable)
                     .mockRejectedValueOnce(retryable)
                     .mockRejectedValueOnce(error);
@@ -443,7 +444,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__WAIT_CACHE') as any as KafkaError;
                 error.code = codes.ERR__WAIT_CACHE;
 
-                const fn = jest.fn<any, any[]>(() => 'hi')
+                const fn = jest.fn<any>(() => 'hi')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error);

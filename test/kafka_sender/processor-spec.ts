@@ -1,19 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { jest } from '@jest/globals';
 import 'jest-extended';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
     TestClientConfig, Logger, DataEntity,
     parseJSON,
 } from '@terascope/job-components';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
-import KafkaSender from '../../asset/src/kafka_sender/processor';
-import { readData } from '../helpers/kafka-data';
-import { kafkaBrokers, senderTopic } from '../helpers/config';
-import KafkaAdmin from '../helpers/kafka-admin';
+import KafkaSender from '../../asset/src/kafka_sender/processor.js';
+import { readData } from '../helpers/kafka-data.js';
+import { kafkaBrokers, senderTopic } from '../helpers/config.js';
+import KafkaAdmin from '../helpers/kafka-admin.js';
 
-const testFetcherFile = path.join(__dirname, '../fixtures', 'test-fetcher-data.json');
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const testFetcherFile = path.join(dirname, '../fixtures', 'test-fetcher-data.json');
 const testFetcherData: Record<string, any>[] = parseJSON(fs.readFileSync(testFetcherFile));
 
 describe('Kafka Sender', () => {
@@ -75,10 +79,9 @@ describe('Kafka Sender', () => {
         harness = new WorkerTestHarness(job, {
             clients,
         });
+        await harness.initialize();
 
         kafkaSender = harness.getOperation('kafka_sender');
-
-        await harness.initialize();
 
         while (results.length < targetSize) {
             if (runs > targetRuns) {

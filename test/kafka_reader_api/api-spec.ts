@@ -1,10 +1,11 @@
+import { jest } from '@jest/globals';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, Logger } from '@terascope/job-components';
 import Connector from 'terafoundation_kafka_connector';
-import { DEFAULT_API_NAME, KafkaReaderAPI } from '../../asset/src/kafka_reader_api/interfaces';
-import { kafkaBrokers, fetcherAPITopic, fetcherGroup } from '../helpers/config';
-import { loadData } from '../helpers/kafka-data';
-import KafkaAdmin from '../helpers/kafka-admin';
+import { DEFAULT_API_NAME, KafkaReaderAPI } from '../../asset/src/kafka_reader_api/interfaces.js';
+import { kafkaBrokers, fetcherAPITopic, fetcherGroup } from '../helpers/config.js';
+import { loadData } from '../helpers/kafka-data.js';
+import KafkaAdmin from '../helpers/kafka-admin.js';
 
 describe('kafka_reader_api', () => {
     jest.setTimeout(30 * 1000);

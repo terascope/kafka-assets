@@ -1,4 +1,4 @@
-import type * as kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import {
     pDelay, toHumanTime, EncodingConfig,
     isBoolean, isNotNil
@@ -6,16 +6,16 @@ import {
 import {
     wrapError, AnyKafkaError, KafkaMessage,
     KafkaError,
-} from '../_kafka_helpers';
-import BaseClient, { getRandom } from './base-client';
+} from '../_kafka_helpers/index.js';
+import BaseClient, { getRandom } from './base-client.js';
 import {
     TrackedOffsets, TopicPartition, ConsumerClientConfig,
     CountPerPartition, FatalError, OffsetByPartition,
-} from './interfaces';
+} from './interfaces.js';
 import {
     ERR__ASSIGN_PARTITIONS,
     ERR__REVOKE_PARTITIONS,
-} from '../_kafka_helpers/error-codes';
+} from '../_kafka_helpers/error-codes.js';
 
 const isProd = process.env.NODE_ENV !== 'test';
 /** Maximum number of invalid state errors to get from kafka */

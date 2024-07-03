@@ -1,12 +1,13 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "4.4.1",
+    "version": "5.0.0",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "repository": "git@github.com:terascope/kafka-assets.git",
     "license": "MIT",
     "author": "Terascope, LLC <info@terascope.io>",
+    "type": "module",
     "workspaces": {
         "packages": [
             "packages/*",
@@ -23,34 +24,34 @@
         "lint:fix": "yarn lint --fix",
         "publish:changed": "./scripts/publish.sh",
         "setup": "yarn && yarn build --force",
-        "test": "KAFKA_VERSION=3.2 ts-scripts test asset --",
-        "test:all": "KAFKA_VERSION=3.2 ts-scripts test",
-        "test:debug": "KAFKA_VERSION=3.2 ts-scripts test --debug asset --",
-        "test:watch": "KAFKA_VERSION=3.2 ts-scripts test --watch asset --"
+        "test": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test asset --",
+        "test:all": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test",
+        "test:debug": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test --debug asset --",
+        "test:watch": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test --watch asset --"
     },
     "dependencies": {
-        "node-gyp": "9.4.1"
+        "node-gyp": "10.1.0"
     },
     "devDependencies": {
         "@terascope/eslint-config": "^0.8.0",
-        "@terascope/job-components": "^0.75.1",
-        "@terascope/scripts": "^0.77.2",
+        "@terascope/job-components": "^1.0.1",
+        "@terascope/scripts": "^0.78.0",
         "@types/jest": "^29.5.12",
-        "@types/node": "^18.14.2",
-        "@types/uuid": "^9.0.8",
+        "@types/node": "^20.14.9",
+        "@types/uuid": "^10.0.0",
         "bunyan": "^1.8.15",
         "eslint": "^8.57.0",
         "jest": "^29.6.2",
         "jest-extended": "^4.0.2",
-        "terafoundation_kafka_connector": "^0.14.0",
-        "teraslice-test-harness": "^0.30.0",
+        "terafoundation_kafka_connector": "^1.0.0",
+        "teraslice-test-harness": "^1.0.1",
         "ts-jest": "^29.1.5",
         "typescript": "~5.2.2",
         "uuid": "^10.0.0"
     },
     "engines": {
         "node": ">=18.0.0",
-        "yarn": ">=1.22.19"
+        "yarn": ">=1.22.22"
     },
     "terascope": {
         "root": true,

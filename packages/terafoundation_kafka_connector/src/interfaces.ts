@@ -1,5 +1,5 @@
 import { Logger } from '@terascope/job-components';
-import { KafkaConsumer, Producer } from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 
 export interface KafkaConnectorConfig {
     /** A list of brokers */
@@ -50,11 +50,11 @@ export interface KafkaConsumerOptions extends KafkaClientOptions {
 export type ClientType = 'producer'|'consumer';
 
 export interface KafkaConsumerResult {
-    client: KafkaConsumer;
+    client: kafka.KafkaConsumer;
     logger: Logger
 }
 
 export interface KafkaProducerResult {
-    client: Producer;
+    client: kafka.Producer;
     logger: Logger
 }

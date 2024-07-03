@@ -1,5 +1,5 @@
 import { Logger, DataEncoding, DataEntity } from '@terascope/job-components';
-import { KafkaMessage } from '../_kafka_helpers';
+import { KafkaMessage } from '../_kafka_helpers/index.js';
 
 export interface OffsetByPartition {
     [partition: number]: number;

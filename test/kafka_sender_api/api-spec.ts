@@ -1,8 +1,9 @@
+import { jest } from '@jest/globals';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, Logger } from '@terascope/job-components';
 import Connector from 'terafoundation_kafka_connector';
-import { KafkaSenderAPI } from '../../asset/src/kafka_sender_api/interfaces';
-import { kafkaBrokers, senderTopic } from '../helpers/config';
+import { KafkaSenderAPI } from '../../asset/src/kafka_sender_api/interfaces.js';
+import { kafkaBrokers, senderTopic } from '../helpers/config.js';
 
 describe('kafka_sender_api', () => {
     jest.setTimeout(15 * 1000);
