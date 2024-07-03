@@ -4,7 +4,7 @@ import {
     parseError,
     Collector,
 } from '@terascope/job-components';
-import Kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
@@ -102,7 +102,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         return config as ConnectionConfig;
     }
 
-    private async createClient(): Promise<Kafka.Producer> {
+    private async createClient(): Promise<kafka.Producer> {
         const config = this.clientConfig();
         const connection = await this.context.apis.foundation.createClient(config);
         return connection.client;

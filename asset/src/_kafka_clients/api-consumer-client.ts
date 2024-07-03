@@ -1,4 +1,4 @@
-import Kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import {
     DataEntity, TSError, toString, isError
 } from '@terascope/job-components';
@@ -11,7 +11,7 @@ export default class APIConsumer extends Consumer {
     processKafkaRecord: (msg: KafkaMessage) => DataEntity;
     mapper: (msg: KafkaMessage) => DataEntity;
 
-    constructor(client: Kafka.KafkaConsumer, config: ConsumerClientConfig) {
+    constructor(client: kafka.KafkaConsumer, config: ConsumerClientConfig) {
         super(client, config);
         this.tryFn = config.tryFn || this.tryCatch;
         this.processKafkaRecord = (msg: KafkaMessage): DataEntity => {
@@ -58,7 +58,7 @@ export default class APIConsumer extends Consumer {
 }
 
 /** Safely convert a buffer or string to a string */
-function keyToString(str?: Kafka.MessageKey) {
+function keyToString(str?: kafka.MessageKey) {
     if (!str) return undefined;
     return str.toString('utf8');
 }

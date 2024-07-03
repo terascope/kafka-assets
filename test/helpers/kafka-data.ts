@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { v4 as uuidv4 } from 'uuid';
 import { debugLogger, castArray } from '@terascope/job-components';
-import Kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import { kafkaBrokers } from './config.js';
 import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients/index.js';
 
@@ -28,7 +28,7 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
             return Buffer.from(d);
         });
 
-    const producer = new Kafka.Producer({
+    const producer = new kafka.Producer({
         'compression.codec': 'gzip',
         'queue.buffering.max.messages': messages.length,
         'queue.buffering.max.ms': 20,
@@ -64,7 +64,7 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
 }
 
 export async function readData(topic: string, size: number): Promise<any[]> {
-    const consumer = new Kafka.KafkaConsumer({
+    const consumer = new kafka.KafkaConsumer({
         // We want to explicitly manage offset commits.
         'enable.auto.commit': false,
         'enable.auto.offset.store': false,

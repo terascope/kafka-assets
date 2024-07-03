@@ -9,7 +9,7 @@ import {
     isPromAvailable,
     Context
 } from '@terascope/job-components';
-import Kafka from 'node-rdkafka';
+import kafka from 'node-rdkafka';
 import { KafkaSenderAPIConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 
@@ -26,7 +26,7 @@ export default class KafkaSender implements RouteSenderAPI {
     readonly pathList = new Map<string, boolean>();
     readonly mapper: (msg: DataEntity) => ProduceMessage;
 
-    constructor(client: Kafka.Producer, config: KafkaSenderAPIConfig, context: Context) {
+    constructor(client: kafka.Producer, config: KafkaSenderAPIConfig, context: Context) {
         const producer = new ProducerClient(client, {
             logger: config.logger,
             topic: config.topicOverride || config.topic,
