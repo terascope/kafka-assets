@@ -20,6 +20,7 @@
         "build:watch": "yarn build --watch",
         "bump": "ts-scripts bump",
         "bump-asset": "ts-scripts bump-asset",
+        "docker:limit": "./scripts/docker-limit-check.sh",
         "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
         "lint:fix": "yarn lint --fix",
         "publish:changed": "./scripts/publish.sh",
