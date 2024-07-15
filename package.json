@@ -30,7 +30,7 @@
         "test:watch": "NODE_OPTIONS='--experimental-vm-modules' KAFKA_VERSION=3.2 ts-scripts test --watch asset --"
     },
     "dependencies": {
-        "node-gyp": "10.1.0"
+        "node-gyp": "10.2.0"
     },
     "devDependencies": {
         "@terascope/eslint-config": "^0.8.0",
