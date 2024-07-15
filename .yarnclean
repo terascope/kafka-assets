@@ -8,7 +8,8 @@ powered-test
 docs
 doc
 website
-images
+# This deletes any directory named "images" inside node_modules
+# images
 assets
 
 # examples
