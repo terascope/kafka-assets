@@ -4924,10 +4924,10 @@ node-int64@^0.4.0:
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
   integrity sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==
 
-node-rdkafka@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/node-rdkafka/-/node-rdkafka-3.0.1.tgz#c536d7702d971535b41099acc1baf89706a5d1ba"
-  integrity sha512-USTFu7ylRj+fEiGz0hA92GWSqmX/hu/xSTqtgmInPPmh5zKhjauTciRjDEG3yK5m6yChwyHKQTIgmr56DfhiaQ==
+node-rdkafka@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/node-rdkafka/-/node-rdkafka-3.1.0.tgz#b2646ef7200d947516045f5ed19cb609a98891fa"
+  integrity sha512-H0FeV6cgkFX/NHKPyWsUHoC4l645/2vfKVdTyvKmwX+nafHuZzT6xVWl2kJQBNVJcRVgtQA1Loz6iXWhq03RKw==
   dependencies:
     bindings "^1.3.1"
     nan "^2.19.0"
