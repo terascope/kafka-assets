@@ -45,7 +45,7 @@
         "jest-extended": "^4.0.2",
         "terafoundation_kafka_connector": "^1.0.0",
         "teraslice-test-harness": "^1.1.0",
-        "ts-jest": "^29.2.2",
+        "ts-jest": "^29.2.3",
         "typescript": "~5.2.2",
         "uuid": "^10.0.0"
     },
