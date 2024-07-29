@@ -35,7 +35,7 @@
     "devDependencies": {
         "@terascope/eslint-config": "^0.8.0",
         "@terascope/job-components": "^1.1.0",
-        "@terascope/scripts": "^0.81.2",
+        "@terascope/scripts": "^0.83.1",
         "@types/jest": "^29.5.12",
         "@types/node": "^20.14.9",
         "@types/uuid": "^10.0.0",
