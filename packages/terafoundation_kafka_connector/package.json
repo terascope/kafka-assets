@@ -22,7 +22,7 @@
         "test:watch": "NODE_OPTIONS='--experimental-vm-modules' ts-scripts test --watch . --"
     },
     "dependencies": {
-        "node-rdkafka": "^3.0.1"
+        "node-rdkafka": "^3.1.0"
     },
     "devDependencies": {
         "@terascope/job-components": "^1.1.0",
