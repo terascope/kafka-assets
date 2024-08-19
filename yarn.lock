@@ -739,13 +739,13 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.1.0.tgz#f0d0d604831e85e8898c55d72a3bb3231b966980"
-  integrity sha512-iX0h75CXv3KNer7GJp6BKLyULWBD3zgMNvoI8m7wfo94Z2OwCs/m7LM3LQL7fD+i/QpUvlVtHTV4F3oy4EXBOw==
+"@terascope/job-components@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.2.0.tgz#b78da13af6dba42d166cecc1197f7abed860e6a0"
+  integrity sha512-v2yu+x5dA1RAo3jETAC72UOGb4h48fuTCE5u5upsXTm9BCO1o4MX5Vy4JZD6U65JBkDZCBHo/tMyYGKJPVraKQ==
   dependencies:
-    "@terascope/types" "^0.18.0"
-    "@terascope/utils" "^0.60.0"
+    "@terascope/types" "^1.0.0"
+    "@terascope/utils" "^1.0.0"
     convict "^6.2.4"
     convict-format-with-moment "^6.2.0"
     convict-format-with-validator "^6.2.0"
@@ -790,6 +790,13 @@
   dependencies:
     prom-client "^15.1.2"
 
+"@terascope/types@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.0.0.tgz#bbccc76c95a52ebc99781316568ae897a520dd68"
+  integrity sha512-hkHJhb6dR31v4KzipiNIYVc0nNVN1BP0A8uGIQutwhLwf9thF6vAjsigoomXq8fnvjTGDskaTkXlsVk81bQQ3w==
+  dependencies:
+    prom-client "^15.1.2"
+
 "@terascope/utils@^0.60.0":
   version "0.60.0"
   resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.60.0.tgz#5fb9cf2354ad7ca1d1df47b833b1b3e79f6c922e"
@@ -827,6 +834,48 @@
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
     lodash "^4.17.21"
+    mnemonist "^0.39.8"
+    p-map "^4.0.0"
+    shallow-clone "^3.0.1"
+    validator "^13.12.0"
+
+"@terascope/utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.0.0.tgz#c470629efd5ae6d5dbd626c98afe3d27389b739f"
+  integrity sha512-cvH9Amvq6jaIDeKWGgdaoANhlNQ7ql2hFqktqYmBb7wKd0tP85HxTBRCPawrhJgRCE1qLZIYdh7QsAj7qCNNiQ==
+  dependencies:
+    "@terascope/types" "^1.0.0"
+    "@turf/bbox" "^6.4.0"
+    "@turf/bbox-polygon" "^6.4.0"
+    "@turf/boolean-contains" "^6.4.0"
+    "@turf/boolean-disjoint" "^6.4.0"
+    "@turf/boolean-equal" "^6.4.0"
+    "@turf/boolean-intersects" "^6.4.0"
+    "@turf/boolean-point-in-polygon" "^6.4.0"
+    "@turf/boolean-within" "^6.4.0"
+    "@turf/circle" "^6.4.0"
+    "@turf/helpers" "^6.2.0"
+    "@turf/invariant" "^6.2.0"
+    "@turf/line-to-polygon" "^6.4.0"
+    "@types/lodash-es" "^4.17.12"
+    "@types/validator" "^13.11.10"
+    awesome-phonenumber "^2.70.0"
+    date-fns "^2.30.0"
+    date-fns-tz "^1.3.7"
+    datemath-parser "^1.0.6"
+    debug "^4.3.4"
+    geo-tz "^7.0.7"
+    ip-bigint "^3.0.3"
+    ip-cidr "^3.1.0"
+    ip6addr "^0.2.5"
+    ipaddr.js "^2.2.0"
+    is-cidr "^4.0.2"
+    is-ip "^3.1.0"
+    is-plain-object "^5.0.0"
+    js-string-escape "^1.0.1"
+    kind-of "^6.0.3"
+    latlon-geohash "^1.1.0"
+    lodash-es "^4.17.21"
     mnemonist "^0.39.8"
     p-map "^4.0.0"
     shallow-clone "^3.0.1"
@@ -1160,6 +1209,18 @@
   integrity sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==
   dependencies:
     "@types/node" "*"
+
+"@types/lodash-es@^4.17.12":
+  version "4.17.12"
+  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.12.tgz#65f6d1e5f80539aa7cfbfc962de5def0cf4f341b"
+  integrity sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.17.7"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.7.tgz#2f776bcb53adc9e13b2c0dfd493dfcbd7de43612"
+  integrity sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==
 
 "@types/lodash@^4.14.202":
   version "4.17.6"
@@ -4560,6 +4621,11 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
+
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
