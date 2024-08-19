@@ -22,8 +22,8 @@
         "test": "yarn --cwd ../ test"
     },
     "dependencies": {
-        "@terascope/job-components": "^1.1.0",
-        "@terascope/types": "^0.18.0"
+        "@terascope/job-components": "^1.2.0",
+        "@terascope/types": "^1.0.0"
     },
     "devDependencies": {},
     "engines": {

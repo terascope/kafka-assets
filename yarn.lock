@@ -728,10 +728,10 @@
     eslint-plugin-react "^7.29.4"
     eslint-plugin-react-hooks "^4.4.0"
 
-"@terascope/fetch-github-release@^0.8.10":
-  version "0.8.10"
-  resolved "https://registry.yarnpkg.com/@terascope/fetch-github-release/-/fetch-github-release-0.8.10.tgz#243b8a50f963f4c2c5771689e2b94e94265db179"
-  integrity sha512-bTLmiEotEca8YTi+PcvznisIHMEKYLU0Uj322rkbMJlr6LqXFvIKv2dzuwMhSADO7eUeKlC4mXUs8Nt2ftpdWA==
+"@terascope/fetch-github-release@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@terascope/fetch-github-release/-/fetch-github-release-1.0.0.tgz#72a19cda75c389081f48646a86595087ade348bc"
+  integrity sha512-4I89IyfaL74Ssk60VfAl4dtCS5qdUstIW8fd7x8BD2BJpiw12PYhC6Q8rMmxjPohKWuk6TC/A76TfkkjZJxiOw==
   dependencies:
     extract-zip "^2.0.1"
     got "^11.4.0"
@@ -739,13 +739,13 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.1.0.tgz#f0d0d604831e85e8898c55d72a3bb3231b966980"
-  integrity sha512-iX0h75CXv3KNer7GJp6BKLyULWBD3zgMNvoI8m7wfo94Z2OwCs/m7LM3LQL7fD+i/QpUvlVtHTV4F3oy4EXBOw==
+"@terascope/job-components@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.2.0.tgz#b78da13af6dba42d166cecc1197f7abed860e6a0"
+  integrity sha512-v2yu+x5dA1RAo3jETAC72UOGb4h48fuTCE5u5upsXTm9BCO1o4MX5Vy4JZD6U65JBkDZCBHo/tMyYGKJPVraKQ==
   dependencies:
-    "@terascope/types" "^0.18.0"
-    "@terascope/utils" "^0.60.0"
+    "@terascope/types" "^1.0.0"
+    "@terascope/utils" "^1.0.0"
     convict "^6.2.4"
     convict-format-with-moment "^6.2.0"
     convict-format-with-validator "^6.2.0"
@@ -754,13 +754,13 @@
     prom-client "^15.1.2"
     uuid "^9.0.1"
 
-"@terascope/scripts@^0.83.3":
-  version "0.83.3"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-0.83.3.tgz#d904943cc783126073b34c66c33b9195f69fc97b"
-  integrity sha512-cuCVYoYZkt22UgnD/DIWOH8Qbo42MZ01rGLGEgwZeesI7j/baBjXOqLmgNJRdLxsz/hUyTbfiPF5RcMmkNUavg==
+"@terascope/scripts@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-1.0.0.tgz#dec9127ced459a8de151db0bc584c75124f9735f"
+  integrity sha512-E5VMhiF+/eIe5jd9Kf9kGYyy8mPYBPyjV1CtJNE0tbIgZO4CuOlb7hmVwFlOEW4uGI1Q0Xml9OzPpHQi7NZ6Tw==
   dependencies:
     "@kubernetes/client-node" "^0.20.0"
-    "@terascope/utils" "^0.60.0"
+    "@terascope/utils" "^1.0.0"
     codecov "^3.8.3"
     execa "^5.1.0"
     fs-extra "^11.2.0"
@@ -783,19 +783,19 @@
     typedoc-plugin-markdown "~4.0.3"
     yargs "^17.7.2"
 
-"@terascope/types@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-0.18.0.tgz#3e476339466fc3fcf440b5577d146bf93c2aa194"
-  integrity sha512-zTPnf+ncxSSB4ees8i8ZUsl3LXW7mU1ogtmNZMb1Cnp5heH6PYyuoAmnlUCrusvS6sgcejj4S01Sc11SelwLEA==
+"@terascope/types@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.0.0.tgz#bbccc76c95a52ebc99781316568ae897a520dd68"
+  integrity sha512-hkHJhb6dR31v4KzipiNIYVc0nNVN1BP0A8uGIQutwhLwf9thF6vAjsigoomXq8fnvjTGDskaTkXlsVk81bQQ3w==
   dependencies:
     prom-client "^15.1.2"
 
-"@terascope/utils@^0.60.0":
-  version "0.60.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.60.0.tgz#5fb9cf2354ad7ca1d1df47b833b1b3e79f6c922e"
-  integrity sha512-KlgroYtnpSgSkdKlMBEadFQ2Fb7dAkeE0bCC4XApGx2VEWopPMWd2RW1LibuwakIfue2zPR6lgBytab70x12Nw==
+"@terascope/utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.0.0.tgz#c470629efd5ae6d5dbd626c98afe3d27389b739f"
+  integrity sha512-cvH9Amvq6jaIDeKWGgdaoANhlNQ7ql2hFqktqYmBb7wKd0tP85HxTBRCPawrhJgRCE1qLZIYdh7QsAj7qCNNiQ==
   dependencies:
-    "@terascope/types" "^0.18.0"
+    "@terascope/types" "^1.0.0"
     "@turf/bbox" "^6.4.0"
     "@turf/bbox-polygon" "^6.4.0"
     "@turf/boolean-contains" "^6.4.0"
@@ -808,7 +808,7 @@
     "@turf/helpers" "^6.2.0"
     "@turf/invariant" "^6.2.0"
     "@turf/line-to-polygon" "^6.4.0"
-    "@types/lodash" "^4.14.202"
+    "@types/lodash-es" "^4.17.12"
     "@types/validator" "^13.11.10"
     awesome-phonenumber "^2.70.0"
     date-fns "^2.30.0"
@@ -826,7 +826,7 @@
     js-string-escape "^1.0.1"
     kind-of "^6.0.3"
     latlon-geohash "^1.1.0"
-    lodash "^4.17.21"
+    lodash-es "^4.17.21"
     mnemonist "^0.39.8"
     p-map "^4.0.0"
     shallow-clone "^3.0.1"
@@ -1161,10 +1161,17 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash@^4.14.202":
-  version "4.17.6"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.6.tgz#193ced6a40c8006cfc1ca3f4553444fb38f0e543"
-  integrity sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==
+"@types/lodash-es@^4.17.12":
+  version "4.17.12"
+  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.12.tgz#65f6d1e5f80539aa7cfbfc962de5def0cf4f341b"
+  integrity sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.17.7"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.7.tgz#2f776bcb53adc9e13b2c0dfd493dfcbd7de43612"
+  integrity sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==
 
 "@types/minimatch@*":
   version "5.1.2"
@@ -4561,6 +4568,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
@@ -6154,12 +6166,12 @@ teeny-request@7.1.1:
     stream-events "^1.0.5"
     uuid "^8.0.0"
 
-teraslice-test-harness@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-1.1.0.tgz#9d443585b048eacb492584c9e50242196bfc9e2a"
-  integrity sha512-1QvFlG//Atyar3tEIjC3PbfT0QvMkg8I+a7h7CJikVFpEGJLm9eIiiohmaD5fGaFXGNfqKElbDek3jPZwXHRww==
+teraslice-test-harness@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-1.2.0.tgz#7d284cfe2b52488de9834245a168b21709a838fa"
+  integrity sha512-lbkQs0ZkARg5K5+/NJxWL5CKReibs0Yp0MINnvIDPqhK4NuRkf3dBMX1C+ofRFj8p0yxlc1mtqao0pNNQ8PXbw==
   dependencies:
-    "@terascope/fetch-github-release" "^0.8.10"
+    "@terascope/fetch-github-release" "^1.0.0"
     decompress "^4.2.1"
     fs-extra "^11.2.0"
 
