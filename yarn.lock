@@ -790,6 +790,13 @@
   dependencies:
     prom-client "^15.1.2"
 
+"@terascope/types@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.0.0.tgz#bbccc76c95a52ebc99781316568ae897a520dd68"
+  integrity sha512-hkHJhb6dR31v4KzipiNIYVc0nNVN1BP0A8uGIQutwhLwf9thF6vAjsigoomXq8fnvjTGDskaTkXlsVk81bQQ3w==
+  dependencies:
+    prom-client "^15.1.2"
+
 "@terascope/utils@^0.60.0":
   version "0.60.0"
   resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-0.60.0.tgz#5fb9cf2354ad7ca1d1df47b833b1b3e79f6c922e"
