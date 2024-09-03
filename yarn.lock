@@ -761,10 +761,10 @@
     prom-client "^15.1.2"
     uuid "^9.0.1"
 
-"@terascope/scripts@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-1.0.1.tgz#bebd5b37fab71398546ec4efc9dc951100801739"
-  integrity sha512-YgvuSskqXeES4PfA/ZCx7HUHypxLqD+0l971aESUiJJtBdleK6kcb+7hVKGrz0vZvZRLLYsY+3myZFO0whynXw==
+"@terascope/scripts@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-1.0.2.tgz#a6f2242bf50886d957acd333202428d4b17be97c"
+  integrity sha512-EqKOk1JSz7kr18DbEmBlkNf9o7LcdZ9XjiTL5SnN5XLh52VXYubjN35Aig5VjF935ENBFoxN0lAyWnmKsvF8ow==
   dependencies:
     "@kubernetes/client-node" "^0.21.0"
     "@terascope/utils" "^1.0.0"
