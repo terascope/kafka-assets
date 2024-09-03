@@ -27,10 +27,10 @@
         "lint:fix": "yarn lint --fix",
         "publish:changed": "./scripts/publish.sh",
         "setup": "yarn && yarn build --force",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' ts-scripts test asset --",
-        "test:all": "NODE_OPTIONS='--experimental-vm-modules' ts-scripts test",
-        "test:debug": "NODE_OPTIONS='--experimental-vm-modules' ts-scripts test --debug asset --",
-        "test:watch": "NODE_OPTIONS='--experimental-vm-modules' ts-scripts test --watch asset --"
+        "test": "ts-scripts test asset --",
+        "test:all": "ts-scripts test",
+        "test:debug": "ts-scripts test --debug asset --",
+        "test:watch": "ts-scripts test --watch asset --"
     },
     "dependencies": {
         "node-gyp": "10.2.0"
@@ -38,7 +38,7 @@
     "devDependencies": {
         "@terascope/eslint-config": "^0.8.0",
         "@terascope/job-components": "^1.2.0",
-        "@terascope/scripts": "^1.0.0",
+        "@terascope/scripts": "^1.0.2",
         "@types/jest": "^29.5.12",
         "@types/node": "^20.14.9",
         "@types/uuid": "^10.0.0",
