@@ -440,7 +440,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._logger.debug('waiting for rebalance...');
 
         return new Promise<void>((resolve) => {
-            let timeoutOff: () => void;
+            let timeoutOff = () => {};
 
             const eventOff = this._once('rebalance:end', () => {
                 timeoutOff();
