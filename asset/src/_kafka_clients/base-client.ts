@@ -151,7 +151,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * @returns an off function to the event listener
     */
     protected _once(event: string, fn: (err: Error|null, ...args: any[]) => void): () => void {
-        let off: () => void;
+        let off = () => {};
 
         const cb = once(fn);
         const handler = (...args: any) => {
@@ -183,7 +183,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * @returns an off function to cleanup the timer
     */
     protected _timeout(fn: (err: Error|null) => void, timeoutMs: number): () => void {
-        let off: () => void;
+        let off = () => {};
 
         const cb = once(fn);
         const timeout = setTimeout(() => {

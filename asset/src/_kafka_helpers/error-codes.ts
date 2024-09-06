@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 // see https://github.com/Blizzard/node-rdkafka/blob/master/lib/error.js
 
 export const codeToMessage = {
