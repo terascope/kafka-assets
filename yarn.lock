@@ -800,17 +800,10 @@
     typedoc-plugin-markdown "~4.0.3"
     yargs "^17.7.2"
 
-"@terascope/types@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.0.0.tgz#bbccc76c95a52ebc99781316568ae897a520dd68"
-  integrity sha512-hkHJhb6dR31v4KzipiNIYVc0nNVN1BP0A8uGIQutwhLwf9thF6vAjsigoomXq8fnvjTGDskaTkXlsVk81bQQ3w==
-  dependencies:
-    prom-client "^15.1.2"
-
-"@terascope/types@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.0.1.tgz#0315db83132492d6d774706711764913a5de5e69"
-  integrity sha512-Rr8UTJvit6fyHPafhk5OKVcJXjWuFtLTBy+Pnw0mIDfag4Lkk4QOA+ARHk4J/Be3Ayv+T2tLfVhUFBjOsj7xgg==
+"@terascope/types@^1.0.0", "@terascope/types@^1.0.1", "@terascope/types@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.1.0.tgz#0c87a0340e45b2e387caab27017b8c1e3ea10028"
+  integrity sha512-bmPl5w/X4ZIcWK8uqqbCMRObd9QaR52/S9TTZbgQNQA3QNz5KH4/HuC1kNMwdzL7rGWKu7KsqSM2Q4yiPRqmXw==
   dependencies:
     prom-client "^15.1.3"
 
@@ -5537,7 +5530,7 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-prom-client@^15.1.2, prom-client@^15.1.3:
+prom-client@^15.1.3:
   version "15.1.3"
   resolved "https://registry.yarnpkg.com/prom-client/-/prom-client-15.1.3.tgz#69fa8de93a88bc9783173db5f758dc1c69fa8fc2"
   integrity sha512-6ZiOBfCywsD4k1BN9IX0uZhF+tJkV8q8llP64G5Hajs4JOeVLPCwpPVcpXy3BwYiUGgyJzsJJQeOIv7+hDSq8g==
