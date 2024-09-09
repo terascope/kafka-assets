@@ -771,13 +771,13 @@
     prom-client "^15.1.3"
     uuid "^9.0.1"
 
-"@terascope/scripts@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-1.0.2.tgz#a6f2242bf50886d957acd333202428d4b17be97c"
-  integrity sha512-EqKOk1JSz7kr18DbEmBlkNf9o7LcdZ9XjiTL5SnN5XLh52VXYubjN35Aig5VjF935ENBFoxN0lAyWnmKsvF8ow==
+"@terascope/scripts@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-1.1.0.tgz#45ecb33dc48f75738fcc31d996074bbd2b782dd8"
+  integrity sha512-LyN3SYPP/GDq0XVlZgHytN2L9MCwnCsbegKPQzH1ZrCsPx7u46i/YexCpF4IkRfUsc0evzMXxzBJRwVx8jPuRQ==
   dependencies:
     "@kubernetes/client-node" "^0.21.0"
-    "@terascope/utils" "^1.0.0"
+    "@terascope/utils" "^1.1.0"
     codecov "^3.8.3"
     execa "^5.1.0"
     fs-extra "^11.2.0"
@@ -807,7 +807,7 @@
   dependencies:
     prom-client "^15.1.3"
 
-"@terascope/utils@^1.0.0", "@terascope/utils@^1.1.0":
+"@terascope/utils@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.1.0.tgz#92a34e757ac3c381b87444bb0b76bf42932c9dbc"
   integrity sha512-cDuivbvHxtKFQ9iKJI9h7bmQT/2iKoCbmxC9E0J85RkFnGUGqnOH5B1cNCVJQuOIsLT+BhiE/1B0MaTbt99OfA==
