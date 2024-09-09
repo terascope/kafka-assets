@@ -756,13 +756,13 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.2.1.tgz#266cf97a5a0293d995c5f3dde4f48626c0301e04"
-  integrity sha512-x4AGaJ2EBjE5vsYJwu+/Oe6JvYL14Q5tDPMZMayw1Qi3TZKr4UT6NfuzYUnY8SX5hmHM+okenGCM2xg4MBvgFg==
+"@terascope/job-components@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.3.0.tgz#c15420877d55e06c3dacc563e27d59bcdc38c8f1"
+  integrity sha512-RzXKLrGYEXp4dMTLNJ4oqwvs+4nn10lA7oGVEwfXePoW0dh/AGBGkBDT+pbWQOs8HSs6LYFrmNYmlnePcco3Xw==
   dependencies:
-    "@terascope/types" "^1.0.1"
-    "@terascope/utils" "^1.0.1"
+    "@terascope/types" "^1.1.0"
+    "@terascope/utils" "^1.1.0"
     convict "^6.2.4"
     convict-format-with-moment "^6.2.0"
     convict-format-with-validator "^6.2.0"
@@ -800,68 +800,19 @@
     typedoc-plugin-markdown "~4.0.3"
     yargs "^17.7.2"
 
-"@terascope/types@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.0.0.tgz#bbccc76c95a52ebc99781316568ae897a520dd68"
-  integrity sha512-hkHJhb6dR31v4KzipiNIYVc0nNVN1BP0A8uGIQutwhLwf9thF6vAjsigoomXq8fnvjTGDskaTkXlsVk81bQQ3w==
-  dependencies:
-    prom-client "^15.1.2"
-
-"@terascope/types@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.0.1.tgz#0315db83132492d6d774706711764913a5de5e69"
-  integrity sha512-Rr8UTJvit6fyHPafhk5OKVcJXjWuFtLTBy+Pnw0mIDfag4Lkk4QOA+ARHk4J/Be3Ayv+T2tLfVhUFBjOsj7xgg==
+"@terascope/types@^1.0.1", "@terascope/types@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.1.0.tgz#0c87a0340e45b2e387caab27017b8c1e3ea10028"
+  integrity sha512-bmPl5w/X4ZIcWK8uqqbCMRObd9QaR52/S9TTZbgQNQA3QNz5KH4/HuC1kNMwdzL7rGWKu7KsqSM2Q4yiPRqmXw==
   dependencies:
     prom-client "^15.1.3"
 
-"@terascope/utils@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.0.0.tgz#c470629efd5ae6d5dbd626c98afe3d27389b739f"
-  integrity sha512-cvH9Amvq6jaIDeKWGgdaoANhlNQ7ql2hFqktqYmBb7wKd0tP85HxTBRCPawrhJgRCE1qLZIYdh7QsAj7qCNNiQ==
+"@terascope/utils@^1.0.0", "@terascope/utils@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.1.0.tgz#92a34e757ac3c381b87444bb0b76bf42932c9dbc"
+  integrity sha512-cDuivbvHxtKFQ9iKJI9h7bmQT/2iKoCbmxC9E0J85RkFnGUGqnOH5B1cNCVJQuOIsLT+BhiE/1B0MaTbt99OfA==
   dependencies:
-    "@terascope/types" "^1.0.0"
-    "@turf/bbox" "^6.4.0"
-    "@turf/bbox-polygon" "^6.4.0"
-    "@turf/boolean-contains" "^6.4.0"
-    "@turf/boolean-disjoint" "^6.4.0"
-    "@turf/boolean-equal" "^6.4.0"
-    "@turf/boolean-intersects" "^6.4.0"
-    "@turf/boolean-point-in-polygon" "^6.4.0"
-    "@turf/boolean-within" "^6.4.0"
-    "@turf/circle" "^6.4.0"
-    "@turf/helpers" "^6.2.0"
-    "@turf/invariant" "^6.2.0"
-    "@turf/line-to-polygon" "^6.4.0"
-    "@types/lodash-es" "^4.17.12"
-    "@types/validator" "^13.11.10"
-    awesome-phonenumber "^2.70.0"
-    date-fns "^2.30.0"
-    date-fns-tz "^1.3.7"
-    datemath-parser "^1.0.6"
-    debug "^4.3.4"
-    geo-tz "^7.0.7"
-    ip-bigint "^3.0.3"
-    ip-cidr "^3.1.0"
-    ip6addr "^0.2.5"
-    ipaddr.js "^2.2.0"
-    is-cidr "^4.0.2"
-    is-ip "^3.1.0"
-    is-plain-object "^5.0.0"
-    js-string-escape "^1.0.1"
-    kind-of "^6.0.3"
-    latlon-geohash "^1.1.0"
-    lodash-es "^4.17.21"
-    mnemonist "^0.39.8"
-    p-map "^4.0.0"
-    shallow-clone "^3.0.1"
-    validator "^13.12.0"
-
-"@terascope/utils@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.0.1.tgz#eae3dc04d8e6847c4681beb0dff3b4dbde84d372"
-  integrity sha512-eM8f5mPSZPexLCMT6OF3Rzcd2DR7wPqKyac32BcEqUmXNvfeEYmfJhMmAzIKIue8wEeGw+3gu61mJLMXY06cYg==
-  dependencies:
-    "@terascope/types" "^1.0.1"
+    "@terascope/types" "^1.1.0"
     "@turf/bbox" "^6.4.0"
     "@turf/bbox-polygon" "^6.4.0"
     "@turf/boolean-contains" "^6.4.0"
@@ -5537,7 +5488,7 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-prom-client@^15.1.2, prom-client@^15.1.3:
+prom-client@^15.1.3:
   version "15.1.3"
   resolved "https://registry.yarnpkg.com/prom-client/-/prom-client-15.1.3.tgz#69fa8de93a88bc9783173db5f758dc1c69fa8fc2"
   integrity sha512-6ZiOBfCywsD4k1BN9IX0uZhF+tJkV8q8llP64G5Hajs4JOeVLPCwpPVcpXy3BwYiUGgyJzsJJQeOIv7+hDSq8g==
