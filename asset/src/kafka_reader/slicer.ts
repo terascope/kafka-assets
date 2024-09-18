@@ -6,7 +6,7 @@ export default class KafkaSlicer extends Slicer<KafkaReaderConfig> {
         return Boolean(this.executionConfig.autorecover);
     }
 
-    isRestartable(): boolean {
+    isRelocatable(): boolean {
         return true;
     }
 
