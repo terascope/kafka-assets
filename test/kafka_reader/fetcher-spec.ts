@@ -60,7 +60,7 @@ describe('Kafka Fetcher', () => {
 
     const _fatalErr = new Error('Timeout run beforeEach') as FatalError;
     _fatalErr.fatalError = true;
-    let fatalError: FatalError|null = _fatalErr;
+    let fatalError: FatalError | null = _fatalErr;
 
     function checkFatalError(): boolean {
         if (!fatalError) return false;

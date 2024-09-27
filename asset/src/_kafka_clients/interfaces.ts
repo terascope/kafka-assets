@@ -23,17 +23,17 @@ export interface TopicPartition {
 export interface ConsumerClientConfig {
     topic: string;
     logger: Logger;
-    _encoding?: DataEncoding,
+    _encoding?: DataEncoding;
     rollback_on_failure?: boolean;
     use_commit_sync?: boolean;
-    tryFn?: (input: any) => any
+    tryFn?: (input: any) => any;
 }
 
 export interface ProduceMessage {
-    topic: string|null;
+    topic: string | null;
     data: Buffer;
-    key: Buffer|string|null;
-    timestamp: number|null;
+    key: Buffer | string | null;
+    timestamp: number | null;
 }
 
 export interface ProducerClientConfig {
@@ -48,8 +48,8 @@ export interface FatalError extends Error {
 
 export type ConsumeFn = (
     fn: (msg: KafkaMessage) => DataEntity
-) => (msg: KafkaMessage) => DataEntity
+) => (msg: KafkaMessage) => DataEntity;
 
 export type ProduceFn = (
     fn: (msg: KafkaMessage) => DataEntity
-) => (msg: KafkaMessage) => void
+) => (msg: KafkaMessage) => void;

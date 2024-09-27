@@ -21,13 +21,14 @@ export default {
         }
     },
     transform: {
-        '\\.[jt]sx?$': ['ts-jest', {
-            isolatedModules: true,
-            tsconfig: './tsconfig.json',
-            diagnostics: true,
-            pretty: true,
-            useESM: true
-        }]
+        '\\.[jt]sx?$': ['ts-jest',
+            {
+                isolatedModules: true,
+                tsconfig: './tsconfig.json',
+                diagnostics: true,
+                pretty: true,
+                useESM: true
+            }]
     },
     testTimeout: 60 * 1000
 };

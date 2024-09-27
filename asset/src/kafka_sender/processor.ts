@@ -18,11 +18,11 @@ interface Endpoint {
 interface ConnectorMapping {
     connection: string;
     topic: string;
-    _key?: string
+    _key?: string;
 }
 
-type TopicMap = Map<string, Endpoint>
-type ConnectorMap = Map<string, ConnectorMapping>
+type TopicMap = Map<string, Endpoint>;
+type ConnectorMap = Map<string, ConnectorMapping>;
 
 export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     topicMap: TopicMap = new Map();
@@ -51,7 +51,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         if (this.opConfig.api_name) {
             apiName = this.opConfig?.api_name;
             const apiConfig = this.executionConfig.apis.find(
-                (config: { _name: string; }) => config._name === apiName
+                (config: { _name: string }) => config._name === apiName
             );
             if (apiConfig == null) throw new Error(`could not find api configuration for api ${apiName}`);
             apiTopic = apiConfig.topic;

@@ -67,7 +67,6 @@ describe('isOkayError helper', () => {
         codes.ERR__TIMED_OUT_QUEUE,
         ...alwaysOk
     ])('when consuming and checking ok error code %s', (code) => {
-        // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
             const err = new Error('Uh oh') as any as KafkaError;
             err.code = code as number;
@@ -91,7 +90,6 @@ describe('isOkayError helper', () => {
         codes.KAFKA_NO_OFFSET_STORED,
         ...alwaysOk
     ])('when committing and checking error code %s', (code) => {
-        // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
             const err = new Error('Uh oh') as any as KafkaError;
             err.code = code as number;
@@ -105,7 +103,6 @@ describe('isOkayError helper', () => {
         codes.ERR__MSG_TIMED_OUT,
         ...alwaysOk
     ])('when producing and checking error code %s', (code) => {
-        // eslint-disable-next-line jest/no-identical-title
         it('should return true', () => {
             const err = new Error('Uh oh') as any as KafkaError;
             err.code = code as number;

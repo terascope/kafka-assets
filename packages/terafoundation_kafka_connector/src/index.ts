@@ -39,8 +39,8 @@ class KafkaConnector {
     async createClient(
         config: KafkaConnectorConfig,
         logger: Logger,
-        settings: KafkaConsumerSettings|KafkaProducerSettings
-    ): Promise<KafkaConsumerResult|KafkaProducerResult> {
+        settings: KafkaConsumerSettings | KafkaProducerSettings
+    ): Promise<KafkaConsumerResult | KafkaProducerResult> {
         const clientType = getClientType(settings.options && settings.options.type);
 
         if (isConsumerSettings(settings)) {
@@ -95,8 +95,8 @@ class KafkaConnector {
     create(
         config: KafkaConnectorConfig,
         logger: Logger,
-        settings: KafkaConsumerSettings|KafkaProducerSettings
-    ): KafkaConsumerResult|KafkaProducerResult {
+        settings: KafkaConsumerSettings | KafkaProducerSettings
+    ): KafkaConsumerResult | KafkaProducerResult {
         const clientType = getClientType(settings.options && settings.options.type);
 
         if (isConsumerSettings(settings)) {
@@ -141,7 +141,7 @@ class KafkaConnector {
     }
 
     private async _autoconnect(
-        client: kafka.Producer|kafka.KafkaConsumer,
+        client: kafka.Producer | kafka.KafkaConsumer,
         logger: Logger,
         autoconnect = true
     ) {

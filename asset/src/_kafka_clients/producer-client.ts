@@ -53,7 +53,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     async produce(messages: ProduceMessage[]): Promise<void>;
     async produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void>;
     async produce(messages: any[], map?: (msg: any) => ProduceMessage): Promise<void> {
-        let error: kafka.LibrdKafkaError|null = null;
+        let error: kafka.LibrdKafkaError | null = null;
 
         const off = this._once('client:error', (err) => {
             if (!err) return;

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
 import { EventEmitter } from 'node:events';
-import { debugLogger } from '@terascope/job-components';
+import { debugLogger, pDelay } from '@terascope/job-components';
 import BaseClient from '../asset/src/_kafka_clients/base-client.js';
 import { KafkaError, AnyKafkaError } from '../asset/src/_kafka_helpers/index.js';
 import * as codes from '../asset/src/_kafka_helpers/error-codes.js';
@@ -13,9 +13,11 @@ describe('Base Client (internal)', () => {
         isConnected() {
             return this.connected;
         }
+
         connect(obj: any, cb: (err: AnyKafkaError, obj: any) => void) {
             cb(null, obj);
         }
+
         disconnect(cb: (err: AnyKafkaError) => void) {
             cb(null);
         }
@@ -191,7 +193,7 @@ describe('Base Client (internal)', () => {
     });
 
     describe('->_timeout', () => {
-        it('should fire once the timeout is complete and cleanup', (done) => {
+        it('should fire once the timeout is complete and cleanup', async () => {
             const cb: jest.Mock<(err: Error | null) => void> = jest.fn();
 
             // @ts-expect-error because it is private
@@ -200,14 +202,13 @@ describe('Base Client (internal)', () => {
             // @ts-expect-error because it is private
             expect(client._cleanup).toBeArrayOfSize(1);
 
-            setTimeout(() => {
-                expect(cb).toHaveBeenCalledTimes(1);
-                expect(cb.mock.calls[0][0]?.message).toEqual('Timeout of 200ms');
+            await pDelay(250);
 
-                // @ts-expect-error because it is private
-                expect(client._cleanup).toBeArrayOfSize(0);
-                done();
-            }, 250);
+            expect(cb).toHaveBeenCalledTimes(1);
+            expect(cb.mock.calls[0][0]?.message).toEqual('Timeout of 200ms');
+
+            // @ts-expect-error because it is private
+            expect(client._cleanup).toBeArrayOfSize(0);
         });
 
         it('should fire once off is called and cleanup', () => {

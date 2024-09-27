@@ -14,7 +14,7 @@ export interface KafkaReaderConfig extends OpConfig {
     /**
      How offset resets should be handled when there are no valid offsets for the consumer group.
     */
-    offset_reset: 'smallest'|'earliest'|'beginning'|'largest'|'latest'|'error';
+    offset_reset: 'smallest' | 'earliest' | 'beginning' | 'largest' | 'latest' | 'error';
 
     /**
      The Kafka consumer connection to use.
@@ -59,7 +59,7 @@ export interface KafkaReaderConfig extends OpConfig {
      * Name of partition assignment strategy to use when elected group leader
      * assigns partitions to group members.
     */
-    partition_assignment_strategy?: 'range'|'roundrobin';
+    partition_assignment_strategy?: 'range' | 'roundrobin';
     /**
      * Name of kafka api used for reader, if none is provided, then one is made
      * and the name is kafka_reader_api, and is injected into the execution

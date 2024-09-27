@@ -12,7 +12,7 @@ export interface KafkaDeadLetterConfig extends APIConfig {
     /**
      Type of compression to use
     */
-    compression: 'none'|'gzip'|'snappy'|'lz4'|'inherit';
+    compression: 'none' | 'gzip' | 'snappy' | 'lz4' | 'inherit';
     /**
      How long to wait for `size` messages to become available on the producer
     */
@@ -34,5 +34,5 @@ export interface KafkaDeadLetterConfig extends APIConfig {
      * Name of partition assignment strategy to use
      * when elected group leader assigns partitions to group members.
     */
-    partition_assignment_strategy?: 'range'|'roundrobin';
+    partition_assignment_strategy?: 'range' | 'roundrobin';
 }

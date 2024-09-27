@@ -67,7 +67,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
 
     async create(
         _connection: string, config: Partial<KafkaSenderConfig> = {}
-    ): Promise<{ client: KafkaRouteSender, config: KafkaSenderAPIConfig }> {
+    ): Promise<{ client: KafkaRouteSender; config: KafkaSenderAPIConfig }> {
         const logger = config.logger || this.logger;
         // if not set we treat as default
         if (isNil(config._key)) config._key = '*';

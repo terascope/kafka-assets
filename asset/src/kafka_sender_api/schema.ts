@@ -46,7 +46,7 @@ export const schema = {
     size: {
         doc: 'How many messages will be batched and sent to kafka together.',
         default: 10000,
-        format: (val: unknown):void => {
+        format: (val: unknown): void => {
             if (isNumber(val)) {
                 if (val <= 0) throw new Error('Invalid parameter size, it must be a positive number');
             } else {
@@ -57,7 +57,7 @@ export const schema = {
     max_buffer_size: {
         doc: 'Maximum number of messages allowed on the producer queue',
         default: 100000,
-        format: (val: unknown):void => {
+        format: (val: unknown): void => {
             if (isNumber(val)) {
                 if (val <= 0) throw new Error('Invalid parameter max_buffer_size, it must be a positive number');
             } else {

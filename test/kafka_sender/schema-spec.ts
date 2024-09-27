@@ -75,7 +75,7 @@ describe('Kafka Sender Schema', () => {
         });
 
         it('should not throw an error if api and sender make a valid config', async () => {
-            const opConfig = { _op: 'kafka_sender', api_name: 'kafka_sender_api', };
+            const opConfig = { _op: 'kafka_sender', api_name: 'kafka_sender_api' };
             const apiConfig = { _name: 'kafka_sender_api', topic: 'hello' };
 
             await expect(makeTest(opConfig, apiConfig)).toResolve();

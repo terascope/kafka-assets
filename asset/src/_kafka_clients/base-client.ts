@@ -150,7 +150,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Guaranteed to call the callback at least once
      * @returns an off function to the event listener
     */
-    protected _once(event: string, fn: (err: Error|null, ...args: any[]) => void): () => void {
+    protected _once(event: string, fn: (err: Error | null, ...args: any[]) => void): () => void {
         let off = () => {};
 
         const cb = once(fn);
@@ -182,7 +182,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
      * Guaranteed to call the callback at least once
      * @returns an off function to cleanup the timer
     */
-    protected _timeout(fn: (err: Error|null) => void, timeoutMs: number): () => void {
+    protected _timeout(fn: (err: Error | null) => void, timeoutMs: number): () => void {
         let off = () => {};
 
         const cb = once(fn);
@@ -226,7 +226,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
         action = 'any',
         retries = BaseClient.DEFAULT_MAX_RETRIES
     ): RetryResult<F> {
-        let eventError: Error|null = null;
+        let eventError: Error | null = null;
 
         const off = this._once(event, (err) => {
             eventError = err;
@@ -325,4 +325,4 @@ export function getRandom(min: number, max: number): number {
 
 type CleanupFn = () => void;
 export type TryFn = () => any;
-type RetryResult<T extends TryFn> = Promise<ReturnType<T>|null>;
+type RetryResult<T extends TryFn> = Promise<ReturnType<T> | null>;
