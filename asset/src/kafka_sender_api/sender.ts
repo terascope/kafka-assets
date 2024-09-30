@@ -22,7 +22,7 @@ export default class KafkaSender implements RouteSenderAPI {
     readonly hasConnected = false;
     readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
-    private tryFn: (msg: any, err: any) => DataEntity|null;
+    private tryFn: (msg: any, err: any) => DataEntity | null;
     readonly pathList = new Map<string, boolean>();
     readonly mapper: (msg: DataEntity) => ProduceMessage;
 
@@ -95,7 +95,7 @@ export default class KafkaSender implements RouteSenderAPI {
         };
     }
 
-    private getKey(msg: DataEntity): string|null {
+    private getKey(msg: DataEntity): string | null {
         if (this.config.id_field) {
             const key = msg[this.config.id_field];
 
@@ -126,7 +126,7 @@ export default class KafkaSender implements RouteSenderAPI {
         return null;
     }
 
-    private getTimestamp(msg: DataEntity): number|null {
+    private getTimestamp(msg: DataEntity): number | null {
         if (this.config.timestamp_field) {
             const date = getValidDate(msg[this.config.timestamp_field]);
             if (date) return date.getTime();
@@ -140,7 +140,7 @@ export default class KafkaSender implements RouteSenderAPI {
         return null;
     }
 
-    private getRouteTopic(msg: DataEntity): string|null {
+    private getRouteTopic(msg: DataEntity): string | null {
         if (this.isWildcard) {
             const route = msg.getMetadata('standard:route');
 

@@ -3,4 +3,4 @@ import eslintConfig from '@terascope/eslint-config';
 // don't lint the dist folder
 eslintConfig[0].ignores.push('dist/', '**/dist/**');
 
-export default eslintConfig
+export default eslintConfig;

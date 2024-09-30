@@ -3,10 +3,10 @@ import kafka from 'node-rdkafka';
 
 export interface KafkaConnectorConfig {
     /** A list of brokers */
-    brokers: string[]|string;
+    brokers: string[] | string;
 
     /** The security protocol to use */
-    security_protocol?: 'plaintext'|'ssl';
+    security_protocol?: 'plaintext' | 'ssl';
 
     // SSL configuration
     ssl_crl_location?: string;
@@ -21,7 +21,7 @@ export interface KafkaClientSettings {
 }
 
 export interface RDKafkaOptions {
-    [key: string]: string|number|boolean|((...args: any[]) => any);
+    [key: string]: string | number | boolean | ((...args: any[]) => any);
 }
 export interface KafkaConsumerSettings extends KafkaClientSettings {
     options: KafkaConsumerOptions;
@@ -47,14 +47,14 @@ export interface KafkaConsumerOptions extends KafkaClientOptions {
     group?: string;
 }
 
-export type ClientType = 'producer'|'consumer';
+export type ClientType = 'producer' | 'consumer';
 
 export interface KafkaConsumerResult {
     client: kafka.KafkaConsumer;
-    logger: Logger
+    logger: Logger;
 }
 
 export interface KafkaProducerResult {
     client: kafka.Producer;
-    logger: Logger
+    logger: Logger;
 }

@@ -30,7 +30,7 @@ export default class APIConsumer extends Consumer {
             };
 
             return DataEntity.fromBuffer(
-                msg.value as string|Buffer,
+                msg.value as string | Buffer,
                 this.encoding,
                 metadata
             );

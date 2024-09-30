@@ -69,7 +69,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
 
     async create(
         _name: string, config: Partial<KafkaReaderConfig> = {}
-    ): Promise<{ client: APIConsumer, config: KafkaReaderAPIConfig }> {
+    ): Promise<{ client: APIConsumer; config: KafkaReaderAPIConfig }> {
         const { logger } = this;
         const newConfig = Object.assign(
             {}, this.apiConfig, config, { logger }

@@ -31,12 +31,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         started: {} as OffsetByPartition,
         ended: {} as OffsetByPartition,
     };
+
     protected encoding: EncodingConfig = {};
     /** last known assignments */
     protected _assignments: TopicPartition[] = [];
 
     private _pendingOffsets: CountPerPartition = {};
-    private _rebalanceTimeout: NodeJS.Timeout|undefined;
+    private _rebalanceTimeout: NodeJS.Timeout | undefined;
     private rollbackOnFailure = false;
     private useCommitSync: boolean;
     private _bytesConsumed = 0;
@@ -376,7 +377,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._client.on('connection.failure', this._logOrEmit('connect:error'));
 
         /* istanbul ignore next */
-        this._client.on('rebalance', (err: KafkaError|undefined, assignments: Omit<TopicPartition, 'offset'>[]) => {
+        this._client.on('rebalance', (err: KafkaError | undefined, assignments: Omit<TopicPartition, 'offset'>[]) => {
             if (this._closed) return;
 
             try {
@@ -393,7 +394,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         });
 
         this._client.on('offset.commit', (_err, _offsets) => {
-            let err: AnyKafkaError|null = null;
+            let err: AnyKafkaError | null = null;
             let offsets: TopicPartition[] = [];
             // the change the way this event is called
             if (_offsets && Array.isArray(_offsets)) {
@@ -489,7 +490,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         this._events.emit('rebalance:end');
     }
 
-    private _handleRebalance(err: KafkaError|undefined, assignments: TopicPartition[]) {
+    private _handleRebalance(err: KafkaError | undefined, assignments: TopicPartition[]) {
         if (err && err.code === ERR__ASSIGN_PARTITIONS) {
             this._logger.debug(`got new assignments ${formatTopar(assignments)}`);
             this._assignments = assignments;
@@ -554,7 +555,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     }
 }
 
-function formatTopar(input: TopicPartition[]|TopicPartition) {
+function formatTopar(input: TopicPartition[] | TopicPartition) {
     const topars: TopicPartition[] = [];
 
     if (Array.isArray(input)) {

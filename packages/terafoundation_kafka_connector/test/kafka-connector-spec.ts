@@ -29,7 +29,8 @@ describe('Kafka Connector', () => {
                     event_cb: true,
                     debug: 'broker',
                 },
-            }).getProperties();
+            })
+                .getProperties();
 
             // Don't know how/why `config` is used in the connecter - might be
             // legacy reasons. Without it, there is potential for connector to
@@ -61,7 +62,8 @@ describe('Kafka Connector', () => {
                 rdkafka_options: {
                     'client.id': 'test-client-123'
                 }
-            }).getProperties();
+            })
+                .getProperties();
 
             connector.createClient(config, logger, settings as KafkaConsumerSettings)
                 .then((conn) => {
@@ -93,7 +95,8 @@ describe('Kafka Connector', () => {
                     event_cb: true,
                     debug: 'broker',
                 },
-            }).getProperties();
+            })
+                .getProperties();
 
             // Don't know how/why `config` is used in the connecter - might be
             // legacy reasons. Without it, there is potential for connector to
@@ -123,7 +126,8 @@ describe('Kafka Connector', () => {
                 rdkafka_options: {
                     'client.id': 'test-client-123'
                 }
-            }).getProperties();
+            })
+                .getProperties();
 
             connector.createClient(config, logger, settings as KafkaProducerSettings)
                 .then((conn) => {
@@ -154,7 +158,8 @@ describe('Kafka Connector', () => {
                     event_cb: true,
                     debug: 'broker',
                 },
-            }).getProperties();
+            })
+                .getProperties();
 
             await expect(
                 () => connector.createClient(config, logger, settings as any)

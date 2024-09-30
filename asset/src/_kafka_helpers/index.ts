@@ -5,13 +5,13 @@ import {
 } from '@terascope/job-components';
 import { codeToMessage, okErrors, OkErrorKeys } from './error-codes.js';
 
-export type AnyKafkaError = Error|KafkaError|number|string|null;
+export type AnyKafkaError = Error | KafkaError | number | string | null;
 
 export type KafkaError = kafka.LibrdKafkaError;
 
 export { OkErrorKeys } from './error-codes.js';
 
-export function wrapError(message: string, err: AnyKafkaError|unknown): KafkaError {
+export function wrapError(message: string, err: AnyKafkaError | unknown): KafkaError {
     const cause = getErrorCause(err);
     const error = new Error(`${message}${cause}`) as any as KafkaError;
 
@@ -42,7 +42,7 @@ function getErrorCause(err: any): string {
     let message = causedBy;
     message += typeof err === 'object' ? err.message : toString(err);
 
-    let code: number|string|null = null;
+    let code: number | string | null = null;
 
     if (isKafkaError(err)) {
         code = err.code;
@@ -62,7 +62,7 @@ function getErrorCause(err: any): string {
 
 export interface KafkaMessageMetadata extends DataEntityMetadata {
     /** the message key */
-    _key: string|undefined;
+    _key: string | undefined;
     /** The time at which the data was ingested into the source data */
     _ingestTime: number;
     /** The time at which the data was consumed by the reader */
@@ -87,7 +87,7 @@ export function isKafkaError(err: unknown): err is KafkaError {
 }
 
 export function isOkayError(
-    err?: AnyKafkaError|unknown|undefined,
+    err?: AnyKafkaError | unknown | undefined,
     action = OkErrorKeys.any
 ): boolean {
     if (err == null) return false;
