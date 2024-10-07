@@ -857,20 +857,20 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.3.1.tgz#4c4f15ebea9bdfeaeb8ba350c4e5334968ef74b9"
-  integrity sha512-LCyMWQNGnGkGaVDw6W+s9ChuV68cYacEwc6A0WQzMZA2KYxBvG+whJ1LwG6Tqi5uyucaFOOLjeCVhsAZ/wmEmg==
+"@terascope/job-components@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.4.0.tgz#366640a45d65a6101d260ace9ec1cb273996b9f0"
+  integrity sha512-NhGazc+7f8SLV4i5KWS2Pz2rTciYnmsL+icif5UHFhPXL3z5xxEzwABU9P+FcIwczmQDzimz0iU24qbQz9lw6Q==
   dependencies:
     "@terascope/types" "^1.1.0"
-    "@terascope/utils" "^1.1.0"
+    "@terascope/utils" "^1.2.0"
     convict "^6.2.4"
     convict-format-with-moment "^6.2.0"
     convict-format-with-validator "^6.2.0"
     datemath-parser "^1.0.6"
     import-meta-resolve "^4.0.0"
     prom-client "^15.1.3"
-    uuid "^9.0.1"
+    uuid "^10.0.0"
 
 "@terascope/scripts@^1.3.2":
   version "1.3.2"
@@ -908,7 +908,7 @@
   dependencies:
     prom-client "^15.1.3"
 
-"@terascope/utils@^1.1.0", "@terascope/utils@^1.2.0":
+"@terascope/utils@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.2.0.tgz#7b7994cb47e3f1adff8e8567ce1cb03855bf7e00"
   integrity sha512-AGvzZMswtOJTq0BzNEEr8ry1XZHB06kCjCd59THa25MNYvIdo5G8aiGDoKT30lSwalCO76ntOVOY6XGEQOyQWg==
@@ -6986,11 +6986,6 @@ uuid@^8.0.0:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
-
-uuid@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
-  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 v8-to-istanbul@^9.0.1:
   version "9.3.0"
