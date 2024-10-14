@@ -914,10 +914,10 @@
     typedoc-plugin-markdown "~4.0.3"
     yargs "^17.7.2"
 
-"@terascope/types@^1.0.1", "@terascope/types@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.1.0.tgz#0c87a0340e45b2e387caab27017b8c1e3ea10028"
-  integrity sha512-bmPl5w/X4ZIcWK8uqqbCMRObd9QaR52/S9TTZbgQNQA3QNz5KH4/HuC1kNMwdzL7rGWKu7KsqSM2Q4yiPRqmXw==
+"@terascope/types@^1.1.0", "@terascope/types@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.2.0.tgz#cbad101f0153698450d6e99be7bdac88b883b779"
+  integrity sha512-Bcl+ZZy7l9uifVNsIRBhcfAOiknHTOYYg1BCiAwy/Zy+iqG0Mk6K1gsKUdOhXMbn8txC66hy3/BmsTCHZZI8Bg==
   dependencies:
     prom-client "^15.1.3"
 
