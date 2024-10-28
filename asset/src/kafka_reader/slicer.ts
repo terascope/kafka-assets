@@ -6,6 +6,10 @@ export default class KafkaSlicer extends Slicer<KafkaReaderConfig> {
         return Boolean(this.executionConfig.autorecover);
     }
 
+    isRelocatable(): boolean {
+        return true;
+    }
+
     maxQueueLength(): number {
         return this.workersConnected + 1;
     }
