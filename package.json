@@ -39,7 +39,7 @@
         "@terascope/eslint-config": "^1.1.0",
         "@terascope/job-components": "^1.5.1",
         "@terascope/scripts": "^1.4.1",
-        "@types/jest": "^29.5.13",
+        "@types/jest": "^29.5.14",
         "@types/node": "^22.5.4",
         "@types/uuid": "^10.0.0",
         "bunyan": "^1.8.15",
