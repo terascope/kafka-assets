@@ -39,7 +39,8 @@ export interface ProduceMessage {
 export interface ProducerClientConfig {
     topic: string;
     logger: Logger;
-    bufferSize: number;
+    maxBufferLength: number;
+    maxBufferKilobyteSize: number;
 }
 
 export interface FatalError extends Error {

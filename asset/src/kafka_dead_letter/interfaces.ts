@@ -26,6 +26,10 @@ export interface KafkaDeadLetterConfig extends APIConfig {
     */
     max_buffer_size: number;
     /**
+     Maximum total message size sum in kilobytes allowed on the producer queue.
+    */
+    max_buffer_kbytes_size: number;
+    /**
      How often the producer will poll the broker for metadata information.
      Set to -1 to disable polling.
     */

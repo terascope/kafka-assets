@@ -41,7 +41,8 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
     const client = new ProducerClient(producer, {
         logger,
         topic,
-        bufferSize: messages.length
+        maxBufferLength: messages.length,
+        maxBufferKilobyteSize: 1048576
     });
 
     await client.connect();
