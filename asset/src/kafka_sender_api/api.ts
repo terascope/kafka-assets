@@ -45,6 +45,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
             },
             rdkafka_options: {
                 'compression.codec': kafkaConfig.compression,
+                'queue.buffering.max.kbytes': kafkaConfig.max_buffer_kbytes_size,
                 'queue.buffering.max.messages': kafkaConfig.max_buffer_size,
                 'queue.buffering.max.ms': kafkaConfig.wait,
                 'batch.num.messages': kafkaConfig.size,
