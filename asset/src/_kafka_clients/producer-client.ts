@@ -12,13 +12,15 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     // one minute
     flushTimeout = 60000;
 
-    private readonly _bufferSize: number;
+    private readonly _maxBufferMsgLength: number;
+    private readonly _maxBufferKilobyteSize: number;
     private _hasClientEvents = false;
     private _bytesProduced = 0;
 
     constructor(client: kafka.Producer, config: ProducerClientConfig) {
         super(client, config.topic, config.logger);
-        this._bufferSize = config.bufferSize;
+        this._maxBufferMsgLength = config.maxBufferLength;
+        this._maxBufferKilobyteSize = config.maxBufferKilobyteSize;
     }
 
     /**
@@ -63,8 +65,11 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
 
         const total = messages.length;
         const endOfBatchIndex = (total - 1);
-        const endofBufferIndex = (this._bufferSize - 1);
-        this._logger.debug(`producing ${total} messages in batches ${Math.floor(total / this._bufferSize)}...`);
+        const endofBufferIndex = (this._maxBufferMsgLength - 1);
+        // This is a counter that will track the bytes written in the current batch
+        let currentBatchSizeInBytes = 0;
+        const maxQueueByteSize = this._maxBufferKilobyteSize * 1024;
+        this._logger.debug(`producing ${total} messages in batches ${Math.floor(total / this._maxBufferMsgLength)}...`);
 
         try {
             // Send the messages, after each buffer size is complete
@@ -72,7 +77,16 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
             for (let i = 0; i < total; i++) {
                 const msg = messages[i];
                 const message: ProduceMessage = (map == null) ? msg : map(msg);
-                this._bytesProduced += Buffer.byteLength(message.data);
+                const messageByteSize = Buffer.byteLength(message.data);
+                this._bytesProduced += messageByteSize;
+                currentBatchSizeInBytes += messageByteSize;
+
+                // If the current queue batch size gets full, do a flush.
+                if (currentBatchSizeInBytes >= maxQueueByteSize) {
+                    this._logger.warn(`Producer queue is full! Flushing queue before writing more messages...`);
+                    await this._try(() => this._flush(), 'produce', 0);
+                    currentBatchSizeInBytes = messageByteSize;
+                }
 
                 this._client.produce(
                     message.topic || this._topic,
@@ -87,9 +101,11 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                 // flush the messages at the end of each slice
                 if (i === endOfBatchIndex) {
                     await this._try(() => this._flush(), 'produce', 0);
+                    currentBatchSizeInBytes = 0; // Reset the batch size counter
                 // OR at the first message
-                } else if (i % this._bufferSize === endofBufferIndex) {
+                } else if (i % this._maxBufferMsgLength === endofBufferIndex) {
                     await this._try(() => this._flush(), 'produce', 0);
+                    currentBatchSizeInBytes = 0;
                 }
             }
         } finally {
