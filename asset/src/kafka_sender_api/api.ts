@@ -32,7 +32,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
         // in addition to the max.messages setting
         config.maxBufferLength = config.max_buffer_size;
-        // maxBufferKilobyteSize is also used as an indicator of when to flush the queue in producer-client.ts
+        // maxBufferKilobyteSize is also used as an indicator of when to flush the queue
         config.maxBufferKilobyteSize = config.max_buffer_kbytes_size;
 
         return config;
