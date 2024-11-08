@@ -101,9 +101,11 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                 // flush the messages at the end of each slice
                 if (i === endOfBatchIndex) {
                     await this._try(() => this._flush(), 'produce', 0);
+                    this._logger.debug(`End of message batch Flushing queue before writing more messages...`);
                     currentBatchSizeInBytes = 0; // Reset the batch size counter
                 // OR at the first message
                 } else if (i % this._maxBufferMsgLength === endofBufferIndex) {
+                    this._logger.debug(`Beginning of message batch Flushing queue before writing more messages...`);
                     await this._try(() => this._flush(), 'produce', 0);
                     currentBatchSizeInBytes = 0;
                 }
