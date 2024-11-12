@@ -59,7 +59,7 @@ export const schema = {
         default: 100000,
         format: (val: unknown): void => {
             if (isNumber(val)) {
-                if (val < 0) throw new Error('Invalid parameter max_buffer_size, it must be a positive number');
+                if (val < 0) throw new Error('Invalid parameter max_buffer_size, it must be a positive number, or 0');
             } else {
                 throw new Error(`Invalid parameter max_buffer_size, it must be a number, got ${getTypeOf(val)}`);
             }

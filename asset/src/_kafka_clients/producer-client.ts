@@ -81,9 +81,13 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                 this._bytesProduced += messageByteSize;
                 currentBatchSizeInBytes += messageByteSize;
 
-                // If the current queue batch size gets full, do a flush.
+                // If the current queue batch kb size gets full, do a flush.
                 if (currentBatchSizeInBytes >= maxQueueByteSize) {
-                    this._logger.warn(`Producer queue is full! Flushing queue before writing more messages...`);
+                    this._logger.warn(
+                        `Producer queue size exceeded limit: max_buffer_kbytes_size = ${this._maxBufferKilobyteSize} KB, ` +
+                        `Current batch size = ${currentBatchSizeInBytes / 1024} KB. Initiating queue flush to prevent overflow...`
+                      );
+
                     await this._try(() => this._flush(), 'produce', 0);
                     currentBatchSizeInBytes = messageByteSize;
                 }
@@ -100,12 +104,16 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
 
                 // flush the messages at the end of each slice
                 if (i === endOfBatchIndex) {
+                    this._logger.debug(
+                        `End of message batch reached: Flushing the queue after processing ${total} messages. `
+                      );
                     await this._try(() => this._flush(), 'produce', 0);
-                    this._logger.debug(`End of message batch Flushing queue before writing more messages...`);
                     currentBatchSizeInBytes = 0; // Reset the batch size counter
-                // OR at the first message
+                // Flush the queue as the message buffer is reaching its size limit, to avoid overflow.
                 } else if (i % this._maxBufferMsgLength === endofBufferIndex) {
-                    this._logger.debug(`Beginning of message batch Flushing queue before writing more messages...`);
+                    this._logger.debug(
+                        `Producer Message buffer nearly full at ${i + 1} messages, flushing queue to start new batch...`
+                      );
                     await this._try(() => this._flush(), 'produce', 0);
                     currentBatchSizeInBytes = 0;
                 }
