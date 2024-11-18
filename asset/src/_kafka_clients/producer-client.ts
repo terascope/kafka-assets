@@ -64,7 +64,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
         });
 
         const total = messages.length;
-        const endOfBatchIndex = (total - 1);
+        const endOfSliceIndex = (total - 1);
         const endofBufferIndex = (this._maxBufferMsgLength - 1);
         // This is a counter that will track the bytes written in the current batch
         let currentBatchSizeInBytes = 0;
@@ -107,7 +107,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                 );
 
                 // flush the messages at the end of each slice
-                if (i === endOfBatchIndex) {
+                if (i === endOfSliceIndex) {
                     this._logger.debug(
                         `End of message batch reached: Flushing the queue after processing ${total} messages. `
                     );
