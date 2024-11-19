@@ -30,7 +30,8 @@ export default class KafkaSender implements RouteSenderAPI {
         const producer = new ProducerClient(client, {
             logger: config.logger,
             topic: config.topicOverride || config.topic,
-            bufferSize: config.bufferSize,
+            maxBufferLength: config.max_buffer_size,
+            maxBufferKilobyteSize: config.max_buffer_kbytes_size
         });
 
         this.config = config;

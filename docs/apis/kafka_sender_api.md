@@ -195,7 +195,8 @@ await api.send([
 | \_op| Name of operation, it must reflect the exact name of the file | String | required |
 | topic | Name of the Kafka topic to send records | String | required |
 | size | How many messages will be batched and sent to kafka together. | Number | optional, defaults to `10,000` |
-| max_batch_size | Maximum number of messages allowed on the producer queue | Number | optional, defaults to `100,000` |
+| max_buffer_size | Maximum number of messages allowed on the producer queue. A value of 0 disables this limit. | Number | optional, defaults to `100,000` |
+| max_buffer_kbytes_size | Maximum total message size sum in kilobytes allowed on the producer queue. | Number | optional, defaults to `1,048,576` |
 | id_field | Field in the incoming record that will be used to assign the record to a topic partition. | String | optional, if not set, it will check for the `_key` metadata value. If no key is found the sender uses a round robin method to assign records to partitions.|
 | timestamp_field | Field in the incoming record that contains a timestamp to set on the record | String | optional, it will take precedence over `timestamp_now` if this is set |
 | timestamp_now | Set to true to have a timestamp generated as records are added to the topic | Boolean | optional, defaults to `false` |

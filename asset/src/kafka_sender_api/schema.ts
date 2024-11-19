@@ -55,13 +55,24 @@ export const schema = {
         }
     },
     max_buffer_size: {
-        doc: 'Maximum number of messages allowed on the producer queue',
+        doc: 'Maximum number of messages allowed on the producer queue. A value of 0 disables this limit.',
         default: 100000,
         format: (val: unknown): void => {
             if (isNumber(val)) {
-                if (val <= 0) throw new Error('Invalid parameter max_buffer_size, it must be a positive number');
+                if (val < 0) throw new Error('Invalid parameter max_buffer_size, it must be a positive number, or 0');
             } else {
                 throw new Error(`Invalid parameter max_buffer_size, it must be a number, got ${getTypeOf(val)}`);
+            }
+        }
+    },
+    max_buffer_kbytes_size: {
+        doc: 'Maximum total message size sum in kilobytes allowed on the producer queue.',
+        default: 1048576,
+        format: (val: unknown): void => {
+            if (isNumber(val)) {
+                if (val <= 0) throw new Error('Invalid parameter max_buffer_kbytes_size, it must be a positive number');
+            } else {
+                throw new Error(`Invalid parameter max_buffer_kbytes_size, it must be a number, got ${getTypeOf(val)}`);
             }
         }
     },

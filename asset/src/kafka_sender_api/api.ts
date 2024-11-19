@@ -29,9 +29,12 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
 
-        // bufferSize is used as an indicator of when to flush the queue in producer-client.ts
+        // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
         // in addition to the max.messages setting
-        config.bufferSize = config.max_buffer_size;
+        config.maxBufferLength = config.max_buffer_size;
+        // maxBufferKilobyteSize is also used as an indicator of when to flush the queue
+        config.maxBufferKilobyteSize = config.max_buffer_kbytes_size;
+
         return config;
     }
 
@@ -45,6 +48,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
             },
             rdkafka_options: {
                 'compression.codec': kafkaConfig.compression,
+                'queue.buffering.max.kbytes': kafkaConfig.max_buffer_kbytes_size,
                 'queue.buffering.max.messages': kafkaConfig.max_buffer_size,
                 'queue.buffering.max.ms': kafkaConfig.wait,
                 'batch.num.messages': kafkaConfig.size,

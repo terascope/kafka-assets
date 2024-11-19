@@ -34,6 +34,11 @@ export default class Schema extends ConvictSchema<KafkaDeadLetterConfig> {
                 default: 100000,
                 format: Number
             },
+            max_buffer_kbytes_size: {
+                doc: 'Maximum total message size sum in kilobytes allowed on the producer queue.',
+                default: 1048576,
+                format: Number
+            },
             metadata_refresh: {
                 doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
                 default: 300000,
