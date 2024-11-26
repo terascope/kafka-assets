@@ -9,7 +9,7 @@ import {
     isPromAvailable,
     Context
 } from '@terascope/job-components';
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import { KafkaSenderAPIConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 

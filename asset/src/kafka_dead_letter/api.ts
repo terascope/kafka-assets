@@ -4,7 +4,7 @@ import {
     parseError,
     Collector,
 } from '@terascope/job-components';
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';

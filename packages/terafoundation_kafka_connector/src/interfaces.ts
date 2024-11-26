@@ -1,5 +1,5 @@
 import { Logger } from '@terascope/job-components';
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 
 export interface KafkaConnectorConfig {
     /** A list of brokers */
