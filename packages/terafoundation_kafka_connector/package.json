@@ -22,7 +22,7 @@
         "test:watch": "ts-scripts test --watch . --"
     },
     "dependencies": {
-        "node-rdkafka": "~3.1.1"
+        "@confluentinc/kafka-javascript": "^0.5.2"
     },
     "devDependencies": {
         "@terascope/job-components": "~1.6.1",

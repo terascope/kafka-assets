@@ -180,6 +180,7 @@ describe('Kafka Fetcher', () => {
         expect(result).toEqual([
             {
                 topic,
+                leaderEpoch: 0,
                 // I think it is set to length + 1 because
                 // when it restarts with that offset it returns
                 // the length + 1 entity
@@ -251,6 +252,7 @@ describe('Kafka Fetcher', () => {
                 expect(result).toEqual([
                     {
                         topic,
+                        leaderEpoch: 0,
                         offset: results.length + 1,
                         partition: 0,
                     }

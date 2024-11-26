@@ -3,7 +3,7 @@ import {
     Logger, isError, pDelay, once,
     get
 } from '@terascope/job-components';
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import {
     isOkayError,
     wrapError,
