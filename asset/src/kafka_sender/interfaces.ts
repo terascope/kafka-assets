@@ -39,11 +39,6 @@ export interface KafkaSenderConfig extends OpConfig {
     */
     metadata_refresh: number;
     /**
-     * Name of partition assignment strategy to use when elected
-     * group leader assigns partitions to group members.
-    */
-    partition_assignment_strategy?: 'range' | 'roundrobin';
-    /**
      * This field indicates the number of acknowledgements the leader broker
      * must receive from ISR brokers before responding to the request:
      * 0=Broker does not send any response/ack to client,
