@@ -893,10 +893,10 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@~1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.6.1.tgz#4430d74bb676f849f1a4c6ad87544d2dd066fcb3"
-  integrity sha512-ygoqDQcdqscQEd94oFeeb4KMJQ2Xgq/DYA7TS3iOzzfLOXsNq6aHofXLuvUcelSE0pvfBi9FZbmV/p9rtfSqSQ==
+"@terascope/job-components@~1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.6.2.tgz#9ba56d5afbcbe4439b43e5051fe42917738035f9"
+  integrity sha512-hlw+UdIwUugeO08o1xH5gsZiNJUKMIVa91r8TrZxKak+OylvAbU41dIyKqBnZKkXIa/hIJQFGLmvYnIw94KwNg==
   dependencies:
     "@terascope/types" "~1.3.1"
     "@terascope/utils" "~1.4.1"
@@ -904,9 +904,9 @@
     convict-format-with-moment "~6.2.0"
     convict-format-with-validator "~6.2.0"
     datemath-parser "~1.0.6"
-    import-meta-resolve "~4.0.0"
+    import-meta-resolve "~4.1.0"
     prom-client "~15.1.3"
-    uuid "~10.0.0"
+    uuid "~11.0.3"
 
 "@terascope/scripts@~1.5.2":
   version "1.5.2"
@@ -3871,10 +3871,10 @@ import-local@^3.0.2:
     pkg-dir "^4.2.0"
     resolve-cwd "^3.0.0"
 
-import-meta-resolve@~4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-4.0.0.tgz#0b1195915689f60ab00f830af0f15cc841e8919e"
-  integrity sha512-okYUR7ZQPH+efeuMJGlq4f8ubUgO50kByRPyt/Cy1Io4PSRsPjxME+YlVaCOx+NIToW7hCsZNFJyTPFFKepRSA==
+import-meta-resolve@~4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-4.1.0.tgz#f9db8bead9fafa61adb811db77a2bf22c5399706"
+  integrity sha512-I6fiaX09Xivtk+THaMfAwnA3MVA5Big1WHF1Dfx9hFuvNIWpXnorlkzhcQf6ehrqQiiZECRt1poOAkPmer3ruw==
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -6913,11 +6913,6 @@ uuid@^8.0.0:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
-
-uuid@~10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-10.0.0.tgz#5a95aa454e6e002725c79055fd42aaba30ca6294"
-  integrity sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==
 
 uuid@~11.0.3:
   version "11.0.3"
