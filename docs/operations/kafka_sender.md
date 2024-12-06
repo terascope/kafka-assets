@@ -1,4 +1,5 @@
 # kafka_sender
+
 The kafka_sender is used to send data to a kafka topic. This is a high throughput operation.
 
 This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
@@ -8,9 +9,11 @@ For this sender to function properly, you will need a running kafka cluster and 
 ## Usage
 
 ### Send data to topic, use key and time from fields on record
+
 In this example, the kafka_sender will send data to the kafka-test-sender topic using the uuid field of the record. It will also annotate the kafka record timestamp metadata with the date specified on the created field on the record.
 
 Example job
+
 ```json
 {
     "name": "test-job",
@@ -64,9 +67,11 @@ results === data;
 ```
 
 ### Send data to topic, use _key metadata and create its own timestamp
-In this example, the kafka_sender will send data to the kafka-test-sender topic using the _key metadata value, which happens when the `id_field` is not set. It will also annotate the kafka record timestamp metadata with a new date at processing time.
+
+In this example, the kafka_sender will send data to the kafka-test-sender topic using the_key metadata value, which happens when the `id_field` is not set. It will also annotate the kafka record timestamp metadata with a new date at processing time.
 
 Example job
+
 ```json
 {
     "name": "test-job",
@@ -133,19 +138,20 @@ results === data;
 | connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
 | required_acks | The number of required broker acknowledgements for a given request, set to -1 for all. | Number | optional, defaults to `1` |
 | metadata_refresh | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. | String/Duration/Number | optional, defaults to `"5 minutes"` |
-| partition_assignment_strategy |  Name of partition assignment strategy to use when elected group leader assigns partitions to group members. May be set to `range`, `roundrobin` or `""` | String | optional, defaults to `""` |
-| api_name | Name of `kafka_sender_api` used for the sender, if none is provided, then one is made and assigned the name to `kafka_sender_api`, and is injected into the execution | String | optional, defaults to `kafka_sender_api`|| _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
+| api_name | Name of `kafka_sender_api` used for the sender, if none is provided, then one is made and assigned the name to `kafka_sender_api`, and is injected into the execution | String | optional, defaults to `kafka_sender_api`|
+| _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
 | _dead_letter_action | action will specify what to do when failing to parse or transform a record. It may be set to `throw`, `log` or `none`. If none of the actions are specified it will try and use a registered Dead Letter Queue API under that name.The API must be already be created by a operation before it can used. | String | optional, defaults to `throw` |
 
+### API usage
 
-#### API usage
 In kafka_assets v3, many core components were made into teraslice apis. When you use an kafka processor it will automatically setup the api for you, but if you manually specify the api, then there are restrictions on what configurations you can put on the operation so that clashing of configurations are minimized. The api configs take precedence.
 
 If submitting the job in long form, here is a list of parameters that will throw an error if also specified on the opConfig, since these values should be placed on the api:
+
 - `topic`
 
-
 `SHORT FORM (no api specified)`
+
 ```json
 {
     "name": "test-job",

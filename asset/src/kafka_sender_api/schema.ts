@@ -81,11 +81,6 @@ export const schema = {
         default: '5 minutes',
         format: 'duration'
     },
-    partition_assignment_strategy: {
-        doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
-        default: '',
-        format: ['range', 'roundrobin', '']
-    },
     required_acks: {
         doc: 'The number of required broker acknowledgements for a given request, set to -1 for all.',
         default: 1,

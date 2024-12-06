@@ -1,5 +1,6 @@
 {
     "name": "kafka",
     "description": "Kafka reader and writer support.",
-    "version": "5.3.1"
+    "version": "5.4.0",
+    "minimum_teraslice_version": "2.9.0"
 }

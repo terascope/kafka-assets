@@ -43,11 +43,6 @@ export default class Schema extends ConvictSchema<KafkaDeadLetterConfig> {
                 doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
                 default: 300000,
                 format: Number
-            },
-            partition_assignment_strategy: {
-                doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
-                default: '',
-                format: ['range', 'roundrobin', '']
             }
         };
     }

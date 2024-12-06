@@ -22,7 +22,6 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNotNil(config.id_field) && !isString(config.id_field)) throw new Error(`Parameter id_field must be provided and be of type string, got ${getTypeOf(config.id_field)}`);
         if (isNotNil(config.timestamp_field) && !isString(config.timestamp_field)) throw new Error(`Parameter timestamp_field must be provided and be of type string, got ${getTypeOf(config.timestamp_field)}`);
         if (isNotNil(config.timestamp_now) && !isBoolean(config.timestamp_now)) throw new Error(`Parameter timestamp_now must be provided and be of type string, got ${getTypeOf(config.timestamp_now)}`);
-        if (isNil(config.partition_assignment_strategy) || !isString(config.partition_assignment_strategy)) throw new Error(`Parameter partition_assignment_strategy must be provided and be of type string, got ${getTypeOf(config.partition_assignment_strategy)}`);
         if (isNil(config.compression) || !isString(config.compression)) throw new Error(`Parameter compression must be provided and be of type string, got ${getTypeOf(config.compression)}`);
         if (isNil(config.wait) || !isNumber(config.wait)) throw new Error(`Parameter wait must be provided and be of type number, got ${getTypeOf(config.wait)}`);
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
@@ -40,7 +39,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
 
     private clientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
-        const config = {
+        return {
             type: 'kafka',
             endpoint: kafkaConfig.connection,
             options: {
@@ -59,14 +58,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 'request.required.acks': kafkaConfig.required_acks
             } as Record<string, any>,
             autoconnect: false
-        };
-
-        const assignmentStrategy = kafkaConfig.partition_assignment_strategy;
-        if (assignmentStrategy) {
-            config.rdkafka_options['partition.assignment.strategy'] = assignmentStrategy;
-        }
-
-        return config as ConnectionConfig;
+        } as ConnectionConfig;
     }
 
     async create(

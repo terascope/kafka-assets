@@ -96,5 +96,4 @@ are sent to topic "failed_record_topic" at the end of the slice
 | wait | How long to wait for size messages to become available on the producer, in milliseconds. | String/Duration/Number | optional, defaults to `500` |
 | connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
 | metadata_refresh | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. | String/Duration/Number | optional, defaults to `"5 minutes"` |
-| partition_assignment_strategy |  Name of partition assignment strategy to use when elected group leader assigns partitions to group members. May be set to `range`, `roundrobin` or `""` | String | optional, defaults to `""` |
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
