@@ -8418,6 +8418,7 @@ teraslice-test-harness@~1.3.1:
   integrity sha512-Hqiv67mKXVGHzry7GvK/SmqGwD8M95vQ3nuarPljc1h9a7qNKG3k9vgvHNX/xMTYlVEH5WrKDy6pllPQ0syt0w==
   dependencies:
     "@terascope/job-components": "npm:~1.8.0"
+    "@terascope/scripts": "npm:^1.9.0"
     "@types/convict": "npm:~6.1.3"
     convict: "npm:~6.2.4"
     node-rdkafka: "npm:~3.2.1"
