@@ -339,6 +339,13 @@
     debug "^4.3.1"
     minimatch "^3.1.2"
 
+"@eslint/core@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.10.0.tgz#23727063c21b335f752dbb3a16450f6f9cbc9091"
+  integrity sha512-gFHJ+xBOo4G3WRlR1e/3G8A6/KZAH6zcE/hkLRCZTi/B9avAG365QhFA8uOGzTMqgTghpn7/fSnscW++dpMSAw==
+  dependencies:
+    "@types/json-schema" "^7.0.15"
+
 "@eslint/core@^0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.9.0.tgz#168ee076f94b152c01ca416c3e5cf82290ab4fcd"
@@ -364,10 +371,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.16.0.tgz#3df2b2dd3b9163056616886c86e4082f45dbf3f4"
   integrity sha512-tw2HxzQkrbeuvyj1tG2Yqq+0H9wGoI2IMk4EOsQeX+vmd75FtJAzf+gTA69WF+baUKRYQ3x2kbLE08js5OsTVg==
 
-"@eslint/js@9.17.0":
-  version "9.17.0"
-  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.17.0.tgz#1523e586791f80376a6f8398a3964455ecc651ec"
-  integrity sha512-Sxc4hqcs1kTu0iID3kcZDW3JHq2a77HO9P8CP6YEA/FpH3Ll8UXE2r/86Rz9YJLKme39S9vU5OWNjC6Xl0Cr3w==
+"@eslint/js@9.18.0":
+  version "9.18.0"
+  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.18.0.tgz#3356f85d18ed3627ab107790b53caf7e1e3d1e84"
+  integrity sha512-fK6L7rxcq6/z+AaQMtiFTkvbHkBLNlwyRxHpKawP0x3u9+NC6MQTnFW+AdpwC6gfHTW0051cokQgtTN2FqlxQA==
 
 "@eslint/object-schema@^2.1.4":
   version "2.1.4"
@@ -379,6 +386,14 @@
   resolved "https://registry.yarnpkg.com/@eslint/plugin-kit/-/plugin-kit-0.2.3.tgz#812980a6a41ecf3a8341719f92a6d1e784a2e0e8"
   integrity sha512-2b/g5hRmpbb1o4GnTZax9N9m0FXzz9OV42ZzI4rDDMDuHUqigAiQCEWChBWCY4ztAGVRjoWT19v0yMmc5/L5kA==
   dependencies:
+    levn "^0.4.1"
+
+"@eslint/plugin-kit@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@eslint/plugin-kit/-/plugin-kit-0.2.5.tgz#ee07372035539e7847ef834e3f5e7b79f09e3a81"
+  integrity sha512-lB05FkqEdUg2AA0xEbUz0SnkXT1LcCTa438W4IWTUh4hdOnVbQyOJ81OrDXsJk/LSiJHubgGEFoR5EHq1NsH1A==
+  dependencies:
+    "@eslint/core" "^0.10.0"
     levn "^0.4.1"
 
 "@humanfs/core@^0.19.1":
@@ -840,10 +855,10 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
-"@terascope/eslint-config@~1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-1.1.3.tgz#986866e5fc4d110aa20f46041b3122b874107bd5"
-  integrity sha512-S51zAOtSbyFIlfsPEE9rSdEJQHnO84bH6jjmPaI2rRRXlhvxmFP2XmYABA+hnygAEeJSZCIOg1L40WMlEJw9lA==
+"@terascope/eslint-config@~1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@terascope/eslint-config/-/eslint-config-1.1.4.tgz#a1f448fb643a0faede936d026a1688bbc84f6f95"
+  integrity sha512-ZK55T98k+jjjVjJfFFSQ6C3GWSmJmNfB0sZkTcD4aswaLvHB5xDfvE8eBPgJuBMo914kMCNapApyQih1DMUDig==
   dependencies:
     "@eslint/compat" "~1.2.4"
     "@eslint/js" "~9.16.0"
@@ -860,7 +875,7 @@
     eslint-plugin-react-hooks "~5.1.0"
     eslint-plugin-testing-library "~7.1.1"
     globals "~15.13.0"
-    typescript "~5.2.2"
+    typescript "~5.7.2"
     typescript-eslint "~8.18.0"
 
 "@terascope/fetch-github-release@~1.0.0":
@@ -874,28 +889,29 @@
     progress "^2.0.3"
     yargs "^17.2.1"
 
-"@terascope/job-components@~1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.8.0.tgz#41423e1bc5cbada05bcfff572d7df4f85b49d381"
-  integrity sha512-1m3iT5tSDWt9m1YC2cDlEzF/skDdRAkgIGX/BttuElZo57/iu51T2dnzf3Yt/h6G45rBNGymT0ZsmYxPs3UoGQ==
+"@terascope/job-components@~1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@terascope/job-components/-/job-components-1.9.1.tgz#8f552eda9644e826eb8148d02df2a31807c30280"
+  integrity sha512-et+oQc5ShzjGtUKe8WJ1cJcqx+DqtH2Sw40x6uxVjlAS5cFGBx2pjGNbfnU+S/uKU3HN+CfJ3Pg+487VKCWefw==
   dependencies:
-    "@terascope/types" "~1.3.1"
-    "@terascope/utils" "~1.6.0"
+    "@terascope/types" "~1.4.1"
+    "@terascope/utils" "~1.7.1"
     convict "~6.2.4"
     convict-format-with-moment "~6.2.0"
     convict-format-with-validator "~6.2.0"
     datemath-parser "~1.0.6"
     import-meta-resolve "~4.1.0"
     prom-client "~15.1.3"
+    semver "~7.6.3"
     uuid "~11.0.3"
 
-"@terascope/scripts@~1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-1.7.1.tgz#0f0fd2b6871ac15d8622ad23885f18c0c86db883"
-  integrity sha512-O4ztln3qYeRge3z3BGPIeAcUgvApU25lyQSzOTU6pQLTxIXvSSq7y5NWeghkrshJMjxjOXOLZMjD4M7SJTwxfQ==
+"@terascope/scripts@~1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@terascope/scripts/-/scripts-1.9.0.tgz#8b82c59ca723502f18f99a70e357f17672b8991c"
+  integrity sha512-+ckoihFZVfViwrvIZ9HeBVK5WueO6RhRC9x/Q582b1B/wnKqe1h5bUvEaGPHAS0ANocfq4JYBLNatvD+QrcIUw==
   dependencies:
     "@kubernetes/client-node" "~0.22.3"
-    "@terascope/utils" "~1.6.0"
+    "@terascope/utils" "~1.7.1"
     codecov "~3.8.3"
     execa "~9.5.2"
     fs-extra "~11.2.0"
@@ -917,20 +933,20 @@
     typedoc-plugin-markdown "~4.0.3"
     yargs "~17.7.2"
 
-"@terascope/types@~1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.3.1.tgz#fff859db11f82d922b29a10d323c669374811fc8"
-  integrity sha512-BK7p1N2jpYV3ic4V1X6+T7ly66mxFxTGNThjFGZgLrgYBemLpuOrIhUk9xLTyj6bPs59dYPMuNQiJkWL0dwoBg==
+"@terascope/types@~1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@terascope/types/-/types-1.4.1.tgz#f1d263b6ab89c448c90e412cbc2d0a2dc3aa3e22"
+  integrity sha512-1elHt5mj/uLvL3VPmf5DQa9W8i0Ygk2tlvJW8LuYpprpSt5fxt2pUIm5PD7/AWkQsB1HbWMCUpe2tOqJCQvGqw==
   dependencies:
     prom-client "~15.1.3"
 
-"@terascope/utils@~1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.6.0.tgz#ff0d5a2f264403bf9901086071552d94b53398aa"
-  integrity sha512-qL+zZjKbQZhriKIX/Yu7E4wBaqFvWDWX0xX/E9TqrASqcTBBY1X+kRHhEz5q4No9RSdwJiDFIA0zAqadbkbBQA==
+"@terascope/utils@~1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@terascope/utils/-/utils-1.7.1.tgz#143cd37dc904fa4e06c44886de354b6b9ae397b8"
+  integrity sha512-f2hgkr0/Ha9pQOLnF8AFcy4eCs+F/xYuOXXc00jUA6/hyauwZWdt8zJbEy3raAYCAlWWx9/a+FKYKGsMK2N1cQ==
   dependencies:
     "@chainsafe/is-ip" "~2.0.2"
-    "@terascope/types" "~1.3.1"
+    "@terascope/types" "~1.4.1"
     "@turf/bbox" "~7.1.0"
     "@turf/bbox-polygon" "~7.1.0"
     "@turf/boolean-contains" "~7.1.0"
@@ -1319,10 +1335,10 @@
   dependencies:
     undici-types "~5.26.4"
 
-"@types/node@~22.10.2":
-  version "22.10.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.2.tgz#a485426e6d1fdafc7b0d4c7b24e2c78182ddabb9"
-  integrity sha512-Xxr6BBRCAOQixvonOye19wnzyDiUtTeqldOOmj3CkeblonbccA12PFwlufvRdrpjXxqnmUaeiU5EOA+7s5diUQ==
+"@types/node@~22.10.5":
+  version "22.10.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.5.tgz#95af89a3fb74a2bb41ef9927f206e6472026e48b"
+  integrity sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==
   dependencies:
     undici-types "~6.20.0"
 
@@ -2897,18 +2913,18 @@ eslint@~9.16.0:
     natural-compare "^1.4.0"
     optionator "^0.9.3"
 
-eslint@~9.17.0:
-  version "9.17.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-9.17.0.tgz#faa1facb5dd042172fdc520106984b5c2421bb0c"
-  integrity sha512-evtlNcpJg+cZLcnVKwsai8fExnqjGPicK7gnUtlNuzu+Fv9bI0aLpND5T44VLQtoMEnI57LoXO9XAkIXwohKrA==
+eslint@~9.18.0:
+  version "9.18.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-9.18.0.tgz#c95b24de1183e865de19f607fda6518b54827850"
+  integrity sha512-+waTfRWQlSbpt3KWE+CjrPPYnbq9kfZIYUqapc0uBXyjTp8aYXZDsUH16m39Ryq3NjAVP4tjuF7KaukeqoCoaA==
   dependencies:
     "@eslint-community/eslint-utils" "^4.2.0"
     "@eslint-community/regexpp" "^4.12.1"
     "@eslint/config-array" "^0.19.0"
-    "@eslint/core" "^0.9.0"
+    "@eslint/core" "^0.10.0"
     "@eslint/eslintrc" "^3.2.0"
-    "@eslint/js" "9.17.0"
-    "@eslint/plugin-kit" "^0.2.3"
+    "@eslint/js" "9.18.0"
+    "@eslint/plugin-kit" "^0.2.5"
     "@humanfs/node" "^0.16.6"
     "@humanwhocodes/module-importer" "^1.0.1"
     "@humanwhocodes/retry" "^0.4.1"
@@ -6379,10 +6395,10 @@ teeny-request@7.1.1:
     stream-events "^1.0.5"
     uuid "^8.0.0"
 
-teraslice-test-harness@~1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-1.2.1.tgz#fbccdc990f25e578f58e7efab0f19884867ccabb"
-  integrity sha512-hhPfrwXwlFI6EW28mdPVudUtKAxgX6jQABXB7H5WOB5qoIoek2XNPClKMnUE8SElH6t31ijPEQspscuUUhD9kg==
+teraslice-test-harness@~1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/teraslice-test-harness/-/teraslice-test-harness-1.3.1.tgz#d3a4ac7d377e45d1527c1af722ddd2b21a5da038"
+  integrity sha512-Hqiv67mKXVGHzry7GvK/SmqGwD8M95vQ3nuarPljc1h9a7qNKG3k9vgvHNX/xMTYlVEH5WrKDy6pllPQ0syt0w==
   dependencies:
     "@terascope/fetch-github-release" "~1.0.0"
     decompress "~4.2.1"
@@ -6597,10 +6613,10 @@ typescript-eslint@~8.18.0:
     "@typescript-eslint/parser" "8.18.0"
     "@typescript-eslint/utils" "8.18.0"
 
-typescript@~5.2.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"
-  integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==
+typescript@~5.7.2, typescript@~5.7.3:
+  version "5.7.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.7.3.tgz#919b44a7dbb8583a9b856d162be24a54bf80073e"
+  integrity sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"
@@ -6700,6 +6716,11 @@ uuid@~11.0.3:
   version "11.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.0.3.tgz#248451cac9d1a4a4128033e765d137e2b2c49a3d"
   integrity sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==
+
+uuid@~11.0.5:
+  version "11.0.5"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.0.5.tgz#07b46bdfa6310c92c3fb3953a8720f170427fc62"
+  integrity sha512-508e6IcKLrhxKdBbcA2b4KQZlLVp2+J5UwQ6F7Drckkc5N9ZJwFa4TgWtsww9UG8fGHbm6gbV19TdM5pQ4GaIA==
 
 v8-to-istanbul@^9.0.1:
   version "9.3.0"
