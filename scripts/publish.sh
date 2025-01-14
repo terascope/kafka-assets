@@ -26,12 +26,8 @@ publish() {
         echo "$name@$currentVersion -> $targetVersion"
 
         if [ "$dryRun" == "false" ]; then
-            yarn publish \
-                --silent \
-                --tag "$tag" \
-                --non-interactive \
-                --new-version "$targetVersion" \
-                --no-git-tag-version
+            yarn npm publish \
+                --tag "$tag"
         fi
     else
         echo "Not publishing:"
