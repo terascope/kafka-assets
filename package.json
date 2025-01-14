@@ -76,5 +76,6 @@
         "npm": {
             "registry": "https://registry.npmjs.org/"
         }
-    }
+    },
+    "packageManager": "yarn@4.6.0"
 }

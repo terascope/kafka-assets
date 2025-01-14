@@ -78,3 +78,6 @@ packages/*/dist
 asset/**/_old.js
 
 .travis.yml
+
+# .yarn
+.yarn/install-state.gz

@@ -25,7 +25,6 @@
         "@terascope/job-components": "~1.9.1",
         "@terascope/types": "~1.4.1"
     },
-    "devDependencies": {},
     "engines": {
         "node": ">=18.0.0",
         "yarn": ">=1.22.22"
