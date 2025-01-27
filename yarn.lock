@@ -1148,15 +1148,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:^1.9.0, @terascope/scripts@npm:~1.9.0":
-  version: 1.9.0
-  resolution: "@terascope/scripts@npm:1.9.0"
+"@terascope/scripts@npm:^1.9.1, @terascope/scripts@npm:~1.9.1":
+  version: 1.9.1
+  resolution: "@terascope/scripts@npm:1.9.1"
   dependencies:
     "@kubernetes/client-node": "npm:~0.22.3"
-    "@terascope/utils": "npm:~1.7.1"
+    "@terascope/utils": "npm:~1.7.2"
     codecov: "npm:~3.8.3"
     execa: "npm:~9.5.2"
-    fs-extra: "npm:~11.2.0"
+    fs-extra: "npm:~11.3.0"
     globby: "npm:~14.0.2"
     got: "npm:~13.0.0"
     ip: "npm:~2.0.1"
@@ -1169,19 +1169,19 @@ __metadata:
     package-up: "npm:~5.0.0"
     semver: "npm:~7.6.3"
     signale: "npm:~1.4.0"
-    sort-package-json: "npm:~2.12.0"
+    sort-package-json: "npm:~2.14.0"
     toposort: "npm:~2.0.2"
     typedoc: "npm:~0.25.13"
     typedoc-plugin-markdown: "npm:~4.0.3"
     yargs: "npm:~17.7.2"
   peerDependencies:
-    typescript: ~5.7.2
+    typescript: ~5.7.3
   peerDependenciesMeta:
     typescript:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/bddb95cf4fffa540c8cc30bed05c24dee8b71457ce5f590b5e3364188b24af63bf85ae96a68f9ffd44fa4c5b7e6465fd1ddbea94d94ef2bb04307610f5852da6
+  checksum: 10c0/6eee86b8c5b0b071cc7070a30c72983c31fbf09cedfc0e1dab3b852eb9fbd8d6b3d345855ffe8004233e03d82dde4699c3e8c8083c7be59f648aa557c36e5da8
   languageName: node
   linkType: hard
 
@@ -1238,6 +1238,50 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@terascope/utils@npm:~1.7.2":
+  version: 1.7.2
+  resolution: "@terascope/utils@npm:1.7.2"
+  dependencies:
+    "@chainsafe/is-ip": "npm:~2.0.2"
+    "@terascope/types": "npm:~1.4.1"
+    "@turf/bbox": "npm:~7.2.0"
+    "@turf/bbox-polygon": "npm:~7.2.0"
+    "@turf/boolean-contains": "npm:~7.2.0"
+    "@turf/boolean-disjoint": "npm:~7.2.0"
+    "@turf/boolean-equal": "npm:~7.2.0"
+    "@turf/boolean-intersects": "npm:~7.2.0"
+    "@turf/boolean-point-in-polygon": "npm:~7.2.0"
+    "@turf/boolean-within": "npm:~7.2.0"
+    "@turf/circle": "npm:~7.2.0"
+    "@turf/helpers": "npm:~7.2.0"
+    "@turf/invariant": "npm:~7.2.0"
+    "@turf/line-to-polygon": "npm:~7.2.0"
+    "@types/lodash-es": "npm:~4.17.12"
+    "@types/validator": "npm:~13.12.2"
+    awesome-phonenumber: "npm:~7.2.0"
+    date-fns: "npm:~4.1.0"
+    date-fns-tz: "npm:~3.2.0"
+    datemath-parser: "npm:~1.0.6"
+    debug: "npm:~4.4.0"
+    geo-tz: "npm:~8.1.2"
+    ip-bigint: "npm:~8.2.0"
+    ip-cidr: "npm:~4.0.2"
+    ip6addr: "npm:~0.2.5"
+    ipaddr.js: "npm:~2.2.0"
+    is-cidr: "npm:~5.1.0"
+    is-plain-object: "npm:~5.0.0"
+    js-string-escape: "npm:~1.0.1"
+    kind-of: "npm:~6.0.3"
+    latlon-geohash: "npm:~2.0.0"
+    lodash-es: "npm:~4.17.21"
+    mnemonist: "npm:~0.39.8"
+    p-map: "npm:~7.0.3"
+    shallow-clone: "npm:~3.0.1"
+    validator: "npm:~13.12.0"
+  checksum: 10c0/712c416c3698d79bd3056458b25960740068612e1fc65a49c29e79b25a67ba573d2c06feb03e3e1b41c570ef4c9030d0d95c7be7ab243efb5b7b65ad55450b54
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -1256,7 +1300,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/bbox@npm:^7.1.0":
+"@turf/bbox-polygon@npm:~7.2.0":
+  version: 7.2.0
+  resolution: "@turf/bbox-polygon@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/c0b35639fdefae3fddd6345a44ece35f7d411faf07c274731a2ec6fa2e94bce9be7864d86f7618594161ac12dcf3ae7c7f978225a7baeabe1f82d1211ff99c40
+  languageName: node
+  linkType: hard
+
+"@turf/bbox@npm:^7.1.0, @turf/bbox@npm:^7.2.0, @turf/bbox@npm:~7.2.0":
   version: 7.2.0
   resolution: "@turf/bbox@npm:7.2.0"
   dependencies:
@@ -1295,7 +1350,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/boolean-disjoint@npm:^7.1.0":
+"@turf/boolean-contains@npm:~7.2.0":
+  version: 7.2.0
+  resolution: "@turf/boolean-contains@npm:7.2.0"
+  dependencies:
+    "@turf/bbox": "npm:^7.2.0"
+    "@turf/boolean-point-in-polygon": "npm:^7.2.0"
+    "@turf/boolean-point-on-line": "npm:^7.2.0"
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/invariant": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/ae3ac8e4d3607b9700b4a5ab622ece503baaeb5ab08987fab6e7c626e50a42555cddc653f6608bc266306c33f92bf6eeeb05a4839abb2cc486275105567c9bf7
+  languageName: node
+  linkType: hard
+
+"@turf/boolean-disjoint@npm:^7.1.0, @turf/boolean-disjoint@npm:^7.2.0, @turf/boolean-disjoint@npm:~7.2.0":
   version: 7.2.0
   resolution: "@turf/boolean-disjoint@npm:7.2.0"
   dependencies:
@@ -1339,6 +1409,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/boolean-equal@npm:~7.2.0":
+  version: 7.2.0
+  resolution: "@turf/boolean-equal@npm:7.2.0"
+  dependencies:
+    "@turf/clean-coords": "npm:^7.2.0"
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/invariant": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    geojson-equality-ts: "npm:^1.0.2"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/f0f8623620ad329535bbc610309c1f09348d73355fce39c22c72fa57d026ae2c1b65b5e443744156256055edd43d19611c4ad1f497af2e39ab7ade72ef074af7
+  languageName: node
+  linkType: hard
+
 "@turf/boolean-intersects@npm:~7.1.0":
   version: 7.1.0
   resolution: "@turf/boolean-intersects@npm:7.1.0"
@@ -1352,7 +1436,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/boolean-point-in-polygon@npm:^7.1.0, @turf/boolean-point-in-polygon@npm:^7.2.0":
+"@turf/boolean-intersects@npm:~7.2.0":
+  version: 7.2.0
+  resolution: "@turf/boolean-intersects@npm:7.2.0"
+  dependencies:
+    "@turf/boolean-disjoint": "npm:^7.2.0"
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/meta": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/2b4ef09eb77fa02db9671e5c4d0c0c4133a815bbd9a744e70e65a3b37a8b6a13c26d51dc77de0822f39ed2b882646f416fa07561888d4813bb4d31b7003fcba5
+  languageName: node
+  linkType: hard
+
+"@turf/boolean-point-in-polygon@npm:^7.1.0, @turf/boolean-point-in-polygon@npm:^7.2.0, @turf/boolean-point-in-polygon@npm:~7.2.0":
   version: 7.2.0
   resolution: "@turf/boolean-point-in-polygon@npm:7.2.0"
   dependencies:
@@ -1378,7 +1475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/boolean-point-on-line@npm:^7.1.0":
+"@turf/boolean-point-on-line@npm:^7.1.0, @turf/boolean-point-on-line@npm:^7.2.0":
   version: 7.2.0
   resolution: "@turf/boolean-point-on-line@npm:7.2.0"
   dependencies:
@@ -1405,6 +1502,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/boolean-within@npm:~7.2.0":
+  version: 7.2.0
+  resolution: "@turf/boolean-within@npm:7.2.0"
+  dependencies:
+    "@turf/bbox": "npm:^7.2.0"
+    "@turf/boolean-point-in-polygon": "npm:^7.2.0"
+    "@turf/boolean-point-on-line": "npm:^7.2.0"
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/invariant": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/2aed21d55b820a19d1d7f22f521fdd9c780ba8ab036828ac2a316efea984d3c70c71190aeaa5766fce922b5dcd52987d86dc0fcb27a0d50306a9e7e270cf80ce
+  languageName: node
+  linkType: hard
+
 "@turf/circle@npm:~7.1.0":
   version: 7.1.0
   resolution: "@turf/circle@npm:7.1.0"
@@ -1417,7 +1529,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/clean-coords@npm:^7.1.0":
+"@turf/circle@npm:~7.2.0":
+  version: 7.2.0
+  resolution: "@turf/circle@npm:7.2.0"
+  dependencies:
+    "@turf/destination": "npm:^7.2.0"
+    "@turf/helpers": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/0327fd8a73009239d5da7816b75ba4d03c85e1b2fe132578f9d857dd7d5cbb46632b7a34fb80db0d5e2a0007bb31ad34d2e5c22d53822a3520babf79b4054a18
+  languageName: node
+  linkType: hard
+
+"@turf/clean-coords@npm:^7.1.0, @turf/clean-coords@npm:^7.2.0":
   version: 7.2.0
   resolution: "@turf/clean-coords@npm:7.2.0"
   dependencies:
@@ -1429,7 +1553,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/clone@npm:^7.1.0":
+"@turf/clone@npm:^7.1.0, @turf/clone@npm:^7.2.0":
   version: 7.2.0
   resolution: "@turf/clone@npm:7.2.0"
   dependencies:
@@ -1440,7 +1564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/destination@npm:^7.1.0":
+"@turf/destination@npm:^7.1.0, @turf/destination@npm:^7.2.0":
   version: 7.2.0
   resolution: "@turf/destination@npm:7.2.0"
   dependencies:
@@ -1452,7 +1576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/helpers@npm:^7.1.0, @turf/helpers@npm:^7.2.0":
+"@turf/helpers@npm:^7.1.0, @turf/helpers@npm:^7.2.0, @turf/helpers@npm:~7.2.0":
   version: 7.2.0
   resolution: "@turf/helpers@npm:7.2.0"
   dependencies:
@@ -1472,7 +1596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/invariant@npm:^7.1.0, @turf/invariant@npm:^7.2.0":
+"@turf/invariant@npm:^7.1.0, @turf/invariant@npm:^7.2.0, @turf/invariant@npm:~7.2.0":
   version: 7.2.0
   resolution: "@turf/invariant@npm:7.2.0"
   dependencies:
@@ -1517,6 +1641,20 @@ __metadata:
     "@types/geojson": "npm:^7946.0.10"
     tslib: "npm:^2.6.2"
   checksum: 10c0/601c9878937ed117f781b7a2e210c35f3d30d304722c044fa7fb2b684fcf384ac01fa4c9342054fef6c444ba2e05ed3c540e9f78f6a8252081100d30da4edc74
+  languageName: node
+  linkType: hard
+
+"@turf/line-to-polygon@npm:~7.2.0":
+  version: 7.2.0
+  resolution: "@turf/line-to-polygon@npm:7.2.0"
+  dependencies:
+    "@turf/bbox": "npm:^7.2.0"
+    "@turf/clone": "npm:^7.2.0"
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/invariant": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/16917eee777b5c2dd2557b45704a3c4cef021bf4fb9b60c4fabca0a548140ca5b3cfa61e116e0cb37d538711130aeef5360eb8ee832071c0ae33e483937bf34f
   languageName: node
   linkType: hard
 
@@ -4360,6 +4498,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"geo-tz@npm:~8.1.2":
+  version: 8.1.3
+  resolution: "geo-tz@npm:8.1.3"
+  dependencies:
+    "@turf/boolean-point-in-polygon": "npm:^7.1.0"
+    "@turf/helpers": "npm:^7.1.0"
+    geobuf: "npm:^3.0.2"
+    pbf: "npm:^3.2.1"
+  checksum: 10c0/6783d98d46d73753c53f241940c4644700eadeda5fffbfc2e72d45fba22b90b3b7d9c27dd0eec6f15352f65d240916c25c0b72f1b24e365302335f62cc3c4bc2
+  languageName: node
+  linkType: hard
+
 "geobuf@npm:^3.0.2":
   version: 3.0.2
   resolution: "geobuf@npm:3.0.2"
@@ -6142,7 +6292,7 @@ __metadata:
   dependencies:
     "@terascope/eslint-config": "npm:~1.1.4"
     "@terascope/job-components": "npm:~1.9.1"
-    "@terascope/scripts": "npm:~1.9.0"
+    "@terascope/scripts": "npm:~1.9.1"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~29.5.14"
     "@types/node": "npm:~22.10.5"
@@ -8132,9 +8282,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sort-package-json@npm:~2.12.0":
-  version: 2.12.0
-  resolution: "sort-package-json@npm:2.12.0"
+"sort-package-json@npm:~2.14.0":
+  version: 2.14.0
+  resolution: "sort-package-json@npm:2.14.0"
   dependencies:
     detect-indent: "npm:^7.0.1"
     detect-newline: "npm:^4.0.0"
@@ -8146,7 +8296,7 @@ __metadata:
     tinyglobby: "npm:^0.2.9"
   bin:
     sort-package-json: cli.js
-  checksum: 10c0/3c6b31068cfdd06a09993fa149e23d52ba33fe4cb54868aef06c4e589a1ad701b2cd74ff552749d06fbc2c64183fe0a0aee82fbef312f7f3cc14dd043430dc8f
+  checksum: 10c0/bcc114a3b5e11d4539ba46dd4eeda6d6909202cb1a9526c230850f1edfdfcf8712e9479b71f98d8f6cb8554740294acdfcaae84461dcecd90592867e1ba90924
   languageName: node
   linkType: hard
 
@@ -8548,7 +8698,7 @@ __metadata:
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@terascope/job-components": "npm:~1.9.1"
-    "@terascope/scripts": "npm:^1.9.0"
+    "@terascope/scripts": "npm:^1.9.1"
     "@types/convict": "npm:~6.1.3"
     convict: "npm:~6.2.4"
     node-rdkafka: "npm:~3.2.1"
