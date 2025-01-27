@@ -36,7 +36,7 @@
         "node-gyp": "11.0.0"
     },
     "devDependencies": {
-        "@terascope/eslint-config": "~1.1.4",
+        "@terascope/eslint-config": "~1.1.5",
         "@terascope/job-components": "~1.9.1",
         "@terascope/scripts": "~1.9.0",
         "@types/fs-extra": "~11.0.4",
