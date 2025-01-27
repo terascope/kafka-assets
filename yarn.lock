@@ -1123,7 +1123,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:^1.9.1, @terascope/scripts@npm:~1.9.1":
+"@terascope/scripts@npm:~1.9.1":
   version: 1.9.1
   resolution: "@terascope/scripts@npm:1.9.1"
   dependencies:
@@ -8333,7 +8333,7 @@ __metadata:
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@terascope/job-components": "npm:~1.9.2"
-    "@terascope/scripts": "npm:^1.9.1"
+    "@terascope/scripts": "npm:~1.9.1"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
     node-rdkafka: "npm:~3.2.1"
