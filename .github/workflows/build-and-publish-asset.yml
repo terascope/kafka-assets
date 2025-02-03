@@ -11,5 +11,5 @@ on:
 jobs:
   call-asset-build:
     if: github.event.pull_request.merged == true
-    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@2f96a27a56e68c64c67b03d000672f41379e368e
+    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@5307c8fb58de8d120cc025907cd417407f6c17cb
     secrets: inherit
