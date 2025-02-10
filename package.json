@@ -32,6 +32,9 @@
         "test:debug": "ts-scripts test --debug asset --",
         "test:watch": "ts-scripts test --watch asset --"
     },
+    "resolutions": {
+        "node-gyp": "11.1.0"
+    },
     "dependencies": {
         "node-gyp": "11.1.0"
     },
