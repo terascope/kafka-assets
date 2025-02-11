@@ -6031,7 +6031,6 @@ __metadata:
     fs-extra: "npm:~11.3.0"
     jest: "npm:~29.7.0"
     jest-extended: "npm:~4.0.2"
-    node-gyp: "npm:11.1.0"
     semver: "npm:~7.7.1"
     terafoundation_kafka_connector: "npm:~1.2.1"
     teraslice-test-harness: "npm:~1.3.2"
@@ -6616,7 +6615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:11.1.0":
+"node-gyp@npm:latest":
   version: 11.1.0
   resolution: "node-gyp@npm:11.1.0"
   dependencies:
