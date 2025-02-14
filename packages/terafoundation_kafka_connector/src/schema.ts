@@ -15,11 +15,11 @@ export default {
         format: 'optional_String'
     },
     ssl_ca_location: {
-        doc: 'File or directory path to CA certificate(s) for verifying the broker\'s key. Ignored if `ssl_ca_pem` is provided.',
+        doc: 'File or directory path to CA certificate(s) for verifying the broker\'s key. Ignored if `caCertificate` is provided.',
         default: undefined,
         format: 'optional_String'
     },
-    ssl_ca_pem: {
+    caCertificate: {
         doc: 'CA certificate string (PEM format) for verifying the broker\'s key. If provided `ssl_ca_location` will be ignored.',
         default: undefined,
         format: 'optional_String'

@@ -9,10 +9,10 @@ export interface KafkaConnectorConfig {
     security_protocol?: 'plaintext' | 'ssl';
 
     // SSL configuration
-    ssl_crl_location?: string;
+    caCertificate?: string;
     ssl_ca_location?: string;
-    ssl_ca_pem?: string;
     ssl_certificate_location?: string;
+    ssl_crl_location?: string;
     ssl_key_location?: string;
     ssl_key_password?: string;
 }

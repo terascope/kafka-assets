@@ -55,8 +55,8 @@ The terafoundation level configuration is as follows:
 | --------- | -------- | ------ | ------ |
 | brokers | List of seed brokers for the kafka environment | String[] | optional, defaults to `["localhost:9092"]` |
 | security_protocol | Protocol used to communicate with brokers, may be set to `plaintext` or `ssl` | String | optional, defaults to `plaintext` |
-| ssl_ca_location | File or directory path to CA certificate(s) for verifying the broker's key. Ignored if `ssl_ca_pem` is provided. | String | only used when `security_protocol` is set to `ssl` |
-| ssl_ca_pem | CA certificate string (PEM format) for verifying the broker's key. If provided `ssl_ca_location` will be ignored. | String | only used when `security_protocol` is set to `ssl` |
+| ssl_ca_location | File or directory path to CA certificate(s) for verifying the broker's key. Ignored if `caCertificate` is provided. | String | only used when `security_protocol` is set to `ssl` |
+| caCertificate | CA certificate string (PEM format) for verifying the broker's key. If provided `ssl_ca_location` will be ignored. | String | only used when `security_protocol` is set to `ssl` |
 | ssl_certificate_location | Path to client's public key (PEM) used for authentication | String | only used when `security_protocol` is set to `ssl` |
 | ssl_crl_location | Path to CRL for verifying broker's certificate validity | String | only used when `security_protocol` is set to `ssl` |
 | ssl_key_location | Path to client's private key (PEM) used for authentication | String | only used when `security_protocol` is set to `ssl` |
@@ -132,7 +132,7 @@ terafoundation:
                 brokers: "localhost:9092"
                 security_protocol: "ssl"
                 ssl_ca_location: "app/certs/CAs/rootCA.pem"
-                ssl_ca_pem: |         # if provided ssl_ca_location will be ignored 
+                caCertificate: |         # if provided then ssl_ca_location will be ignored 
                     -----BEGIN CERTIFICATE-----
                     MIIFJzCCA4+gAwIBAgIQX6DM59eAmZLzzdoyD0jbtDANBgkqhkiG9w0BAQsFADCB
                     ...
