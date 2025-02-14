@@ -207,6 +207,7 @@ class KafkaConnector {
             'security.protocol': config.security_protocol,
             'ssl.crl.location': config.ssl_crl_location,
             'ssl.ca.location': config.ssl_ca_location,
+            'ssl.ca.pem': config.caCertificate,
             'ssl.certificate.location': config.ssl_certificate_location,
             'ssl.key.location': config.ssl_key_location,
             'ssl.key.password': config.ssl_key_password,
