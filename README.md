@@ -131,8 +131,8 @@ terafoundation:
             default:
                 brokers: "localhost:9092"
                 security_protocol: "ssl"
-                ssl_ca_location: "app/certs/CAs/rootCA.pem"
-                caCertificate: |         # if provided then ssl_ca_location will be ignored 
+                ssl_ca_location: "app/certs/CAs/rootCA.pem" # will be ignored if caCertificate is provided
+                caCertificate: | # if provided then ssl_ca_location will be ignored 
                     -----BEGIN CERTIFICATE-----
                     MIIFJzCCA4+gAwIBAgIQX6DM59eAmZLzzdoyD0jbtDANBgkqhkiG9w0BAQsFADCB
                     ...
