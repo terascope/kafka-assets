@@ -1167,12 +1167,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:~1.12.0":
-  version: 1.12.0
-  resolution: "@terascope/scripts@npm:1.12.0"
+"@terascope/scripts@npm:~1.13.0":
+  version: 1.13.0
+  resolution: "@terascope/scripts@npm:1.13.0"
   dependencies:
     "@kubernetes/client-node": "npm:~0.22.3"
-    "@terascope/utils": "npm:~1.7.6"
+    "@terascope/utils": "npm:~1.7.7"
     codecov: "npm:~3.8.3"
     execa: "npm:~9.5.2"
     fs-extra: "npm:~11.3.0"
@@ -1200,7 +1200,7 @@ __metadata:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/96fa8db1cac32c1b1c8b0807e20da8724329a24dbfc542b29bc5e283cdc0128673c0e1d650000d7e70ad200730771ddc3a042196460a6f7789623c5b0ab375d9
+  checksum: 10c0/79b9534d813b390348504f9667f2baec3945be128be5ea3a8856825e9c222d353deef8c3e11cbafa476b136bd90af87f6e53fadaaad603f65994c80b6301739c
   languageName: node
   linkType: hard
 
@@ -1254,6 +1254,50 @@ __metadata:
     shallow-clone: "npm:~3.0.1"
     validator: "npm:~13.12.0"
   checksum: 10c0/b5c2d558e235f39936f9956bf7332790b2b95bdb1783c3950fe71d5a1d8edc8245546d1922ab5e32219a23fd34ce8cd3445752cde4f901a7b1a09a1b1685ece1
+  languageName: node
+  linkType: hard
+
+"@terascope/utils@npm:~1.7.7":
+  version: 1.7.7
+  resolution: "@terascope/utils@npm:1.7.7"
+  dependencies:
+    "@chainsafe/is-ip": "npm:~2.1.0"
+    "@terascope/types": "npm:~1.4.1"
+    "@turf/bbox": "npm:~7.2.0"
+    "@turf/bbox-polygon": "npm:~7.2.0"
+    "@turf/boolean-contains": "npm:~7.2.0"
+    "@turf/boolean-disjoint": "npm:~7.2.0"
+    "@turf/boolean-equal": "npm:~7.2.0"
+    "@turf/boolean-intersects": "npm:~7.2.0"
+    "@turf/boolean-point-in-polygon": "npm:~7.2.0"
+    "@turf/boolean-within": "npm:~7.2.0"
+    "@turf/circle": "npm:~7.2.0"
+    "@turf/helpers": "npm:~7.2.0"
+    "@turf/invariant": "npm:~7.2.0"
+    "@turf/line-to-polygon": "npm:~7.2.0"
+    "@types/lodash-es": "npm:~4.17.12"
+    "@types/validator": "npm:~13.12.2"
+    awesome-phonenumber: "npm:~7.4.0"
+    date-fns: "npm:~4.1.0"
+    date-fns-tz: "npm:~3.2.0"
+    datemath-parser: "npm:~1.0.6"
+    debug: "npm:~4.4.0"
+    geo-tz: "npm:~8.1.3"
+    ip-bigint: "npm:~8.2.1"
+    ip-cidr: "npm:~4.0.2"
+    ip6addr: "npm:~0.2.5"
+    ipaddr.js: "npm:~2.2.0"
+    is-cidr: "npm:~5.1.1"
+    is-plain-object: "npm:~5.0.0"
+    js-string-escape: "npm:~1.0.1"
+    kind-of: "npm:~6.0.3"
+    latlon-geohash: "npm:~2.0.0"
+    lodash-es: "npm:~4.17.21"
+    mnemonist: "npm:~0.40.3"
+    p-map: "npm:~7.0.3"
+    shallow-clone: "npm:~3.0.1"
+    validator: "npm:~13.12.0"
+  checksum: 10c0/ed117a340200600b33a37d9641cef7933bd2883fe9f64c186afd76eb85ce7990b2b60a38987a527e5eefe4f801616dc33b19ed0396bfcdd9a4ccc4fb8a43b81a
   languageName: node
   linkType: hard
 
@@ -2232,6 +2276,13 @@ __metadata:
   version: 7.3.0
   resolution: "awesome-phonenumber@npm:7.3.0"
   checksum: 10c0/b64366168e56ae106d7c89363f1a6a013dc6456ed62eea507a2ecdec2d0e9fd305700c6fa6d6842b82e38aa9bec13a84ed1093cc5b12c65edfef9361aab60b9a
+  languageName: node
+  linkType: hard
+
+"awesome-phonenumber@npm:~7.4.0":
+  version: 7.4.0
+  resolution: "awesome-phonenumber@npm:7.4.0"
+  checksum: 10c0/294fe6c291799198ecd30f386da6702e61b804b68635bccc762f41a6f7da6b84bda3ba8722b164b3aa3e255c746554f705d2f8b300e4436041dddf613f9aa2f0
   languageName: node
   linkType: hard
 
@@ -6016,7 +6067,7 @@ __metadata:
   dependencies:
     "@terascope/eslint-config": "npm:~1.1.9"
     "@terascope/job-components": "npm:~1.9.7"
-    "@terascope/scripts": "npm:~1.12.0"
+    "@terascope/scripts": "npm:~1.13.0"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~29.5.14"
     "@types/node": "npm:~22.13.10"
@@ -8420,7 +8471,7 @@ __metadata:
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@terascope/job-components": "npm:~1.9.7"
-    "@terascope/scripts": "npm:~1.12.0"
+    "@terascope/scripts": "npm:~1.13.0"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
     node-rdkafka: "npm:~3.3.1"
