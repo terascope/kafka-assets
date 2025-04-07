@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const {
     KAFKA_HOSTNAME = 'localhost',
-    KAFKA_PORT = '49092',
+    KAFKA_PORT = '49094',
     KAFKA_BROKERS = `${KAFKA_HOSTNAME}:${KAFKA_PORT}`
 } = process.env;
 
