@@ -22,15 +22,14 @@ You can find a list of releases, changes, and pre-built asset bundles [here](htt
 
 ## Getting Started
 
-This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://github.com/terascope/teraslice/blob/master/README.md).
+This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://terascope.github.io/teraslice/docs/overview/).
 
 ```bash
 # Step 1: make sure you have teraslice-cli installed
 yarn global add teraslice-cli
 
 # Step 2:
-# FIXME: this should be accurate
-teraslice-cli asset deploy ...
+teraslice-cli asset deploy localhost terascope/kafka-assets@4.2.2
 ```
 
 **IMPORTANT:** Additionally make sure have installed the required [connectors](#connectors).
@@ -46,6 +45,8 @@ To install from the root of your terafoundation based service.
 ```bash
 npm install terafoundation_kafka_connector
 ```
+
+**Note:** The terafoundation connector is preinstalled in Teraslice
 
 **Configuration:**
 
@@ -150,7 +151,7 @@ Run the kafka tests
 
 **Requirements:**
 
-- `kafka` - A running instance of kafka
+- `docker` - A Kafka container will be created using [Docker](https://docs.docker.com/get-started/)
 
 **Environment:**
 

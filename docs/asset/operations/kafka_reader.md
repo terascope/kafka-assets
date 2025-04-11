@@ -1,4 +1,5 @@
 # kafka_reader
+
 The kafka_reader is used to read data from a kafka cluster. This is a high throughput operation. This reader handles all the complexity of balancing writes across partitions and managing ever-changing brokers.
 
 This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
@@ -12,9 +13,11 @@ Fetched records will already have metadata associated with it. Please reference 
 ## Usage
 
 ### Read from topic, log records that cannot be processed
+
 In this example, the reader will read from the specified topic with that group id. It will try to collect 10k records or wait 8 seconds, whatever happens first and return that as a completed slice. Since `_dead_letter_action` is set to log, it will log any records that it could not process. If there is an error, it will try to rollback to the correct offset to try again. This job will try to create 40 workers and auto split the partitions between all the workers.
 
 Example job
+
 ```json
 {
     "name": "test-job",
@@ -83,16 +86,17 @@ results.length === 5000;
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
 | _dead_letter_action | action will specify what to do when failing to parse or transform a record. It may be set to `throw`, `log` or `none`. If none of the actions are specified it will try and use a registered Dead Letter Queue API under that name.The API must be already be created by a operation before it can used. | String | optional, defaults to `throw` |
 
+### API usage
 
-#### API usage
 In kafka_assets v3, many core components were made into teraslice apis. When you use an kafka processor it will automatically setup the api for you, but if you manually specify the api, then there are restrictions on what configurations you can put on the operation so that clashing of configurations are minimized. The api configs take precedence.
 
 If submitting the job in long form, here is a list of parameters that will throw an error if also specified on the opConfig, since these values should be placed on the api:
+
 - `topic`
 - `group`
 
-
 `SHORT FORM (no api specified)`
+
 ```json
 {
     "name": "test-job",
@@ -154,6 +158,7 @@ this configuration will be expanded out to the long form underneath the hood
 ```
 
 ### Metadata
+
 When the records are fetched from kafka, metadata will be attached
 to each record
 
@@ -167,6 +172,7 @@ to each record
 - `size` the message size in bytes
 
 Example of metadata from a fetched record
+
 ```javascript
 // example record in kafka
 {

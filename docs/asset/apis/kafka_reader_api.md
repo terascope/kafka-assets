@@ -1,4 +1,5 @@
 # kafka_reader_api
+
 This is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides an API to read messages from a Kafka topic and can be utilized by any processor, reader or slicer.
 
 The `kafka_reader_api` will provide an [api factory](https://terascope.github.io/teraslice/docs/packages/job-components/api/classes/apifactory), which is a singleton that can create, cache and manage multiple kafka readers that can be accessed in any operation through the `getAPI` method on the operation.
@@ -16,6 +17,7 @@ Fetched records will already have metadata associated with it. Please reference 
 ## Usage
 
 ### Example Processor using a kafka reader API
+
 This is an example of a custom fetcher using the kafka_reader_api to make its own consumers to kafka.
 
 Example job
@@ -78,26 +80,34 @@ export default class SomeReader extends Fetcher {
 this will return how many separate reader apis are in the cache
 
 ### get
+
 parameters:
+
 - name: String
 
 this will fetch any reader api that is associated with the name provided
 
 ### getConfig
+
 parameters:
+
 - name: String
 
 this will fetch any reader api config that is associated with the name provided
 
 ### create (async)
+
 parameters:
+
 - name: String
 - configOverrides: Check options below, optional
 
-this will create an instance of a [reader api](#kafka_reader_instance), and cache it with the name given. Any config provided in the second argument will override what is specified in the apiConfig and cache it with the name provided. It will throw an error if you try creating another api with the same name parameter
+this will create an instance of a [reader api](#kafka_reader_api), and cache it with the name given. Any config provided in the second argument will override what is specified in the apiConfig and cache it with the name provided. It will throw an error if you try creating another api with the same name parameter
 
 ### remove (async)
+
 parameters:
+
 - name: String
 
 this will remove an instance of a reader api from the cache and will follow any cleanup specified in the api code.
@@ -114,8 +124,8 @@ This will allow you to iterate over the cache name of the cache
 
 This will allow you to iterate over the values of the cache
 
-
 ## Example of using the factory methods in a processor
+
 ```typescript
 // example of api configuration
 const apiConfig = {
@@ -167,13 +177,15 @@ apiManager.get('normalClient') === undefined
 ```
 
 ## Kafka Reader Instance
+
 This is the reader class that is returned from the create method of the APIFactory. This returns an kafka consumer.
 
 ### consume
+
 ```(query: { size: number; wait: number }) => Promise<DataEntities[]>```
 parameters:
-- query: an object with size (number of records to fetch) and wait (time in milliseconds to finish slice)
 
+- query: an object with size (number of records to fetch) and wait (time in milliseconds to finish slice)
 
 ```js
 const query: {
@@ -201,8 +213,8 @@ const results = await api.consume(query)
 | wait |How long to wait for a full chunk of data to be available. Specified in milliseconds if you use a number. | String/Duration/Number | optional, defaults to `30 seconds` |
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
 
-
 ### Metadata
+
 When the records are fetched from kafka, metadata will be attached
 to each record
 
@@ -216,6 +228,7 @@ to each record
 - `size` the message size in bytes
 
 Example of metadata from a fetched record
+
 ```javascript
 // example record in kafka
 {
