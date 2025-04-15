@@ -28,6 +28,7 @@
         "docker:limit": "./scripts/docker-limit-check.sh",
         "docker:listImages": "ts-scripts images list",
         "docker:saveImages": "ts-scripts images save",
+        "docs": "ts-scripts docs",
         "lint": "eslint",
         "lint:fix": "yarn lint --fix",
         "publish:changed": "./scripts/publish.sh",
