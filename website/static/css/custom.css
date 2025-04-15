@@ -75,21 +75,6 @@ body {
     text-align: left;
 }
 
-.readme .pluginRowBlock {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: start;
-    margin: 0 -2px;
-}
-
-/* .promoSection .promoRow .pluginRowBlock .pluginWrapper {
-    padding: 0 2px;
-}
-
-.promoSection .promoRow .pluginWrapper {
-    display: block;
-} */
-
 .button {
     border: 1px solid #2D898B;
     border-radius: 3px;

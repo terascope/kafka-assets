@@ -10,7 +10,6 @@ function Help() {
   const { docsUrl } = customFields;
   const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
   const langPart = `${language ? `${language}/` : ''}`;
-  const docUrl = doc => `${baseUrl}${docsPart}${langPart}${doc}`;
 
   const GridBlock = ({ contents }) => {
     return (
@@ -27,9 +26,7 @@ function Help() {
 
   const supportLinks = [
     {
-      content: `Learn more using the [documentation on this site.](${docUrl(
-        'overview.html',
-      )})`,
+      content: `Learn more using the [documentation on this site.](${baseUrl})`,
       title: 'Browse Docs',
     },
     {
