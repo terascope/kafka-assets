@@ -1,0 +1,45 @@
+{
+  "scripts": {
+    "examples": "docusaurus-examples",
+    "start": "docusaurus start",
+    "start:watch": "env FORCE_COLOR=1 npm-watch start",
+    "build": "docusaurus build",
+    "publish-gh-pages": "docusaurus-publish",
+    "write-translations": "docusaurus-write-translations",
+    "version": "docusaurus-version",
+    "rename-version": "docusaurus-rename-version",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "docusaurus": "docusaurus"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "npm-watch": "^0.13.0"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.7.0",
+    "@docusaurus/mdx-loader": "^3.7.0",
+    "@docusaurus/preset-classic": "^3.7.0",
+    "@docusaurus/theme-mermaid": "^3.7.0",
+    "@mdx-js/react": "^3.1.0",
+    "clsx": "^2.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "9.0.3"
+  },
+  "packageManager": "yarn@4.6.0",
+  "watch": {
+    "start": {
+      "patterns": [
+        "sidebars.json",
+        "siteConfig.js",
+        "core",
+        "static",
+        "pages"
+      ],
+      "delay": 500,
+      "extensions": ".css,.md,.json,.js,.jsx",
+      "quiet": false
+    }
+  }
+}
