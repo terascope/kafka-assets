@@ -8,9 +8,9 @@ This is a high throughput operation. This reader handles all the complexity of b
 
 This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
 
-For this reader to function properly, you will need a running kafka cluster and configure this job with the correct group, topic and partition management options
+For this reader to function properly, you will need a running kafka cluster and configure this job with the correct group, topic and partition management options.
 
-this is a [recoverable](https://terascope.github.io/teraslice/docs/management-apis/endpoints-json#post-v1jobsjobid_recover) reader, meaning that this job can be stopped, and then pick back up where it left off.
+This is a [recoverable](https://terascope.github.io/teraslice/docs/management-apis/endpoints-json#post-v1jobsjobid_recover) reader, meaning that this job can be stopped, and then pick back up where it left off.
 
 Fetched records will already have metadata associated with it. Please reference the [metadata section](#metadata) for more information.
 
@@ -102,7 +102,7 @@ parameters:
 - name: String
 - configOverrides: Check options below, optional
 
-this will create an instance of a [reader api](#kafka_reader_api), and cache it with the name given. Any config provided in the second argument will override what is specified in the apiConfig and cache it with the name provided. It will throw an error if you try creating another api with the same name parameter
+This will create an instance of a reader api and cache it with the name given. Any config provided in the second argument will override what is specified in the apiConfig and cache it with the name provided. It will throw an error if you try creating another api with the same name parameter
 
 ### remove (async)
 
@@ -110,7 +110,7 @@ parameters:
 
 - name: String
 
-this will remove an instance of a reader api from the cache and will follow any cleanup specified in the api code.
+This will remove an instance of a reader api from the cache and will follow any cleanup specified in the api code.
 
 ### entries
 

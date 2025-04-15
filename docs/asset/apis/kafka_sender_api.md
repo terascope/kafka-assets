@@ -95,7 +95,7 @@ parameters:
 - name: String
 - configOverrides: Check options below, optional
 
-Creates and caches an instance of a [sender api](#kafka_sender_api). Any config provided in the second argument will override what is specified in the apiConfig. It will throw an error if you try creating another api with the same name.
+Creates and caches an instance of a sender api. Any config provided in the second argument will override what is specified in the apiConfig. It will throw an error if you try creating another api with the same name.
 
 ### remove (async)
 
