@@ -1,6 +1,5 @@
 # Kafka Asset Bundle
 
-[![Build Status](https://travis-ci.org/terascope/kafka-assets.svg?branch=master)](https://travis-ci.org/terascope/kafka-assets)
 [![codecov](https://codecov.io/gh/terascope/kafka-assets/branch/master/graph/badge.svg)](https://codecov.io/gh/terascope/kafka-assets)
 
 > A bundle of [Kafka](https://kafka.apache.org/) operations and apis for [Teraslice](https://github.com/terascope/teraslice).
@@ -68,8 +67,8 @@ When using this connector in code, this connector exposes two different client i
 | Configuration | Description | Type |  Notes |
 | --------- | -------- | ------ | ------ |
 | options | Consumer or Producer specific options | Object | required, see below |
-| topic_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that apply per topic | Object | optional, defaults to `{}` |
-| rdkafka_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that are not subscription specific | Object | optional, defaults to `{}` |
+| topic_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) that apply per topic | Object | optional, defaults to `{}` |
+| rdkafka_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific | Object | optional, defaults to `{}` |
 
 The `options` object enables setting a few properties
 
