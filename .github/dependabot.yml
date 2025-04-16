@@ -20,3 +20,16 @@ updates:
       - dependency-name: '@types/node'
         versions:
           - '>= 17.0.0'
+  - package-ecosystem: npm
+    directory: '/website'
+    schedule:
+      interval: monthly
+      time: '04:00'
+      timezone: US/Arizona
+    ignore:
+      - dependency-name: "*"
+    open-pull-requests-limit: 3
+    assignees:
+      - godber
+      - sotojn
+      - busma13
