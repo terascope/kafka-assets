@@ -1,6 +1,5 @@
 # Kafka Asset Bundle
 
-[![Build Status](https://travis-ci.org/terascope/kafka-assets.svg?branch=master)](https://travis-ci.org/terascope/kafka-assets)
 [![codecov](https://codecov.io/gh/terascope/kafka-assets/branch/master/graph/badge.svg)](https://codecov.io/gh/terascope/kafka-assets)
 
 > A bundle of [Kafka](https://kafka.apache.org/) operations and apis for [Teraslice](https://github.com/terascope/teraslice).
@@ -22,15 +21,20 @@ You can find a list of releases, changes, and pre-built asset bundles [here](htt
 
 ## Getting Started
 
-This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://github.com/terascope/teraslice/blob/master/README.md).
+This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://terascope.github.io/teraslice/docs/overview/).
 
 ```bash
 # Step 1: make sure you have teraslice-cli installed
 yarn global add teraslice-cli
 
 # Step 2:
-# FIXME: this should be accurate
-teraslice-cli asset deploy ...
+# teraslice-cli assets deploy <cluster_alias> <asset-name[@version]>
+# deploy latest kafka-assets to localhost teraslice cluster
+teraslice-cli assets deploy localhost terascope/kafka-assets
+# deploy a specific version to localhost teraslice cluster
+teraslice-cli assets deploy localhost terascope/kafka-assets@4.2.2
+# build from source and deploy to localhost teraslice cluster
+teraslice-cli assets deploy localhost --build
 ```
 
 **IMPORTANT:** Additionally make sure have installed the required [connectors](#connectors).
@@ -46,6 +50,8 @@ To install from the root of your terafoundation based service.
 ```bash
 npm install terafoundation_kafka_connector
 ```
+
+**Note:** The terafoundation connector is preinstalled in Teraslice
 
 **Configuration:**
 
@@ -67,8 +73,8 @@ When using this connector in code, this connector exposes two different client i
 | Configuration | Description | Type |  Notes |
 | --------- | -------- | ------ | ------ |
 | options | Consumer or Producer specific options | Object | required, see below |
-| topic_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that apply per topic | Object | optional, defaults to `{}` |
-| rdkafka_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/v0.11.5/CONFIGURATION.md) that are not subscription specific | Object | optional, defaults to `{}` |
+| topic_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) that apply per topic | Object | optional, defaults to `{}` |
+| rdkafka_options | [librdkafka defined settings](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific | Object | optional, defaults to `{}` |
 
 The `options` object enables setting a few properties
 
@@ -150,7 +156,7 @@ Run the kafka tests
 
 **Requirements:**
 
-- `kafka` - A running instance of kafka
+- `docker` - A Kafka container will be created using [Docker](https://docs.docker.com/get-started/)
 
 **Environment:**
 

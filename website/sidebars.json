@@ -1,0 +1,31 @@
+{
+    "asset": {
+        "Overview": [
+            "asset/overview"
+        ],
+        "Apis": [
+            "asset/apis/kafka_dead_letter",
+            "asset/apis/kafka_reader_api",
+            "asset/apis/kafka_sender_api"
+        ],
+        "Operations": [
+            "asset/operations/kafka_reader",
+            "asset/operations/kafka_sender"
+        ]
+    },
+    "packages": {
+        "Overview": [
+            "packages/overview"
+        ],
+        "Packages": [
+            {
+                "type": "category",
+                "label": "terafoundation_kafka_connector",
+                "items": [
+                    "packages/terafoundation_kafka_connector/overview",
+                    "packages/terafoundation_kafka_connector/api/overview"
+                ]
+            }
+        ]
+    }
+}

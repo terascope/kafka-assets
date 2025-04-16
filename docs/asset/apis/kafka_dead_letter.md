@@ -1,4 +1,5 @@
 # kafka_dead_letter
+
 This is a Teraslice [api](https://terascope.github.io/teraslice/docs/jobs/types-of-operations#apis). It extends the [dead letter queue](https://terascope.github.io/teraslice/docs/jobs/dead-letter-queue#docsNav) functionality.
 
 Any record that fails using the `tryRecord` operation api, or any record directly used by the `rejectRecord` operation api will be collected and sent to a kafka topic at the end of a slice.
