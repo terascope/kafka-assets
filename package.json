@@ -1,15 +1,14 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "5.6.0",
+    "version": "5.6.1",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "homepage": "https://github.com/terascope/kafka-assets",
-    "repository": "git@github.com:terascope/kafka-assets.git",
-    "documentation": "https://terascope.github.io/kafka-assets",
     "bugs": {
         "url": "https://github.com/terascope/kafka-assets/issues"
     },
+    "repository": "git@github.com:terascope/kafka-assets.git",
     "license": "MIT",
     "author": "Terascope, LLC <info@terascope.io>",
     "type": "module",
@@ -64,6 +63,7 @@
         "node": ">=18.0.0",
         "yarn": ">=1.22.22"
     },
+    "documentation": "https://terascope.github.io/kafka-assets",
     "terascope": {
         "root": true,
         "testSuite": "stream",
