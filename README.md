@@ -28,7 +28,13 @@ This asset bundle requires a running Teraslice cluster, you can find the documen
 yarn global add teraslice-cli
 
 # Step 2:
-teraslice-cli asset deploy localhost terascope/kafka-assets@4.2.2
+# teraslice-cli assets deploy <cluster_alias> <asset-name[@version]>
+# deploy latest kafka-assets to localhost teraslice cluster
+teraslice-cli assets deploy localhost terascope/kafka-assets
+# deploy a specific version to localhost teraslice cluster
+teraslice-cli assets deploy localhost terascope/kafka-assets@4.2.2
+# build from source and deploy to localhost teraslice cluster
+teraslice-cli assets deploy localhost --build
 ```
 
 **IMPORTANT:** Additionally make sure have installed the required [connectors](#connectors).
