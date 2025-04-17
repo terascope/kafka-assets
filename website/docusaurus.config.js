@@ -147,7 +147,8 @@ module.exports = {
         algolia: {
             appId: 'KD1DQTOI4M',
             apiKey: '39a27eca4d31c921b2b412344351996e',
-            indexName: 'terascope_teraslice_kafka-assets'
+            indexName: 'terascope_teraslice_kafka-assets',
+            contextualSearch: false
         },
         mermaid: {
             theme: {
