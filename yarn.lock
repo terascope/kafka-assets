@@ -6744,14 +6744,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-rdkafka@npm:~3.3.1":
-  version: 3.3.1
-  resolution: "node-rdkafka@npm:3.3.1"
+"node-rdkafka@npm:~3.4.0":
+  version: 3.4.0
+  resolution: "node-rdkafka@npm:3.4.0"
   dependencies:
     bindings: "npm:^1.3.1"
     nan: "npm:^2.22.0"
     node-gyp: "npm:latest"
-  checksum: 10c0/6a7bfa42d9821216a20808a4d6bb99aa22a3128f0061cbfdc22ba61c3581a04ec1875564db1053118eff35425b30773fc92a1c1ae24cd0125c5d7fd0593f1e33
+  checksum: 10c0/7f74ec82df655c58903af07eb210cfcf444350b2ed4f58e1f4ab8ead9f2f64bbbfc1e0060fbc49604b4020e63c021b68d98facce911af9005a53838c3c3b0073
   languageName: node
   linkType: hard
 
@@ -8406,7 +8406,7 @@ __metadata:
     "@terascope/scripts": "npm:~1.16.0"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
-    node-rdkafka: "npm:~3.3.1"
+    node-rdkafka: "npm:~3.4.0"
   languageName: unknown
   linkType: soft
 
