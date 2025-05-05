@@ -1,7 +1,7 @@
 {
     "name": "kafka-assets",
     "displayName": "Asset",
-    "version": "5.6.2",
+    "version": "5.7.0",
     "private": true,
     "description": "Teraslice asset for kafka operations",
     "license": "MIT",
