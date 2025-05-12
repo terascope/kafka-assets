@@ -38,12 +38,12 @@
         "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
-        "@terascope/eslint-config": "~1.1.13",
-        "@terascope/job-components": "~1.10.0",
-        "@terascope/scripts": "~1.16.0",
+        "@terascope/eslint-config": "~1.1.14",
+        "@terascope/job-components": "~1.10.1",
+        "@terascope/scripts": "~1.16.1",
         "@types/fs-extra": "~11.0.4",
         "@types/jest": "~29.5.14",
-        "@types/node": "~22.15.3",
+        "@types/node": "~22.15.17",
         "@types/semver": "~7.7.0",
         "@types/uuid": "~10.0.0",
         "bunyan": "~1.8.15",
