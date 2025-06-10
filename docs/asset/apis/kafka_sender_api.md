@@ -2,7 +2,7 @@
 
 The kafka_sender_api is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides the functionality to send messages to a kafka topic and can be utilized by any processor, reader or slicer.  It is a high throughput operation that uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood and is the core of the [kafka_sender](../operations/kafka_sender.md).  It contains the same behavior, functionality, and configuration properties of the kafka_sender.
 
- The `kafka_sender_api` provides an [api factory](https://terascope.github.io/teraslice/docs/packages/job-components/api/classes/apifactory), which is a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that can create, cache and manage multiple kafka senders.  These api functions can then be accessed in any operation through the `getAPI` method.
+ The `kafka_sender_api` provides an [api factory](https://terascope.github.io/teraslice/docs/packages/job-components/api/operations/api-factory/overview), which is a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that can create, cache and manage multiple kafka senders.  These api functions can then be accessed in any operation through the `getAPI` method.
 
 ## Usage
 
@@ -166,7 +166,7 @@ apiManager.get('normalClient') === undefined
 
 ## Kafka Sender Instance
 
-The [sender api](https://terascope.github.io/teraslice/docs/packages/job-components/api/interfaces/routesenderapi) returned from the APIFactory's create method.
+The [sender api](https://terascope.github.io/teraslice/docs/packages/utils/api/interfaces/interfaces/RouteSenderAPI/) returned from the APIFactory's create method.
 
 ### send (async)
 
