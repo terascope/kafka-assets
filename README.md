@@ -19,6 +19,10 @@
 
 You can find a list of releases, changes, and pre-built asset bundles [here](https://github.com/terascope/kafka-assets/releases).
 
+## Documentation
+
+[https://terascope.github.io/kafka-assets/](https://terascope.github.io/kafka-assets/)
+
 ## Getting Started
 
 This asset bundle requires a running Teraslice cluster, you can find the documentation [here](https://terascope.github.io/teraslice/docs/overview/).

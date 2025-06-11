@@ -4,7 +4,7 @@ This is a Teraslice [api](https://terascope.github.io/teraslice/docs/jobs/types-
 
 Any record that fails using the `tryRecord` operation api, or any record directly used by the `rejectRecord` operation api will be collected and sent to a kafka topic at the end of a slice.
 
-More specifically it is sent at the `onSliceFinalizing` [operation lifecycle event](https://terascope.github.io/teraslice/docs/packages/job-components/api/interfaces/workeroperationlifecycle).
+More specifically it is sent at the `onSliceFinalizing` [operation lifecycle event](https://terascope.github.io/teraslice/docs/packages/job-components/api/interfaces/operation-lifecycle/interfaces/WorkerOperationLifeCycle).
 
 It is useful to keep a kafka topic of all failed entities to inspect or  reprocess them later on or you could have a job run in parallel processing the queue of failed records.
 
