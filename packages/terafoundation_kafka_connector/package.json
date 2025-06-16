@@ -22,7 +22,7 @@
         "test:watch": "ts-scripts test --watch . --"
     },
     "dependencies": {
-        "node-rdkafka": "~3.4.0"
+        "node-rdkafka": "~3.4.1"
     },
     "devDependencies": {
         "@terascope/job-components": "~1.10.2",
