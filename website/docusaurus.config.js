@@ -1,3 +1,5 @@
+import { themes } from 'prism-react-renderer';
+
 module.exports = {
     title: 'Kafka Assets',
     tagline: 'Teraslice asset for kafka operations',
@@ -155,6 +157,11 @@ module.exports = {
                 light: 'default',
                 dark: 'dark'
             },
-        }
+        },
+        prism: {
+            theme: themes.default,
+            darkTheme: themes.dark,
+            additionalLanguages: ['bash'],
+        },
     }
 };

@@ -1,14 +1,10 @@
 import Layout from "@theme/Layout";
-import React from "react";
+import MDXContent from '@theme/MDXContent';
 import README from '../../../README.md';
 
 const HomeSplash = props => {
-    const { siteConfig, language = '' } = props;
-    const { baseUrl, customFields } = siteConfig;
-    const { docsUrl } = customFields;
-    const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
-    const langPart = `${language ? `${language}/` : ''}`;
-    const docUrl = doc => `${baseUrl}${docsPart}${langPart}${doc}`;
+    const { siteConfig } = props;
+    const { baseUrl } = siteConfig;
 
     const SplashContainer = props => (
         <div className="homeContainer">
@@ -33,7 +29,9 @@ const HomeSplash = props => {
             <Logo img_src={`${baseUrl}img/logo.png`} />
             <div className="inner">
                 <Readme>
-                    <README />
+                    <MDXContent>
+                        <README />
+                    </MDXContent>
                 </Readme>
             </div>
         </SplashContainer>
