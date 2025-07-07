@@ -737,16 +737,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gerrit0/mini-shiki@npm:^3.2.2":
-  version: 3.2.3
-  resolution: "@gerrit0/mini-shiki@npm:3.2.3"
+"@gerrit0/mini-shiki@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@gerrit0/mini-shiki@npm:3.7.0"
   dependencies:
-    "@shikijs/engine-oniguruma": "npm:^3.2.2"
-    "@shikijs/langs": "npm:^3.2.2"
-    "@shikijs/themes": "npm:^3.2.2"
-    "@shikijs/types": "npm:^3.2.2"
+    "@shikijs/engine-oniguruma": "npm:^3.7.0"
+    "@shikijs/langs": "npm:^3.7.0"
+    "@shikijs/themes": "npm:^3.7.0"
+    "@shikijs/types": "npm:^3.7.0"
     "@shikijs/vscode-textmate": "npm:^10.0.2"
-  checksum: 10c0/79dde63c9f396f5629c9f018a3d1b27a2d6d74f98654792d6e04b607e7256649afe3d1920114ca8ddcae7e005f356922d121679d5b8df5d8ccf637a3f40b818c
+  checksum: 10c0/eb3f4900d841338077d839ebbc7f8722b13876a586cff7abc73295e956683724dd3371a9f990900184a2d069461965951b2604d677991badf3474262e7811384
   languageName: node
   linkType: hard
 
@@ -1369,41 +1369,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shikijs/engine-oniguruma@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "@shikijs/engine-oniguruma@npm:3.2.2"
+"@shikijs/engine-oniguruma@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@shikijs/engine-oniguruma@npm:3.7.0"
   dependencies:
-    "@shikijs/types": "npm:3.2.2"
+    "@shikijs/types": "npm:3.7.0"
     "@shikijs/vscode-textmate": "npm:^10.0.2"
-  checksum: 10c0/b5eedfca26f7e1525fd079c1827ae9bdedafb574ce4eb535c54d484218b7428fb9ac93607f79a2adc1482483dd0366fdf07b0846403a76cd4767649adb8fa590
+  checksum: 10c0/e1ec52ec2255e3330812084d62bde8853d20162b1cd285dbb63440d63d0b16c03b6ce6983982e41ac2fc2eceb3e2f6b2bc1c627d093482c4c3836c4fbb9567b0
   languageName: node
   linkType: hard
 
-"@shikijs/langs@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "@shikijs/langs@npm:3.2.2"
+"@shikijs/langs@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@shikijs/langs@npm:3.7.0"
   dependencies:
-    "@shikijs/types": "npm:3.2.2"
-  checksum: 10c0/04b5c9b92de9070624d24e20a2b3607edcbe4894a1db8056927f0d0637f080e2eed4e54925f0ded36874361db14bab9e4d9c2d06614ddd733f3f314250eabaf8
+    "@shikijs/types": "npm:3.7.0"
+  checksum: 10c0/326e8b014e74d25ce84a63bf7fdd47d5582f85c8404d4c48d6bdacf2f32ab92ddb39b41710ee7eff3daaecbbea7ee96a6c49d427344ee8375551597c74010a81
   languageName: node
   linkType: hard
 
-"@shikijs/themes@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "@shikijs/themes@npm:3.2.2"
+"@shikijs/themes@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@shikijs/themes@npm:3.7.0"
   dependencies:
-    "@shikijs/types": "npm:3.2.2"
-  checksum: 10c0/93745e76e7ed6cab1d797ec68b53a0a183d989201e5064b33a78b516e128848d2c9be194d29cf602d5017dc2a74013699c773d052aeb45593851ae35b035afaa
+    "@shikijs/types": "npm:3.7.0"
+  checksum: 10c0/6887eb99b55439988edab21a1af00302eaed6ba0dd7e2bea6c844ff4dfb8879a0c6c2178ba3fcfe2dbf3fd9f3ab6105572c57ae871e147aaceaf53bcc345d0cd
   languageName: node
   linkType: hard
 
-"@shikijs/types@npm:3.2.2, @shikijs/types@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "@shikijs/types@npm:3.2.2"
+"@shikijs/types@npm:3.7.0, @shikijs/types@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@shikijs/types@npm:3.7.0"
   dependencies:
     "@shikijs/vscode-textmate": "npm:^10.0.2"
     "@types/hast": "npm:^3.0.4"
-  checksum: 10c0/aec3327d0cfc89af138ce195ac070ba62d8229864c079a3f06dff5a180036fdd963282068d67bd4c89a04ae688005c2b7c214c274ad0bb265f6f7ab6907a67a6
+  checksum: 10c0/d7c4fcca358c0585602090e2b4ed0a3f6742b55bea340030c115cb7aa643eac79836baa095517a538d695415458bb48c08b7be7f3c8d1cf1c1c7749a58913a3f
   languageName: node
   linkType: hard
 
@@ -1555,12 +1555,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:~1.18.1":
-  version: 1.18.1
-  resolution: "@terascope/scripts@npm:1.18.1"
+"@terascope/scripts@npm:~1.19.4":
+  version: 1.19.4
+  resolution: "@terascope/scripts@npm:1.19.4"
   dependencies:
     "@kubernetes/client-node": "npm:~1.3.0"
-    "@terascope/utils": "npm:~1.8.3"
+    "@terascope/utils": "npm:~1.9.3"
     execa: "npm:~9.6.0"
     fs-extra: "npm:~11.3.0"
     globby: "npm:~14.1.0"
@@ -1575,10 +1575,10 @@ __metadata:
     package-up: "npm:~5.0.0"
     semver: "npm:~7.7.2"
     signale: "npm:~1.4.0"
-    sort-package-json: "npm:~3.2.1"
+    sort-package-json: "npm:~3.3.1"
     toposort: "npm:~2.0.2"
-    typedoc: "npm:~0.28.5"
-    typedoc-plugin-markdown: "npm:~4.6.4"
+    typedoc: "npm:~0.28.7"
+    typedoc-plugin-markdown: "npm:~4.7.0"
     yaml: "npm:^2.8.0"
     yargs: "npm:~18.0.0"
   peerDependencies:
@@ -1588,7 +1588,7 @@ __metadata:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/bb173992fc48f9510f366f67e3092f17990c986a845e65c9da4313a3f25b324a622ba444c4e52575ae1b7803fad54400a9c0d72b90b79bc83cbb7fb327754a2f
+  checksum: 10c0/5e0daad65ee53c48b2548b58f0bd6e33aeb7519646918edeb79a84ff8deeccb73f4952937d1e2d53d3b19c36b1d6c3fe4681479faa986a721f762659d9ce645f
   languageName: node
   linkType: hard
 
@@ -1598,6 +1598,15 @@ __metadata:
   dependencies:
     prom-client: "npm:~15.1.3"
   checksum: 10c0/a40cea45294a3daf744210739bbb659f51a7b82b2ab7d69e76ba7bcaebd96fdbd737bb54dedeec8c6bf63f95a7da0737f0ef7e7785c1a0721660e9f8693ecb3e
+  languageName: node
+  linkType: hard
+
+"@terascope/types@npm:~1.4.3":
+  version: 1.4.3
+  resolution: "@terascope/types@npm:1.4.3"
+  dependencies:
+    prom-client: "npm:~15.1.3"
+  checksum: 10c0/2187e0fbbd7e939a6c060fdeccd4cbdf61ce3802b20eb3b52ea86885416fed9892beb621c5feaf0336a1d1986b4f2dbba5b0bf265cc507e54d99d73b1cb04753
   languageName: node
   linkType: hard
 
@@ -1642,6 +1651,50 @@ __metadata:
     shallow-clone: "npm:~3.0.1"
     validator: "npm:~13.12.0"
   checksum: 10c0/95f5415f2a3d9f68eb1180d3c2467d78605c21372f0531a7114310bd92d4ab030d62a0b60b093fc240e96a562e80c1e5be8cf2fee2aa2eddbe69f09f8bfe36fb
+  languageName: node
+  linkType: hard
+
+"@terascope/utils@npm:~1.9.3":
+  version: 1.9.3
+  resolution: "@terascope/utils@npm:1.9.3"
+  dependencies:
+    "@chainsafe/is-ip": "npm:~2.1.0"
+    "@terascope/types": "npm:~1.4.3"
+    "@turf/bbox": "npm:~7.2.0"
+    "@turf/bbox-polygon": "npm:~7.2.0"
+    "@turf/boolean-contains": "npm:~7.2.0"
+    "@turf/boolean-disjoint": "npm:~7.2.0"
+    "@turf/boolean-equal": "npm:~7.2.0"
+    "@turf/boolean-intersects": "npm:~7.2.0"
+    "@turf/boolean-point-in-polygon": "npm:~7.2.0"
+    "@turf/boolean-within": "npm:~7.2.0"
+    "@turf/circle": "npm:~7.2.0"
+    "@turf/helpers": "npm:~7.2.0"
+    "@turf/invariant": "npm:~7.2.0"
+    "@turf/line-to-polygon": "npm:~7.2.0"
+    "@types/lodash-es": "npm:~4.17.12"
+    "@types/validator": "npm:~13.12.3"
+    awesome-phonenumber: "npm:~7.5.0"
+    date-fns: "npm:~4.1.0"
+    date-fns-tz: "npm:~3.2.0"
+    datemath-parser: "npm:~1.0.6"
+    debug: "npm:~4.4.1"
+    geo-tz: "npm:~8.1.4"
+    ip-bigint: "npm:~8.2.1"
+    ip-cidr: "npm:~4.0.2"
+    ip6addr: "npm:~0.2.5"
+    ipaddr.js: "npm:~2.2.0"
+    is-cidr: "npm:~5.1.1"
+    is-plain-object: "npm:~5.0.0"
+    js-string-escape: "npm:~1.0.1"
+    kind-of: "npm:~6.0.3"
+    latlon-geohash: "npm:~2.0.0"
+    lodash-es: "npm:~4.17.21"
+    mnemonist: "npm:~0.40.3"
+    p-map: "npm:~7.0.3"
+    shallow-clone: "npm:~3.0.1"
+    validator: "npm:~13.12.0"
+  checksum: 10c0/d3fdadf68c7a93529b273944cc52ed3f85e93c9ed9c6c347e0c9de867593cd81029aae426ce06e2c938a918699ebc5ee597a37e58098c3e30e1a5663cff54cd9
   languageName: node
   linkType: hard
 
@@ -6752,7 +6805,7 @@ __metadata:
   dependencies:
     "@terascope/eslint-config": "npm:~1.1.18"
     "@terascope/job-components": "npm:~1.10.3"
-    "@terascope/scripts": "npm:~1.18.1"
+    "@terascope/scripts": "npm:~1.19.4"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~30.0.0"
     "@types/node": "npm:~24.0.7"
@@ -8690,9 +8743,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sort-package-json@npm:~3.2.1":
-  version: 3.2.1
-  resolution: "sort-package-json@npm:3.2.1"
+"sort-package-json@npm:~3.3.1":
+  version: 3.3.1
+  resolution: "sort-package-json@npm:3.3.1"
   dependencies:
     detect-indent: "npm:^7.0.1"
     detect-newline: "npm:^4.0.1"
@@ -8703,7 +8756,7 @@ __metadata:
     tinyglobby: "npm:^0.2.12"
   bin:
     sort-package-json: cli.js
-  checksum: 10c0/383a62dbea96a030e90f9c3ac42fa4fb7700904f125a50700a1f75b048bb319d4104c57a989ef8f7b7a8f1553fe7b10e49ebcfd13a5ca08658541fd0bdcd202f
+  checksum: 10c0/ea2839b46f6f78ba41515a3d77d81aa29ec450270d3d3480480a3a2ac8a0fd1c43b55d267d138a07f9850dc62dcfbdeeebd391a2a6048e9706b9962f5bf20d8a
   languageName: node
   linkType: hard
 
@@ -9117,7 +9170,7 @@ __metadata:
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@terascope/job-components": "npm:~1.10.3"
-    "@terascope/scripts": "npm:~1.18.1"
+    "@terascope/scripts": "npm:~1.19.4"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
     node-rdkafka: "npm:~3.4.1"
@@ -9392,29 +9445,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-markdown@npm:~4.6.4":
-  version: 4.6.4
-  resolution: "typedoc-plugin-markdown@npm:4.6.4"
+"typedoc-plugin-markdown@npm:~4.7.0":
+  version: 4.7.0
+  resolution: "typedoc-plugin-markdown@npm:4.7.0"
   peerDependencies:
     typedoc: 0.28.x
-  checksum: 10c0/c5ddd363c49edf6eb848b13924b3c50af93dd8a719c24c525e0f41090b3b9fd94e4779bdc60f9ee3b7da72f316925789e00abfa2fc50b5822e94c24fe49e471c
+  checksum: 10c0/066cb8a0f96bb24c22069830d189904d624204b7ceaaeab78c72008ebb2c2bddb55170ae39fac31352caf20516a1a2360300cf384c9683f7b42465dc2c354bd1
   languageName: node
   linkType: hard
 
-"typedoc@npm:~0.28.5":
-  version: 0.28.5
-  resolution: "typedoc@npm:0.28.5"
+"typedoc@npm:~0.28.7":
+  version: 0.28.7
+  resolution: "typedoc@npm:0.28.7"
   dependencies:
-    "@gerrit0/mini-shiki": "npm:^3.2.2"
+    "@gerrit0/mini-shiki": "npm:^3.7.0"
     lunr: "npm:^2.3.9"
     markdown-it: "npm:^14.1.0"
     minimatch: "npm:^9.0.5"
-    yaml: "npm:^2.7.1"
+    yaml: "npm:^2.8.0"
   peerDependencies:
     typescript: 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x || 5.6.x || 5.7.x || 5.8.x
   bin:
     typedoc: bin/typedoc
-  checksum: 10c0/fc8235dbe8f14da24fdb088467b01887b3f1375b27d5caf0276ae405f03aa1f523e94aea52fe8ce1a3d477ae9e3f4f69fdc28614275445a828a77db88784e6ce
+  checksum: 10c0/30c942fa286c62898e5b2dd7750af80abb89684f4286bfbdf4009fb495cb8cfd65afbb793370d294c5d62e97c525789c2aae4bfd8ed29f5faa1dc49dcf4bf9c4
   languageName: node
   linkType: hard
 
@@ -9881,15 +9934,6 @@ __metadata:
   version: 5.0.0
   resolution: "yallist@npm:5.0.0"
   checksum: 10c0/a499c81ce6d4a1d260d4ea0f6d49ab4da09681e32c3f0472dee16667ed69d01dae63a3b81745a24bd78476ec4fcf856114cb4896ace738e01da34b2c42235416
-  languageName: node
-  linkType: hard
-
-"yaml@npm:^2.7.1":
-  version: 2.7.1
-  resolution: "yaml@npm:2.7.1"
-  bin:
-    yaml: bin.mjs
-  checksum: 10c0/ee2126398ab7d1fdde566b4013b68e36930b9e6d8e68b6db356875c99614c10d678b6f45597a145ff6d63814961221fc305bf9242af8bf7450177f8a68537590
   languageName: node
   linkType: hard
 
