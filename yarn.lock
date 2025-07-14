@@ -1538,9 +1538,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:~1.19.4":
-  version: 1.19.4
-  resolution: "@terascope/scripts@npm:1.19.4"
+"@terascope/scripts@npm:~1.20.1":
+  version: 1.20.1
+  resolution: "@terascope/scripts@npm:1.20.1"
   dependencies:
     "@kubernetes/client-node": "npm:~1.3.0"
     "@terascope/utils": "npm:~1.9.3"
@@ -1571,7 +1571,7 @@ __metadata:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/5e0daad65ee53c48b2548b58f0bd6e33aeb7519646918edeb79a84ff8deeccb73f4952937d1e2d53d3b19c36b1d6c3fe4681479faa986a721f762659d9ce645f
+  checksum: 10c0/c6a13e8ee72ba34b684deb2a02308c432ec2259ff57138323fc50e02aa4e189330aa60715581d9f226d80cd9db9cb4ea3edfdb84d1527373dc40c8be9a27c2d6
   languageName: node
   linkType: hard
 
@@ -6773,7 +6773,7 @@ __metadata:
   dependencies:
     "@terascope/eslint-config": "npm:~1.1.19"
     "@terascope/job-components": "npm:~1.11.3"
-    "@terascope/scripts": "npm:~1.19.4"
+    "@terascope/scripts": "npm:~1.20.1"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~30.0.0"
     "@types/node": "npm:~24.0.10"
@@ -9155,7 +9155,7 @@ __metadata:
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@terascope/job-components": "npm:~1.11.3"
-    "@terascope/scripts": "npm:~1.19.4"
+    "@terascope/scripts": "npm:~1.20.1"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
     node-rdkafka: "npm:~3.4.1"
