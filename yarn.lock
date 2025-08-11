@@ -1603,6 +1603,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@terascope/types@npm:~1.4.4":
+  version: 1.4.4
+  resolution: "@terascope/types@npm:1.4.4"
+  dependencies:
+    prom-client: "npm:~15.1.3"
+  checksum: 10c0/eed0b08c294d1610b869549e196dbd641122d22e2aa1e503daaef8ef40ae58ff86dd25cff01c66ef83f41546fc0b1e101e58f77e34d6a41c21ad495ecb5b5546
+  languageName: node
+  linkType: hard
+
 "@terascope/utils@npm:~1.9.3":
   version: 1.9.3
   resolution: "@terascope/utils@npm:1.9.3"
@@ -6889,7 +6898,7 @@ __metadata:
   resolution: "kafka-assets@workspace:asset"
   dependencies:
     "@terascope/job-components": "npm:~1.11.3"
-    "@terascope/types": "npm:~1.4.3"
+    "@terascope/types": "npm:~1.4.4"
   languageName: unknown
   linkType: soft
 
