@@ -1,7 +1,7 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "5.8.3",
+    "version": "5.8.4",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "homepage": "https://github.com/terascope/kafka-assets",
@@ -14,8 +14,8 @@
     "type": "module",
     "workspaces": {
         "packages": [
-            "packages/*",
-            "asset"
+            "asset",
+            "packages/*"
         ]
     },
     "scripts": {
@@ -38,22 +38,22 @@
         "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
-        "@terascope/eslint-config": "~1.1.21",
-        "@terascope/job-components": "~1.11.3",
-        "@terascope/scripts": "~1.20.4",
+        "@terascope/eslint-config": "~1.1.22",
+        "@terascope/job-components": "~1.12.1",
+        "@terascope/scripts": "~1.21.1",
         "@types/fs-extra": "~11.0.4",
         "@types/jest": "~30.0.0",
-        "@types/node": "~24.2.0",
+        "@types/node": "~24.2.1",
         "@types/semver": "~7.7.0",
         "@types/uuid": "~10.0.0",
         "bunyan": "~1.8.15",
-        "eslint": "~9.32.0",
-        "fs-extra": "~11.3.0",
+        "eslint": "~9.33.0",
+        "fs-extra": "~11.3.1",
         "jest": "~30.0.5",
         "jest-extended": "~6.0.0",
         "semver": "~7.7.2",
         "terafoundation_kafka_connector": "~1.5.1",
-        "teraslice-test-harness": "~1.3.5",
+        "teraslice-test-harness": "~1.3.6",
         "ts-jest": "~29.4.1",
         "typescript": "~5.9.2",
         "uuid": "~11.1.0"
