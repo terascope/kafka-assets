@@ -4985,6 +4985,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:~11.3.1":
+  version: 11.3.1
+  resolution: "fs-extra@npm:11.3.1"
+  dependencies:
+    graceful-fs: "npm:^4.2.0"
+    jsonfile: "npm:^6.0.1"
+    universalify: "npm:^2.0.0"
+  checksum: 10c0/61e5b7285b1ca72c68dfe1058b2514294a922683afac2a80aa90540f9bd85370763d675e3b408ef500077d355956fece3bd24b546790e261c3d3015967e2b2d9
+  languageName: node
+  linkType: hard
+
 "fs-minipass@npm:^3.0.0":
   version: 3.0.3
   resolution: "fs-minipass@npm:3.0.3"
@@ -6872,7 +6883,7 @@ __metadata:
     "@types/uuid": "npm:~10.0.0"
     bunyan: "npm:~1.8.15"
     eslint: "npm:~9.32.0"
-    fs-extra: "npm:~11.3.0"
+    fs-extra: "npm:~11.3.1"
     jest: "npm:~30.0.5"
     jest-extended: "npm:~6.0.0"
     semver: "npm:~7.7.2"
