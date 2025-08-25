@@ -1,18 +1,15 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
 import {
-    TestContext,
-    newTestJobConfig,
-    OpConfig,
-    APIConfig,
-    ValidatedJobConfig,
-    TestClientConfig,
+    TestContext, newTestJobConfig, OpConfig,
+    APIConfig, ValidatedJobConfig, TestClientConfig,
     Logger
 } from '@terascope/job-components';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import Schema from '../../asset/src/kafka_reader/schema.js';
 import { kafkaBrokers } from '../helpers/config.js';
+import { DEFAULT_API_NAME } from '../../asset/src/kafka_reader_api/schema.js';
 
 // increase the timeout because CI has been failing a bit
 jest.setTimeout(15_000);
@@ -205,6 +202,35 @@ describe('Kafka Reader Schema', () => {
             const apiConfig: APIConfig = { _name: 'kafka_reader_api', topic: 'hello', group: 'hello' };
 
             await expect(makeTest(opConfig, apiConfig)).toResolve();
+        });
+
+        it('will not throw if connection configs are specified in apis and not opConfig', async () => {
+            const opConfig = { _op: 'kafka_reader', api_name: DEFAULT_API_NAME };
+            const apiConfig = {
+                _name: DEFAULT_API_NAME,
+                topic: 'hello',
+                group: 'hello'
+            };
+
+            const job = newTestJobConfig({
+                apis: [apiConfig],
+                operations: [
+                    opConfig,
+                    {
+                        _op: 'noop'
+                    }
+                ]
+            });
+
+            harness = new WorkerTestHarness(job, { clients });
+
+            await harness.initialize();
+
+            const validatedApiConfig = harness.executionContext.config.apis.find(
+                (api: APIConfig) => api._name === DEFAULT_API_NAME
+            );
+
+            expect(validatedApiConfig).toMatchObject(apiConfig);
         });
     });
 });
