@@ -7,7 +7,8 @@ import {
     isString,
     getTypeOf,
     isNumber,
-    isBoolean
+    isBoolean,
+    isObjectEntity
 } from '@terascope/job-components';
 import { APIConsumer } from '../_kafka_clients/index.js';
 import { KafkaReaderConfig } from '../kafka_reader/interfaces.js';
@@ -26,6 +27,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         if (isNil(config.rollback_on_failure) || !isBoolean(config.rollback_on_failure)) throw new Error(`Parameter rollback_on_failure must be provided and be of type boolean, got ${getTypeOf(config.rollback_on_failure)}`);
         if (isNil(config.partition_assignment_strategy) || !isString(config.partition_assignment_strategy)) throw new Error(`Parameter partition_assignment_strategy must be provided and be of type string, got ${getTypeOf(config.partition_assignment_strategy)}`);
         if (isNotNil(config._encoding) && !isString(config._encoding)) throw new Error(`Parameter _encoding must be provided and be of type string, got ${getTypeOf(config._encoding)}`);
+        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) throw new Error(`Parameter rdkafka_options must be provided and be of type object, got ${getTypeOf(config.rdkafka_options)}`);
         return config as KafkaReaderAPIConfig;
     }
 
@@ -55,6 +57,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
                 // Enable partition EOF because node-rdkafka
                 // requires this work for consuming batches
                 'enable.partition.eof': true,
+                ...kafkaConfig.rdkafka_options
             } as Record<string, any>,
             autoconnect: false
         };
@@ -63,7 +66,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         if (assignmentStrategy) {
             config.rdkafka_options['partition.assignment.strategy'] = assignmentStrategy;
         }
-
+        console.log('rdkafka_options: ', config.rdkafka_options);
         return config as ConnectionConfig;
     }
 

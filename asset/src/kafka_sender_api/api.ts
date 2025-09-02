@@ -7,7 +7,8 @@ import {
     isString,
     getTypeOf,
     isNumber,
-    isBoolean
+    isBoolean,
+    isObjectEntity
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from './sender.js';
@@ -27,6 +28,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
+        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) throw new Error(`Parameter rdkafka_options must be provided and be of type object, got ${getTypeOf(config.rdkafka_options)}`);
 
         // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
         // in addition to the max.messages setting
@@ -39,7 +41,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
 
     private clientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
-        return {
+        const config = {
             type: 'kafka',
             endpoint: kafkaConfig.connection,
             options: {
@@ -55,10 +57,13 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 'log.connection.close': false,
                 // librdkafka >1.0.0 changed the default broker acknowledgement
                 // to all brokers, but this has performance issues
-                'request.required.acks': kafkaConfig.required_acks
+                'request.required.acks': kafkaConfig.required_acks,
+                ...kafkaConfig.rdkafka_options
             } as Record<string, any>,
             autoconnect: false
-        } as ConnectionConfig;
+        };
+        console.log('rdkafka_options: ', config.rdkafka_options);
+        return config as ConnectionConfig;
     }
 
     async create(

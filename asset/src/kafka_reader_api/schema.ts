@@ -71,6 +71,10 @@ export const schema = {
         doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
         default: '',
         format: ['range', 'roundrobin', 'cooperative-sticky', '']
+    },
+    rdkafka_options: {
+        doc: 'librdkafka defined settings that are not subscription specific. Settings here will override other settings.',
+        default: {}
     }
 };
 

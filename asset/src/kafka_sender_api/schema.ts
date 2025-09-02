@@ -85,6 +85,10 @@ export const schema = {
         doc: 'The number of required broker acknowledgements for a given request, set to -1 for all.',
         default: 1,
         format: 'int'
+    },
+    rdkafka_options: {
+        doc: 'librdkafka defined settings that are not subscription specific. Settings here will override other settings.',
+        default: {}
     }
 };
 
