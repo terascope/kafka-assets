@@ -62,7 +62,6 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
             } as Record<string, any>,
             autoconnect: false
         };
-        console.log('rdkafka_options: ', config.rdkafka_options);
         return config as ConnectionConfig;
     }
 

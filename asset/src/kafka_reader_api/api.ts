@@ -66,7 +66,6 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         if (assignmentStrategy) {
             config.rdkafka_options['partition.assignment.strategy'] = assignmentStrategy;
         }
-        console.log('rdkafka_options: ', config.rdkafka_options);
         return config as ConnectionConfig;
     }
 
