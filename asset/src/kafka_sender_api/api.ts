@@ -28,8 +28,11 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
-        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) throw new Error(`Parameter rdkafka_options must be provided and be of type object, got ${getTypeOf(config.rdkafka_options)}`);
-
+        // Since we don't validate this key with convict
+        // we don't have the benifit of setting a default. So we set it here
+        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) {
+            config.rdkafka_options = {};
+        }
         // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
         // in addition to the max.messages setting
         config.maxBufferLength = config.max_buffer_size;
