@@ -1,4 +1,9 @@
-import { ConvictSchema, isNumber, getTypeOf } from '@terascope/job-components';
+import {
+    ConvictSchema,
+    isNumber,
+    getTypeOf,
+    isPlainObject
+} from '@terascope/job-components';
 import { KafkaReaderAPIConfig } from './interfaces.js';
 
 export const DEFAULT_API_NAME = 'kafka_reader_api';
@@ -74,11 +79,31 @@ export const schema = {
     },
     rdkafka_options: {
         doc: 'librdkafka defined settings that are not subscription specific. Settings here will override other settings.',
-        default: {}
+        default: {},
+        format: (val: any) => {
+            if (!isPlainObject(val)) {
+                throw new Error('Invalid parameter rdkafka_options, it must be an object');
+            }
+        }
     }
 };
 
 export default class Schema extends ConvictSchema<KafkaReaderAPIConfig> {
+    // This validation function is a workaround for the limitations of convict when
+    // parsing configs that have periods `.` within its key values.
+    // https://github.com/mozilla/node-convict/issues/250
+    // This will pull `rdkafka_options` out before convict validation
+    // https://github.com/terascope/kafka-assets/pull/1071
+    validate(config: Record<string, any>): any {
+        const { rdkafka_options, ...parsedConfig } = config;
+        const results = super.validate(parsedConfig);
+
+        return {
+            ...results,
+            rdkafka_options
+        };
+    }
+
     build(): Record<string, any> {
         return schema;
     }
