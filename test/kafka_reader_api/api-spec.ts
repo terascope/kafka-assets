@@ -40,15 +40,19 @@ describe('kafka_reader_api', () => {
 
     const clients = [kafkaConfig];
 
-    async function makeTest() {
-        const job = newTestJobConfig({
-            apis: [{
+    async function makeTest(apiConfig?: any) {
+        const config = apiConfig
+            ? apiConfig
+            : {
                 _name: apiName,
                 topic,
                 group,
                 rollback_on_failure: true,
                 _dead_letter_action: 'log'
-            }],
+            };
+
+        const job = newTestJobConfig({
+            apis: [config],
             operations: [
                 {
                     _op: 'test-reader',
@@ -100,6 +104,90 @@ describe('kafka_reader_api', () => {
 
         if (!config) throw new Error('config is supposed to be present');
 
+        expect(client).toBeDefined();
+        expect(apiManager.size).toEqual(1);
+
+        const results = await client.consume({ size: exampleData.length, wait: config.wait });
+
+        expect(results.length).toEqual(exampleData.length);
+    });
+
+    it('can configure with valid rdkafka_options', async () => {
+        const apiConfig = {
+            _name: apiName,
+            topic,
+            group,
+            rollback_on_failure: true,
+            _dead_letter_action: 'log',
+            rdkafka_options: {
+                'queued.max.messages.kbytes': 100000
+            }
+        };
+
+        const apiManager = await makeTest(apiConfig);
+        const client = await apiManager.create('test', {});
+        const config = apiManager.getConfig('test');
+
+        if (!config) throw new Error('config is supposed to be present');
+
+        expect(config.rdkafka_options).toEqual(apiConfig.rdkafka_options);
+        expect(client).toBeDefined();
+        expect(apiManager.size).toEqual(1);
+
+        const results = await client.consume({ size: exampleData.length, wait: config.wait });
+
+        expect(results.length).toEqual(exampleData.length);
+    });
+
+    it('should throw with invalid rdkafka_options key', async () => {
+        const apiConfig = {
+            _name: apiName,
+            topic,
+            group,
+            rollback_on_failure: true,
+            _dead_letter_action: 'log',
+            rdkafka_options: {
+                queued_max_messages_kbytes: 100000
+            }
+        };
+
+        const apiManager = await makeTest(apiConfig);
+        await expect(apiManager.create('test', {})).rejects.toThrow('No such configuration property: "queued_max_messages_kbytes"');
+    });
+
+    it('should throw with invalid rdkafka_options value', async () => {
+        const apiConfig = {
+            _name: apiName,
+            topic,
+            group,
+            rollback_on_failure: true,
+            _dead_letter_action: 'log',
+            rdkafka_options: {
+                'queued.max.messages.kbytes': 'a lot'
+            }
+        };
+
+        const apiManager = await makeTest(apiConfig);
+        await expect(apiManager.create('test', {})).rejects.toThrow('Invalid value for configuration property "queued.max.messages.kbytes"');
+    });
+
+    it('should default to empty object when setting rdkafka_options to non object', async () => {
+        const apiConfig = {
+            _name: apiName,
+            topic,
+            group,
+            rollback_on_failure: true,
+            _dead_letter_action: 'log',
+            rdkafka_options: false
+        };
+
+        const apiManager = await makeTest(apiConfig);
+        const client = await apiManager.create('test', {});
+        const config = apiManager.getConfig('test');
+
+        if (!config) throw new Error('config is supposed to be present');
+
+        expect(config.rdkafka_options).toEqual({});
         expect(client).toBeDefined();
         expect(apiManager.size).toEqual(1);
 
