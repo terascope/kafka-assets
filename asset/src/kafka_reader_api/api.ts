@@ -76,13 +76,15 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
     async create(
         _name: string, config: Partial<KafkaReaderConfig> = {}
     ): Promise<{ client: APIConsumer; config: KafkaReaderAPIConfig }> {
-        const { logger } = this;
+        const logger = config.logger || this.logger;
         const newConfig = Object.assign(
             {}, this.apiConfig, config, { logger }
         );
 
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
+
+        logger.debug(`Kafka Consumer Client Configuration: \n${JSON.stringify(clientConfig, null, 2)}`);
 
         const { client: kafkaClient } = await this.context.apis.foundation.createClient(
             clientConfig

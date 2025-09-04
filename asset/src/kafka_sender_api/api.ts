@@ -84,6 +84,8 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
 
+        logger.debug(`Kafka Producer Client Configuration: \n${JSON.stringify(clientConfig, null, 2)}`);
+
         const { client: kafkaClient } = await this.context.apis.foundation.createClient(
             clientConfig
         );
