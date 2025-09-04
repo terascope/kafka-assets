@@ -77,5 +77,10 @@ describe('Kafka Reader API Schema', () => {
             await expect(makeTest({ offset_reset: -1231 })).toReject();
             await expect(makeTest({ offset_reset: 'hello' })).toReject();
         });
+
+        it('should allow valid rdkafka_options config', async () => {
+            await expect(makeTest({ topic: 'test', group: 'testgroup', rdkafka_options: { 'queued.max.messages.kbytes': 540000 } })).toResolve();
+            await expect(makeTest({ topic: 'test', group: 'testgroup', rdkafka_options: {} })).toResolve();
+        });
     });
 });

@@ -7,7 +7,8 @@ import {
     isString,
     getTypeOf,
     isNumber,
-    isBoolean
+    isBoolean,
+    isObjectEntity
 } from '@terascope/job-components';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from './sender.js';
@@ -27,7 +28,11 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
-
+        // Since we don't validate this key with convict
+        // we don't have the benifit of setting a default. So we set it here
+        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) {
+            config.rdkafka_options = {};
+        }
         // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
         // in addition to the max.messages setting
         config.maxBufferLength = config.max_buffer_size;
@@ -39,7 +44,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
 
     private clientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
-        return {
+        const config = {
             type: 'kafka',
             endpoint: kafkaConfig.connection,
             options: {
@@ -55,10 +60,12 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 'log.connection.close': false,
                 // librdkafka >1.0.0 changed the default broker acknowledgement
                 // to all brokers, but this has performance issues
-                'request.required.acks': kafkaConfig.required_acks
+                'request.required.acks': kafkaConfig.required_acks,
+                ...kafkaConfig.rdkafka_options
             } as Record<string, any>,
             autoconnect: false
-        } as ConnectionConfig;
+        };
+        return config as ConnectionConfig;
     }
 
     async create(
@@ -76,6 +83,8 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         newConfig.topic = newTopic;
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
+
+        logger.debug(`Kafka Producer Client Configuration: \n${JSON.stringify(clientConfig, null, 2)}`);
 
         const { client: kafkaClient } = await this.context.apis.foundation.createClient(
             clientConfig

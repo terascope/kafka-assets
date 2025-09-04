@@ -3,6 +3,7 @@ import {
     BatchProcessor,
     Context,
     Logger,
+    makeExContextLogger
 } from '@terascope/job-components';
 import { ExecutionConfig } from '@terascope/types';
 import { KafkaSenderConfig } from './interfaces.js';
@@ -28,7 +29,6 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     topicMap: TopicMap = new Map();
     connectorDict: ConnectorMap = new Map();
     hasConnectionMap = false;
-    kafkaLogger: Logger;
     api!: KafkaRouteSender;
 
     constructor(
@@ -37,13 +37,14 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         executionConfig: ExecutionConfig
     ) {
         super(context, opConfig, executionConfig);
-
-        const logger = this.logger.child({ module: 'kafka-producer' });
-        this.kafkaLogger = logger;
     }
 
     async initialize(): Promise<void> {
         await super.initialize();
+
+        // TODO: This should be in the context but doesn't seem to work at the moment
+        const kafkaLogger: Logger = makeExContextLogger(this.context, this.executionConfig, 'kafka-producer');
+
         let apiName = DEFAULT_API_NAME;
         let apiTopic: string | undefined;
         let apiConnection: string | undefined;
@@ -67,7 +68,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
             {
                 connection,
                 topic,
-                logger: this.kafkaLogger
+                logger: kafkaLogger
             }
         );
 

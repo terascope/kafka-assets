@@ -1,4 +1,7 @@
-import { Fetcher, DataEntity, isPromAvailable } from '@terascope/job-components';
+import {
+    Fetcher, DataEntity, isPromAvailable,
+    makeExContextLogger, Logger
+} from '@terascope/job-components';
 import { KafkaReaderAPIConfig, KafkaReaderAPI, DEFAULT_API_NAME } from '../kafka_reader_api/interfaces.js';
 import { KafkaReaderConfig } from './interfaces.js';
 import { APIConsumer } from '../_kafka_clients/index.js';
@@ -9,6 +12,10 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
 
     async initialize(): Promise<void> {
         await super.initialize();
+
+        // TODO: This should be in the context but doesn't seem to work at the moment
+        const kafkaLogger: Logger = makeExContextLogger(this.context, this.executionConfig, 'kafka-consumer');
+
         let apiName = DEFAULT_API_NAME;
         let apiTopic: string | undefined;
 
@@ -22,7 +29,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         const api = this.getAPI<KafkaReaderAPI>(apiName);
         // this might be undefined, but will throw in the create call if it does not exist
         const topic = this.opConfig.topic || apiTopic as string;
-        const consumer = await api.create(topic, {});
+        const consumer = await api.create(topic, { logger: kafkaLogger });
         // we do this as size and wait might live on the apiConfig, not on the processors opConfig
         const { size, wait } = api.getConfig(topic) as KafkaReaderAPIConfig;
 

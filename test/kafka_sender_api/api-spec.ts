@@ -35,9 +35,9 @@ describe('kafka_sender_api', () => {
     const clients = [kafkaConfig];
     const API_NAME = 'kafka_sender_api';
 
-    async function makeTest() {
+    async function makeTest(apiConfig = { _name: API_NAME, topic: 'hello' }) {
         const job = newTestJobConfig({
-            apis: [{ _name: API_NAME, topic: 'hello' }],
+            apis: [apiConfig],
             operations: [
                 {
                     _op: 'test-reader',
@@ -94,6 +94,70 @@ describe('kafka_sender_api', () => {
         const sender = await test.create(connection, {});
 
         expect(test.size).toEqual(1);
+
+        expect(sender.send).toBeDefined();
+        expect(sender.verify).toBeDefined();
+
+        const fetchedSender = test.get(connection);
+        expect(fetchedSender).toBeDefined();
+    });
+
+    it('can create a sender with rdkafka_options', async () => {
+        const config = {
+            _name: API_NAME,
+            topic: 'hello2',
+            rdkafka_options: {
+                'queue.buffering.max.kbytes': 540000
+            }
+        };
+        const test = await makeTest(config);
+
+        const sender = await test.create(connection, {});
+
+        expect(sender.config.rdkafka_options).toEqual(config.rdkafka_options);
+
+        expect(sender.send).toBeDefined();
+        expect(sender.verify).toBeDefined();
+
+        const fetchedSender = test.get(connection);
+        expect(fetchedSender).toBeDefined();
+    });
+
+    it('should throw when using invalid rdkafka_options key', async () => {
+        const config = {
+            _name: API_NAME,
+            topic: 'hello2',
+            rdkafka_options: {
+                queue_buffering_max_kbytes: 540000
+            }
+        };
+        const test = await makeTest(config);
+
+        await expect(test.create(connection, {})).rejects.toThrow('No such configuration property: "queue_buffering_max_kbytes"');
+    });
+
+    it('should throw when using invalid rdkafka_options value', async () => {
+        const config = {
+            _name: API_NAME,
+            topic: 'hello2',
+            rdkafka_options: {
+                'queue.buffering.max.kbytes': 'ten'
+            }
+        };
+        const test = await makeTest(config);
+        await expect(test.create(connection, {})).rejects.toThrow('Invalid value for configuration property "queue.buffering.max.kbytes"');
+    });
+
+    it('should default to empty object when setting rdkafka_options to non object', async () => {
+        const config = {
+            _name: API_NAME,
+            topic: 'hello2',
+            rdkafka_options: 'false'
+        };
+        const test = await makeTest(config);
+        const sender = await test.create(connection, {});
+
+        expect(sender.config.rdkafka_options).toEqual({});
 
         expect(sender.send).toBeDefined();
         expect(sender.verify).toBeDefined();

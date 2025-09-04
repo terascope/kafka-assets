@@ -86,5 +86,10 @@ describe('Kafka Sender API Schema', () => {
                 required_acks: 1
             });
         });
+
+        it('should allow valid rdkafka_options config', async () => {
+            await expect(makeTest({ topic: 'test', rdkafka_options: { 'queue.buffering.max.kbytes': 540000 } })).toResolve();
+            await expect(makeTest({ topic: 'test', rdkafka_options: {} })).toResolve();
+        });
     });
 });
