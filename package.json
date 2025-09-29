@@ -48,7 +48,7 @@
         "bunyan": "~1.8.15",
         "eslint": "~9.36.0",
         "fs-extra": "~11.3.2",
-        "jest": "~30.1.3",
+        "jest": "~30.2.0",
         "jest-extended": "~6.0.0",
         "semver": "~7.7.2",
         "terafoundation_kafka_connector": "~1.6.0",
