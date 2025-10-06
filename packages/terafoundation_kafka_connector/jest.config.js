@@ -12,18 +12,9 @@ export default {
     moduleNameMapper: {
         '^(\\.{1,2}/.*)\\.js$': '$1',
     },
-    globals: {
-        'ts-jest': {
-            tsconfig: './tsconfig.json',
-            diagnostics: true,
-            pretty: true,
-            useESM: true
-        }
-    },
     transform: {
         '\\.[jt]sx?$': ['ts-jest',
             {
-                isolatedModules: true,
                 tsconfig: './tsconfig.json',
                 diagnostics: true,
                 pretty: true,
