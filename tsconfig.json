@@ -4,6 +4,7 @@
         "outDir": "dist",
         "module": "ESNext",
         "moduleResolution": "node",
+        "isolatedModules": true,
         "target": "ESNext",
         "skipLibCheck": true,
         "experimentalDecorators": true,

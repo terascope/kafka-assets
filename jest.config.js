@@ -19,18 +19,12 @@ export default {
     preset: 'ts-jest',
     extensionsToTreatAsEsm: ['.ts'],
     globals: {
-        'ts-jest': {
-            tsconfig: './tsconfig.json',
-            diagnostics: true,
-            useESM: true
-        },
         ignoreDirectories: ['dist'],
         availableExtensions: ['.js', '.ts', '.mjs']
     },
     transform: {
         '\\.[jt]sx?$': ['ts-jest',
             {
-                isolatedModules: true,
                 tsconfig: './tsconfig.json',
                 diagnostics: true,
                 pretty: true,
