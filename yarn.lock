@@ -1577,9 +1577,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:~1.21.7":
-  version: 1.21.7
-  resolution: "@terascope/scripts@npm:1.21.7"
+"@terascope/scripts@npm:~1.21.8":
+  version: 1.21.8
+  resolution: "@terascope/scripts@npm:1.21.8"
   dependencies:
     "@kubernetes/client-node": "npm:~1.3.0"
     "@terascope/utils": "npm:~1.10.4"
@@ -1610,7 +1610,7 @@ __metadata:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/c99745b049f574549a82200d9769127cfe2fde702c2021e26e9c090e77caa5637e91a809dc3b4b424b65f874ba62c413e61f542a9173314182da13101066b855
+  checksum: 10c0/178ee40c9806f1b22c1b41a649f4fdb0768950fa0e83a90796f1b05c7256f4ab3a79520e827e84a8b5b2b8456e167d7a1ce5bbc1fc488abc69953cc53348f5bc
   languageName: node
   linkType: hard
 
@@ -2111,12 +2111,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:~24.7.0":
-  version: 24.7.0
-  resolution: "@types/node@npm:24.7.0"
+"@types/node@npm:~24.7.2":
+  version: 24.7.2
+  resolution: "@types/node@npm:24.7.2"
   dependencies:
     undici-types: "npm:~7.14.0"
-  checksum: 10c0/f036c78062cb3a0d5c6586bf2dac347ed3f4af121cef4ab92c85c44e32be1c50aab5ba96955842b7f8165f0e0f1c8066d1813ae259372df6c0fa9fadb1116a3e
+  checksum: 10c0/03f662f10e4b89bc97016e067101cbabe55025b54c24afb581fb50992d5eeaaf417bdae34bbc668ae8759d3cdbbbadf35fc8b9b29d26f52ede2525d48e919e49
   languageName: node
   linkType: hard
 
@@ -6870,20 +6870,20 @@ __metadata:
   dependencies:
     "@terascope/eslint-config": "npm:~1.1.26"
     "@terascope/job-components": "npm:~1.12.4"
-    "@terascope/scripts": "npm:~1.21.7"
+    "@terascope/scripts": "npm:~1.21.8"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~30.0.0"
-    "@types/node": "npm:~24.7.0"
+    "@types/node": "npm:~24.7.2"
     "@types/semver": "npm:~7.7.1"
     bunyan: "npm:~1.8.15"
     eslint: "npm:~9.37.0"
     fs-extra: "npm:~11.3.2"
     jest: "npm:~30.2.0"
     jest-extended: "npm:~6.0.0"
-    semver: "npm:~7.7.2"
+    semver: "npm:~7.7.3"
     terafoundation_kafka_connector: "npm:~1.6.0"
     teraslice-test-harness: "npm:~1.3.9"
-    ts-jest: "npm:~29.4.4"
+    ts-jest: "npm:~29.4.5"
     typescript: "npm:~5.9.3"
     uuid: "npm:~13.0.0"
   languageName: unknown
@@ -8611,6 +8611,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.7.3, semver@npm:~7.7.3":
+  version: 7.7.3
+  resolution: "semver@npm:7.7.3"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/4afe5c986567db82f44c8c6faef8fe9df2a9b1d98098fc1721f57c696c4c21cebd572f297fc21002f81889492345b8470473bc6f4aff5fb032a6ea59ea2bc45e
+  languageName: node
+  linkType: hard
+
 "set-function-length@npm:^1.2.2":
   version: 1.2.2
   resolution: "set-function-length@npm:1.2.2"
@@ -9256,7 +9265,7 @@ __metadata:
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@terascope/job-components": "npm:~1.12.4"
-    "@terascope/scripts": "npm:~1.21.7"
+    "@terascope/scripts": "npm:~1.21.8"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
     node-rdkafka: "npm:~3.5.0"
@@ -9381,9 +9390,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:~29.4.4":
-  version: 29.4.4
-  resolution: "ts-jest@npm:29.4.4"
+"ts-jest@npm:~29.4.5":
+  version: 29.4.5
+  resolution: "ts-jest@npm:29.4.5"
   dependencies:
     bs-logger: "npm:^0.2.6"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -9391,7 +9400,7 @@ __metadata:
     json5: "npm:^2.2.3"
     lodash.memoize: "npm:^4.1.2"
     make-error: "npm:^1.3.6"
-    semver: "npm:^7.7.2"
+    semver: "npm:^7.7.3"
     type-fest: "npm:^4.41.0"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
@@ -9417,7 +9426,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/f99d612704cda98369f4a54d3db771bad5edd1390fded4f1691f3182f0c8ce8b7f827e5846952bd8bcd26df26c9fb18f11089de760956bdf357875a5f1d49fcc
+  checksum: 10c0/789f00666ba785ac425606d42601cbdc03015e46f228a0b333f06c6658d80865819bae0ddd59c762285352d2b14d0aa50912574ec699ba6369ddb0d400a49ac0
   languageName: node
   linkType: hard
 
