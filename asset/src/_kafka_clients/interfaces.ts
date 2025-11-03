@@ -18,6 +18,7 @@ export interface TopicPartition {
     partition: number;
     offset: number;
     topic: string;
+    leaderEpoch?: number;
 }
 
 export interface ConsumerClientConfig {
