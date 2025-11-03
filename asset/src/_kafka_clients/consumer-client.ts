@@ -1,4 +1,4 @@
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import {
     pDelay, toHumanTime, EncodingConfig,
     isBoolean, isNotNil

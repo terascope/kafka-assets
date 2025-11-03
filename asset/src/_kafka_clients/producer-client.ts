@@ -1,4 +1,4 @@
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import { ProduceMessage, ProducerClientConfig } from './interfaces.js';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers/index.js';
 import BaseClient from './base-client.js';
