@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - master
       - 'release/kafka-assets-v*'
   pull_request:
     branches:
-      - main
+      - master
       - 'release/kafka-assets-v*'
 jobs:
   call-asset-test-workflow:
