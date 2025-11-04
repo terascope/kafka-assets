@@ -1,0 +1,15 @@
+name: Build, Publish and Release Teraslice Prerelease Asset
+run-name: ${{ github.actor }} is building, publishing and releasing the Teraslice Prerelease Asset
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - release/kafka-assets-v*
+    types:
+      - closed
+
+jobs:
+  call-asset-build:
+    if: github.event.pull_request.merged == true
+    uses: terascope/workflows/.github/workflows/prerelease-asset-build-and-publish.yml@main
+    secrets: inherit
