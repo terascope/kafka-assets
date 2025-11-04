@@ -575,7 +575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@confluentinc/kafka-javascript@npm:^1.6.0":
+"@confluentinc/kafka-javascript@npm:~1.6.0":
   version: 1.6.0
   resolution: "@confluentinc/kafka-javascript@npm:1.6.0"
   dependencies:
@@ -9504,7 +9504,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
-    "@confluentinc/kafka-javascript": "npm:^1.6.0"
+    "@confluentinc/kafka-javascript": "npm:~1.6.0"
     "@terascope/job-components": "npm:~1.12.4"
     "@terascope/scripts": "npm:~1.21.8"
     "@types/convict": "npm:~6.1.6"
