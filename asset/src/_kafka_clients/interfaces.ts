@@ -18,6 +18,7 @@ export interface TopicPartition {
     partition: number;
     offset: number;
     topic: string;
+    // This is added because the new confluent client returns this.
     leaderEpoch?: number;
 }
 
