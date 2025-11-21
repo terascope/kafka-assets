@@ -123,6 +123,48 @@ results === data;
 // it uses Date.now() (server time, number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.) as the kafka timestamp metadata value
 ```
 
+### Using rdkafka_options for advanced configuration
+
+You can use `rdkafka_options` to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client.
+
+Example job with rdkafka_options
+
+```json
+{
+    "name": "test-job",
+    "lifecycle": "once",
+    "max_retries": 3,
+    "slicers": 1,
+    "workers": 10,
+    "assets": ["kafka"],
+    "operations": [
+        {
+            "_op": "test-reader"
+        },
+        {
+            "_op": "kafka_sender",
+            "topic": "kafka-test-sender",
+            "id_field": "uuid",
+            "compression": "gzip",
+            "size": 10000,
+            "wait": 8000,
+            "rdkafka_options": {
+                "queue.buffering.max.ms": 100,
+                "batch.num.messages": 10000,
+                "message.send.max.retries": 3,
+                "retry.backoff.ms": 200
+            }
+        }
+    ]
+}
+```
+
+In this example, `rdkafka_options` configures the producer to:
+- Buffer messages for up to 100ms before sending (`queue.buffering.max.ms`)
+- Batch up to 10000 messages together (`batch.num.messages`)
+- Retry failed sends up to 3 times (`message.send.max.retries`)
+- Wait 200ms between retries (`retry.backoff.ms`)
+
 ## Parameters
 
 | Configuration | Description | Type |  Notes |
