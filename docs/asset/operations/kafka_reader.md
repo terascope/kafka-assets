@@ -67,6 +67,47 @@ results.length === 5000;
 
 ```
 
+### Using rdkafka_options for advanced configuration
+
+You can use `rdkafka_options` to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client.
+
+Example job with rdkafka_options
+
+```json
+{
+    "name": "test-job",
+    "lifecycle": "once",
+    "max_retries": 3,
+    "slicers": 1,
+    "workers": 10,
+    "assets": ["kafka"],
+    "operations": [
+        {
+            "_op": "kafka_reader",
+            "topic": "kafka-test-fetcher",
+            "group": "my-consumer-group",
+            "size": 10000,
+            "wait": 8000,
+            "rdkafka_options": {
+                "fetch.min.bytes": 100000,
+                "fetch.wait.max.ms": 500,
+                "session.timeout.ms": 30000,
+                "heartbeat.interval.ms": 10000
+            }
+        },
+        {
+            "_op": "noop"
+        }
+    ]
+}
+```
+
+In this example, `rdkafka_options` configures the consumer to:
+- Wait for at least 100KB of data before returning from a fetch (`fetch.min.bytes`)
+- Wait up to 500ms for data to accumulate (`fetch.wait.max.ms`)
+- Set session timeout to 30 seconds (`session.timeout.ms`)
+- Send heartbeats every 10 seconds (`heartbeat.interval.ms`)
+
 ## Parameters
 
 | Configuration | Description | Type |  Notes |
