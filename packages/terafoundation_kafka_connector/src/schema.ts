@@ -38,5 +38,10 @@ export default {
         doc: 'Private key passphrase',
         default: undefined,
         format: 'optional_String'
+    },
+    rdkafka_options: {
+        doc: 'Additional rdkafka configuration options. See https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md for available options.',
+        default: undefined,
+        format: Object
     }
 };
