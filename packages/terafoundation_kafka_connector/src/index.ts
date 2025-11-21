@@ -211,7 +211,7 @@ class KafkaConnector {
             'ssl.certificate.location': config.ssl_certificate_location,
             'ssl.key.location': config.ssl_key_location,
             'ssl.key.password': config.ssl_key_password,
-        }, ...options);
+        }, config.rdkafka_options, ...options);
 
         for (const [key, val] of Object.entries(clientConfig)) {
             if (val == null || val === '') {
