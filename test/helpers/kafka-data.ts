@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { v4 as uuidv4 } from 'uuid';
 import { debugLogger, castArray } from '@terascope/job-components';
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import { kafkaBrokers } from './config.js';
 import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients/index.js';
 
