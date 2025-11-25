@@ -7,9 +7,9 @@ import {
     KafkaProducerSettings,
     KafkaConsumerResult,
     KafkaProducerResult,
-    ClientType,
-    RDKafkaOptions
+    ClientType
 } from './interfaces.js';
+import * as configHelpers from './helpers.js';
 
 /**
  * settings contains a list of options to configure on the client.
@@ -48,7 +48,7 @@ class KafkaConnector {
                 topicOptions,
                 clientOptions,
                 group
-            } = this._getConsumerOptions(config, settings);
+            } = configHelpers.getConsumerOptions(config, settings);
 
             logger.info(`Creating a Kafka consumer for group: ${group}`);
             const client = new kafka.KafkaConsumer(clientOptions, topicOptions);
@@ -65,7 +65,7 @@ class KafkaConnector {
                 topicOptions,
                 clientOptions,
                 pollInterval
-            } = this._getProducerOptions(config, settings);
+            } = configHelpers.getProducerOptions(config, settings);
 
             const client = new kafka.Producer(clientOptions, topicOptions);
             client.setPollInterval(pollInterval);
@@ -104,7 +104,7 @@ class KafkaConnector {
                 topicOptions,
                 clientOptions,
                 group
-            } = this._getConsumerOptions(config, settings);
+            } = configHelpers.getConsumerOptions(config, settings);
 
             logger.info(`Creating a Kafka consumer for group: ${group}`);
             const client = new kafka.KafkaConsumer(clientOptions, topicOptions);
@@ -121,7 +121,7 @@ class KafkaConnector {
                 topicOptions,
                 clientOptions,
                 pollInterval
-            } = this._getProducerOptions(config, settings);
+            } = configHelpers.getProducerOptions(config, settings);
 
             const client = new kafka.Producer(clientOptions, topicOptions);
             client.setPollInterval(pollInterval);
@@ -156,70 +156,6 @@ class KafkaConnector {
                 logger.info('Kafka connection initialized.');
             }
         });
-    }
-
-    private _getConsumerOptions(config: KafkaConnectorConfig, settings: KafkaConsumerSettings) {
-        // Group can be passed in when the connection is requested by the
-        // application or configured in terafoundation config.
-        const { group } = settings.options;
-
-        const clientOptions = this._getClientOptions(config, {
-            'group.id': group,
-        }, settings.rdkafka_options);
-
-        // Topic specific options as defined by librdkafka
-        const topicOptions: RDKafkaOptions = Object.assign({
-            'auto.offset.reset': 'smallest'
-        }, settings.topic_options);
-
-        return {
-            // Topic specific options as defined by librdkafka
-            topicOptions,
-            clientOptions,
-            group
-        };
-    }
-
-    private _getProducerOptions(config: KafkaConnectorConfig, settings: KafkaProducerSettings) {
-        const pollInterval = settings.options.poll_interval;
-
-        const clientOptions = this._getClientOptions(config, {
-            'queue.buffering.max.messages': 500000,
-            'queue.buffering.max.ms': 1000,
-            'batch.num.messages': 100000,
-        }, settings.rdkafka_options);
-
-        // Topic specific options as defined by librdkafka
-        const topicOptions: RDKafkaOptions = Object.assign({}, settings.topic_options);
-
-        return {
-            topicOptions,
-            clientOptions,
-            pollInterval: pollInterval != null ? pollInterval : 100,
-        };
-    }
-
-    // Default settings for the client. This uses the options we defined
-    // before exposing all the settings available to rdkafka
-    private _getClientOptions(config: KafkaConnectorConfig, ...options: any[]): RDKafkaOptions {
-        const clientConfig = Object.assign({
-            'metadata.broker.list': config.brokers,
-            'security.protocol': config.security_protocol,
-            'ssl.crl.location': config.ssl_crl_location,
-            'ssl.ca.location': config.ssl_ca_location,
-            'ssl.ca.pem': config.caCertificate,
-            'ssl.certificate.location': config.ssl_certificate_location,
-            'ssl.key.location': config.ssl_key_location,
-            'ssl.key.password': config.ssl_key_password,
-        }, ...options);
-
-        for (const [key, val] of Object.entries(clientConfig)) {
-            if (val == null || val === '') {
-                delete clientConfig[key];
-            }
-        }
-
-        return clientConfig;
     }
 }
 

@@ -1644,9 +1644,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:~2.0.0-dev.12":
-  version: 2.0.0-dev.12
-  resolution: "@terascope/scripts@npm:2.0.0-dev.12"
+"@terascope/scripts@npm:~2.0.0-dev.13":
+  version: 2.0.0-dev.13
+  resolution: "@terascope/scripts@npm:2.0.0-dev.13"
   dependencies:
     "@kubernetes/client-node": "npm:~1.3.0"
     "@terascope/core-utils": "npm:~2.0.0-dev.8"
@@ -1677,7 +1677,7 @@ __metadata:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/de8232c51d3224a854421b0fd476b9cac9558d3b625d47aa51bb55ef3a7e97ab03d9032c088f63fb35c77bef328c5f771d2c8a11fe076a10299ff036bdf5df77
+  checksum: 10c0/7bffc1c93c8d6abc571ff7af6f00b07f105fa2b4a0c926c4ca35644f899d620302ce306d029ef3b357b8a50b5bdebe19ad1e88e3e88e2607d241afa12ac2ad8a
   languageName: node
   linkType: hard
 
@@ -7058,7 +7058,7 @@ __metadata:
   dependencies:
     "@terascope/eslint-config": "npm:~1.1.26"
     "@terascope/job-components": "npm:~1.12.4"
-    "@terascope/scripts": "npm:~2.0.0-dev.12"
+    "@terascope/scripts": "npm:~2.0.0-dev.13"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~30.0.0"
     "@types/node": "npm:~24.10.0"
@@ -7069,7 +7069,7 @@ __metadata:
     jest: "npm:~30.2.0"
     jest-extended: "npm:~6.0.0"
     semver: "npm:~7.7.3"
-    terafoundation_kafka_connector: "npm:~2.0.0-dev.0"
+    terafoundation_kafka_connector: "npm:2.0.0-dev.1"
     teraslice-test-harness: "npm:~1.3.9"
     ts-jest: "npm:~29.4.5"
     typescript: "npm:~5.9.3"
@@ -9527,13 +9527,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terafoundation_kafka_connector@npm:~2.0.0-dev.0, terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector":
+"terafoundation_kafka_connector@npm:2.0.0-dev.1, terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector":
   version: 0.0.0-use.local
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@confluentinc/kafka-javascript": "npm:~1.6.0"
     "@terascope/job-components": "npm:~1.12.4"
-    "@terascope/scripts": "npm:~2.0.0-dev.12"
+    "@terascope/scripts": "npm:~2.0.0-dev.13"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
   languageName: unknown
