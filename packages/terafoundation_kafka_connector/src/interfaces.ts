@@ -15,6 +15,9 @@ export interface KafkaConnectorConfig {
     ssl_crl_location?: string;
     ssl_key_location?: string;
     ssl_key_password?: string;
+
+    // Additional rdkafka configuration options
+    rdkafka_options?: RDKafkaOptions;
 }
 
 export interface KafkaClientSettings {
