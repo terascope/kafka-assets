@@ -1,4 +1,6 @@
-export default {
+import { ConvictSchema, AnyObject } from '@terascope/job-components';
+
+export const schema = {
     brokers: {
         doc: 'List of seed brokers for the kafka environment',
         default: ['localhost:9092'],
@@ -45,3 +47,24 @@ export default {
         format: Object
     }
 };
+
+export default class Schema extends ConvictSchema<AnyObject> {
+    // This validation function is a workaround for the limitations of convict when
+    // parsing configs that have periods `.` within its key values.
+    // https://github.com/mozilla/node-convict/issues/250
+    // This will pull `rdkafka_options` out before convict validation
+    // https://github.com/terascope/kafka-assets/pull/1071
+    validate(config: Record<string, any>): any {
+        const { rdkafka_options, ...parsedConfig } = config;
+        const results = super.validate(parsedConfig);
+
+        return {
+            ...results,
+            rdkafka_options
+        };
+    }
+
+    build(): Record<string, any> {
+        return schema;
+    }
+}
