@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
-import { TestClientConfig, Logger } from '@terascope/job-components';
+import { TestClientConfig } from '@terascope/job-components';
+import { Logger } from '@terascope/core-utils';
 import { SlicerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 

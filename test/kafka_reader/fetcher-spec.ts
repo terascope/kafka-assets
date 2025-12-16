@@ -1,9 +1,7 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
-import {
-    TestClientConfig, Logger, DataEntity,
-    NoopProcessor, debugLogger,
-} from '@terascope/job-components';
+import { TestClientConfig, NoopProcessor } from '@terascope/job-components';
+import { Logger, DataEntity, debugLogger } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import { FatalError } from '../../asset/src/_kafka_clients/index.js';

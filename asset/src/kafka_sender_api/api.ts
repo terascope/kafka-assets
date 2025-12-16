@@ -1,7 +1,4 @@
 import {
-    APIFactory,
-    AnyObject,
-    ConnectionConfig,
     isNotNil,
     isNil,
     isString,
@@ -9,13 +6,14 @@ import {
     isNumber,
     isBoolean,
     isObjectEntity
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
+import { APIFactory, ConnectionConfig } from '@terascope/job-components';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from './sender.js';
 import { KafkaSenderAPIConfig } from './interfaces.js';
 
 export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSenderAPIConfig> {
-    private validateConfig(config: AnyObject): KafkaSenderAPIConfig {
+    private validateConfig(config: Record<string, any>): KafkaSenderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
         if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
         if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);

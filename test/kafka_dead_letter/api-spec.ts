@@ -2,10 +2,8 @@ import { jest } from '@jest/globals';
 import 'jest-extended';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-    TestClientConfig, Logger, DataEntity,
-    NoopProcessor,
-} from '@terascope/job-components';
+import { TestClientConfig, NoopProcessor } from '@terascope/job-components';
+import { Logger, DataEntity } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import { readData } from '../helpers/kafka-data.js';

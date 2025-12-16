@@ -1,14 +1,12 @@
 import {
-    RouteSenderAPI,
     DataEntity,
     getValidDate,
     isString,
     Logger,
     toString,
-    TSError,
-    isPromAvailable,
-    Context
-} from '@terascope/job-components';
+    TSError
+} from '@terascope/core-utils';
+import { RouteSenderAPI, isPromAvailable, Context } from '@terascope/job-components';
 import kafka from '@confluentinc/kafka-javascript';
 import { KafkaSenderAPIConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';

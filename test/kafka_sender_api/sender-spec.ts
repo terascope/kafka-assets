@@ -1,9 +1,8 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import {
-    TestClientConfig, Logger, APIFactoryRegistry, DataEntity, AnyObject
-} from '@terascope/job-components';
+import { TestClientConfig, APIFactoryRegistry } from '@terascope/job-components';
+import { Logger, DataEntity } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces.js';
 import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender.js';
@@ -49,7 +48,7 @@ describe('KafkaRouteSender', () => {
         topic,
     };
 
-    async function makeTest(apiConfig: AnyObject = {}) {
+    async function makeTest(apiConfig: Record<string, any> = {}) {
         const apiSender = Object.assign({}, defaultConfigs, apiConfig);
         const job = newTestJobConfig({
             apis: [apiSender],

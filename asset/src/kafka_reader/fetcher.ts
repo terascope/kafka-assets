@@ -1,7 +1,5 @@
-import {
-    Fetcher, DataEntity, isPromAvailable,
-    makeExContextLogger, Logger
-} from '@terascope/job-components';
+import { Fetcher, isPromAvailable, makeExContextLogger } from '@terascope/job-components';
+import { DataEntity, Logger } from '@terascope/core-utils';
 import { KafkaReaderAPIConfig, KafkaReaderAPI, DEFAULT_API_NAME } from '../kafka_reader_api/interfaces.js';
 import { KafkaReaderConfig } from './interfaces.js';
 import { APIConsumer } from '../_kafka_clients/index.js';

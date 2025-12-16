@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
-import { TestClientConfig, Logger } from '@terascope/job-components';
+import { TestClientConfig } from '@terascope/job-components';
+import { Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPI } from '../../asset/src/kafka_sender_api/interfaces.js';
 import { kafkaBrokers, senderTopic } from '../helpers/config.js';

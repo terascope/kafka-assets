@@ -2,8 +2,9 @@ import { jest } from '@jest/globals';
 import 'jest-extended';
 import {
     newTestJobConfig, OpConfig, APIConfig,
-    ValidatedJobConfig, TestClientConfig, Logger
+    ValidatedJobConfig, TestClientConfig
 } from '@terascope/job-components';
+import { Logger } from '@terascope/core-utils';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import { kafkaBrokers } from '../helpers/config.js';

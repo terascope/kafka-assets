@@ -2,9 +2,9 @@ import { jest } from '@jest/globals';
 import 'jest-extended';
 import {
     TestContext, newTestJobConfig, OpConfig,
-    APIConfig, ValidatedJobConfig, TestClientConfig,
-    Logger
+    APIConfig, ValidatedJobConfig, TestClientConfig
 } from '@terascope/job-components';
+import { Logger } from '@terascope/core-utils';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import Schema from '../../asset/src/kafka_reader/schema.js';

@@ -6,7 +6,7 @@ const schema = {
     api_name: {
         doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
         default: null,
-        format: 'optional_String'
+        format: 'optional_string'
     }
 };
 
@@ -29,15 +29,13 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
         if (secondOp === 'json_protocol') throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
 
         const {
-            api_name, ...newConfig
+            api_name
         } = opConfig;
 
         const apiName = api_name || `${DEFAULT_API_NAME}:${opConfig._op}-${opIndex}`;
 
         // we set the new apiName back on the opConfig so it can reference the unique name
         opConfig.api_name = apiName;
-
-        this.ensureAPIFromConfig(apiName, job, newConfig);
     }
 
     build(): Record<string, any> {

@@ -1,10 +1,8 @@
 import {
     DataEntity,
-    BatchProcessor,
-    Context,
-    Logger,
-    makeExContextLogger
-} from '@terascope/job-components';
+    Logger
+} from '@terascope/core-utils';
+import { makeExContextLogger, Context, BatchProcessor } from '@terascope/job-components';
 import { ExecutionConfig } from '@terascope/types';
 import { KafkaSenderConfig } from './interfaces.js';
 import { KafkaSenderAPI, DEFAULT_API_NAME } from '../kafka_sender_api/interfaces.js';
