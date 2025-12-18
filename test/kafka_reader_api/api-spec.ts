@@ -3,7 +3,7 @@ import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig } from '@terascope/job-components';
 import { Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
-import { DEFAULT_API_NAME, KafkaReaderAPI } from '../../asset/src/kafka_reader_api/interfaces.js';
+import { KafkaReaderAPI } from '../../asset/src/kafka_reader_api/interfaces.js';
 import { kafkaBrokers, fetcherAPITopic, fetcherGroup } from '../helpers/config.js';
 import { loadData } from '../helpers/kafka-data.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
@@ -16,7 +16,7 @@ describe('kafka_reader_api', () => {
 
     const topic = fetcherAPITopic;
     const group = fetcherGroup;
-    const apiName = DEFAULT_API_NAME;
+    const apiName = 'kafka_reader_api';
 
     let exampleData: Record<string, any>[];
 

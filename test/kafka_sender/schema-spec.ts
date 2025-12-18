@@ -59,17 +59,30 @@ describe('Kafka Sender Schema', () => {
     });
 
     describe('when validating the schema', () => {
+        const apiConfig1 = { _name: 'kafka_sender_api' };
+        console.log('hello');
         it('should throw an error if no topic is specified', async () => {
             await expect(makeTest({
-                _op: 'kafka_sender'
-            })).toReject();
+                _op: 'kafka_sender',
+                _api_name: 'kafka_sender_api'
+            }, apiConfig1)).toReject();
         });
 
         it('should not throw an error if valid config is given', async () => {
+            try {
+                makeTest({
+                    _op: 'kafka_sender',
+                    _api_name: 'kafka_sender_api',
+                    topic: 'hello'
+                }, apiConfig1);
+                console.log('I did not throw...');
+            } catch (err) {
+                console.log('@@@ Here is error', err);
+            }
             await expect(makeTest({
                 _op: 'kafka_sender',
                 topic: 'hello'
-            })).toResolve();
+            }, apiConfig1)).toResolve();
         });
 
         it('should not throw an error if api and sender make a valid config', async () => {

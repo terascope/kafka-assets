@@ -28,7 +28,7 @@ export const schema = {
         default: false,
         format: Boolean
     },
-    connection: {
+    _connection: {
         doc: 'The Kafka producer connection to use.',
         default: 'default',
         format: String

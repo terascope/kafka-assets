@@ -35,17 +35,24 @@ describe('Kafka Fetcher', () => {
         operations: [
             {
                 _op: 'kafka_reader',
+                _api_name: 'kafka_reader_api',
+                _dead_letter_action: 'log'
+            },
+            {
+                _op: 'noop'
+            },
+        ],
+        apis: [
+            {
+                _name: 'kafka_reader_api',
                 topic,
                 group,
                 size: 100,
                 wait: 8000,
                 rollback_on_failure: true,
-                _dead_letter_action: 'log'
-            },
-            {
-                _op: 'noop'
+
             }
-        ],
+        ]
     });
 
     const admin = new KafkaAdmin();

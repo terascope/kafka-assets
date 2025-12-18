@@ -6,8 +6,6 @@ import {
 import { ConvictSchema } from '@terascope/job-components';
 import { KafkaReaderAPIConfig } from './interfaces.js';
 
-export const DEFAULT_API_NAME = 'kafka_reader_api';
-
 export const schema = {
     topic: {
         doc: 'Name of the Kafka topic to process',
@@ -51,7 +49,7 @@ export const schema = {
         default: '5 minutes',
         format: 'duration'
     },
-    connection: {
+    _connection: {
         doc: 'The Kafka consumer connection to use.',
         default: 'default',
         format: 'optional_string'

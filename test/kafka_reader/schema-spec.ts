@@ -9,7 +9,6 @@ import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import Schema from '../../asset/src/kafka_reader/schema.js';
 import { kafkaBrokers } from '../helpers/config.js';
-import { DEFAULT_API_NAME } from '../../asset/src/kafka_reader_api/schema.js';
 
 // increase the timeout because CI has been failing a bit
 jest.setTimeout(15_000);
@@ -205,9 +204,9 @@ describe('Kafka Reader Schema', () => {
         });
 
         it('will not throw if connection configs are specified in apis and not opConfig', async () => {
-            const opConfig = { _op: 'kafka_reader', api_name: DEFAULT_API_NAME };
+            const opConfig = { _op: 'kafka_reader', api_name: 'kafka_reader_api' };
             const apiConfig = {
-                _name: DEFAULT_API_NAME,
+                _name: 'kafka_reader_api',
                 topic: 'hello',
                 group: 'hello'
             };
@@ -227,7 +226,7 @@ describe('Kafka Reader Schema', () => {
             await harness.initialize();
 
             const validatedApiConfig = harness.executionContext.config.apis.find(
-                (api: APIConfig) => api._name === DEFAULT_API_NAME
+                (api: APIConfig) => api._name === 'kafka_reader_api'
             );
 
             expect(validatedApiConfig).toMatchObject(apiConfig);

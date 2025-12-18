@@ -53,11 +53,17 @@ describe('Kafka Sender', () => {
             },
             {
                 _op: 'kafka_sender',
-                topic,
-                size: batchSize,
+                _api_name: 'kafka_sender_api',
                 _dead_letter_action: 'log'
             }
         ],
+        apis: [
+            {
+                _name: 'kafka_sender_api',
+                topic,
+                size: batchSize,
+            }
+        ]
     });
 
     const admin = new KafkaAdmin();

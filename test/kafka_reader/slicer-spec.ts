@@ -19,12 +19,19 @@ describe('Kafka Slicer', () => {
         operations: [
             {
                 _op: 'kafka_reader',
-                topic: 'test-123',
-                group: 'test-456',
-                connection: 'default'
+                api_name: 'kafka_reader_api'
+
             },
             {
                 _op: 'noop'
+            }
+        ],
+        apis: [
+            {
+                _name: 'kafka_reader_api',
+                topic: 'test-123',
+                group: 'test-456',
+                _connection: 'default'
             }
         ]
     });
