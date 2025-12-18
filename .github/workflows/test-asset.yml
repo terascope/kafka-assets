@@ -5,11 +5,9 @@ on:
   push:
     branches:
       - master
-      - 'release/kafka-assets-v*'
   pull_request:
     branches:
       - master
-      - 'release/kafka-assets-v*'
 jobs:
   call-asset-test-workflow:
     uses: terascope/workflows/.github/workflows/asset-test.yml@main

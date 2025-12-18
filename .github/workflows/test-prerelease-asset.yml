@@ -1,0 +1,15 @@
+name: Test Teraslice Asset
+run-name: ${{ github.actor }} is testing the Teraslice Prerelease Asset
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'release/kafka-assets-v*'
+  pull_request:
+    branches:
+      - 'release/kafka-assets-v*'
+
+jobs:
+  call-asset-test-workflow:
+    uses: terascope/workflows/.github/workflows/prerelease-asset-test.yml@main
+    secrets: inherit
