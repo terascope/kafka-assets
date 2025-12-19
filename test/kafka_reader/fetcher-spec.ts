@@ -30,6 +30,8 @@ describe('Kafka Fetcher', () => {
 
     const clients = [clientConfig];
 
+    // FIXME: I needed to set deadletter to log on both
+    // Turns out it will set to throw if I only set it on op.
     const job = newTestJobConfig({
         max_retries: 3,
         operations: [
@@ -50,7 +52,7 @@ describe('Kafka Fetcher', () => {
                 size: 100,
                 wait: 8000,
                 rollback_on_failure: true,
-
+                _dead_letter_action: 'log'
             }
         ]
     });

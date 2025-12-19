@@ -19,7 +19,7 @@ describe('Kafka Slicer', () => {
         operations: [
             {
                 _op: 'kafka_reader',
-                api_name: 'kafka_reader_api'
+                _api_name: 'kafka_reader_api'
 
             },
             {

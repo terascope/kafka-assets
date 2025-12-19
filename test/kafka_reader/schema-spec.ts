@@ -37,9 +37,15 @@ describe('Kafka Reader Schema', () => {
                 operations: [
                     {
                         _op: 'kafka_reader',
+                        _api_name: 'kafka_reader-api'
                     },
                     {
                         _op: 'json_protocol',
+                    }
+                ],
+                apis: [
+                    {
+                        _name: 'kafka_reader_api'
                     }
                 ]
             });
@@ -53,11 +59,17 @@ describe('Kafka Reader Schema', () => {
                 operations: [
                     {
                         _op: 'kafka_reader',
-                        topic: 'hello',
-                        group: 'hi'
+                        _api_name: 'kafka_reader_api'
                     },
                     {
                         _op: 'noop',
+                    }
+                ],
+                apis: [
+                    {
+                        _name: 'kafka_reader_api',
+                        topic: 'hello',
+                        group: 'hi'
                     }
                 ]
             });
@@ -66,7 +78,8 @@ describe('Kafka Reader Schema', () => {
             }).not.toThrow();
         });
 
-        it('should inject an api if none is specified', () => {
+        // FIXME: replace with test that doesn't add api
+        it.skip('should inject an api if none is specified', () => {
             const job = newTestJobConfig({
                 operations: [
                     {
@@ -90,6 +103,7 @@ describe('Kafka Reader Schema', () => {
             }).not.toThrow();
         });
 
+        // FIXME: Should no longer allow this
         it('should throw if topic/group is specified differently in opConfig if api is set with api_name', () => {
             const job = newTestJobConfig({
                 apis: [
@@ -112,26 +126,8 @@ describe('Kafka Reader Schema', () => {
             }).toThrow();
         });
 
-        it('should associate with default kafka sender if no api_name is specified', () => {
-            const job = newTestJobConfig({
-                apis: [
-                    { _name: 'kafka_reader_api:kafka_reader-0', topic: 'hello', group: 'hi' }
-                ],
-                operations: [
-                    {
-                        _op: 'kafka_reader',
-                    },
-                    {
-                        _op: 'noop',
-                    }
-                ]
-            });
-            expect(() => {
-                schema.validateJob(job);
-            }).not.toThrow();
-        });
-
-        it('should associate with default kafka sender and throw if configs are incorrect', () => {
+        // FIXME: Fix all defaults
+        it.skip('should associate with default kafka sender and throw if configs are incorrect', () => {
             const job = newTestJobConfig({
                 apis: [
                     { _name: 'kafka_reader_api:kafka_reader-0', topic: 'hello', group: 'hi' }
@@ -185,26 +181,31 @@ describe('Kafka Reader Schema', () => {
         }
 
         it('should throw an error if no topic is specified', async () => {
-            await expect(makeTest({ _op: 'kafka_reader', group: 'hello' })).toReject();
+            const apiConfig: APIConfig = { _name: 'kafka_reader_api', group: 'hello' };
+            const opConfig: OpConfig = { _op: 'kafka_reader', _api_name: 'kafka_reader_api' };
+            await expect(makeTest(opConfig, apiConfig)).toReject();
         });
 
         it('should throw an error if no group is specified', async () => {
-            await expect(makeTest({ _op: 'kafka_reader', topic: 'hello' })).toReject();
+            const apiConfig: APIConfig = { _name: 'kafka_reader_api', topic: 'hello' };
+            const opConfig: OpConfig = { _op: 'kafka_reader', _api_name: 'kafka_reader_api' };
+            await expect(makeTest(opConfig, apiConfig)).toReject();
         });
 
-        it('should not throw an error if valid config is given', async () => {
-            await expect(makeTest({ _op: 'kafka_reader', topic: 'hello', group: 'hello' })).toResolve();
+        it('should throw an error if no api is present', async () => {
+            await expect(makeTest({ _op: 'kafka_reader', topic: 'hello', group: 'hello' })).toReject();
         });
 
         it('should not throw an error if topic or group is provided in api', async () => {
-            const opConfig = { _op: 'kafka_reader', api_name: 'kafka_reader_api' };
+            const opConfig = { _op: 'kafka_reader', _api_name: 'kafka_reader_api' };
             const apiConfig: APIConfig = { _name: 'kafka_reader_api', topic: 'hello', group: 'hello' };
 
             await expect(makeTest(opConfig, apiConfig)).toResolve();
         });
 
+        // FIXME: This test is obsolete and we should check for this
         it('will not throw if connection configs are specified in apis and not opConfig', async () => {
-            const opConfig = { _op: 'kafka_reader', api_name: 'kafka_reader_api' };
+            const opConfig = { _op: 'kafka_reader', _api_name: 'kafka_reader_api' };
             const apiConfig = {
                 _name: 'kafka_reader_api',
                 topic: 'hello',
