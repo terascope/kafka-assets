@@ -16,7 +16,7 @@ describe('Kafka Dead Letter Schema', () => {
                 schema.validate({
                     _name: 'kafka_deader_letter'
                 });
-            }).toThrow(/kafka_deader_letter - topic: This field is required and must by of type string/);
+            }).toThrow(`Validation failed for api config: kafka_deader_letter - Zod parse error:`);
         });
 
         it('should not throw an error if valid config is given', () => {

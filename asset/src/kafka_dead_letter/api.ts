@@ -1,9 +1,8 @@
 import {
     ConnectionConfig,
-    OperationAPI,
-    parseError,
-    Collector,
+    OperationAPI
 } from '@terascope/job-components';
+import { parseError, Collector } from '@terascope/core-utils';
 import kafka from '@confluentinc/kafka-javascript';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';

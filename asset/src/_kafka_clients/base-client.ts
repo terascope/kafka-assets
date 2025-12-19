@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 import {
     Logger, isError, pDelay, once,
     get
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
 import kafka from '@confluentinc/kafka-javascript';
 import {
     isOkayError,

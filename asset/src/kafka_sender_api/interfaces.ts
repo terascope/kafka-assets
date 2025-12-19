@@ -1,4 +1,5 @@
-import { Omit, APIFactoryRegistry } from '@terascope/job-components';
+import { APIFactoryRegistry } from '@terascope/job-components';
+import { Omit } from '@terascope/types';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from '../kafka_sender_api/sender.js';
 

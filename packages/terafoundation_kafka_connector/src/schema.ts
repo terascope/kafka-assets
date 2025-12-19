@@ -12,36 +12,36 @@ export default {
     ssl_crl_location: {
         doc: 'Path to CRL for verifying broker\'s certificate validity',
         default: undefined,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     ssl_ca_location: {
         doc: 'File or directory path to CA certificate(s) for verifying the broker\'s key. Ignored if `caCertificate` is provided.',
         default: undefined,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     caCertificate: {
         doc: 'CA certificate string (PEM format) for verifying the broker\'s key. If provided `ssl_ca_location` will be ignored.',
         default: undefined,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     ssl_certificate_location: {
         doc: 'Path to client\'s public key (PEM) used for authentication',
         default: undefined,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     ssl_key_location: {
         doc: 'Path to client\'s private key (PEM) used for authentication',
         default: undefined,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     ssl_key_password: {
         doc: 'Private key passphrase',
         default: undefined,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     rdkafka_options: {
         doc: 'Additional rdkafka configuration options. See https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md for available options.',
-        default: undefined,
+        default: {},
         format: Object
     }
 };

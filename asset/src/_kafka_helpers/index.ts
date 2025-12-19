@@ -2,7 +2,7 @@ import kafka from '@confluentinc/kafka-javascript';
 import {
     toString, isString, isError,
     DataEntityMetadata
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
 import { codeToMessage, okErrors, OkErrorKeys } from './error-codes.js';
 
 export type AnyKafkaError = Error | KafkaError | number | string | null;

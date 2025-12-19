@@ -19,7 +19,7 @@ export interface KafkaReaderConfig extends OpConfig {
     /**
      The Kafka consumer connection to use.
     */
-    connection: string;
+    _connection: string;
 
     /**
      How long to wait for a full chunk of data to be available. Specified in milliseconds
@@ -60,9 +60,10 @@ export interface KafkaReaderConfig extends OpConfig {
      * assigns partitions to group members.
     */
     partition_assignment_strategy?: 'range' | 'roundrobin' | 'cooperative-sticky';
+
     /**
      * Name of kafka api used for reader, if none is provided, then one is made
      * and the name is kafka_reader_api, and is injected into the execution
     */
-    api_name: string;
+    _api_name: string;
 }

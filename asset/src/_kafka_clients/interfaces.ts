@@ -1,4 +1,4 @@
-import { Logger, DataEncoding, DataEntity } from '@terascope/job-components';
+import { Logger, DataEncoding, DataEntity } from '@terascope/core-utils';
 import { KafkaMessage } from '../_kafka_helpers/index.js';
 
 export interface OffsetByPartition {

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
 import { EventEmitter } from 'node:events';
-import { debugLogger, pDelay } from '@terascope/job-components';
+import { debugLogger, pDelay } from '@terascope/core-utils';
 import BaseClient from '../asset/src/_kafka_clients/base-client.js';
 import { KafkaError, AnyKafkaError } from '../asset/src/_kafka_helpers/index.js';
 import * as codes from '../asset/src/_kafka_helpers/error-codes.js';

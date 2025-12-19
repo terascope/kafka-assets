@@ -38,9 +38,10 @@
         "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
+        "@terascope/core-utils": "~2.0.0-dev.11",
         "@terascope/eslint-config": "~1.1.26",
-        "@terascope/job-components": "~1.12.4",
-        "@terascope/scripts": "~2.0.0-dev.13",
+        "@terascope/job-components": "~2.0.0-dev.12",
+        "@terascope/scripts": "~2.0.0-dev.16",
         "@types/fs-extra": "~11.0.4",
         "@types/jest": "~30.0.0",
         "@types/node": "~24.10.0",
@@ -52,7 +53,7 @@
         "jest-extended": "~6.0.0",
         "semver": "~7.7.3",
         "terafoundation_kafka_connector": "2.0.0-dev.1",
-        "teraslice-test-harness": "~1.3.9",
+        "teraslice-test-harness": "~2.0.0-dev.12",
         "ts-jest": "~29.4.5",
         "typescript": "~5.9.3",
         "uuid": "~13.0.0"
