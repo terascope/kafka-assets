@@ -1,5 +1,4 @@
-import { ConvictSchema, ValidatedJobConfig } from '@terascope/job-components';
-import { get } from '@terascope/core-utils';
+import { ConvictSchema } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces.js';
 
 const schema = {
@@ -11,20 +10,6 @@ const schema = {
 };
 
 export default class Schema extends ConvictSchema<KafkaSenderConfig> {
-    validateJob(job: ValidatedJobConfig): void {
-        const opConfig = job.operations.find((op) => {
-            if (op._op === 'kafka_sender') {
-                return op;
-            }
-            return false;
-        });
-
-        if (opConfig == null) throw new Error('Could not find kafka_sender operation in jobConfig');
-
-        const kafkaConnectors = get(this.context, 'sysconfig.terafoundation.connectors.kafka');
-        if (kafkaConnectors == null) throw new Error('Could not find kafka connector in terafoundation config');
-    }
-
     build(): Record<string, any> {
         return schema;
     }

@@ -51,5 +51,5 @@ export interface KafkaSenderConfig extends OpConfig {
      * Name of kafka api used for sender, if none is provided, then one is made
      * and the name is kafka_sender_api, and is injected into the execution
     */
-    api_name?: string;
+    _api_name: string;
 }
