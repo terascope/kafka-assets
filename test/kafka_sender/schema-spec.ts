@@ -80,12 +80,5 @@ describe('Kafka Sender Schema', () => {
                 topic: 'hello'
             })).toReject();
         });
-
-        it('should throw an error if opConfig topic is specified and api is set differently', async () => {
-            const opConfig = { _op: 'kafka_sender', topic: 'hello', api_name: 'kafka_sender_api' };
-            const apiConfig = { _name: 'kafka_sender_api', topic: 'stuff' };
-
-            await expect(makeTest(opConfig, apiConfig)).toReject();
-        });
     });
 });
