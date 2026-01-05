@@ -14,9 +14,6 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
         // TODO: This should be in the context but doesn't seem to work at the moment
         const kafkaLogger: Logger = makeExContextLogger(this.context, this.executionConfig, 'kafka-consumer');
 
-        if (!this.opConfig._api_name) {
-            throw new Error('kafka_reader must have "_api_name" defined in the job');
-        }
         const apiName = this.opConfig._api_name;
         const apiConfig = this.executionConfig.apis.find((config) => config._name === apiName);
         if (apiConfig == null) throw new Error(`could not find api configuration for api ${apiName}`);
