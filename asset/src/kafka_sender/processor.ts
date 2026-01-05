@@ -43,7 +43,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         // TODO: This should be in the context but doesn't seem to work at the moment
         const kafkaLogger: Logger = makeExContextLogger(this.context, this.executionConfig, 'kafka-producer');
 
-        const apiName = this.opConfig._api_name;
+        const apiName = this.opConfig._api_name as string;
         const apiConfig = this.executionConfig.apis.find(
             (config: { _name: string }) => config._name === apiName
         );
