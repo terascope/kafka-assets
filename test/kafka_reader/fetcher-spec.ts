@@ -1,9 +1,7 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
-import {
-    TestClientConfig, Logger, DataEntity,
-    NoopProcessor, debugLogger,
-} from '@terascope/job-components';
+import { TestClientConfig, NoopProcessor } from '@terascope/job-components';
+import { Logger, DataEntity, debugLogger } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import { FatalError } from '../../asset/src/_kafka_clients/index.js';
@@ -32,22 +30,31 @@ describe('Kafka Fetcher', () => {
 
     const clients = [clientConfig];
 
+    // FIXME: I needed to set deadletter to log on both
+    // Turns out it will set to throw if I only set it on op.
     const job = newTestJobConfig({
         max_retries: 3,
         operations: [
             {
                 _op: 'kafka_reader',
+                _api_name: 'kafka_reader_api',
+                _dead_letter_action: 'log'
+            },
+            {
+                _op: 'noop'
+            },
+        ],
+        apis: [
+            {
+                _name: 'kafka_reader_api',
                 topic,
                 group,
                 size: 100,
                 wait: 8000,
                 rollback_on_failure: true,
                 _dead_letter_action: 'log'
-            },
-            {
-                _op: 'noop'
             }
-        ],
+        ]
     });
 
     const admin = new KafkaAdmin();

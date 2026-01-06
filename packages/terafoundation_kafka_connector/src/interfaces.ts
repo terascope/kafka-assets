@@ -1,4 +1,4 @@
-import { Logger } from '@terascope/job-components';
+import { Logger } from '@terascope/core-utils';
 import kafka from '@confluentinc/kafka-javascript';
 
 export interface KafkaConnectorConfig {

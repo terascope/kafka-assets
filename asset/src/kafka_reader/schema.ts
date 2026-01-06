@@ -1,15 +1,13 @@
 import { ConvictSchema, ValidatedJobConfig } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces.js';
-import { DEFAULT_API_NAME } from '../kafka_reader_api/schema.js';
 
 const schema = {
-    api_name: {
-        doc: 'Name of kafka api used for reader, if none is provided, then one is made and the name is kafka_reader_api, and is injected into the execution',
+    _api_name: {
+        doc: 'Name of kafka api used for sender, if none is provided, then one is made and the name is kafka_sender_api, and is injected into the execution',
         default: null,
-        format: 'optional_String'
+        format: 'required_string'
     }
 };
-
 export default class Schema extends ConvictSchema<KafkaReaderConfig> {
     validateJob(job: ValidatedJobConfig): void {
         let opIndex = 0;
@@ -28,16 +26,7 @@ export default class Schema extends ConvictSchema<KafkaReaderConfig> {
 
         if (secondOp === 'json_protocol') throw new Error('Kafka Reader handles serialization, please remove "json_protocol"');
 
-        const {
-            api_name, ...newConfig
-        } = opConfig;
-
-        const apiName = api_name || `${DEFAULT_API_NAME}:${opConfig._op}-${opIndex}`;
-
-        // we set the new apiName back on the opConfig so it can reference the unique name
-        opConfig.api_name = apiName;
-
-        this.ensureAPIFromConfig(apiName, job, newConfig);
+        if (!opConfig._api_name) throw new Error('"_api_name" is required in the kafka_reader config');
     }
 
     build(): Record<string, any> {

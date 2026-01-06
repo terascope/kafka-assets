@@ -1,23 +1,21 @@
 import {
-    ConvictSchema,
     isNumber,
     getTypeOf,
     isPlainObject
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
+import { ConvictSchema } from '@terascope/job-components';
 import { KafkaReaderAPIConfig } from './interfaces.js';
-
-export const DEFAULT_API_NAME = 'kafka_reader_api';
 
 export const schema = {
     topic: {
         doc: 'Name of the Kafka topic to process',
         default: null,
-        format: 'required_String'
+        format: 'required_string'
     },
     group: {
         doc: 'Name of the Kafka consumer group',
         default: null,
-        format: 'required_String'
+        format: 'required_string'
     },
     offset_reset: {
         doc: 'How offset resets should be handled when there are no valid offsets for the consumer group.',
@@ -51,10 +49,10 @@ export const schema = {
         default: '5 minutes',
         format: 'duration'
     },
-    connection: {
+    _connection: {
         doc: 'The Kafka consumer connection to use.',
         default: 'default',
-        format: 'optional_String'
+        format: 'optional_string'
     },
     use_commit_sync: {
         doc: 'Use commit sync instead of async (usually not recommended)',

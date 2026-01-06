@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
-import { TestClientConfig, Logger } from '@terascope/job-components';
+import { TestClientConfig } from '@terascope/job-components';
+import { Logger } from '@terascope/core-utils';
 import { SlicerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 
@@ -18,12 +19,19 @@ describe('Kafka Slicer', () => {
         operations: [
             {
                 _op: 'kafka_reader',
-                topic: 'test-123',
-                group: 'test-456',
-                connection: 'default'
+                _api_name: 'kafka_reader_api'
+
             },
             {
                 _op: 'noop'
+            }
+        ],
+        apis: [
+            {
+                _name: 'kafka_reader_api',
+                topic: 'test-123',
+                group: 'test-456',
+                _connection: 'default'
             }
         ]
     });

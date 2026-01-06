@@ -1,9 +1,8 @@
 import {
     ConnectionConfig,
-    OperationAPI,
-    parseError,
-    Collector,
+    OperationAPI
 } from '@terascope/job-components';
+import { parseError, Collector } from '@terascope/core-utils';
 import kafka from '@confluentinc/kafka-javascript';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
@@ -80,7 +79,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     private clientConfig() {
         return {
             type: 'kafka',
-            endpoint: this.apiConfig.connection,
+            endpoint: this.apiConfig._connection,
             options: {
                 type: 'producer'
             },

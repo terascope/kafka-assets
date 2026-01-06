@@ -1,7 +1,4 @@
 import {
-    APIFactory,
-    AnyObject,
-    ConnectionConfig,
     isNotNil,
     isNil,
     isString,
@@ -9,15 +6,16 @@ import {
     isNumber,
     isBoolean,
     isObjectEntity
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
+import { APIFactory, ConnectionConfig } from '@terascope/job-components';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from './sender.js';
 import { KafkaSenderAPIConfig } from './interfaces.js';
 
 export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSenderAPIConfig> {
-    private validateConfig(config: AnyObject): KafkaSenderAPIConfig {
+    private validateConfig(config: Record<string, any>): KafkaSenderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
-        if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
+        if (isNil(config._connection) || !isString(config._connection)) throw new Error(`Parameter _connection must be provided and be of type string, got ${getTypeOf(config._connection)}`);
         if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
         if (isNil(config.max_buffer_size) || !isNumber(config.max_buffer_size)) throw new Error(`Parameter max_buffer_size must be provided and be of type number, got ${getTypeOf(config.size)}`);
         if (isNotNil(config.id_field) && !isString(config.id_field)) throw new Error(`Parameter id_field must be provided and be of type string, got ${getTypeOf(config.id_field)}`);
@@ -46,7 +44,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
         const config = {
             type: 'kafka',
-            endpoint: kafkaConfig.connection,
+            endpoint: kafkaConfig._connection,
             options: {
                 type: 'producer'
             },

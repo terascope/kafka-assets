@@ -1,10 +1,9 @@
+import { ConvictSchema } from '@terascope/job-components';
 import {
-    ConvictSchema,
-    AnyObject,
     isNumber,
     getTypeOf,
     isPlainObject
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
 
 export const DEFAULT_API_NAME = 'kafka_sender_api';
 
@@ -12,24 +11,24 @@ export const schema = {
     topic: {
         doc: 'Name of the Kafka topic to send data to',
         default: null,
-        format: 'required_String'
+        format: 'required_string'
     },
     id_field: {
         doc: 'Field in the incoming record that contains keys',
         default: null,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     timestamp_field: {
         doc: 'Field in the incoming record that contains a timestamp to set on the record',
         default: null,
-        format: 'optional_String'
+        format: 'optional_string'
     },
     timestamp_now: {
         doc: 'Set to true to have a timestamp generated as records are added to the topic',
         default: false,
         format: Boolean
     },
-    connection: {
+    _connection: {
         doc: 'The Kafka producer connection to use.',
         default: 'default',
         format: String
@@ -98,7 +97,7 @@ export const schema = {
     }
 };
 
-export default class Schema extends ConvictSchema<AnyObject> {
+export default class Schema extends ConvictSchema<Record<string, any>> {
     // This validation function is a workaround for the limitations of convict when
     // parsing configs that have periods `.` within its key values.
     // https://github.com/mozilla/node-convict/issues/250

@@ -1,7 +1,4 @@
 import {
-    APIFactory,
-    AnyObject,
-    ConnectionConfig,
     isNotNil,
     isNil,
     isString,
@@ -9,15 +6,16 @@ import {
     isNumber,
     isBoolean,
     isObjectEntity
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
+import { APIFactory, ConnectionConfig } from '@terascope/job-components';
 import { APIConsumer } from '../_kafka_clients/index.js';
 import { KafkaReaderConfig } from '../kafka_reader/interfaces.js';
 import { KafkaReaderAPIConfig } from './interfaces.js';
 
 export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderAPIConfig> {
-    private validateConfig(config: AnyObject): KafkaReaderAPIConfig {
+    private validateConfig(config: Record<string, any>): KafkaReaderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
-        if (isNil(config.connection) || !isString(config.connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config.connection)}`);
+        if (isNil(config._connection) || !isString(config._connection)) throw new Error(`Parameter _connection must be provided and be of type string, got ${getTypeOf(config._connection)}`);
         if (isNil(config.group) || !isString(config.group)) throw new Error(`Parameter group must be provided and be of type string, got ${getTypeOf(config.group)}`);
         if (isNil(config.offset_reset) || !isString(config.offset_reset)) throw new Error(`Parameter offset_reset must be provided and be of type string, got ${getTypeOf(config.offset_reset)}`);
         if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
@@ -39,7 +37,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
         const config = {
             type: 'kafka',
-            endpoint: kafkaConfig.connection,
+            endpoint: kafkaConfig._connection,
             options: {
                 type: 'consumer',
                 group: kafkaConfig.group
