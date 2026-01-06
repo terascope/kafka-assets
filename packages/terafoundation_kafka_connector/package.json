@@ -1,7 +1,7 @@
 {
     "name": "terafoundation_kafka_connector",
     "displayName": "Terafoundation Kafka Connector",
-    "version": "2.0.0-dev.1",
+    "version": "2.0.0-dev.2",
     "description": "Terafoundation connector for Kafka producer and consumer clients.",
     "homepage": "https://github.com/terascope/kafka-assets",
     "repository": "git@github.com:terascope/kafka-assets.git",
