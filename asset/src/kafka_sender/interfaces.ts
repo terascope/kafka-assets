@@ -20,7 +20,7 @@ export interface KafkaSenderConfig extends OpConfig {
     /**
      The Kafka producer connection to use
     */
-    connection: string;
+    _connection: string;
     /**
      Type of compression to use
     */

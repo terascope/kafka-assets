@@ -9,7 +9,7 @@ export default class Schema extends ConvictSchema<KafkaDeadLetterConfig> {
                 default: null,
                 format: 'required_string'
             },
-            connection: {
+            _connection: {
                 doc: 'The Kafka producer connection to use.',
                 default: 'default',
                 format: String

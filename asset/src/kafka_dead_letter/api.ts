@@ -79,7 +79,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     private clientConfig() {
         return {
             type: 'kafka',
-            endpoint: this.apiConfig.connection,
+            endpoint: this.apiConfig._connection,
             options: {
                 type: 'producer'
             },

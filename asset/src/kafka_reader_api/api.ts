@@ -15,7 +15,7 @@ import { KafkaReaderAPIConfig } from './interfaces.js';
 export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderAPIConfig> {
     private validateConfig(config: Record<string, any>): KafkaReaderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
-        if (isNil(config._connection) || !isString(config._connection)) throw new Error(`Parameter connection must be provided and be of type string, got ${getTypeOf(config._connection)}`);
+        if (isNil(config._connection) || !isString(config._connection)) throw new Error(`Parameter _connection must be provided and be of type string, got ${getTypeOf(config._connection)}`);
         if (isNil(config.group) || !isString(config.group)) throw new Error(`Parameter group must be provided and be of type string, got ${getTypeOf(config.group)}`);
         if (isNil(config.offset_reset) || !isString(config.offset_reset)) throw new Error(`Parameter offset_reset must be provided and be of type string, got ${getTypeOf(config.offset_reset)}`);
         if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
