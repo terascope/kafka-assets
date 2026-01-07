@@ -17,7 +17,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
         if (isNil(config._connection) || !isString(config._connection)) throw new Error(`Parameter _connection must be provided and be of type string, got ${getTypeOf(config._connection)}`);
         if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
-        if (isNil(config.max_buffer_size) || !isNumber(config.max_buffer_size)) throw new Error(`Parameter max_buffer_size must be provided and be of type number, got ${getTypeOf(config.size)}`);
+        if (config.max_buffer_size !== undefined && !isNumber(config.max_buffer_size)) throw new Error(`Parameter max_buffer_size must be either undefined or be of type number, got ${getTypeOf(config.size)}`);
         if (isNotNil(config.id_field) && !isString(config.id_field)) throw new Error(`Parameter id_field must be provided and be of type string, got ${getTypeOf(config.id_field)}`);
         if (isNotNil(config.timestamp_field) && !isString(config.timestamp_field)) throw new Error(`Parameter timestamp_field must be provided and be of type string, got ${getTypeOf(config.timestamp_field)}`);
         if (isNotNil(config.timestamp_now) && !isBoolean(config.timestamp_now)) throw new Error(`Parameter timestamp_now must be provided and be of type string, got ${getTypeOf(config.timestamp_now)}`);
@@ -31,17 +31,14 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) {
             config.rdkafka_options = {};
         }
-        // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
-        // in addition to the max.messages setting
-        config.maxBufferLength = config.max_buffer_size;
-        // maxBufferKilobyteSize is also used as an indicator of when to flush the queue
-        config.maxBufferKilobyteSize = config.max_buffer_kbytes_size;
 
         return config;
     }
 
     private clientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
+        console.log('kafkaConfig.max_buffer_kbytes_size: ', kafkaConfig.max_buffer_kbytes_size);
+        console.log('kafkaConfig.max_buffer_size: ', kafkaConfig.max_buffer_size);
         const config = {
             type: 'kafka',
             endpoint: kafkaConfig._connection,
@@ -50,8 +47,12 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
             },
             rdkafka_options: {
                 'compression.codec': kafkaConfig.compression,
-                'queue.buffering.max.kbytes': kafkaConfig.max_buffer_kbytes_size,
-                'queue.buffering.max.messages': kafkaConfig.max_buffer_size,
+                ...(kafkaConfig.max_buffer_kbytes_size !== undefined
+                    ? { 'queue.buffering.max.kbytes': kafkaConfig.max_buffer_kbytes_size }
+                    : {}),
+                ...(kafkaConfig.max_buffer_size !== undefined
+                    ? { 'queue.buffering.max.messages': kafkaConfig.max_buffer_size }
+                    : {}),
                 'queue.buffering.max.ms': kafkaConfig.wait,
                 'batch.num.messages': kafkaConfig.size,
                 'topic.metadata.refresh.interval.ms': kafkaConfig.metadata_refresh,
@@ -82,11 +83,41 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
 
-        logger.debug(`Kafka Producer Client Configuration: \n${JSON.stringify(clientConfig, null, 2)}`);
-
         const { client: kafkaClient } = await this.context.apis.foundation.createClient(
             clientConfig
         );
+
+        // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
+        // in addition to the max.messages setting
+        if (kafkaClient.globalConfig['queue.buffering.max.messages']) {
+            validConfig.maxBufferLength = kafkaClient.globalConfig['queue.buffering.max.messages'];
+        } else {
+            // If we don't see it on the client globals then set default stated here:
+            // https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md
+            validConfig.maxBufferLength = 100000;
+        }
+        // maxBufferKilobyteSize is also used as an indicator of when to flush the queue
+        if (kafkaClient.globalConfig['queue.buffering.max.kbytes']) {
+            validConfig.maxBufferKilobyteSize = kafkaClient.globalConfig['queue.buffering.max.kbytes'];
+        } else {
+            // If we don't see it on the client globals then set default stated here:
+            // https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md
+            validConfig.maxBufferKilobyteSize = 1048576;
+        }
+
+        logger.debug(`Kafka Producer Client Configuration: \n${JSON.stringify(
+            {
+                ...clientConfig,
+                rdkafka_options: {
+                    ...((clientConfig as Record<string, any>).rdkafka_options ?? {}),
+                    'queue.buffering.max.messages': validConfig.maxBufferLength,
+                    'queue.buffering.max.kbytes': validConfig.maxBufferKilobyteSize,
+                },
+
+            },
+            null,
+            2
+        )}`);
 
         validConfig.tryFn = this.tryRecord.bind(this);
 
