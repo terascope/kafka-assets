@@ -546,5 +546,35 @@ describe('Kafka Helpers', () => {
             // from settings.rdkafka_options (highest)
             expect(result.clientOptions['batch.num.messages']).toBe(75000);
         });
+
+        it('should be able to override producer and consumer defaults from terafoundation', () => {
+            const config: KafkaConnectorConfig = {
+                brokers: ['localhost:9092'],
+                security_protocol: 'plaintext',
+                rdkafka_options: {
+                    'queue.buffering.max.messages': 120000,
+                    'queue.buffering.max.kbytes': 1248576,
+                    'max.poll.interval.ms': 30000
+                }
+            };
+
+            const pSettings: KafkaProducerSettings = {
+                options: { type: 'producer' },
+                rdkafka_options: {}
+            };
+
+            const cSettings: KafkaConsumerSettings = {
+                options: { type: 'consumer' },
+                rdkafka_options: {}
+            };
+
+            const producer = getProducerOptions(config, pSettings);
+            const consumer = getProducerOptions(config, cSettings);
+            expect(producer.clientOptions['queue.buffering.max.messages']).toBe(120000);
+            expect(producer.clientOptions['queue.buffering.max.kbytes']).toBe(1248576);
+            // This is a consumer specific setting but will still override as the
+            // rdkafka_options covers all settings as globals
+            expect(consumer.clientOptions['max.poll.interval.ms']).toBe(30000);
+        });
     });
 });
