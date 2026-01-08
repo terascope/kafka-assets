@@ -37,8 +37,6 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
 
     private clientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
         const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
-        console.log('kafkaConfig.max_buffer_kbytes_size: ', kafkaConfig.max_buffer_kbytes_size);
-        console.log('kafkaConfig.max_buffer_size: ', kafkaConfig.max_buffer_size);
         const config = {
             type: 'kafka',
             endpoint: kafkaConfig._connection,
