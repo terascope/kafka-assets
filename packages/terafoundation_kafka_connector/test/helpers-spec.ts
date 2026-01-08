@@ -360,22 +360,6 @@ describe('Kafka Helpers', () => {
         const baseConfig: KafkaConnectorConfig = {
             brokers: ['localhost:9092'],
         };
-
-        it('should return producer options with default settings', () => {
-            const settings: KafkaProducerSettings = {
-                options: {
-                    type: 'producer'
-                }
-            };
-
-            const result = getProducerOptions(baseConfig, settings);
-
-            expect(result.pollInterval).toBe(100);
-            expect(result.clientOptions['queue.buffering.max.messages']).toBe(500000);
-            expect(result.clientOptions['queue.buffering.max.ms']).toBe(1000);
-            expect(result.clientOptions['batch.num.messages']).toBe(100000);
-        });
-
         it('should use custom poll_interval when provided', () => {
             const settings: KafkaProducerSettings = {
                 options: {
@@ -471,10 +455,6 @@ describe('Kafka Helpers', () => {
             expect(result.clientOptions['queue.buffering.max.messages']).toBe(200000);
             // settings.rdkafka_options (highest)
             expect(result.clientOptions['client.id']).toBe('settings-client');
-            // producer default (preserved)
-            expect(result.clientOptions['queue.buffering.max.ms']).toBe(1000);
-            // producer default (preserved)
-            expect(result.clientOptions['batch.num.messages']).toBe(100000);
         });
 
         it('should allow settings.rdkafka_options to override all producer defaults', () => {
@@ -504,8 +484,6 @@ describe('Kafka Helpers', () => {
             expect(result.clientOptions['batch.num.messages']).toBe(25000);
             // from settings.rdkafka_options
             expect(result.clientOptions['queue.buffering.max.messages']).toBe(750000);
-            // default preserved
-            expect(result.clientOptions['queue.buffering.max.ms']).toBe(1000);
             // from settings.rdkafka_options
             expect(result.clientOptions['compression.type']).toBe('gzip');
         });
@@ -532,19 +510,45 @@ describe('Kafka Helpers', () => {
             const result = getProducerOptions(config, settings);
 
             // Complete hierarchy demonstration:
-            // 1. Producer defaults set queue.buffering.max.messages=500000,
-            //    batch.num.messages=100000
-            // 2. Base config sets security_protocol='plaintext'
-            // 3. config.rdkafka_options overrides to security.protocol='ssl',
+            // 1. Base config sets security_protocol='plaintext'
+            // 2. config.rdkafka_options overrides to security.protocol='ssl',
             //    batch.num.messages=50000
-            // 4. settings.rdkafka_options overrides batch.num.messages=75000
+            // 3. settings.rdkafka_options overrides batch.num.messages=75000
             //    (HIGHEST PRIORITY)
-            // from producer defaults
-            expect(result.clientOptions['queue.buffering.max.messages']).toBe(500000);
             // from config.rdkafka_options
             expect(result.clientOptions['security.protocol']).toBe('ssl');
             // from settings.rdkafka_options (highest)
             expect(result.clientOptions['batch.num.messages']).toBe(75000);
+        });
+
+        it('should be able to override producer and consumer defaults from terafoundation', () => {
+            const config: KafkaConnectorConfig = {
+                brokers: ['localhost:9092'],
+                security_protocol: 'plaintext',
+                rdkafka_options: {
+                    'queue.buffering.max.messages': 120000,
+                    'queue.buffering.max.kbytes': 1248576,
+                    'max.poll.interval.ms': 30000
+                }
+            };
+
+            const pSettings: KafkaProducerSettings = {
+                options: { type: 'producer' },
+                rdkafka_options: {}
+            };
+
+            const cSettings: KafkaConsumerSettings = {
+                options: { type: 'consumer' },
+                rdkafka_options: {}
+            };
+
+            const producer = getProducerOptions(config, pSettings);
+            const consumer = getProducerOptions(config, cSettings);
+            expect(producer.clientOptions['queue.buffering.max.messages']).toBe(120000);
+            expect(producer.clientOptions['queue.buffering.max.kbytes']).toBe(1248576);
+            // This is a consumer specific setting but will still override as the
+            // rdkafka_options covers all settings as globals
+            expect(consumer.clientOptions['max.poll.interval.ms']).toBe(30000);
         });
     });
 });

@@ -34,7 +34,7 @@ export interface KafkaReaderConfig extends OpConfig {
     * then the consumer is considered failed
     * and the group will rebalance in order to reassign the partitions to another member.
     */
-    max_poll_interval: number;
+    max_poll_interval: number | undefined;
 
     /**
      How many records to read before a slice is considered complete
