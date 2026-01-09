@@ -12,6 +12,11 @@ import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from './sender.js';
 import { KafkaSenderAPIConfig } from './interfaces.js';
 
+// Defaults are based off of librdkafka defaults.
+// https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md
+const DEFAULT_MAX_BUFFER_LENGTH = 100000;
+const DEFAULT_MAX_BUFFER_KILOBYTE_SIZE = 1048576;
+
 export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSenderAPIConfig> {
     private validateConfig(config: Record<string, any>): KafkaSenderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
@@ -90,17 +95,15 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (kafkaClient.globalConfig['queue.buffering.max.messages']) {
             validConfig.maxBufferLength = kafkaClient.globalConfig['queue.buffering.max.messages'];
         } else {
-            // If we don't see it on the client globals then set default stated here:
-            // https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md
-            validConfig.maxBufferLength = 100000;
+            // If we don't see it on the client globals then set default stated here
+            validConfig.maxBufferLength = DEFAULT_MAX_BUFFER_LENGTH;
         }
         // maxBufferKilobyteSize is also used as an indicator of when to flush the queue
         if (kafkaClient.globalConfig['queue.buffering.max.kbytes']) {
             validConfig.maxBufferKilobyteSize = kafkaClient.globalConfig['queue.buffering.max.kbytes'];
         } else {
-            // If we don't see it on the client globals then set default stated here:
-            // https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md
-            validConfig.maxBufferKilobyteSize = 1048576;
+            // If we don't see it on the client globals then set default stated here
+            validConfig.maxBufferKilobyteSize = DEFAULT_MAX_BUFFER_KILOBYTE_SIZE;
         }
 
         logger.debug(`Kafka Producer Client Configuration: \n${JSON.stringify(
