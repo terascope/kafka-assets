@@ -12,6 +12,8 @@ import { APIConsumer } from '../_kafka_clients/index.js';
 import { KafkaReaderConfig } from '../kafka_reader/interfaces.js';
 import { KafkaReaderAPIConfig } from './interfaces.js';
 
+const DEFAULT_MAX_POLL_INTERVAL = 300000;
+
 export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderAPIConfig> {
     private validateConfig(config: Record<string, any>): KafkaReaderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
@@ -98,7 +100,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
                     ...((clientConfig as Record<string, any>).rdkafka_options ?? {}),
                     ...(kafkaClient.globalConfig['max.poll.interval.ms'] !== undefined
                         ? { 'max.poll.interval.ms': kafkaClient.globalConfig['max.poll.interval.ms'] }
-                        : { 'max.poll.interval.ms': 300000 })
+                        : { 'max.poll.interval.ms': DEFAULT_MAX_POLL_INTERVAL })
                 },
             },
             null,
