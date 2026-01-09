@@ -46,8 +46,8 @@ export const schema = {
             'then the consumer is considered failed',
             'and the group will rebalance in order to reassign the partitions to another member.',
         ].join(' '),
-        default: '5 minutes',
-        format: 'duration'
+        default: undefined,
+        format: 'optional_duration'
     },
     _connection: {
         doc: 'The Kafka consumer connection to use.',

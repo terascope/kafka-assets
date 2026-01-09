@@ -29,12 +29,7 @@ export function getConsumerOptions(config: KafkaConnectorConfig, settings: Kafka
 
 export function getProducerOptions(config: KafkaConnectorConfig, settings: KafkaProducerSettings) {
     const pollInterval = settings.options.poll_interval;
-
-    const clientOptions = getClientOptions(config, {
-        'queue.buffering.max.messages': 500000,
-        'queue.buffering.max.ms': 1000,
-        'batch.num.messages': 100000,
-    }, settings.rdkafka_options);
+    const clientOptions = getClientOptions(config, settings.rdkafka_options);
 
     // Topic specific options as defined by librdkafka
     const topicOptions: RDKafkaOptions = Object.assign({}, settings.topic_options);

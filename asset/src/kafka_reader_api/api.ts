@@ -12,6 +12,8 @@ import { APIConsumer } from '../_kafka_clients/index.js';
 import { KafkaReaderConfig } from '../kafka_reader/interfaces.js';
 import { KafkaReaderAPIConfig } from './interfaces.js';
 
+const DEFAULT_MAX_POLL_INTERVAL = 300000;
+
 export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderAPIConfig> {
     private validateConfig(config: Record<string, any>): KafkaReaderAPIConfig {
         if (isNil(config.topic) || !isString(config.topic)) throw new Error(`Parameter topic must be provided and be of type string, got ${getTypeOf(config.topic)}`);
@@ -20,7 +22,7 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         if (isNil(config.offset_reset) || !isString(config.offset_reset)) throw new Error(`Parameter offset_reset must be provided and be of type string, got ${getTypeOf(config.offset_reset)}`);
         if (isNil(config.size) || !isNumber(config.size)) throw new Error(`Parameter size must be provided and be of type number, got ${getTypeOf(config.size)}`);
         if (isNil(config.wait) || !isNumber(config.wait)) throw new Error(`Parameter wait must be provided and be of type number, got ${getTypeOf(config.wait)}`);
-        if (isNil(config.max_poll_interval) || !isNumber(config.max_poll_interval)) throw new Error(`Parameter max_poll_interval must be provided and be of type number, got ${getTypeOf(config.max_poll_interval)}`);
+        if (config.max_poll_interval !== undefined && !isNumber(config.max_poll_interval)) throw new Error(`Parameter max_poll_interval must either be undefined or of type number, got ${getTypeOf(config.max_poll_interval)}`);
         if (isNil(config.use_commit_sync) || !isBoolean(config.use_commit_sync)) throw new Error(`Parameter use_commit_sync must be provided and be of type boolean, got ${getTypeOf(config.use_commit_sync)}`);
         if (isNil(config.rollback_on_failure) || !isBoolean(config.rollback_on_failure)) throw new Error(`Parameter rollback_on_failure must be provided and be of type boolean, got ${getTypeOf(config.rollback_on_failure)}`);
         if (isNil(config.partition_assignment_strategy) || !isString(config.partition_assignment_strategy)) throw new Error(`Parameter partition_assignment_strategy must be provided and be of type string, got ${getTypeOf(config.partition_assignment_strategy)}`);
@@ -55,7 +57,10 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
                 // Capture the commits for better error handling and debug
                 offset_commit_cb: true,
                 // Set the max.poll.interval.ms
-                'max.poll.interval.ms': kafkaConfig.max_poll_interval,
+                // Only include this key if it's defined
+                ...(kafkaConfig.max_poll_interval !== undefined
+                    ? { 'max.poll.interval.ms': kafkaConfig.max_poll_interval }
+                    : {}),
                 // Enable partition EOF because node-rdkafka
                 // requires this work for consuming batches
                 'enable.partition.eof': true,
@@ -87,6 +92,21 @@ export default class KafkaReaderApi extends APIFactory<APIConsumer, KafkaReaderA
         const { client: kafkaClient } = await this.context.apis.foundation.createClient(
             clientConfig
         );
+
+        logger.debug(`Kafka Consumer Client Configuration: \n${JSON.stringify(
+            {
+                ...clientConfig,
+                rdkafka_options: {
+                    ...((clientConfig as Record<string, any>).rdkafka_options ?? {}),
+                    ...(kafkaClient.globalConfig['max.poll.interval.ms'] !== undefined
+                        ? { 'max.poll.interval.ms': kafkaClient.globalConfig['max.poll.interval.ms'] }
+                        : { 'max.poll.interval.ms': DEFAULT_MAX_POLL_INTERVAL })
+                },
+            },
+            null,
+            2
+        )}`);
+
         const tryFn = this.tryRecord.bind(this);
         const client = new APIConsumer(kafkaClient, {
             ...validConfig,
