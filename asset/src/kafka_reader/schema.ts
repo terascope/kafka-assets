@@ -1,4 +1,4 @@
-import { ConvictSchema, ValidatedJobConfig } from '@terascope/job-components';
+import { BaseSchema, ValidatedJobConfig } from '@terascope/job-components';
 import { KafkaReaderConfig } from './interfaces.js';
 
 const schema = {
@@ -8,7 +8,7 @@ const schema = {
         format: 'required_string'
     }
 };
-export default class Schema extends ConvictSchema<KafkaReaderConfig> {
+export default class Schema extends BaseSchema<KafkaReaderConfig> {
     validateJob(job: ValidatedJobConfig): void {
         let opIndex = 0;
 

@@ -1,4 +1,4 @@
-import { ConvictSchema } from '@terascope/job-components';
+import { BaseSchema } from '@terascope/job-components';
 import {
     isNumber,
     getTypeOf,
@@ -97,7 +97,7 @@ export const schema = {
     }
 };
 
-export default class Schema extends ConvictSchema<Record<string, any>> {
+export default class Schema extends BaseSchema<Record<string, any>> {
     // This validation function is a workaround for the limitations of convict when
     // parsing configs that have periods `.` within its key values.
     // https://github.com/mozilla/node-convict/issues/250

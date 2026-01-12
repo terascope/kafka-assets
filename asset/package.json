@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "@terascope/core-utils": "~2.0.0-rc.0",
-        "@terascope/job-components": "~2.0.0-rc.0",
+        "@terascope/job-components": "~2.0.0-rc.1",
         "@terascope/types": "~2.0.0-rc.0"
     },
     "engines": {

@@ -3,7 +3,7 @@ import {
     getTypeOf,
     isPlainObject
 } from '@terascope/core-utils';
-import { ConvictSchema } from '@terascope/job-components';
+import { BaseSchema } from '@terascope/job-components';
 import { KafkaReaderAPIConfig } from './interfaces.js';
 
 export const schema = {
@@ -86,7 +86,7 @@ export const schema = {
     }
 };
 
-export default class Schema extends ConvictSchema<KafkaReaderAPIConfig> {
+export default class Schema extends BaseSchema<KafkaReaderAPIConfig> {
     // This validation function is a workaround for the limitations of convict when
     // parsing configs that have periods `.` within its key values.
     // https://github.com/mozilla/node-convict/issues/250
