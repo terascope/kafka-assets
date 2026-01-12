@@ -1,4 +1,4 @@
-import { ConvictSchema } from '@terascope/job-components';
+import { BaseSchema } from '@terascope/job-components';
 import { KafkaSenderConfig } from './interfaces.js';
 
 const schema = {
@@ -9,7 +9,7 @@ const schema = {
     }
 };
 
-export default class Schema extends ConvictSchema<KafkaSenderConfig> {
+export default class Schema extends BaseSchema<KafkaSenderConfig> {
     build(): Record<string, any> {
         return schema;
     }

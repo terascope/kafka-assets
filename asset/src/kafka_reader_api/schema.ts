@@ -3,7 +3,7 @@ import {
     getTypeOf,
     isPlainObject
 } from '@terascope/core-utils';
-import { ConvictSchema } from '@terascope/job-components';
+import { BaseSchema } from '@terascope/job-components';
 import { KafkaReaderAPIConfig } from './interfaces.js';
 
 export const schema = {
@@ -46,8 +46,8 @@ export const schema = {
             'then the consumer is considered failed',
             'and the group will rebalance in order to reassign the partitions to another member.',
         ].join(' '),
-        default: '5 minutes',
-        format: 'duration'
+        default: undefined,
+        format: 'optional_duration'
     },
     _connection: {
         doc: 'The Kafka consumer connection to use.',
@@ -86,7 +86,7 @@ export const schema = {
     }
 };
 
-export default class Schema extends ConvictSchema<KafkaReaderAPIConfig> {
+export default class Schema extends BaseSchema<KafkaReaderAPIConfig> {
     // This validation function is a workaround for the limitations of convict when
     // parsing configs that have periods `.` within its key values.
     // https://github.com/mozilla/node-convict/issues/250

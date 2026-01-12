@@ -1,7 +1,7 @@
-import { ConvictSchema } from '@terascope/job-components';
+import { BaseSchema } from '@terascope/job-components';
 import { KafkaDeadLetterConfig } from './interfaces.js';
 
-export default class Schema extends ConvictSchema<KafkaDeadLetterConfig> {
+export default class Schema extends BaseSchema<KafkaDeadLetterConfig> {
     build(): Record<string, any> {
         return {
             topic: {
