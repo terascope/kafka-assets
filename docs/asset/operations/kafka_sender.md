@@ -2,7 +2,7 @@
 
 The kafka_sender is used to send data to a kafka topic. This is a high throughput operation.
 
-This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
+This uses [@confluentinc/kafka-javascript](https://github.com/confluentinc/kafka-javascript) (librdkafka) underneath the hood.
 
 For this sender to function properly, you will need a running kafka cluster and configure this job with the correct topic and producer configurations.
 

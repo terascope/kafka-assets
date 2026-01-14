@@ -1,6 +1,6 @@
 # kafka_sender_api
 
-The kafka_sender_api is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides the functionality to send messages to a kafka topic and can be utilized by any processor, reader or slicer.  It is a high throughput operation that uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood and is the core of the [kafka_sender](../operations/kafka_sender.md).  It contains the same behavior, functionality, and configuration properties of the kafka_sender.
+The kafka_sender_api is a [teraslice api](https://terascope.github.io/teraslice/docs/jobs/configuration#apis), which provides the functionality to send messages to a kafka topic and can be utilized by any processor, reader or slicer.  It is a high throughput operation that uses [@confluentinc/kafka-javascript](https://github.com/confluentinc/kafka-javascript) (librdkafka) underneath the hood and is the core of the [kafka_sender](../operations/kafka_sender.md).  It contains the same behavior, functionality, and configuration properties of the kafka_sender.
 
  The `kafka_sender_api` provides an [api factory](https://terascope.github.io/teraslice/docs/packages/job-components/api/operations/api-factory/overview), which is a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that can create, cache and manage multiple kafka senders.  These api functions can then be accessed in any operation through the `getAPI` method.
 
@@ -28,7 +28,7 @@ Example Job
             "size": 10000,
             "id_field": "uuid",
             "timestamp_field": "created",
-            "connection": "default",
+            "_connection": "default",
             "rdkafka_options": {
                 "queued.max.messages.kbytes": 65536
             }
@@ -40,7 +40,7 @@ Example Job
         },
          {
             "_op" : "some_sender",
-            "api_name" : "kafka_sender_api"
+            "_api_name" : "kafka_sender_api"
         }
     ]
 }
@@ -55,7 +55,7 @@ export default class SomeSender extends BatchProcessor {
 
     async initialize() {
         await super.initialize();
-        const apiManager = this.getAPI(this.opConfig.api_name);
+        const apiManager = this.getAPI(this.opConfig._api_name);
         this.api = await apiManager.create('kafkaSender', {});
         await this.api.verify();
     }
@@ -129,7 +129,7 @@ const apiConfig = {
     topic: 'test_topic',
     size: 10000,
     timestamp_field: 'created',
-    connection: 'default'
+    _connection: 'default'
 };
 
 
@@ -145,7 +145,7 @@ apiManager.size() === 1
 apiManager.get('normalClient') === normalClient
 
 // creates and returns an api named "overrideClient" which overrides the default configuration's topic setting with "other_topic" and the connection setting with "other"
-const overrideClient = await apiManager.create('overrideClient', { topic: 'other_topic', connection: "other"})
+const overrideClient = await apiManager.create('overrideClient', { topic: 'other_topic', _connection: "other"})
 
 apiManager.size() === 2
 
@@ -155,7 +155,7 @@ apiManger.getConfig('overrideClient') === {
     topic: 'other_topic',
     size: 10000,
     timestamp_field: 'created',
-    connection: 'other'
+    _connection: 'other'
 };
 
 
@@ -221,7 +221,7 @@ await api.send([
 | timestamp_now | Set to true to have a timestamp generated as records are added to the topic | Boolean | optional, defaults to `false` |
 | compression | Type of compression to use on record sent to topic, may be set to `none`, `gzip`, `snappy`, `lz4` and `inherit` | String | optional, defaults to `gzip` |
 | wait | How long to wait for size messages to become available on the producer, in milliseconds. | String/Duration/Number | optional, defaults to `500` |
-| connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
+| _connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
 | required_acks | The number of required broker acknowledgements for a given request, set to -1 for all. | Number | optional, defaults to `1` |
 | metadata_refresh | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. | String/Duration/Number | optional, defaults to `"5 minutes"` |
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |

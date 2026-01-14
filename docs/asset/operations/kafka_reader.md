@@ -2,7 +2,7 @@
 
 The kafka_reader is used to read data from a kafka cluster. This is a high throughput operation. This reader handles all the complexity of balancing writes across partitions and managing ever-changing brokers.
 
-This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
+This uses [@confluentinc/kafka-javascript](https://github.com/confluentinc/kafka-javascript) (librdkafka) underneath the hood.
 
 For this reader to function properly, you will need a running kafka cluster and configure this job with the correct group, topic and partition management options
 
