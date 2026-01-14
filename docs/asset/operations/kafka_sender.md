@@ -2,7 +2,7 @@
 
 The kafka_sender is used to send data to a kafka topic. This is a high throughput operation.
 
-This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
+This uses [@confluentinc/kafka-javascript](https://github.com/confluentinc/kafka-javascript) (librdkafka) underneath the hood.
 
 For this sender to function properly, you will need a running kafka cluster and configure this job with the correct topic and producer configurations.
 
@@ -11,6 +11,8 @@ For this sender to function properly, you will need a running kafka cluster and 
 ### Send data to topic, use key and time from fields on record
 
 In this example, the kafka_sender will send data to the kafka-test-sender topic using the uuid field of the record. It will also annotate the kafka record timestamp metadata with the date specified on the created field on the record.
+
+**Important:** The `kafka_sender` operation requires a `kafka_sender_api` to be defined in the job. All configuration settings (topic, size, compression, etc.) must be specified on the API.
 
 Example job
 
@@ -22,19 +24,24 @@ Example job
     "slicers": 1,
     "workers": 10,
     "assets": ["kafka"],
-    "operations": [
+    "apis": [
         {
-            "_op":"test-reader"
-        },
-        {
-            "_op": "kafka_sender",
+            "_name": "kafka_sender_api",
             "topic": "kafka-test-sender",
             "id_field": "uuid",
             "timestamp_field": "created",
             "compression": "gzip",
-            "timestamp_field": "created",
             "size": 10000,
             "wait": 8000
+        }
+    ],
+    "operations": [
+        {
+            "_op": "test-reader"
+        },
+        {
+            "_op": "kafka_sender",
+            "_api_name": "kafka_sender_api"
         }
     ]
 }
@@ -68,7 +75,7 @@ results === data;
 
 ### Send data to topic, use _key metadata and create its own timestamp
 
-In this example, the kafka_sender will send data to the kafka-test-sender topic using the_key metadata value, which happens when the `id_field` is not set. It will also annotate the kafka record timestamp metadata with a new date at processing time.
+In this example, the kafka_sender will send data to the kafka-test-sender topic using the _key metadata value, which happens when the `id_field` is not set. It will also annotate the kafka record timestamp metadata with a new date at processing time.
 
 Example job
 
@@ -80,18 +87,23 @@ Example job
     "slicers": 1,
     "workers": 10,
     "assets": ["kafka"],
-    "operations": [
+    "apis": [
         {
-            "_op":"test-reader"
-        },
-        {
-            "_op": "kafka_sender",
+            "_name": "kafka_sender_api",
             "topic": "kafka-test-sender",
             "timestamp_now": true,
             "compression": "lz4",
-            "timestamp_field": "created",
             "size": 10000,
             "wait": 8000
+        }
+    ],
+    "operations": [
+        {
+            "_op": "test-reader"
+        },
+        {
+            "_op": "kafka_sender",
+            "_api_name": "kafka_sender_api"
         }
     ]
 }
@@ -125,7 +137,7 @@ results === data;
 
 ### Using rdkafka_options for advanced configuration
 
-You can use `rdkafka_options` to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client.
+You can use `rdkafka_options` on the API to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client. These settings have the highest priority and will override other configuration settings. See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for more details.
 
 Example job with rdkafka_options
 
@@ -137,12 +149,9 @@ Example job with rdkafka_options
     "slicers": 1,
     "workers": 10,
     "assets": ["kafka"],
-    "operations": [
+    "apis": [
         {
-            "_op": "test-reader"
-        },
-        {
-            "_op": "kafka_sender",
+            "_name": "kafka_sender_api",
             "topic": "kafka-test-sender",
             "id_field": "uuid",
             "compression": "gzip",
@@ -155,11 +164,20 @@ Example job with rdkafka_options
                 "retry.backoff.ms": 200
             }
         }
+    ],
+    "operations": [
+        {
+            "_op": "test-reader"
+        },
+        {
+            "_op": "kafka_sender",
+            "_api_name": "kafka_sender_api"
+        }
     ]
 }
 ```
 
-In this example, `rdkafka_options` configures the producer to:
+In this example, `rdkafka_options` on the API configures the producer to:
 - Buffer messages for up to 100ms before sending (`queue.buffering.max.ms`)
 - Batch up to 10000 messages together (`batch.num.messages`)
 - Retry failed sends up to 3 times (`message.send.max.retries`)
@@ -167,89 +185,25 @@ In this example, `rdkafka_options` configures the producer to:
 
 ## Parameters
 
-| Configuration | Description | Type |  Notes |
+### Operation Parameters
+
+The `kafka_sender` operation has minimal configuration. All Kafka-related settings must be configured on the [kafka_sender_api](../apis/kafka_sender_api.md).
+
+| Configuration | Description | Type | Notes |
 | --------- | -------- | ------ | ------ |
-| \_op| Name of operation, it must reflect the exact name of the file | String | required |
-| topic | Name of the Kafka topic to send records | String | required, though if the [kafka_sender_api](../apis/kafka_sender_api.md) is specified then `topic` must be specified on the api and not on the opConfig, please check the [API usage](#api-usage) section |
-| size | How many messages will be batched and sent to kafka together. | Number | optional, defaults to `10000` |
-| id_field | Field in the incoming record that will be used to assign the record to a topic partition. | String | optional, if not set, it will check for the `_key` metadata value. If no key is found the sender uses a round robin method to assign records to partitions.|
-| timestamp_field | Field in the incoming record that contains a timestamp to set on the record | String | optional, it will take precedence over `timestamp_now` if this is set |
-| timestamp_now | Set to true to have a timestamp generated as records are added to the topic | Boolean | optional, defaults to `false` |
-| compression | Type of compression to use on record sent to topic, may be set to `none`, `gzip`, `snappy`, `lz4` and `inherit` | String | optional, defaults to `gzip` |
-| wait | How long to wait for size messages to become available on the producer, in milliseconds. | String/Duration/Number | optional, defaults to `500` |
-| connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
-| required_acks | The number of required broker acknowledgements for a given request, set to -1 for all. | Number | optional, defaults to `1` |
-| metadata_refresh | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. | String/Duration/Number | optional, defaults to `"5 minutes"` |
-| api_name | Name of `kafka_sender_api` used for the sender, if none is provided, then one is made and assigned the name to `kafka_sender_api`, and is injected into the execution | String | optional, defaults to `kafka_sender_api`|
-| _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
-| _dead_letter_action | action will specify what to do when failing to parse or transform a record. It may be set to `throw`, `log` or `none`. If none of the actions are specified it will try and use a registered Dead Letter Queue API under that name.The API must be already be created by a operation before it can used. | String | optional, defaults to `throw` |
+| \_op | Name of operation, it must reflect the exact name of the file | String | required |
+| \_api_name | Name of the `kafka_sender_api` to use | String | **required** |
 
-### API usage
+### API Parameters
 
-In kafka_assets v3, many core components were made into teraslice apis. When you use an kafka processor it will automatically setup the api for you, but if you manually specify the api, then there are restrictions on what configurations you can put on the operation so that clashing of configurations are minimized. The api configs take precedence.
+All Kafka configuration must be specified on the `kafka_sender_api`. See the [kafka_sender_api documentation](../apis/kafka_sender_api.md#parameters) for the full list of available parameters including:
 
-If submitting the job in long form, here is a list of parameters that will throw an error if also specified on the opConfig, since these values should be placed on the api:
-
-- `topic`
-
-`SHORT FORM (no api specified)`
-
-```json
-{
-    "name": "test-job",
-    "lifecycle": "once",
-    "max_retries": 3,
-    "slicers": 1,
-    "workers": 40,
-    "assets": ["kafka"],
-    "operations":[
-         {
-            "_op":"test-reader"
-        },
-        {
-            "_op": "kafka_sender",
-            "topic": "kafka-test-sender",
-            "id_field": "uuid",
-            "id_field": "uuid",
-            "compression": "gzip",
-            "timestamp_field": "created",
-            "size": 10000,
-            "wait": 8000
-        }
-    ]
-}
-```
-
-this configuration will be expanded out to the long form underneath the hood
-`LONG FORM (api is specified)`
-
-```json
-{
-    "name" : "testing",
-    "workers" : 1,
-    "slicers" : 1,
-    "lifecycle" : "once",
-    "assets" : [
-        "kafka"
-    ],
-    "apis" : [
-       {
-            "_name": "kafka_sender_api",
-            "topic": "kafka-test-sender",
-            "id_field": "uuid",
-            "size": 10000,
-            "wait": 8000,
-            "_dead_letter_action": "log"
-        }
-    ],
-    "operations" : [
-        {
-            "_op":"test-reader"
-        },
-        {
-            "_op" : "kafka_sender",
-            "api_name" : "kafka_sender_api"
-        }
-    ]
-}
-```
+- `topic` - Name of the Kafka topic to send records (required)
+- `size` - How many messages will be batched together (default: 10000)
+- `id_field` - Field in the record to use for partition assignment (optional)
+- `timestamp_field` - Field containing timestamp for the record (optional)
+- `timestamp_now` - Generate timestamp at processing time (default: false)
+- `compression` - Type of compression to use (default: 'gzip')
+- `wait` - How long to wait for size messages (default: 500)
+- `rdkafka_options` - Advanced librdkafka settings (default: {})
+- And more...
