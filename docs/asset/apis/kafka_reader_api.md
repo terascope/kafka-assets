@@ -212,7 +212,7 @@ const results = await api.consume(query)
 | use_commit_sync | Use commit sync instead of async (usually not recommended) | Boolean | optional, defaults to `false` |
 | wait |How long to wait for a full chunk of data to be available. Specified in milliseconds if you use a number. | String/Duration/Number | optional, defaults to `30 seconds` |
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
-| rdkafka_options | [librdkafka defined settings](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific. **Settings here will override other settings.** | Object | optional, default to `{}` |
+| rdkafka_options | [librdkafka defined settings](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific. **Settings here will override other settings.** See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for details on how settings are prioritized. | Object | optional, default to `{}` |
 
 ### Metadata
 

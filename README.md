@@ -9,6 +9,8 @@
   - [Getting Started](#getting-started)
   - [Connectors](#connectors)
     - [Kafka Connector](#kafka-connector)
+    - [Full Connector Documentation](./docs/packages/terafoundation_kafka_connector/overview.md)
+    - [Configuration Hierarchy](./docs/packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy)
   - [Development](#development)
     - [Tests](#tests)
     - [Build](#build)
@@ -61,6 +63,8 @@ teraslice-cli assets deploy cluster2 --build
 ### Kafka Connector
 
 > Terafoundation connector for Kafka producer and consumer clients.
+
+📖 **[Full Documentation](./docs/packages/terafoundation_kafka_connector/overview.md)** | **[Configuration Hierarchy](./docs/packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy)**
 
 To install from the root of your terafoundation based service.
 

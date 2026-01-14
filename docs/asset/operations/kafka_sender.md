@@ -125,7 +125,7 @@ results === data;
 
 ### Using rdkafka_options for advanced configuration
 
-You can use `rdkafka_options` to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client.
+You can use `rdkafka_options` to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client. These settings have the highest priority and will override other configuration settings. See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for more details.
 
 Example job with rdkafka_options
 
@@ -183,6 +183,7 @@ In this example, `rdkafka_options` configures the producer to:
 | api_name | Name of `kafka_sender_api` used for the sender, if none is provided, then one is made and assigned the name to `kafka_sender_api`, and is injected into the execution | String | optional, defaults to `kafka_sender_api`|
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
 | _dead_letter_action | action will specify what to do when failing to parse or transform a record. It may be set to `throw`, `log` or `none`. If none of the actions are specified it will try and use a registered Dead Letter Queue API under that name.The API must be already be created by a operation before it can used. | String | optional, defaults to `throw` |
+| rdkafka_options | [librdkafka defined settings](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific. **Settings here will override other settings.** See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for details on how settings are prioritized. | Object | optional, default to `{}` |
 
 ### API usage
 
