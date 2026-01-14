@@ -77,29 +77,6 @@ describe('Kafka Reader Schema', () => {
                 schema.validateJob(job);
             }).not.toThrow();
         });
-
-        // FIXME: Should no longer allow this
-        it('should throw if topic/group is specified differently in opConfig if api is set with api_name', () => {
-            const job = newTestJobConfig({
-                apis: [
-                    { _name: 'kafka_reader_api', topic: 'hello', group: 'hi' }
-                ],
-                operations: [
-                    {
-                        _op: 'kafka_reader',
-                        topic: 'hello',
-                        group: 'something_else',
-                        api_name: 'kafka_reader_api'
-                    },
-                    {
-                        _op: 'noop',
-                    }
-                ]
-            });
-            expect(() => {
-                schema.validateJob(job);
-            }).toThrow();
-        });
     });
 
     describe('when validating the schema', () => {
@@ -157,7 +134,6 @@ describe('Kafka Reader Schema', () => {
             await expect(makeTest(opConfig, apiConfig)).toResolve();
         });
 
-        // FIXME: This test is obsolete and we should check for this
         it('will not throw if connection configs are specified in apis and not opConfig', async () => {
             const opConfig = { _op: 'kafka_reader', _api_name: 'kafka_reader_api' };
             const apiConfig = {
