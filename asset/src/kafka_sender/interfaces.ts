@@ -20,7 +20,7 @@ export interface KafkaSenderConfig extends OpConfig {
     /**
      The Kafka producer connection to use
     */
-    connection: string;
+    _connection: string;
     /**
      Type of compression to use
     */
@@ -51,5 +51,5 @@ export interface KafkaSenderConfig extends OpConfig {
      * Name of kafka api used for sender, if none is provided, then one is made
      * and the name is kafka_sender_api, and is injected into the execution
     */
-    api_name?: string;
+    _api_name: string;
 }

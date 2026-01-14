@@ -1,23 +1,21 @@
 import {
-    ConvictSchema,
     isNumber,
     getTypeOf,
     isPlainObject
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
+import { BaseSchema } from '@terascope/job-components';
 import { KafkaReaderAPIConfig } from './interfaces.js';
-
-export const DEFAULT_API_NAME = 'kafka_reader_api';
 
 export const schema = {
     topic: {
         doc: 'Name of the Kafka topic to process',
         default: null,
-        format: 'required_String'
+        format: 'required_string'
     },
     group: {
         doc: 'Name of the Kafka consumer group',
         default: null,
-        format: 'required_String'
+        format: 'required_string'
     },
     offset_reset: {
         doc: 'How offset resets should be handled when there are no valid offsets for the consumer group.',
@@ -48,13 +46,13 @@ export const schema = {
             'then the consumer is considered failed',
             'and the group will rebalance in order to reassign the partitions to another member.',
         ].join(' '),
-        default: '5 minutes',
-        format: 'duration'
+        default: undefined,
+        format: 'optional_duration'
     },
-    connection: {
+    _connection: {
         doc: 'The Kafka consumer connection to use.',
         default: 'default',
-        format: 'optional_String'
+        format: 'optional_string'
     },
     use_commit_sync: {
         doc: 'Use commit sync instead of async (usually not recommended)',
@@ -88,7 +86,7 @@ export const schema = {
     }
 };
 
-export default class Schema extends ConvictSchema<KafkaReaderAPIConfig> {
+export default class Schema extends BaseSchema<KafkaReaderAPIConfig> {
     // This validation function is a workaround for the limitations of convict when
     // parsing configs that have periods `.` within its key values.
     // https://github.com/mozilla/node-convict/issues/250

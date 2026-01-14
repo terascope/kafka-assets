@@ -1,5 +1,5 @@
-import { Logger } from '@terascope/job-components';
-import kafka from 'node-rdkafka';
+import { Logger } from '@terascope/core-utils';
+import kafka from '@confluentinc/kafka-javascript';
 
 export interface KafkaConnectorConfig {
     /** A list of brokers */
@@ -15,6 +15,9 @@ export interface KafkaConnectorConfig {
     ssl_crl_location?: string;
     ssl_key_location?: string;
     ssl_key_password?: string;
+
+    // Additional rdkafka configuration options
+    rdkafka_options?: RDKafkaOptions;
 }
 
 export interface KafkaClientSettings {

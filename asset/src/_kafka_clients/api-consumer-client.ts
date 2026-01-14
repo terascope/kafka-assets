@@ -1,7 +1,7 @@
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import {
     DataEntity, TSError, toString, isError
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
 import Consumer from './consumer-client.js';
 import { KafkaMessage, KafkaMessageMetadata } from '../_kafka_helpers/index.js';
 import { ConsumerClientConfig, ConsumeFn } from './interfaces.js';

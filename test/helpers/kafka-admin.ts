@@ -1,5 +1,5 @@
-import { debugLogger, pDelay, castArray } from '@terascope/job-components';
-import kafka from 'node-rdkafka';
+import { debugLogger, pDelay, castArray } from '@terascope/core-utils';
+import kafka from '@confluentinc/kafka-javascript';
 import { ERR_UNKNOWN_TOPIC_OR_PART } from '../../asset/src/_kafka_helpers/error-codes.js';
 import { isKafkaError } from '../../asset/src/_kafka_helpers/index.js';
 import { kafkaBrokers } from './config.js';

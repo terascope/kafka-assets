@@ -2,7 +2,7 @@
 
 The kafka_reader is used to read data from a kafka cluster. This is a high throughput operation. This reader handles all the complexity of balancing writes across partitions and managing ever-changing brokers.
 
-This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
+This uses [@confluentinc/kafka-javascript](https://github.com/confluentinc/kafka-javascript) (librdkafka) underneath the hood.
 
 For this reader to function properly, you will need a running kafka cluster and configure this job with the correct group, topic and partition management options
 
@@ -16,6 +16,8 @@ Fetched records will already have metadata associated with it. Please reference 
 
 In this example, the reader will read from the specified topic with that group id. It will try to collect 10k records or wait 8 seconds, whatever happens first and return that as a completed slice. Since `_dead_letter_action` is set to log, it will log any records that it could not process. If there is an error, it will try to rollback to the correct offset to try again. This job will try to create 40 workers and auto split the partitions between all the workers.
 
+**Important:** The `kafka_reader` operation requires a `kafka_reader_api` to be defined in the job. All configuration settings (topic, group, size, wait, etc.) must be specified on the API.
+
 Example job
 
 ```json
@@ -26,18 +28,24 @@ Example job
     "slicers": 1,
     "workers": 40,
     "assets": ["kafka"],
-    "operations":[
+    "apis": [
         {
-            "_op": "kafka_reader",
+            "_name": "kafka_reader_api",
             "topic": "kafka-test-fetcher",
             "group": "58b1bc77-d950-4e89-a3e1-4e93ad3e6cec",
             "size": 10000,
             "wait": 8000,
             "rollback_on_failure": true,
             "_dead_letter_action": "log"
+        }
+    ],
+    "operations": [
+        {
+            "_op": "kafka_reader",
+            "_api_name": "kafka_reader_api"
         },
         {
-            "_op":"noop"
+            "_op": "noop"
         }
     ]
 }
@@ -69,7 +77,7 @@ results.length === 5000;
 
 ### Using rdkafka_options for advanced configuration
 
-You can use `rdkafka_options` to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client.
+You can use `rdkafka_options` on the API to pass [librdkafka configuration options](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) directly to the underlying Kafka client. These settings have the highest priority and will override other configuration settings. See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for more details.
 
 Example job with rdkafka_options
 
@@ -81,9 +89,9 @@ Example job with rdkafka_options
     "slicers": 1,
     "workers": 10,
     "assets": ["kafka"],
-    "operations": [
+    "apis": [
         {
-            "_op": "kafka_reader",
+            "_name": "kafka_reader_api",
             "topic": "kafka-test-fetcher",
             "group": "my-consumer-group",
             "size": 10000,
@@ -94,6 +102,12 @@ Example job with rdkafka_options
                 "session.timeout.ms": 30000,
                 "heartbeat.interval.ms": 10000
             }
+        }
+    ],
+    "operations": [
+        {
+            "_op": "kafka_reader",
+            "_api_name": "kafka_reader_api"
         },
         {
             "_op": "noop"
@@ -102,7 +116,7 @@ Example job with rdkafka_options
 }
 ```
 
-In this example, `rdkafka_options` configures the consumer to:
+In this example, `rdkafka_options` on the API configures the consumer to:
 - Wait for at least 100KB of data before returning from a fetch (`fetch.min.bytes`)
 - Wait up to 500ms for data to accumulate (`fetch.wait.max.ms`)
 - Set session timeout to 30 seconds (`session.timeout.ms`)
@@ -110,93 +124,27 @@ In this example, `rdkafka_options` configures the consumer to:
 
 ## Parameters
 
-| Configuration | Description | Type |  Notes |
+### Operation Parameters
+
+The `kafka_reader` operation has minimal configuration. All Kafka-related settings must be configured on the [kafka_reader_api](../apis/kafka_reader_api.md).
+
+| Configuration | Description | Type | Notes |
 | --------- | -------- | ------ | ------ |
-| \_op| Name of operation, it must reflect the exact name of the file | String | required |
-| topic | Name of the Kafka topic to process | String | required, though if the [kafka_reader_api](../apis/kafka_reader_api.md) is specified then `topic` must be specified on the api and not on the opConfig, please check the [API usage](#api-usage) section |
-| group | Name of the Kafka consumer group | String | required, though if the [kafka_reader_api](../apis/kafka_reader_api.md) is specified then `group` must be specified on the api and not on the opConfig, please check the [API usage](#api-usage) section |
-| size | How many records to read before a slice is considered complete. | Number | optional, defaults to `10000` |
-| connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
-| max_poll_interval | The maximum delay between invocations of poll() when using consumer group management. This places an upper bound on the amount of time that the consumer can be idle before fetching more records. If poll() is not called before expiration of this timeout, then the consumer is considered failed and the group will rebalance in order to reassign the partitions to another member| String/Duration | optional, defaults to `"5 minutes"` |
-| offset_reset |  How offset resets should be handled when there are no valid offsets for the consumer group. May be set to `smallest`, `earliest`, `beginning`, `largest`, `latest` or `error` | String | optional, defaults to `smallest` |
-| partition_assignment_strategy |  Name of partition assignment strategy to use when elected group leader assigns partitions to group members. May be set to `range`, `roundrobin`, `cooperative-sticky` or `""` | String | optional, defaults to `""` |
-| rollback_on_failure | Controls whether the consumer state is rolled back on failure. This will protect against data loss, however this can have an unintended side effect of blocking the job from moving if failures are minor and persistent. NOTE: This currently defaults to false due to the side effects of the behavior, at some point in the future it is expected this will default to true.| Boolean | optional, defaults to `false` |
-| use_commit_sync | Use commit sync instead of async (usually not recommended) | Boolean | optional, defaults to `false` |
-| wait | How long to wait for a full chunk of data to be available. Specified in milliseconds if you use a number. | String/Duration/Number | optional, defaults to `30 seconds` |
-| api_name | Name of `kafka_reader_api` used for the reader, if none is provided, then one is made and assigned the name to `kafka_reader_api`, and is injected into the execution | String | optional, defaults to `kafka_reader_api` |
-| _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
-| _dead_letter_action | action will specify what to do when failing to parse or transform a record. It may be set to `throw`, `log` or `none`. If none of the actions are specified it will try and use a registered Dead Letter Queue API under that name.The API must be already be created by a operation before it can used. | String | optional, defaults to `throw` |
+| \_op | Name of operation, it must reflect the exact name of the file | String | required |
+| \_api_name | Name of the `kafka_reader_api` to use | String | **required** |
 
-### API usage
+### API Parameters
 
-In kafka_assets v3, many core components were made into teraslice apis. When you use an kafka processor it will automatically setup the api for you, but if you manually specify the api, then there are restrictions on what configurations you can put on the operation so that clashing of configurations are minimized. The api configs take precedence.
+All Kafka configuration must be specified on the `kafka_reader_api`. See the [kafka_reader_api documentation](../apis/kafka_reader_api.md#parameters) for the full list of available parameters including:
 
-If submitting the job in long form, here is a list of parameters that will throw an error if also specified on the opConfig, since these values should be placed on the api:
-
-- `topic`
-- `group`
-
-`SHORT FORM (no api specified)`
-
-```json
-{
-    "name": "test-job",
-    "lifecycle": "once",
-    "max_retries": 3,
-    "slicers": 1,
-    "workers": 40,
-    "assets": ["kafka"],
-    "operations":[
-        {
-            "_op": "kafka_reader",
-            "topic": "kafka-test-fetcher",
-            "group": "58b1bc77-d950-4e89-a3e1-4e93ad3e6cec",
-            "size": 10000,
-            "wait": 8000,
-            "rollback_on_failure": true,
-            "_dead_letter_action": "log"
-        },
-        {
-            "_op":"noop"
-        }
-    ]
-}
-```
-
-this configuration will be expanded out to the long form underneath the hood
-`LONG FORM (api is specified)`
-
-```json
-{
-    "name" : "testing",
-    "workers" : 1,
-    "slicers" : 1,
-    "lifecycle" : "once",
-    "assets" : [
-        "kafka"
-    ],
-    "apis" : [
-       {
-            "_name": "kafka_reader_api",
-            "topic": "kafka-test-fetcher",
-            "group": "58b1bc77-d950-4e89-a3e1-4e93ad3e6cec",
-            "size": 10000,
-            "wait": 8000,
-            "rollback_on_failure": true,
-            "_dead_letter_action": "log"
-        }
-    ],
-    "operations" : [
-        {
-            "_op" : "kafka_reader",
-            "api_name" : "kafka_reader_api"
-        },
-        {
-            "_op": "noop"
-        }
-    ]
-}
-```
+- `topic` - Name of the Kafka topic to process (required)
+- `group` - Name of the Kafka consumer group (required)
+- `size` - How many records to read before a slice is considered complete (default: 10000)
+- `wait` - How long to wait for a full chunk of data (default: '30 seconds')
+- `offset_reset` - How offset resets should be handled (default: 'smallest')
+- `rollback_on_failure` - Whether to rollback on failure (default: false)
+- `rdkafka_options` - Advanced librdkafka settings (default: {})
+- And more...
 
 ### Metadata
 

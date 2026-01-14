@@ -1,4 +1,4 @@
-import { Logger, DataEncoding, DataEntity } from '@terascope/job-components';
+import { Logger, DataEncoding, DataEntity } from '@terascope/core-utils';
 import { KafkaMessage } from '../_kafka_helpers/index.js';
 
 export interface OffsetByPartition {
@@ -18,6 +18,8 @@ export interface TopicPartition {
     partition: number;
     offset: number;
     topic: string;
+    // This is added because the new confluent client returns this.
+    leaderEpoch?: number;
 }
 
 export interface ConsumerClientConfig {

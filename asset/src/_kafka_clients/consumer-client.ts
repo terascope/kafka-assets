@@ -1,8 +1,8 @@
-import kafka from 'node-rdkafka';
+import kafka from '@confluentinc/kafka-javascript';
 import {
     pDelay, toHumanTime, EncodingConfig,
     isBoolean, isNotNil
-} from '@terascope/job-components';
+} from '@terascope/core-utils';
 import {
     wrapError, AnyKafkaError, KafkaMessage,
     KafkaError,

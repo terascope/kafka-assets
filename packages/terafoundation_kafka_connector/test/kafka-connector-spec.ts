@@ -1,5 +1,5 @@
 import convict from 'convict';
-import { debugLogger, formats } from '@terascope/job-components';
+import { debugLogger, formats } from '@terascope/core-utils';
 import connector from '../src/index.js';
 import { KafkaConsumerSettings, KafkaProducerSettings } from '../src/interfaces.js';
 import { kafkaBrokers } from './config.js';
