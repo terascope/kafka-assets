@@ -200,6 +200,7 @@ const results = await api.consume(query)
 
 | Configuration | Description | Type |  Notes |
 | --------- | -------- | ------ | ------ |
+| \_name | The name of the api, this must be unique among any loaded APIs but can be namespaced by using the format "example:0" | String | required |
 | topic | Name of the Kafka topic to process | String | required |
 | group | Name of the Kafka consumer group | String | required |
 | size | How many records to read before a slice is considered complete. | Number | optional, defaults to `10000` |

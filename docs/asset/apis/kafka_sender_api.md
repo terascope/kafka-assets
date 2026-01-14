@@ -211,6 +211,7 @@ await api.send([
 
 | Configuration | Description | Type |  Notes |
 | --------- | -------- | ------ | ------ |
+| \_name | The name of the api, this must be unique among any loaded APIs but can be namespaced by using the format "example:0" | String | required |
 | topic | Name of the Kafka topic to send records | String | required |
 | size | How many messages will be batched and sent to kafka together. | Number | optional, defaults to `10,000` |
 | max_buffer_size | Maximum number of messages allowed on the producer queue. A value of 0 disables this limit. | Number | optional, defaults to `100,000` |
