@@ -568,15 +568,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@confluentinc/kafka-javascript@npm:~1.6.0":
-  version: 1.6.0
-  resolution: "@confluentinc/kafka-javascript@npm:1.6.0"
+"@confluentinc/kafka-javascript@npm:~1.8.0":
+  version: 1.8.0
+  resolution: "@confluentinc/kafka-javascript@npm:1.8.0"
   dependencies:
     "@mapbox/node-pre-gyp": "npm:^1.0.11"
     bindings: "npm:^1.3.1"
     nan: "npm:^2.22.0"
     node-gyp: "npm:latest"
-  checksum: 10c0/2c4f617cd03bc861f2b72d7e4de60ea3a56d000ae71a8466c376fb1d767c5b4e74b6b41c8e461114b54b79bbeee8f58c5fc63bb8690f1b9ccd9c24a1e313b7e8
+  checksum: 10c0/eb2eaa1256e67d7ed4512098e5706d50aa58d1d374044275c8265304decc66e9796671f4f1bf5819adeae05f38700e5ca9ba5535561cb42599ac645a6c217d09
   languageName: node
   linkType: hard
 
@@ -740,10 +740,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.39.0":
-  version: 9.39.0
-  resolution: "@eslint/js@npm:9.39.0"
-  checksum: 10c0/f0ac65784932f1a5d3b9c0db12eb1ff9dcb480dbd03da1045e5da820bd97a35875fb7790f1fbe652763270b1327b770c79a9ba0396e2ad91fbd97822493e67eb
+"@eslint/js@npm:9.39.2":
+  version: 9.39.2
+  resolution: "@eslint/js@npm:9.39.2"
+  checksum: 10c0/00f51c52b04ac79faebfaa65a9652b2093b9c924e945479f1f3945473f78aee83cbc76c8d70bbffbf06f7024626575b16d97b66eab16182e1d0d39daff2f26f5
   languageName: node
   linkType: hard
 
@@ -1562,11 +1562,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/core-utils@npm:~2.0.0-rc.0":
-  version: 2.0.0-rc.0
-  resolution: "@terascope/core-utils@npm:2.0.0-rc.0"
+"@terascope/core-utils@npm:~2.0.0":
+  version: 2.0.0
+  resolution: "@terascope/core-utils@npm:2.0.0"
   dependencies:
-    "@terascope/types": "npm:~2.0.0-rc.0"
+    "@terascope/types": "npm:~2.0.0"
     awesome-phonenumber: "npm:~7.5.0"
     bunyan: "npm:~1.8.15"
     date-fns: "npm:~4.1.0"
@@ -1583,7 +1583,7 @@ __metadata:
     shallow-clone: "npm:~3.0.1"
     validator: "npm:~13.12.0"
     zod: "npm:~4.1.12"
-  checksum: 10c0/c4243ef73117a6289d6a119ec89577a0ebbf4be0f86e994d5fcab3dd979d4576f70289f291fe9aff30867a498034adb6bae2e02958c3f10a7c88e21849aa70dc
+  checksum: 10c0/593f78c7f373d12ed08e231becb65fa3ace7830e1543145a408cdec45bf5e8308eb6c0923d72a871abf84e3f84da9cce58a30e0c5ed38cedaa6d1aa7a0a7abfb
   languageName: node
   linkType: hard
 
@@ -1626,26 +1626,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/job-components@npm:~2.0.0-rc.1":
-  version: 2.0.0-rc.1
-  resolution: "@terascope/job-components@npm:2.0.0-rc.1"
+"@terascope/job-components@npm:~2.0.0":
+  version: 2.0.0
+  resolution: "@terascope/job-components@npm:2.0.0"
   dependencies:
-    "@terascope/core-utils": "npm:~2.0.0-rc.0"
-    "@terascope/types": "npm:~2.0.0-rc.0"
+    "@terascope/core-utils": "npm:~2.0.0"
+    "@terascope/types": "npm:~2.0.0"
     import-meta-resolve: "npm:~4.2.0"
     prom-client: "npm:~15.1.3"
     semver: "npm:~7.7.2"
     uuid: "npm:~13.0.0"
-  checksum: 10c0/b1c65dd5bfb8b194e3fc06ee84eff74bc5fd80c0a9843e875b2c29adb833f1fc589dd3f074f318911f28b8cfb455e0b10b1af43bc4c73f9a3b262d27ff0a389b
+  checksum: 10c0/838a660e3a89a414f1593cf91c2c9b9f8fb2ac4a70f3379773184f959024ed529166fce087e5a5be483d8f6651909216ec383f8559d6293bfe2ba619e765cbfa
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:~2.0.0-rc.0":
-  version: 2.0.0-rc.0
-  resolution: "@terascope/scripts@npm:2.0.0-rc.0"
+"@terascope/scripts@npm:~2.0.0":
+  version: 2.0.0
+  resolution: "@terascope/scripts@npm:2.0.0"
   dependencies:
     "@kubernetes/client-node": "npm:~1.3.0"
-    "@terascope/core-utils": "npm:~2.0.0-rc.0"
+    "@terascope/core-utils": "npm:~2.0.0"
     execa: "npm:~9.6.0"
     fs-extra: "npm:~11.3.1"
     globby: "npm:~14.1.0"
@@ -1673,16 +1673,16 @@ __metadata:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/2a7b9e6c607def7880e27ec755c0951889f261e8245566e74210d51d02ab683ccd99fb8268ec70649548294f582d33034873e1c79a88b3aab179491b6f79a7a3
+  checksum: 10c0/e6ea5bf538077e663459bdb7538e67802bbe681d1c6850afa46e372e24c74666ab5382796e2bd028a36b2b7178f802754e146022e0126bfa35cfa7fa44122784
   languageName: node
   linkType: hard
 
-"@terascope/types@npm:~2.0.0-rc.0":
-  version: 2.0.0-rc.0
-  resolution: "@terascope/types@npm:2.0.0-rc.0"
+"@terascope/types@npm:~2.0.0":
+  version: 2.0.0
+  resolution: "@terascope/types@npm:2.0.0"
   dependencies:
     prom-client: "npm:~15.1.3"
-  checksum: 10c0/69585aef6ec75bae37db2c2603e33c38cc00e29b47b8f0067020f640b85712702f373b518118562cd54a98204bc14b26b3a69e6f52136b25acd40ecacda44c0d
+  checksum: 10c0/49c1d725fffffa86c0819096c4720b204e547456aa14c9630b8e5633b8291c62167c168cb36db49d89b7ac141b61efe1e9059a8acb4b8b874dfec1179c0cde2d
   languageName: node
   linkType: hard
 
@@ -1871,12 +1871,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:~24.10.4":
-  version: 24.10.4
-  resolution: "@types/node@npm:24.10.4"
+"@types/node@npm:~24.10.8":
+  version: 24.10.8
+  resolution: "@types/node@npm:24.10.8"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10c0/069639cb7233ee747df1897b5e784f6b6c5da765c96c94773c580aac888fa1a585048d2a6e95eb8302d89c7a9df75801c8b5a0b7d0221d4249059cf09a5f4228
+  checksum: 10c0/aed2ac8c4a87be5c710f65ccfc57a272829dd00d0f6a687375323b348c55c92a6e7ff3b9d3ec596b1cc09ba2d080ce71b2ec9a67c14d12e04b02b67b14e81a74
   languageName: node
   linkType: hard
 
@@ -4240,9 +4240,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:~9.39.0":
-  version: 9.39.0
-  resolution: "eslint@npm:9.39.0"
+"eslint@npm:~9.39.2":
+  version: 9.39.2
+  resolution: "eslint@npm:9.39.2"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.8.0"
     "@eslint-community/regexpp": "npm:^4.12.1"
@@ -4250,7 +4250,7 @@ __metadata:
     "@eslint/config-helpers": "npm:^0.4.2"
     "@eslint/core": "npm:^0.17.0"
     "@eslint/eslintrc": "npm:^3.3.1"
-    "@eslint/js": "npm:9.39.0"
+    "@eslint/js": "npm:9.39.2"
     "@eslint/plugin-kit": "npm:^0.4.1"
     "@humanfs/node": "npm:^0.16.6"
     "@humanwhocodes/module-importer": "npm:^1.0.1"
@@ -4285,7 +4285,7 @@ __metadata:
       optional: true
   bin:
     eslint: bin/eslint.js
-  checksum: 10c0/4035f7a3d01b3a6026d0ade899713286ed9514e5b65afe5eb671b66834a4c211769de18d1329dadb4e0bb487ea61e6a5ba0905c2b92144b8b9a2216c1ccca3e8
+  checksum: 10c0/bb88ca8fd16bb7e1ac3e13804c54d41c583214460c0faa7b3e7c574e69c5600c7122295500fb4b0c06067831111db740931e98da1340329527658e1cf80073d3
   languageName: node
   linkType: hard
 
@@ -4719,14 +4719,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:~11.3.2":
-  version: 11.3.2
-  resolution: "fs-extra@npm:11.3.2"
+"fs-extra@npm:~11.3.3":
+  version: 11.3.3
+  resolution: "fs-extra@npm:11.3.3"
   dependencies:
     graceful-fs: "npm:^4.2.0"
     jsonfile: "npm:^6.0.1"
     universalify: "npm:^2.0.0"
-  checksum: 10c0/f5d629e1bb646d5dedb4d8b24c5aad3deb8cc1d5438979d6f237146cd10e113b49a949ae1b54212c2fbc98e2d0995f38009a9a1d0520f0287943335e65fe919b
+  checksum: 10c0/984924ff4104e3e9f351b658a864bf3b354b2c90429f57aec0acd12d92c4e6b762cbacacdffb4e745b280adce882e1f980c485d9f02c453f769ab4e7fc646ce3
   languageName: node
   linkType: hard
 
@@ -6546,23 +6546,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "kafka-asset-bundle@workspace:."
   dependencies:
-    "@terascope/core-utils": "npm:~2.0.0-rc.0"
+    "@terascope/core-utils": "npm:~2.0.0"
     "@terascope/eslint-config": "npm:~1.1.26"
-    "@terascope/job-components": "npm:~2.0.0-rc.1"
-    "@terascope/scripts": "npm:~2.0.0-rc.0"
+    "@terascope/job-components": "npm:~2.0.0"
+    "@terascope/scripts": "npm:~2.0.0"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~30.0.0"
-    "@types/node": "npm:~24.10.4"
+    "@types/node": "npm:~24.10.8"
     "@types/semver": "npm:~7.7.1"
     bunyan: "npm:~1.8.15"
-    eslint: "npm:~9.39.0"
-    fs-extra: "npm:~11.3.2"
+    eslint: "npm:~9.39.2"
+    fs-extra: "npm:~11.3.3"
     jest: "npm:~30.2.0"
     jest-extended: "npm:~6.0.0"
     semver: "npm:~7.7.3"
     terafoundation_kafka_connector: "npm:~2.0.0-rc.0"
-    teraslice-test-harness: "npm:~2.0.0-rc.1"
-    ts-jest: "npm:~29.4.5"
+    teraslice-test-harness: "npm:~2.0.0"
+    ts-jest: "npm:~29.4.6"
     typescript: "npm:~5.9.3"
     uuid: "npm:~13.0.0"
   languageName: unknown
@@ -6572,9 +6572,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "kafka-assets@workspace:asset"
   dependencies:
-    "@terascope/core-utils": "npm:~2.0.0-rc.0"
-    "@terascope/job-components": "npm:~2.0.0-rc.1"
-    "@terascope/types": "npm:~2.0.0-rc.0"
+    "@terascope/core-utils": "npm:~2.0.0"
+    "@terascope/job-components": "npm:~2.0.0"
+    "@terascope/types": "npm:~2.0.0"
   languageName: unknown
   linkType: soft
 
@@ -8922,24 +8922,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
-    "@confluentinc/kafka-javascript": "npm:~1.6.0"
-    "@terascope/core-utils": "npm:~2.0.0-rc.0"
-    "@terascope/job-components": "npm:~2.0.0-rc.1"
-    "@terascope/scripts": "npm:~2.0.0-rc.0"
+    "@confluentinc/kafka-javascript": "npm:~1.8.0"
+    "@terascope/core-utils": "npm:~2.0.0"
+    "@terascope/job-components": "npm:~2.0.0"
+    "@terascope/scripts": "npm:~2.0.0"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
   languageName: unknown
   linkType: soft
 
-"teraslice-test-harness@npm:~2.0.0-rc.1":
-  version: 2.0.0-rc.1
-  resolution: "teraslice-test-harness@npm:2.0.0-rc.1"
+"teraslice-test-harness@npm:~2.0.0":
+  version: 2.0.0
+  resolution: "teraslice-test-harness@npm:2.0.0"
   dependencies:
     "@terascope/fetch-github-release": "npm:~2.2.1"
-    "@terascope/job-components": "npm:~2.0.0-rc.1"
+    "@terascope/job-components": "npm:~2.0.0"
     decompress: "npm:~4.2.1"
     fs-extra: "npm:~11.3.1"
-  checksum: 10c0/d0654e696a26e40de9737a45d2806595d085d71ffc89fa227a985e9fdd726aad0250a1b64121ca352e330a5f6301253b30f678a4ce43307b6eac26d6fc2e261f
+  checksum: 10c0/912b1fda2574a401da787e251e6b2e5daf8ec7181aafec71d01f916fb392d246e3facd535a5d91d4b04d291bc3ece14d77d818119d79c4e3f14ab2dddd0fa02f
   languageName: node
   linkType: hard
 
@@ -9035,9 +9035,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:~29.4.5":
-  version: 29.4.5
-  resolution: "ts-jest@npm:29.4.5"
+"ts-jest@npm:~29.4.6":
+  version: 29.4.6
+  resolution: "ts-jest@npm:29.4.6"
   dependencies:
     bs-logger: "npm:^0.2.6"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -9071,7 +9071,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/789f00666ba785ac425606d42601cbdc03015e46f228a0b333f06c6658d80865819bae0ddd59c762285352d2b14d0aa50912574ec699ba6369ddb0d400a49ac0
+  checksum: 10c0/013dda99ac938cd4b94bae9323ed1b633cd295976c256d596d01776866188078fe7b82b8b3ebd05deb401b27b5618d9d76208eded2568661240ecf9694a5c933
   languageName: node
   linkType: hard
 
