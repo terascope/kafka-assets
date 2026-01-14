@@ -224,6 +224,5 @@ await api.send([
 | connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
 | required_acks | The number of required broker acknowledgements for a given request, set to -1 for all. | Number | optional, defaults to `1` |
 | metadata_refresh | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. | String/Duration/Number | optional, defaults to `"5 minutes"` |
-| api_name | Name of `kafka_sender_api` used for the sender, if none is provided, then one is made and assigned the name to `kafka_sender_api`, and is injected into the execution | String | optional, defaults to `kafka_sender_api`|
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
 | rdkafka_options | [librdkafka defined settings](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific. **Settings here will override other settings.** See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for details on how settings are prioritized. | Object | optional, default to `{}` |

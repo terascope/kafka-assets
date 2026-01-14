@@ -6,7 +6,7 @@ The `kafka_reader_api` will provide an [api factory](https://terascope.github.io
 
 This is a high throughput operation. This reader handles all the complexity of balancing writes across partitions and managing ever-changing brokers.
 
-This uses [node-rdkafka](https://github.com/Blizzard/node-rdkafka) underneath the hood.
+This uses [@confluentinc/kafka-javascript](https://github.com/confluentinc/kafka-javascript) (librdkafka) underneath the hood.
 
 For this reader to function properly, you will need a running kafka cluster and configure this job with the correct group, topic and partition management options.
 
@@ -45,7 +45,7 @@ Example job
     "operations" : [
         {
             "_op" : "some_reader",
-            "api_name" : "kafka_reader_api"
+            "_api_name" : "kafka_reader_api"
         },
         {
             "_op": "noop"
@@ -62,7 +62,7 @@ export default class SomeReader extends Fetcher {
 
     async initialize() {
         await super.initialize();
-        const apiName = this.opConfig.api_name;
+        const apiName = this.opConfig._api_name;
         const apiManager = this.getAPI(apiName);
         this.api = await apiManager.create(apiName, {});
     }
@@ -150,8 +150,8 @@ apiManager.size() === 1
 
 apiManager.get('normalClient') === normalClient
 
-// this will return an api cached at "overrideClient" and it will use the api config but override the index to "other_index" in the new instance.
-const overrideClient = await apiManager.create('overrideClient', { topic: 'other_topic', connection: "other" })
+// this will return an api cached at "overrideClient" and it will use the api config but override the topic to "other_topic" in the new instance.
+const overrideClient = await apiManager.create('overrideClient', { topic: 'other_topic', _connection: "other" })
 
 apiManager.size() === 2
 
@@ -163,8 +163,8 @@ apiManger.getConfig('overrideClient') === {
     size: 10000,
     wait: 8000,
     rollback_on_failure: true,
-    _dead_letter_action: 'log'
-    connection: "other"
+    _dead_letter_action: 'log',
+    _connection: "other"
 }
 
 
@@ -204,7 +204,7 @@ const results = await api.consume(query)
 | topic | Name of the Kafka topic to process | String | required |
 | group | Name of the Kafka consumer group | String | required |
 | size | How many records to read before a slice is considered complete. | Number | optional, defaults to `10000` |
-| connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
+| _connection | Name of the kafka connection to use when reading data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
 | max_poll_interval | The maximum delay between invocations of poll() when using consumer group management. This places an upper bound on the amount of time that the consumer can be idle before fetching more records. If poll() is not called before expiration of this timeout, then the consumer is considered failed and the group will rebalance in order to reassign the partitions to another member| String/Duration | optional, defaults to `"5 minutes"` |
 | offset_reset |  How offset resets should be handled when there are no valid offsets for the consumer group. May be set to `smallest`, `earliest`, `beginning`, `largest`, `latest` or `error` | String | optional, defaults to `smallest` |
 | partition_assignment_strategy |  Name of partition assignment strategy to use when elected group leader assigns partitions to group members. May be set to `range`, `roundrobin`, `cooperative-sticky` or `""` | String | optional, defaults to `""` |
