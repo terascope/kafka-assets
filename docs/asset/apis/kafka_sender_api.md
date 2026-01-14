@@ -211,7 +211,6 @@ await api.send([
 
 | Configuration | Description | Type |  Notes |
 | --------- | -------- | ------ | ------ |
-| \_op| Name of operation, it must reflect the exact name of the file | String | required |
 | topic | Name of the Kafka topic to send records | String | required |
 | size | How many messages will be batched and sent to kafka together. | Number | optional, defaults to `10,000` |
 | max_buffer_size | Maximum number of messages allowed on the producer queue. A value of 0 disables this limit. | Number | optional, defaults to `100,000` |

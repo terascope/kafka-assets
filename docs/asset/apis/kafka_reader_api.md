@@ -200,7 +200,6 @@ const results = await api.consume(query)
 
 | Configuration | Description | Type |  Notes |
 | --------- | -------- | ------ | ------ |
-| \_op| Name of operation, it must reflect the exact name of the file | String | required |
 | topic | Name of the Kafka topic to process | String | required |
 | group | Name of the Kafka consumer group | String | required |
 | size | How many records to read before a slice is considered complete. | Number | optional, defaults to `10000` |
