@@ -6465,7 +6465,7 @@ __metadata:
     jest: "npm:~30.2.0"
     jest-extended: "npm:~7.0.0"
     semver: "npm:~7.7.3"
-    terafoundation_kafka_connector: "npm:~2.0.0"
+    terafoundation_kafka_connector: "npm:~2.0.1"
     teraslice-test-harness: "npm:~2.0.3"
     ts-jest: "npm:~29.4.6"
     typescript: "npm:~5.9.3"
@@ -8830,7 +8830,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terafoundation_kafka_connector@npm:~2.0.0, terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector":
+"terafoundation_kafka_connector@npm:~2.0.1, terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector":
   version: 0.0.0-use.local
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
