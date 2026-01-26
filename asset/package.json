@@ -1,7 +1,7 @@
 {
     "name": "kafka-assets",
     "displayName": "Asset",
-    "version": "6.0.0",
+    "version": "6.0.1",
     "private": true,
     "description": "Teraslice asset for kafka operations",
     "license": "MIT",
@@ -22,9 +22,9 @@
         "test": "yarn --cwd ../ test"
     },
     "dependencies": {
-        "@terascope/core-utils": "~2.0.0",
-        "@terascope/job-components": "~2.0.0",
-        "@terascope/types": "~2.0.0"
+        "@terascope/core-utils": "~2.0.3",
+        "@terascope/job-components": "~2.0.3",
+        "@terascope/types": "~2.0.1"
     },
     "engines": {
         "node": ">=22.0.0",
