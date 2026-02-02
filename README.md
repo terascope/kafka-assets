@@ -64,7 +64,7 @@ teraslice-cli assets deploy cluster2 --build
 
 > Terafoundation connector for Kafka producer and consumer clients.
 
-📖 **[Full Documentation](./docs/packages/terafoundation_kafka_connector/overview.md)** | **[Configuration Hierarchy](./docs/packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy)**
+📖 **[Full Documentation](./docs/packages/terafoundation_kafka_connector/overview)** | **[Configuration Hierarchy](./docs/packages/terafoundation_kafka_connector/overview#configuration-hierarchy)**
 
 To install from the root of your terafoundation based service.
 
@@ -177,7 +177,7 @@ Run the kafka tests
 
 **Requirements:**
 
-- `docker` - A [Kafka](https://hub.docker.com/r/confluentinc/cp-kafka) container will be created using [Docker](https://docs.docker.com/get-started/)
+- `docker` - A [Kafka](https://https://hub.docker.com/r/apache/kafka) container will be created using [Docker](https://docs.docker.com/get-started/)
 
 **Environment:**
 
