@@ -1524,11 +1524,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/core-utils@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "@terascope/core-utils@npm:2.1.0"
+"@terascope/core-utils@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@terascope/core-utils@npm:2.2.0"
   dependencies:
-    "@terascope/types": "npm:~2.1.0"
+    "@terascope/types": "npm:~2.2.0"
     awesome-phonenumber: "npm:~7.7.0"
     bunyan: "npm:~1.8.15"
     date-fns: "npm:~4.1.0"
@@ -1545,7 +1545,7 @@ __metadata:
     shallow-clone: "npm:~3.0.1"
     validator: "npm:~13.15.26"
     zod: "npm:~4.1.12"
-  checksum: 10c0/b1786a32fcc4db9bff7027b63970a964661f9c9cfe36f3d21c9d3ef9982870168ef23a91580e05b3a519d50f6609bbb4e4254660f5b24ab1245f0b9fc7693b4d
+  checksum: 10c0/729642182ddc2754c286885f69506fe73e5c8ea3d775fc6b9aed33862714c0ef02a0178a430057419920347a57d2055e410da801f1f01a94dede5b53f6a31742
   languageName: node
   linkType: hard
 
@@ -1588,26 +1588,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terascope/job-components@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "@terascope/job-components@npm:2.1.0"
+"@terascope/job-components@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@terascope/job-components@npm:2.2.0"
   dependencies:
-    "@terascope/core-utils": "npm:~2.1.0"
-    "@terascope/types": "npm:~2.1.0"
+    "@terascope/core-utils": "npm:~2.2.0"
+    "@terascope/types": "npm:~2.2.0"
     import-meta-resolve: "npm:~4.2.0"
     prom-client: "npm:~15.1.3"
     semver: "npm:~7.7.3"
     uuid: "npm:~13.0.0"
-  checksum: 10c0/c39ed0fbe101892e3a5a91896df51617aa175483160e4489c44fff26d8f32841b236f4a68920f77493a5607e120f38ac4a57ff6f2939680908a1c74eb0054f86
+  checksum: 10c0/4c0718dd017b82948bdb0ff623c06f92892f5d18d2614d7e6c4f68c0d1f38aefd8bd7b19e2656897aecfa67e693d7a3fcdb54267a9167b394c562fc3eeac4573
   languageName: node
   linkType: hard
 
-"@terascope/scripts@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "@terascope/scripts@npm:2.1.0"
+"@terascope/scripts@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@terascope/scripts@npm:2.2.0"
   dependencies:
     "@kubernetes/client-node": "npm:~1.4.0"
-    "@terascope/core-utils": "npm:~2.1.0"
+    "@terascope/core-utils": "npm:~2.2.0"
     execa: "npm:~9.6.1"
     fs-extra: "npm:~11.3.3"
     globby: "npm:~16.1.0"
@@ -1635,16 +1635,16 @@ __metadata:
       optional: true
   bin:
     ts-scripts: ./bin/ts-scripts.js
-  checksum: 10c0/ec17e03c9961f3ed76de9d277b805f415be894fc5639d18f5f2c802852a2665489dc1c1f779e4c868a8a61416b0d81de3154955c97fc2d0d3415bd94966ea8ef
+  checksum: 10c0/5607abf34ebd69a4965bf5ee8318b24329a9871ed87434275dc67ffce1f0f2d7e7808e285d70fbcee7eb3c9bcab712ee06a268fd9ca92131f6136cfb7ad51c27
   languageName: node
   linkType: hard
 
-"@terascope/types@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "@terascope/types@npm:2.1.0"
+"@terascope/types@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@terascope/types@npm:2.2.0"
   dependencies:
     prom-client: "npm:~15.1.3"
-  checksum: 10c0/74cba0249eb602699914745f5374078024e92a78cf11d101c4608f53ec63cc29bcd71b4590c8648e242104d8868dccb961c579a114fcc832ba798f1cfac102ea
+  checksum: 10c0/c3634281c7a1211bf739398cb71dfefe93dd0a90c583f13db62dd2caf586dbe6c170988d1feb40ab9fc09eb3ed8bfa220b1ae2f160f1ead9dca177cff4a922b8
   languageName: node
   linkType: hard
 
@@ -1833,12 +1833,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:~24.10.12":
-  version: 24.10.12
-  resolution: "@types/node@npm:24.10.12"
+"@types/node@npm:~24.10.13":
+  version: 24.10.13
+  resolution: "@types/node@npm:24.10.13"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10c0/fa39b88c8d82a2cec41544bee3426c4b78a13cc3c5ccf6fcb6c9528a68466ffcc73772833c612c7bb7e5fe1bc8e38002d1d543152e43b20b0600096cf6f210d1
+  checksum: 10c0/4ff0b9b060b5477c0fec5b11a176f294be588104ab546295db65b17a92ba0a6077b52ad92dd3c0d2154198c7f9d0021e6c1d42b00c9ac7ebfd85632afbcc48a4
   languageName: node
   linkType: hard
 
@@ -6467,13 +6467,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "kafka-asset-bundle@workspace:."
   dependencies:
-    "@terascope/core-utils": "npm:~2.1.0"
+    "@terascope/core-utils": "npm:~2.2.0"
     "@terascope/eslint-config": "npm:~1.1.28"
-    "@terascope/job-components": "npm:~2.1.0"
-    "@terascope/scripts": "npm:~2.1.0"
+    "@terascope/job-components": "npm:~2.2.0"
+    "@terascope/scripts": "npm:~2.2.0"
     "@types/fs-extra": "npm:~11.0.4"
     "@types/jest": "npm:~30.0.0"
-    "@types/node": "npm:~24.10.12"
+    "@types/node": "npm:~24.10.13"
     "@types/semver": "npm:~7.7.1"
     bunyan: "npm:~1.8.15"
     eslint: "npm:~9.39.2"
@@ -6482,7 +6482,7 @@ __metadata:
     jest-extended: "npm:~7.0.0"
     semver: "npm:~7.7.4"
     terafoundation_kafka_connector: "npm:~2.0.1"
-    teraslice-test-harness: "npm:~2.1.0"
+    teraslice-test-harness: "npm:~2.2.0"
     ts-jest: "npm:~29.4.6"
     typescript: "npm:~5.9.3"
     uuid: "npm:~13.0.0"
@@ -6493,9 +6493,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "kafka-assets@workspace:asset"
   dependencies:
-    "@terascope/core-utils": "npm:~2.1.0"
-    "@terascope/job-components": "npm:~2.1.0"
-    "@terascope/types": "npm:~2.1.0"
+    "@terascope/core-utils": "npm:~2.2.0"
+    "@terascope/job-components": "npm:~2.2.0"
+    "@terascope/types": "npm:~2.2.0"
   languageName: unknown
   linkType: soft
 
@@ -8860,23 +8860,23 @@ __metadata:
   resolution: "terafoundation_kafka_connector@workspace:packages/terafoundation_kafka_connector"
   dependencies:
     "@confluentinc/kafka-javascript": "npm:~1.8.0"
-    "@terascope/core-utils": "npm:~2.1.0"
-    "@terascope/job-components": "npm:~2.1.0"
-    "@terascope/scripts": "npm:~2.1.0"
+    "@terascope/core-utils": "npm:~2.2.0"
+    "@terascope/job-components": "npm:~2.2.0"
+    "@terascope/scripts": "npm:~2.2.0"
     "@types/convict": "npm:~6.1.6"
     convict: "npm:~6.2.4"
   languageName: unknown
   linkType: soft
 
-"teraslice-test-harness@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "teraslice-test-harness@npm:2.1.0"
+"teraslice-test-harness@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "teraslice-test-harness@npm:2.2.0"
   dependencies:
     "@terascope/fetch-github-release": "npm:~2.2.1"
-    "@terascope/job-components": "npm:~2.1.0"
+    "@terascope/job-components": "npm:~2.2.0"
     decompress: "npm:~4.2.1"
     fs-extra: "npm:~11.3.3"
-  checksum: 10c0/dac3e896963b40a74cce0caf4e9053703653e92a64314d1caafc24c66b62e36848e9fc3b40cbc5823d91c8025f0ce3502a6cc2da4e8e247ba64b2d9bb6fedd6b
+  checksum: 10c0/d0ba0767bd3578f8a30e497d81cc15aa91d82b322d98c6e6884ead99af54d857cfc1714001eec0269e589592988eff2367e9ac5c19d071e58031dcc1fef751f0
   languageName: node
   linkType: hard
 
