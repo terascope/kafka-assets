@@ -2,13 +2,14 @@ import { jest } from '@jest/globals';
 import 'jest-extended';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, APIFactoryRegistry } from '@terascope/job-components';
-import { Logger, DataEntity } from '@terascope/core-utils';
+import { DataEntity } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces.js';
 import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender.js';
 import { kafkaBrokers, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 import { readData } from '../helpers/kafka-data.js';
+import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'terafoundation_kafka_connector/src/interfaces.js';
 
 type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
 
@@ -28,13 +29,15 @@ describe('KafkaRouteSender', () => {
         config: {
             brokers: kafkaBrokers,
         },
-        async createClient(config: any, logger: Logger, settings: any) {
-            const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
+        async createClient(config, logger, settings) {
+            const result = await Connector.createClient(
+                config as KafkaConnectorConfig,
+                logger,
+                settings as unknown as KafkaProducerSettings
+            ) as KafkaProducerResult;
+            result.client.producerClient.flush = mockFlush
+                .mockImplementation(result.client.producerClient.flush as () => void)
+                .bind(result.client.producerClient);
             return result;
         },
         endpoint: 'default'
@@ -99,6 +102,9 @@ describe('KafkaRouteSender', () => {
 
     it('verify will only check if route is not in cache', async () => {
         const sender = await makeTest();
+        sender.producer.doesTopicExist = async (): Promise<boolean> => {
+            return true;
+        };
         expect(producerMetadataCalls).toEqual(0);
 
         await sender.verify('something');
@@ -123,6 +129,48 @@ describe('KafkaRouteSender', () => {
         const topicResults = await readData(topic, 100);
 
         expect(topicResults).toBeArrayOfSize(2);
+    });
+
+    it('verify throws error when topic does not exist', async () => {
+        const sender = await makeTest();
+        sender.producer.doesTopicExist = async (): Promise<boolean> => {
+            return false;
+        };
+
+        await expect(sender.verify('nonexistent'))
+            .rejects.toThrow(`Topic ${topic}-nonexistent does not exist and could not be created.`);
+    });
+
+    it('send calls verify for non-routed_sender operations', async () => {
+        const sender = await makeTest();
+        let verifyCalled = false;
+        const originalVerify = sender.verify.bind(sender);
+
+        sender.verify = async (route?: string): Promise<void> => {
+            verifyCalled = true;
+            // Mock doesTopicExist to return true so verify completes successfully
+            sender.producer.doesTopicExist = async (): Promise<boolean> => true;
+            return originalVerify(route);
+        };
+
+        const data = [DataEntity.make({ hello: 'world' })];
+        await sender.send(data);
+
+        expect(verifyCalled).toBe(true);
+    });
+
+    it('send does not call verify when _op is routed_sender', async () => {
+        const sender = await makeTest({ _op: 'routed_sender' });
+        let verifyCalled = false;
+
+        sender.verify = async (): Promise<void> => {
+            verifyCalled = true;
+        };
+
+        const data = [DataEntity.make({ hello: 'world' })];
+        await sender.send(data);
+
+        expect(verifyCalled).toBe(false);
     });
 
     describe('->getKey', () => {

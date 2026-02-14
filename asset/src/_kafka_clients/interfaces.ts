@@ -1,3 +1,4 @@
+import kafka, { IAdminClient } from '@confluentinc/kafka-javascript';
 import { Logger, DataEncoding, DataEntity } from '@terascope/core-utils';
 import { KafkaMessage } from '../_kafka_helpers/index.js';
 
@@ -56,3 +57,8 @@ export type ConsumeFn = (
 export type ProduceFn = (
     fn: (msg: KafkaMessage) => DataEntity
 ) => (msg: KafkaMessage) => void;
+
+export interface KafkaProducerClients {
+    producerClient: kafka.Producer;
+    adminClient: IAdminClient;
+}

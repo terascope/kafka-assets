@@ -3,10 +3,9 @@ import {
     OperationAPI
 } from '@terascope/job-components';
 import { parseError, Collector } from '@terascope/core-utils';
-import kafka from '@confluentinc/kafka-javascript';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
-import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
+import { ProducerClient, ProduceMessage, KafkaProducerClients } from '../_kafka_clients/index.js';
 
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer!: ProducerClient;
@@ -16,14 +15,14 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         await super.initialize();
         const logger = this.logger.child({ module: 'kafka-producer' });
 
-        const client = await this.createClient();
+        const { producerClient, adminClient } = await this.createClient();
 
-        this.producer = new ProducerClient(client, {
+        this.producer = new ProducerClient(producerClient, {
             logger,
             topic: this.apiConfig.topic,
             maxBufferLength: this.apiConfig.max_buffer_size,
             maxBufferKilobyteSize: this.apiConfig.max_buffer_kbytes_size
-        });
+        }, adminClient);
 
         this.collector = new Collector({
             size: this.apiConfig.size,
@@ -95,7 +94,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         } as ConnectionConfig;
     }
 
-    private async createClient(): Promise<kafka.Producer> {
+    private async createClient(): Promise<KafkaProducerClients> {
         const config = this.clientConfig();
         const connection = await this.context.apis.foundation.createClient(config);
         return connection.client;
