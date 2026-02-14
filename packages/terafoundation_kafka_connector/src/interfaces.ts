@@ -1,5 +1,5 @@
 import { Logger } from '@terascope/core-utils';
-import kafka from '@confluentinc/kafka-javascript';
+import kafka, { IAdminClient } from '@confluentinc/kafka-javascript';
 
 export interface KafkaConnectorConfig {
     /** A list of brokers */
@@ -59,6 +59,11 @@ export interface KafkaConsumerResult {
 }
 
 export interface KafkaProducerResult {
-    client: kafka.Producer;
+    client: KafkaProducerClients;
     logger: Logger;
+}
+
+export interface KafkaProducerClients {
+    producerClient: kafka.Producer;
+    adminClient: IAdminClient;
 }

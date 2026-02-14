@@ -4,13 +4,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TestClientConfig } from '@terascope/job-components';
-import { Logger, DataEntity, parseJSON } from '@terascope/core-utils';
+import { DataEntity, parseJSON } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import KafkaSender from '../../asset/src/kafka_sender/processor.js';
 import { readData } from '../helpers/kafka-data.js';
 import { kafkaBrokers, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
+import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'packages/terafoundation_kafka_connector/src/interfaces.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -26,13 +27,15 @@ describe('Kafka Sender', () => {
         config: {
             brokers: kafkaBrokers,
         },
-        async createClient(config: any, logger: Logger, settings: any) {
-            const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
+        async createClient(config, logger, settings) {
+            const result = await Connector.createClient(
+                config as KafkaConnectorConfig,
+                logger,
+                settings as unknown as KafkaProducerSettings
+            ) as KafkaProducerResult;
+            result.client.producerClient.flush = mockFlush
+                .mockImplementation(result.client.producerClient.flush as () => void)
+                .bind(result.client.producerClient);
             return result;
         }
     };
