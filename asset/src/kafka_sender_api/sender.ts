@@ -7,7 +7,7 @@ import {
     TSError
 } from '@terascope/core-utils';
 import { RouteSenderAPI, isPromAvailable, Context } from '@terascope/job-components';
-import kafka from '@confluentinc/kafka-javascript';
+import kafka, { IAdminClient } from '@confluentinc/kafka-javascript';
 import { KafkaSenderAPIConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 
@@ -24,13 +24,18 @@ export default class KafkaSender implements RouteSenderAPI {
     readonly pathList = new Map<string, boolean>();
     readonly mapper: (msg: DataEntity) => ProduceMessage;
 
-    constructor(client: kafka.Producer, config: KafkaSenderAPIConfig, context: Context) {
+    constructor(
+        client: kafka.Producer,
+        config: KafkaSenderAPIConfig,
+        context: Context,
+        adminClient: IAdminClient
+    ) {
         const producer = new ProducerClient(client, {
             logger: config.logger,
             topic: config.topicOverride || config.topic,
             maxBufferLength: config.max_buffer_size,
             maxBufferKilobyteSize: config.max_buffer_kbytes_size
-        });
+        }, adminClient);
 
         this.config = config;
         this.isWildcard = config._key && config._key === '**';
@@ -79,6 +84,11 @@ export default class KafkaSender implements RouteSenderAPI {
 
     async send(data: Iterable<DataEntity>): Promise<number> {
         const records = Array.isArray(data) ? data : Array.from(data);
+        if (this.config._op !== 'routed_sender') {
+            // routed_sender instead calls verify(route) for every record
+            await this.verify();
+        }
+
         await this.producer.produce(records, this.mapper);
         return records.length;
     }
@@ -154,7 +164,14 @@ export default class KafkaSender implements RouteSenderAPI {
     async verify(route?: string): Promise<void> {
         const topic = route ? `${this.config.topic}-${route}` : this.config.topic;
         if (!this.pathList.has(topic)) {
+            // getMetadata(topic) will try to create the topic if it doesn't exist.
+            // This may not be allowed by the broker or client config, so we must
+            // still check if the topic exists afterwards
             await this.producer.getMetadata(topic);
+            const topicCreated = await this.producer.doesTopicExist(topic);
+            if (!topicCreated) {
+                throw new Error(`Topic ${topic} does not exist and could not be created.`);
+            }
             this.pathList.set(topic, true);
         }
     }

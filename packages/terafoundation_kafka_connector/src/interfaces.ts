@@ -64,11 +64,16 @@ export interface KafkaConsumerResult {
 }
 
 export interface KafkaProducerResult {
-    client: kafka.Producer;
+    client: KafkaProducerClients;
     logger: Logger;
 }
 
 export interface KafkaAdminResult {
     client: IAdminClient;
     logger: Logger;
+}
+
+export interface KafkaProducerClients {
+    producerClient: kafka.Producer;
+    adminClient: IAdminClient;
 }

@@ -1,4 +1,4 @@
-import kafka from '@confluentinc/kafka-javascript';
+import kafka, { IAdminClient, TopicDescription } from '@confluentinc/kafka-javascript';
 import { ProduceMessage, ProducerClientConfig } from './interfaces.js';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers/index.js';
 import BaseClient from './base-client.js';
@@ -16,11 +16,13 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     private readonly _maxBufferKilobyteSize: number;
     private _hasClientEvents = false;
     private _bytesProduced = 0;
+    private adminClient: IAdminClient;
 
-    constructor(client: kafka.Producer, config: ProducerClientConfig) {
+    constructor(client: kafka.Producer, config: ProducerClientConfig, adminClient: IAdminClient) {
         super(client, config.topic, config.logger);
         this._maxBufferMsgLength = config.maxBufferLength;
         this._maxBufferKilobyteSize = config.maxBufferKilobyteSize;
+        this.adminClient = adminClient;
     }
 
     /**
@@ -43,6 +45,30 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                 else resolve();
             });
         });
+    }
+
+    async doesTopicExist(topic: string) {
+        const topicDescriptions = await new Promise<TopicDescription[]>((resolve, reject) => {
+            this.adminClient.describeTopics(
+                [topic],
+                undefined,
+                (err: AnyKafkaError, data: TopicDescription[]) => {
+                    if (err) {
+                        reject(wrapError(`Failed to get topic metadata for topic "${topic}"`, err));
+                    } else {
+                        // console.log('@@@@ doesTopicExist data:', data);
+                        resolve(data);
+                    }
+                }
+            );
+        });
+
+        const foundTopic = topicDescriptions.find(
+            // if partitions is an empty array then the topic does not exist
+            (obj: TopicDescription) => obj.name === topic && obj.partitions.length > 0
+        );
+
+        return !!foundTopic;
     }
 
     /**
