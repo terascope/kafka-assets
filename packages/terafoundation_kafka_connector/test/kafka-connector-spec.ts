@@ -112,10 +112,10 @@ describe('Kafka Connector', () => {
             //   failure: (errno: Bad address)
             connector.createClient(config, logger, settings as KafkaProducerSettings)
                 .then((conn) => {
-                    conn.client.once('ready', (client) => {
+                    conn.client.producerClient.once('ready', (client) => {
                         logger.trace(client, 'connected');
-                        expect(conn.client.isConnected()).toBe(true);
-                        conn.client.disconnect(() => {
+                        expect(conn.client.producerClient.isConnected()).toBe(true);
+                        conn.client.producerClient.disconnect(() => {
                             resolve(true);
                         });
                     });
@@ -136,16 +136,16 @@ describe('Kafka Connector', () => {
 
             connector.createClient(config, logger, settings as KafkaProducerSettings)
                 .then((conn) => {
-                    expect(conn.client.isConnected()).toBe(false);
+                    expect(conn.client.producerClient.isConnected()).toBe(false);
 
-                    conn.client.connect({}, (err: any) => {
+                    conn.client.producerClient.connect({}, (err: any) => {
                         if (err) {
                             reject(err);
                             return;
                         }
 
-                        expect(conn.client.isConnected()).toBe(true);
-                        conn.client.disconnect(() => {
+                        expect(conn.client.producerClient.isConnected()).toBe(true);
+                        conn.client.producerClient.disconnect(() => {
                             resolve(true);
                         });
                     });
