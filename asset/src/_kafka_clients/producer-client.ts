@@ -56,7 +56,6 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                     if (err) {
                         reject(wrapError(`Failed to get topic metadata for topic "${topic}"`, err));
                     } else {
-                        // console.log('@@@@ doesTopicExist data:', data);
                         resolve(data);
                     }
                 }
