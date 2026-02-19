@@ -30,7 +30,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
     protected readonly _logger: Logger;
     protected readonly _client: T;
 
-    private _cleanup: CleanupFn[] = [];
+    protected _cleanup: CleanupFn[] = [];
     private _connected = false;
 
     constructor(client: T, topic: string, logger: Logger) {

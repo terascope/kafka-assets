@@ -74,14 +74,25 @@ class KafkaConnector {
                 pollInterval
             } = configHelpers.getProducerOptions(config, settings);
 
-            const producerClient = new kafka.Producer(clientOptions, topicOptions);
-            producerClient.setPollInterval(pollInterval);
+            const client = new kafka.Producer(clientOptions, topicOptions);
+            client.setPollInterval(pollInterval);
 
-            const adminClient = kafka.AdminClient.create(clientOptions);
-
-            await this._autoconnect(producerClient, logger, settings.autoconnect);
+            await this._autoconnect(client, logger, settings.autoconnect);
             return {
-                client: { producerClient, adminClient },
+                client,
+                logger
+            };
+        }
+
+        if (isAdminSettings(settings)) {
+            const {
+                clientOptions
+            } = configHelpers.getAdminOptions(config, settings);
+
+            const client = kafka.AdminClient.create(clientOptions);
+
+            return {
+                client,
                 logger
             };
         }
@@ -150,13 +161,12 @@ class KafkaConnector {
                 pollInterval
             } = configHelpers.getProducerOptions(config, settings);
 
-            const producerClient = new kafka.Producer(clientOptions, topicOptions);
-            const adminClient = kafka.AdminClient.create(clientOptions);
-            producerClient.setPollInterval(pollInterval);
+            const client = new kafka.Producer(clientOptions, topicOptions);
+            client.setPollInterval(pollInterval);
 
-            this._autoconnect(producerClient, logger, settings.autoconnect);
+            this._autoconnect(client, logger, settings.autoconnect);
             return {
-                client: { producerClient, adminClient },
+                client,
                 logger
             };
         }

@@ -35,9 +35,9 @@ describe('KafkaRouteSender', () => {
                 logger,
                 settings as unknown as KafkaProducerSettings
             ) as KafkaProducerResult;
-            result.client.producerClient.flush = mockFlush
-                .mockImplementation(result.client.producerClient.flush as () => void)
-                .bind(result.client.producerClient);
+            result.client.flush = mockFlush
+                .mockImplementation(result.client.flush as () => void)
+                .bind(result.client);
             return result;
         },
         endpoint: 'default'

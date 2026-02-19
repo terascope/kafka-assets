@@ -2,10 +2,11 @@ import {
     ConnectionConfig,
     OperationAPI
 } from '@terascope/job-components';
+import kafka, { IAdminClient } from '@confluentinc/kafka-javascript';
 import { parseError, Collector } from '@terascope/core-utils';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
-import { ProducerClient, ProduceMessage, KafkaProducerClients } from '../_kafka_clients/index.js';
+import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer!: ProducerClient;
@@ -15,9 +16,10 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         await super.initialize();
         const logger = this.logger.child({ module: 'kafka-producer' });
 
-        const { producerClient, adminClient } = await this.createClient();
+        const adminClient = await this.createAdminClient();
+        const client = await this.createClient();
 
-        this.producer = new ProducerClient(producerClient, {
+        this.producer = new ProducerClient(client, {
             logger,
             topic: this.apiConfig.topic,
             maxBufferLength: this.apiConfig.max_buffer_size,
@@ -94,8 +96,24 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         } as ConnectionConfig;
     }
 
-    private async createClient(): Promise<KafkaProducerClients> {
+    private async createClient(): Promise<kafka.Producer> {
         const config = this.clientConfig();
+        const connection = await this.context.apis.foundation.createClient(config);
+        return connection.client;
+    }
+
+    private async createAdminClient(): Promise<IAdminClient> {
+        const config = {
+            type: 'kafka',
+            endpoint: this.apiConfig._connection,
+            options: {
+                type: 'admin'
+            },
+            rdkafka_options: {
+                'topic.metadata.refresh.interval.ms': this.apiConfig.metadata_refresh,
+                'log.connection.close': false
+            }
+        };
         const connection = await this.context.apis.foundation.createClient(config);
         return connection.client;
     }

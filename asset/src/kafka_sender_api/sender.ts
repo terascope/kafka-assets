@@ -17,6 +17,7 @@ export default class KafkaSender implements RouteSenderAPI {
     logger: Logger;
     producer: ProducerClient;
     context: Context;
+    adminClient: IAdminClient;
     readonly hasConnected = false;
     readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
@@ -44,6 +45,7 @@ export default class KafkaSender implements RouteSenderAPI {
         this.mapper = this.mapFn.bind(this);
         this.logger = config.logger;
         this.context = context;
+        this.adminClient = adminClient;
     }
 
     private tryCatch(fn: FN) {
@@ -80,6 +82,7 @@ export default class KafkaSender implements RouteSenderAPI {
 
     async disconnect(): Promise<void> {
         await this.producer.disconnect();
+        this.adminClient.disconnect();
     }
 
     async send(data: Iterable<DataEntity>): Promise<number> {

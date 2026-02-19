@@ -70,6 +70,23 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         return config as ConnectionConfig;
     }
 
+    private adminClientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
+        const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
+        const config = {
+            type: 'kafka',
+            endpoint: kafkaConfig._connection,
+            options: {
+                type: 'admin'
+            },
+            rdkafka_options: {
+                'topic.metadata.refresh.interval.ms': kafkaConfig.metadata_refresh,
+                'log.connection.close': false,
+            } as Record<string, any>,
+            autoconnect: false
+        };
+        return config as ConnectionConfig;
+    }
+
     async create(
         _connection: string, config: Partial<KafkaSenderConfig> = {}
     ): Promise<{ client: KafkaRouteSender; config: KafkaSenderAPIConfig }> {
@@ -85,21 +102,27 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         newConfig.topic = newTopic;
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
+        const adminClientConfig = this.adminClientConfig(validConfig);
 
-        const output = await this.context.apis.foundation.createClient(clientConfig);
-        const { producerClient, adminClient } = output.client;
+        const { client: adminClient } = await this.context.apis.foundation.createClient(
+            adminClientConfig
+        );
+
+        const { client: kafkaClient } = await this.context.apis.foundation.createClient(
+            clientConfig
+        );
 
         // maxBufferLength is used as an indicator of when to flush the queue in producer-client.ts
         // in addition to the max.messages setting
-        if (producerClient.globalConfig['queue.buffering.max.messages']) {
-            validConfig.maxBufferLength = producerClient.globalConfig['queue.buffering.max.messages'];
+        if (kafkaClient.globalConfig['queue.buffering.max.messages']) {
+            validConfig.maxBufferLength = kafkaClient.globalConfig['queue.buffering.max.messages'];
         } else {
             // If we don't see it on the client globals then set default stated here
             validConfig.maxBufferLength = DEFAULT_MAX_BUFFER_LENGTH;
         }
         // maxBufferKilobyteSize is also used as an indicator of when to flush the queue
-        if (producerClient.globalConfig['queue.buffering.max.kbytes']) {
-            validConfig.maxBufferKilobyteSize = producerClient.globalConfig['queue.buffering.max.kbytes'];
+        if (kafkaClient.globalConfig['queue.buffering.max.kbytes']) {
+            validConfig.maxBufferKilobyteSize = kafkaClient.globalConfig['queue.buffering.max.kbytes'];
         } else {
             // If we don't see it on the client globals then set default stated here
             validConfig.maxBufferKilobyteSize = DEFAULT_MAX_BUFFER_KILOBYTE_SIZE;
@@ -122,7 +145,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         validConfig.tryFn = this.tryRecord.bind(this);
 
         const client = new KafkaRouteSender(
-            producerClient,
+            kafkaClient,
             validConfig,
             this.context,
             adminClient
