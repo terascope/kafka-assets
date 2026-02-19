@@ -198,27 +198,4 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     async getBytesProduced() {
         return this._bytesProduced;
     }
-
-    // async disconnect(): Promise<void> {
-    //     this.adminClient.disconnect();
-    //     this._closed = true;
-
-    //     if (this.isConnected()) {
-    //         await new Promise<void>((resolve, reject) => {
-    //             this._client.disconnect((err: AnyKafkaError) => {
-    //                 if (err) reject(wrapError('Failed to disconnect', err));
-    //                 else resolve();
-    //             });
-    //         });
-    //     }
-
-    //     for (const fn of this._cleanup) {
-    //         fn();
-    //     }
-
-    //     this._cleanup = [];
-    //     // For some reason the typing broke for this and need to have a hack for it
-    //     (this._client as any).removeAllListeners();
-    //     this._events.removeAllListeners();
-    // }
 }
