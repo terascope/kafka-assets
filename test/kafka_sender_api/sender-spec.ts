@@ -85,7 +85,6 @@ describe('KafkaRouteSender', () => {
     });
 
     afterAll(async () => {
-        jest.clearAllMocks();
         admin.disconnect();
     });
 
