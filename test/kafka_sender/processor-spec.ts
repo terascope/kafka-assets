@@ -20,7 +20,7 @@ const testFetcherData: Record<string, any>[] = parseJSON(fs.readFileSync(testFet
 
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
-    const mockFlush = jest.fn();
+    let flushSpy: any;
 
     const clientConfig: TestClientConfig = {
         type: 'kafka',
@@ -33,9 +33,6 @@ describe('Kafka Sender', () => {
                 logger,
                 settings as unknown as KafkaProducerSettings
             ) as KafkaProducerResult;
-            result.client.flush = mockFlush
-                .mockImplementation(result.client.flush as () => void)
-                .bind(result.client);
             return result;
         }
     };
@@ -89,6 +86,8 @@ describe('Kafka Sender', () => {
 
         kafkaSender = harness.getOperation('kafka_sender');
 
+        flushSpy = jest.spyOn(Object.getPrototypeOf(kafkaSender.api.producer), '_flush');
+
         while (results.length < targetSize) {
             if (runs > targetRuns) {
                 return;
@@ -102,7 +101,7 @@ describe('Kafka Sender', () => {
     });
 
     afterAll(async () => {
-        jest.clearAllMocks();
+        jest.restoreAllMocks();
 
         admin.disconnect();
 
@@ -152,6 +151,6 @@ describe('Kafka Sender', () => {
     it('should call flush once per run and before the buffer is full', () => {
         const bufferSize = 1000000;
         const expected = runs + Math.floor(results.length / bufferSize);
-        expect(mockFlush).toHaveBeenCalledTimes(expected);
+        expect(flushSpy).toHaveBeenCalledTimes(expected);
     });
 });

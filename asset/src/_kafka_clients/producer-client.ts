@@ -164,7 +164,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
 
     /**
      * A promisified version of "flush",
-     * uses `this.flushTimeout` as the as the timeout
+     * uses `this.flushTimeout` as the timeout
     */
     private _flush(): Promise<void> {
         return new Promise<void>((resolve, reject) => {

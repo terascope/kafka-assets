@@ -10,8 +10,6 @@ import Connector from 'terafoundation_kafka_connector';
 import { kafkaBrokers } from '../helpers/config.js';
 
 describe('Kafka Sender Schema', () => {
-    const mockFlush = jest.fn();
-
     let harness: WorkerTestHarness;
     const connectionEndpoint = 'default';
 
@@ -22,11 +20,6 @@ describe('Kafka Sender Schema', () => {
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
             return result;
         },
         endpoint: connectionEndpoint

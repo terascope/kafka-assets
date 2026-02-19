@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import 'jest-extended';
 import { newTestJobConfig, WorkerTestHarness } from 'teraslice-test-harness';
 import { ValidatedJobConfig, TestClientConfig } from '@terascope/job-components';
@@ -8,7 +7,6 @@ import { kafkaBrokers } from '../helpers/config.js';
 
 describe('Kafka Reader API Schema', () => {
     let harness: WorkerTestHarness;
-    const mockFlush = jest.fn();
 
     const clientConfig: TestClientConfig = {
         type: 'kafka',
@@ -17,11 +15,6 @@ describe('Kafka Reader API Schema', () => {
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
             return result;
         }
     };

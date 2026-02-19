@@ -9,7 +9,6 @@ import { kafkaBrokers } from '../helpers/config.js';
 
 describe('Kafka Sender API Schema', () => {
     let harness: WorkerTestHarness;
-    const mockFlush = jest.fn();
 
     const clientConfig: TestClientConfig = {
         type: 'kafka',
@@ -18,11 +17,6 @@ describe('Kafka Sender API Schema', () => {
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
             return result;
         }
     };

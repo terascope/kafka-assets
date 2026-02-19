@@ -15,7 +15,6 @@ type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
 
 describe('KafkaRouteSender', () => {
     jest.setTimeout(15 * 1000);
-    const mockFlush = jest.fn();
 
     const admin = new KafkaAdmin();
     const topicMeta = 'h';
@@ -35,9 +34,6 @@ describe('KafkaRouteSender', () => {
                 logger,
                 settings as unknown as KafkaProducerSettings
             ) as KafkaProducerResult;
-            result.client.flush = mockFlush
-                .mockImplementation(result.client.flush as () => void)
-                .bind(result.client);
             return result;
         },
         endpoint: 'default'
