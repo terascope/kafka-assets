@@ -1,7 +1,12 @@
 import convict from 'convict';
 import { debugLogger, formats } from '@terascope/core-utils';
 import connector from '../src/index.js';
-import { KafkaConsumerSettings, KafkaProducerSettings } from '../src/interfaces.js';
+import {
+    KafkaConnectorConfig,
+    KafkaConsumerSettings,
+    KafkaProducerSettings,
+    KafkaAdminSettings
+} from '../src/interfaces.js';
 import { kafkaBrokers } from './config.js';
 
 const logger = debugLogger('terafoundation-kafka-connector');
@@ -11,7 +16,7 @@ function addFormats(): void {
 }
 
 describe('Kafka Connector', () => {
-    const config = {
+    const config: KafkaConnectorConfig = {
         brokers: kafkaBrokers
     };
 
@@ -146,6 +151,31 @@ describe('Kafka Connector', () => {
                     });
                 });
         }));
+    });
+
+    describe('when using an admin client', () => {
+        it('can create an admin client', async () => {
+            const settings = convict(connector.config_schema()).load({
+                options: {
+                    type: 'admin',
+                },
+                rdkafka_options: {
+                    'client.id': 'test-admin-client'
+                }
+            })
+                .getProperties();
+
+            const conn = await connector.createClient(
+                config,
+                logger,
+                settings as KafkaAdminSettings
+            );
+
+            expect(conn.client).toBeDefined();
+            expect(conn.logger).toBe(logger);
+
+            conn.client.disconnect();
+        });
     });
 
     describe('when using an unsupported client type', () => {

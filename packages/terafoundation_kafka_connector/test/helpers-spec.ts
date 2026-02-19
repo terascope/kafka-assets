@@ -1,12 +1,14 @@
 import {
     getClientOptions,
     getConsumerOptions,
-    getProducerOptions
+    getProducerOptions,
+    getAdminOptions
 } from '../src/helpers.js';
 import {
     KafkaConnectorConfig,
     KafkaConsumerSettings,
-    KafkaProducerSettings
+    KafkaProducerSettings,
+    KafkaAdminSettings
 } from '../src/interfaces.js';
 
 describe('Kafka Helpers', () => {
@@ -549,6 +551,114 @@ describe('Kafka Helpers', () => {
             // This is a consumer specific setting but will still override as the
             // rdkafka_options covers all settings as globals
             expect(consumer.clientOptions['max.poll.interval.ms']).toBe(30000);
+        });
+    });
+
+    describe('getAdminOptions', () => {
+        const baseConfig: KafkaConnectorConfig = {
+            brokers: ['localhost:9092'],
+        };
+
+        it('should return client options with broker list', () => {
+            const settings: KafkaAdminSettings = {
+                options: {
+                    type: 'admin'
+                }
+            };
+
+            const result = getAdminOptions(baseConfig, settings);
+
+            expect(result.clientOptions['metadata.broker.list']).toEqual(['localhost:9092']);
+        });
+
+        it('should pass rdkafka_options to client options', () => {
+            const config: KafkaConnectorConfig = {
+                brokers: ['localhost:9092'],
+                rdkafka_options: {
+                    'client.id': 'connector-client'
+                }
+            };
+
+            const settings: KafkaAdminSettings = {
+                options: {
+                    type: 'admin'
+                },
+                rdkafka_options: {
+                    'client.id': 'settings-client',
+                    'socket.timeout.ms': 30000
+                }
+            };
+
+            const result = getAdminOptions(config, settings);
+
+            // settings.rdkafka_options should override config.rdkafka_options
+            expect(result.clientOptions['client.id']).toBe('settings-client');
+            expect(result.clientOptions['socket.timeout.ms']).toBe(30000);
+        });
+
+        it('should handle option hierarchy for admin', () => {
+            const config: KafkaConnectorConfig = {
+                brokers: ['localhost:9092'],
+                security_protocol: 'plaintext',
+                rdkafka_options: {
+                    'security.protocol': 'ssl',
+                    'client.id': 'config-client'
+                }
+            };
+
+            const settings: KafkaAdminSettings = {
+                options: {
+                    type: 'admin'
+                },
+                rdkafka_options: {
+                    'client.id': 'settings-client'
+                }
+            };
+
+            const result = getAdminOptions(config, settings);
+
+            // Check hierarchy: base < config.rdkafka_options < settings.rdkafka_options
+            expect(result.clientOptions['security.protocol']).toBe('ssl'); // from config.rdkafka_options
+            expect(result.clientOptions['client.id']).toBe('settings-client'); // from settings.rdkafka_options (highest priority)
+        });
+
+        it('should demonstrate complete admin hierarchy with all levels', () => {
+            const config: KafkaConnectorConfig = {
+                brokers: ['localhost:9092'],
+                security_protocol: 'plaintext',
+                ssl_ca_location: '/base/ca.pem',
+                rdkafka_options: {
+                    'security.protocol': 'ssl',
+                    'ssl.ca.location': '/config-rdkafka/ca.pem',
+                    'request.timeout.ms': 30000
+                }
+            };
+
+            const settings: KafkaAdminSettings = {
+                options: {
+                    type: 'admin'
+                },
+                rdkafka_options: {
+                    'ssl.ca.location': '/settings-rdkafka/ca.pem',
+                    'socket.keepalive.enable': true
+                }
+            };
+
+            const result = getAdminOptions(config, settings);
+
+            // Complete hierarchy demonstration:
+            // 1. Base config sets security_protocol='plaintext',
+            //    ssl_ca_location='/base/ca.pem'
+            // 2. config.rdkafka_options overrides to security.protocol='ssl',
+            //    ssl.ca.location='/config-rdkafka/ca.pem', adds request.timeout.ms
+            // 3. settings.rdkafka_options overrides
+            //    ssl.ca.location='/settings-rdkafka/ca.pem',
+            //    adds socket.keepalive.enable (HIGHEST PRIORITY)
+            expect(result.clientOptions['metadata.broker.list']).toEqual(['localhost:9092']); // from base config
+            expect(result.clientOptions['security.protocol']).toBe('ssl'); // from config.rdkafka_options
+            expect(result.clientOptions['ssl.ca.location']).toBe('/settings-rdkafka/ca.pem'); // from settings.rdkafka_options (highest)
+            expect(result.clientOptions['request.timeout.ms']).toBe(30000); // from config.rdkafka_options
+            expect(result.clientOptions['socket.keepalive.enable']).toBe(true); // from settings.rdkafka_options
         });
     });
 });

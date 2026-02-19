@@ -1,4 +1,5 @@
 import {
+    KafkaAdminSettings,
     KafkaConnectorConfig,
     KafkaConsumerSettings,
     KafkaProducerSettings,
@@ -38,6 +39,14 @@ export function getProducerOptions(config: KafkaConnectorConfig, settings: Kafka
         topicOptions,
         clientOptions,
         pollInterval: pollInterval != null ? pollInterval : 100,
+    };
+}
+
+export function getAdminOptions(config: KafkaConnectorConfig, settings: KafkaAdminSettings) {
+    const clientOptions = getClientOptions(config, settings.rdkafka_options);
+
+    return {
+        clientOptions
     };
 }
 
