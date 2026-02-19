@@ -11,12 +11,13 @@ import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer!: ProducerClient;
     collector!: Collector<ProduceMessage>;
+    admin!: IAdminClient;
 
     async initialize(): Promise<void> {
         await super.initialize();
         const logger = this.logger.child({ module: 'kafka-producer' });
 
-        const adminClient = await this.createAdminClient();
+        this.admin = await this.createAdminClient();
         const client = await this.createClient();
 
         this.producer = new ProducerClient(client, {
@@ -24,7 +25,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
             topic: this.apiConfig.topic,
             maxBufferLength: this.apiConfig.max_buffer_size,
             maxBufferKilobyteSize: this.apiConfig.max_buffer_kbytes_size
-        }, adminClient);
+        }, this.admin);
 
         this.collector = new Collector({
             size: this.apiConfig.size,
@@ -39,6 +40,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         await this.producer.produce(batch);
 
         await this.producer.disconnect();
+        this.admin.disconnect();
         await super.shutdown();
     }
 
