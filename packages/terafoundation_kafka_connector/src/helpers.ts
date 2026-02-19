@@ -1,4 +1,5 @@
 import {
+    KafkaAdminSettings,
     KafkaConnectorConfig,
     KafkaConsumerSettings,
     KafkaProducerSettings,
@@ -40,6 +41,15 @@ export function getProducerOptions(config: KafkaConnectorConfig, settings: Kafka
         pollInterval: pollInterval != null ? pollInterval : 100,
     };
 }
+
+export function getAdminOptions(config: KafkaConnectorConfig, settings: KafkaAdminSettings) {
+    const clientOptions = getClientOptions(config, settings.rdkafka_options);
+
+    return {
+        clientOptions
+    };
+}
+
 
 // Default settings for the client. This uses the options we defined
 // before exposing all the settings available to rdkafka

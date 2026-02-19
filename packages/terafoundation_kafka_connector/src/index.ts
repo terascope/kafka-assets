@@ -7,7 +7,9 @@ import {
     KafkaProducerSettings,
     KafkaConsumerResult,
     KafkaProducerResult,
-    ClientType
+    ClientType,
+    KafkaAdminSettings,
+    KafkaAdminResult
 } from './interfaces.js';
 import * as configHelpers from './helpers.js';
 
@@ -39,8 +41,13 @@ class KafkaConnector {
     async createClient(
         config: KafkaConnectorConfig,
         logger: Logger,
-        settings: KafkaConsumerSettings | KafkaProducerSettings
-    ): Promise<KafkaConsumerResult | KafkaProducerResult> {
+        settings: KafkaAdminSettings
+    ): Promise<KafkaAdminResult>;
+    async createClient(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaConsumerSettings | KafkaProducerSettings | KafkaAdminSettings
+    ): Promise<KafkaConsumerResult | KafkaProducerResult | KafkaAdminResult> {
         const clientType = getClientType(settings.options && settings.options.type);
 
         if (isConsumerSettings(settings)) {
@@ -71,6 +78,19 @@ class KafkaConnector {
             client.setPollInterval(pollInterval);
 
             await this._autoconnect(client, logger, settings.autoconnect);
+            return {
+                client,
+                logger
+            };
+        }
+
+        if (isAdminSettings(settings)) {
+            const {
+                clientOptions
+            } = configHelpers.getAdminOptions(config, settings);
+
+            const client = kafka.AdminClient.create(clientOptions);
+
             return {
                 client,
                 logger
@@ -95,8 +115,13 @@ class KafkaConnector {
     create(
         config: KafkaConnectorConfig,
         logger: Logger,
-        settings: KafkaConsumerSettings | KafkaProducerSettings
-    ): KafkaConsumerResult | KafkaProducerResult {
+        settings: KafkaAdminSettings
+    ): KafkaAdminResult;
+    create(
+        config: KafkaConnectorConfig,
+        logger: Logger,
+        settings: KafkaConsumerSettings | KafkaProducerSettings | KafkaAdminSettings
+    ): KafkaConsumerResult | KafkaProducerResult | KafkaAdminResult {
         const clientType = getClientType(settings.options && settings.options.type);
 
         if (isConsumerSettings(settings)) {
@@ -133,7 +158,20 @@ class KafkaConnector {
             };
         }
 
-        throw new Error(`Unsupport client type of ${clientType}`);
+        if (isAdminSettings(settings)) {
+            const {
+                clientOptions
+            } = configHelpers.getAdminOptions(config, settings);
+
+            const client = kafka.AdminClient.create(clientOptions);
+
+            return {
+                client,
+                logger
+            };
+        }
+
+        throw new Error(`Unsupported client type of ${clientType}`);
     }
 
     config_schema() {
@@ -169,6 +207,10 @@ function isConsumerSettings(settings: any): settings is KafkaConsumerSettings {
 
 function isProducerSettings(settings: any): settings is KafkaProducerSettings {
     return getClientType(settings.options.type) === 'producer';
+}
+
+function isAdminSettings(settings: any): settings is KafkaAdminSettings {
+    return getClientType(settings.options.type) === 'admin';
 }
 
 const connector = new KafkaConnector();
