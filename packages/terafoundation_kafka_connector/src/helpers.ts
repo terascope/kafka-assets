@@ -50,7 +50,6 @@ export function getAdminOptions(config: KafkaConnectorConfig, settings: KafkaAdm
     };
 }
 
-
 // Default settings for the client. This uses the options we defined
 // before exposing all the settings available to rdkafka
 export function getClientOptions(config: KafkaConnectorConfig, ...options: any[]): RDKafkaOptions {
