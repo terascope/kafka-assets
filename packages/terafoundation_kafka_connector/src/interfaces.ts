@@ -81,3 +81,4 @@ export interface KafkaAdminResult {
 export interface KafkaAdminResult {
     client: IAdminClient;
     logger: Logger;
+}
