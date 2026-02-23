@@ -14,7 +14,6 @@ type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
 
 describe('KafkaRouteSender', () => {
     jest.setTimeout(15 * 1000);
-    const mockFlush = jest.fn();
 
     const admin = new KafkaAdmin();
     const topicMeta = 'h';
@@ -86,7 +85,6 @@ describe('KafkaRouteSender', () => {
     });
 
     afterAll(async () => {
-        jest.clearAllMocks();
         admin.disconnect();
     });
 

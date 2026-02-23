@@ -11,7 +11,6 @@ import KafkaAdmin from '../helpers/kafka-admin.js';
 describe('kafka_reader_api', () => {
     jest.setTimeout(30 * 1000);
 
-    const mockFlush = jest.fn();
     const connection = 'default';
 
     const topic = fetcherAPITopic;
@@ -29,11 +28,6 @@ describe('kafka_reader_api', () => {
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
             return result;
         },
         endpoint: connection
