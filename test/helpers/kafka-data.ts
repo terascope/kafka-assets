@@ -38,7 +38,11 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
         'metadata.broker.list': castArray(kafkaBrokers).join(','),
     }, {});
 
-    const client = new ProducerClient(producer, {
+    const adminClient = kafka.AdminClient.create({
+        'metadata.broker.list': castArray(kafkaBrokers).join(',')
+    });
+
+    const client = new ProducerClient(producer, adminClient, {
         logger,
         topic,
         maxBufferLength: messages.length,

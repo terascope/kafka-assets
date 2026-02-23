@@ -2,8 +2,8 @@ import {
     ConnectionConfig,
     OperationAPI
 } from '@terascope/job-components';
+import kafka, { IAdminClient } from '@confluentinc/kafka-javascript';
 import { parseError, Collector } from '@terascope/core-utils';
-import kafka from '@confluentinc/kafka-javascript';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
@@ -11,14 +11,16 @@ import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer!: ProducerClient;
     collector!: Collector<ProduceMessage>;
+    admin!: IAdminClient;
 
     async initialize(): Promise<void> {
         await super.initialize();
         const logger = this.logger.child({ module: 'kafka-producer' });
 
+        this.admin = await this.createAdminClient();
         const client = await this.createClient();
 
-        this.producer = new ProducerClient(client, {
+        this.producer = new ProducerClient(client, this.admin, {
             logger,
             topic: this.apiConfig.topic,
             maxBufferLength: this.apiConfig.max_buffer_size,
@@ -38,6 +40,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         await this.producer.produce(batch);
 
         await this.producer.disconnect();
+        this.admin.disconnect();
         await super.shutdown();
     }
 
@@ -97,6 +100,22 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
 
     private async createClient(): Promise<kafka.Producer> {
         const config = this.clientConfig();
+        const connection = await this.context.apis.foundation.createClient(config);
+        return connection.client;
+    }
+
+    private async createAdminClient(): Promise<IAdminClient> {
+        const config = {
+            type: 'kafka',
+            endpoint: this.apiConfig._connection,
+            options: {
+                type: 'admin'
+            },
+            rdkafka_options: {
+                'topic.metadata.refresh.interval.ms': this.apiConfig.metadata_refresh,
+                'log.connection.close': false
+            }
+        };
         const connection = await this.context.apis.foundation.createClient(config);
         return connection.client;
     }
