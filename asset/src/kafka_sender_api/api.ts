@@ -32,7 +32,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
         // Since we don't validate this key with convict
-        // we don't have the benifit of setting a default. So we set it here
+        // we don't have the benefit of setting a default. So we set it here
         if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) {
             config.rdkafka_options = {};
         }
@@ -70,6 +70,23 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         return config as ConnectionConfig;
     }
 
+    private adminClientConfig(clientConfig: KafkaSenderAPIConfig = {}) {
+        const kafkaConfig = Object.assign({}, this.apiConfig, clientConfig);
+        const config = {
+            type: 'kafka',
+            endpoint: kafkaConfig._connection,
+            options: {
+                type: 'admin'
+            },
+            rdkafka_options: {
+                'topic.metadata.refresh.interval.ms': kafkaConfig.metadata_refresh,
+                'log.connection.close': false,
+            } as Record<string, any>,
+            autoconnect: false
+        };
+        return config as ConnectionConfig;
+    }
+
     async create(
         _connection: string, config: Partial<KafkaSenderConfig> = {}
     ): Promise<{ client: KafkaRouteSender; config: KafkaSenderAPIConfig }> {
@@ -85,6 +102,11 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         newConfig.topic = newTopic;
         const validConfig = this.validateConfig(newConfig);
         const clientConfig = this.clientConfig(validConfig);
+        const adminClientConfig = this.adminClientConfig(validConfig);
+
+        const { client: adminClient } = await this.context.apis.foundation.createClient(
+            adminClientConfig
+        );
 
         const { client: kafkaClient } = await this.context.apis.foundation.createClient(
             clientConfig
@@ -125,7 +147,8 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         const client = new KafkaRouteSender(
             kafkaClient,
             validConfig,
-            this.context
+            this.context,
+            adminClient
         );
 
         await client.initialize();

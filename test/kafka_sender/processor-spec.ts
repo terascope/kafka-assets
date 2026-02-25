@@ -4,13 +4,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TestClientConfig } from '@terascope/job-components';
-import { Logger, DataEntity, parseJSON } from '@terascope/core-utils';
+import { DataEntity, parseJSON } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import KafkaSender from '../../asset/src/kafka_sender/processor.js';
 import { readData } from '../helpers/kafka-data.js';
 import { kafkaBrokers, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
+import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'packages/terafoundation_kafka_connector/src/interfaces.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -19,20 +20,19 @@ const testFetcherData: Record<string, any>[] = parseJSON(fs.readFileSync(testFet
 
 describe('Kafka Sender', () => {
     jest.setTimeout(15 * 1000);
-    const mockFlush = jest.fn();
+    let flushSpy: any;
 
     const clientConfig: TestClientConfig = {
         type: 'kafka',
         config: {
             brokers: kafkaBrokers,
         },
-        async createClient(config: any, logger: Logger, settings: any) {
-            const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
+        async createClient(config, logger, settings) {
+            const result = await Connector.createClient(
+                config as KafkaConnectorConfig,
+                logger,
+                settings as unknown as KafkaProducerSettings
+            ) as KafkaProducerResult;
             return result;
         }
     };
@@ -86,6 +86,8 @@ describe('Kafka Sender', () => {
 
         kafkaSender = harness.getOperation('kafka_sender');
 
+        flushSpy = jest.spyOn(Object.getPrototypeOf(kafkaSender.api.producer), '_flush');
+
         while (results.length < targetSize) {
             if (runs > targetRuns) {
                 return;
@@ -99,7 +101,7 @@ describe('Kafka Sender', () => {
     });
 
     afterAll(async () => {
-        jest.clearAllMocks();
+        jest.restoreAllMocks();
 
         admin.disconnect();
 
@@ -149,6 +151,6 @@ describe('Kafka Sender', () => {
     it('should call flush once per run and before the buffer is full', () => {
         const bufferSize = 1000000;
         const expected = runs + Math.floor(results.length / bufferSize);
-        expect(mockFlush).toHaveBeenCalledTimes(expected);
+        expect(flushSpy).toHaveBeenCalledTimes(expected);
     });
 });

@@ -8,7 +8,6 @@ import { kafkaBrokers, senderTopic } from '../helpers/config.js';
 
 describe('kafka_sender_api', () => {
     jest.setTimeout(15 * 1000);
-    const mockFlush = jest.fn();
     const connection = 'default';
     const topicMeta = 'a';
 
@@ -23,11 +22,6 @@ describe('kafka_sender_api', () => {
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);
-            // @ts-expect-error
-            result.client.flush = mockFlush
-                // @ts-expect-error
-                .mockImplementation(result.client.flush)
-                .bind(result.client);
             return result;
         },
         endpoint: connection
