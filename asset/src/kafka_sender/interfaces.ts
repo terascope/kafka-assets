@@ -1,4 +1,5 @@
 import { OpConfig } from '@terascope/types';
+import { DeliveryReportConfig } from '../_kafka_clients/interfaces.js';
 
 export interface KafkaSenderConfig extends OpConfig {
     /**
@@ -52,4 +53,10 @@ export interface KafkaSenderConfig extends OpConfig {
      * and the name is kafka_sender_api, and is injected into the execution
     */
     _api_name: string;
+    /**
+     * Configure actions to take when receiving delivery reports for each message.
+     * Either the `dr_cb` or `dr_msg_cb` option must be set to true within `rdkafka_options`
+     * to receive delivery reports.
+     */
+    delivery_report?: DeliveryReportConfig;
 }

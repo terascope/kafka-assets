@@ -1,4 +1,5 @@
 import { APIConfig } from '@terascope/job-components';
+import { DeliveryReportConfig } from '../_kafka_clients/interfaces.js';
 
 export interface KafkaDeadLetterConfig extends APIConfig {
     /**
@@ -34,4 +35,10 @@ export interface KafkaDeadLetterConfig extends APIConfig {
      Set to -1 to disable polling.
     */
     metadata_refresh: number;
+    /**
+     * Configure actions to take when receiving delivery reports for each message.
+     * Either the `dr_cb` or `dr_msg_cb` option must be set to true within `rdkafka_options`
+     * to receive delivery reports.
+     */
+    delivery_report?: DeliveryReportConfig;
 }

@@ -1,5 +1,10 @@
-import kafka, { IAdminClient, TopicDescription } from '@confluentinc/kafka-javascript';
-import { ProduceMessage, ProducerClientConfig } from './interfaces.js';
+import {
+    IAdminClient, LibrdKafkaError, Producer, TopicDescription
+} from '@confluentinc/kafka-javascript';
+import {
+    DeliveryReportConfig, DeliveryReportOpaque, DeliveryReportBatchStats,
+    DeliveryReportStats, ProduceMessage, ProducerClientConfig
+} from './interfaces.js';
 import { wrapError, AnyKafkaError } from '../_kafka_helpers/index.js';
 import BaseClient from './base-client.js';
 
@@ -8,7 +13,7 @@ import BaseClient from './base-client.js';
  * This client has improved error handling, with retry support,
  * and wraps the API calls with Promises.
 */
-export default class ProducerClient extends BaseClient<kafka.Producer> {
+export default class ProducerClient extends BaseClient<Producer> {
     // one minute
     flushTimeout = 60000;
 
@@ -17,12 +22,15 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     private _hasClientEvents = false;
     private _bytesProduced = 0;
     private adminClient: IAdminClient;
+    private deliveryReportConfig: DeliveryReportConfig | undefined;
+    deliveryReportStats: DeliveryReportStats = {};
 
-    constructor(client: kafka.Producer, adminClient: IAdminClient, config: ProducerClientConfig) {
+    constructor(client: Producer, adminClient: IAdminClient, config: ProducerClientConfig) {
         super(client, config.topic, config.logger);
         this._maxBufferMsgLength = config.maxBufferLength;
         this._maxBufferKilobyteSize = config.maxBufferKilobyteSize;
         this.adminClient = adminClient;
+        this.deliveryReportConfig = config.deliveryReportConfig;
     }
 
     /**
@@ -34,8 +42,8 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     }
 
     /**
-     * Query for metadata on a topic. Used for dynamic topic creation
-     * @param topic - topic to query metadata for
+     * Query for metadata on a topic. If the topic does not exist it will be created.
+     * @param topic - topic to query metadata for.
     */
     async getMetadata(topic: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -74,23 +82,35 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
      * Produce messages and flush after the queue is full
      *
      * @param messages - an array of data or an array of pre-built kafka messages
+     * @param batchNumber - a number representing the number of batches (slices for
+     *                      teraslice jobs) since the client was created.
      * @param [map] - a function to format a message for kafka
-     *             (used to avoid having to make over the data multiple times)
+     *                (used to avoid having to make over the data multiple times)
     */
-    async produce(messages: ProduceMessage[]): Promise<void>;
-    async produce<T>(messages: T[], map: (msg: T) => ProduceMessage): Promise<void>;
-    async produce(messages: any[], map?: (msg: any) => ProduceMessage): Promise<void> {
-        let error: kafka.LibrdKafkaError | null = null;
+    async produce(messages: ProduceMessage[], batchNumber: number): Promise<void>;
+    async produce<T>(
+        messages: T[],
+        batchNumber: number,
+        map: (msg: T) => ProduceMessage,
+    ): Promise<void>;
+    async produce(
+        messages: any[],
+        batchNumber: number,
+        map?: (msg: any) => ProduceMessage,
+    ): Promise<void> {
+        let clientError: LibrdKafkaError | null = null;
+        let waitForAllReceived: Promise<null | Error> | undefined;
+        let allReceivedOff = () => {};
 
-        const off = this._once('client:error', (err) => {
+        const clientErrorOff = this._once('client:error', (err) => {
             if (!err) return;
             /* istanbul ignore next */
-            error = wrapError('Client error while producing', err);
+            clientError = wrapError('Client error while producing', err);
         });
 
         const total = messages.length;
-        const endOfSliceIndex = (total - 1);
-        const endofBufferIndex = (this._maxBufferMsgLength - 1);
+        const endOfBatchIndex = (total - 1);
+        const endOfBufferIndex = (this._maxBufferMsgLength - 1);
         // This is a counter that will track the bytes written in the current batch
         let currentBatchSizeInBytes = 0;
         const maxQueueByteSize = this._maxBufferKilobyteSize * 1024;
@@ -101,6 +121,31 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
         }
 
         try {
+            if (this.deliveryReportConfig) {
+                this.deliveryReportStats[batchNumber] = {
+                    received: 0,
+                    errors: 0,
+                    expected: total
+                };
+            }
+
+            if (this.deliveryReportConfig?.wait) {
+                waitForAllReceived = new Promise((resolve, reject) => {
+                    // fixme: this should have a timeout
+                    allReceivedOff = this._once(`delivery-report:batch:${batchNumber}`, (err, args) => {
+                        const [report, stats] = args;
+                        if (err) {
+                            const { msgNumber } = report.opaque;
+                            reject(new Error(`Delivery report error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
+                        } else {
+                            this._logger.debug(
+                                `All ${report?.opaque?.msgNumber} delivery reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
+                            );
+                            resolve(null);
+                        }
+                    });
+                });
+            }
             // Send the messages, after each buffer size is complete
             // flush the messages
             for (let i = 0; i < total; i++) {
@@ -117,7 +162,7 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                         + `Current batch size = ${currentBatchSizeInBytes / 1024} KB. Initiating queue flush to prevent overflow...`
                     );
 
-                    await this._try(() => this._flush(), 'produce', 0);
+                    await Promise.race([this._try(() => this._flush(), 'produce', 0), waitForAllReceived]);
                     currentBatchSizeInBytes = messageByteSize;
                 }
 
@@ -128,15 +173,16 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                     null,
                     message.data,
                     message.key,
-                    message.timestamp
+                    message.timestamp,
+                    message.opaque
                 );
 
-                // flush the messages at the end of each slice
-                if (i === endOfSliceIndex) {
+                // flush the messages at the end of each batch
+                if (i === endOfBatchIndex) {
                     this._logger.debug(
-                        `End of message slice reached: Flushing the queue after processing ${total} messages. `
+                        `End of message batch reached: Flushing the queue after processing ${total} messages. `
                     );
-                    await this._try(() => this._flush(), 'produce', 0);
+                    await Promise.race([this._try(() => this._flush(), 'produce', 0), waitForAllReceived]);
                     currentBatchSizeInBytes = 0; // Reset the batch size counter
                 /*
                 *    Flush the queue as the message buffer is reaching its size limit,
@@ -144,20 +190,29 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
                 */
                 } else if (
                     this._maxBufferMsgLength > 0
-                    && i % this._maxBufferMsgLength === endofBufferIndex
+                    && i % this._maxBufferMsgLength === endOfBufferIndex
                 ) {
                     this._logger.debug(
                         `Kafka producer max_buffer_size of ${this._maxBufferMsgLength} has been met, flushing queue to start new batch...`
                     );
-                    await this._try(() => this._flush(), 'produce', 0);
+                    await Promise.race([this._try(() => this._flush(), 'produce', 0), waitForAllReceived]);
                     currentBatchSizeInBytes = 0;
                 }
             }
+
+            if (this.deliveryReportConfig?.wait) {
+                const deliveryReportError = await waitForAllReceived;
+                if (deliveryReportError instanceof Error) {
+                    throw deliveryReportError;
+                }
+            }
         } finally {
-            off();
+            allReceivedOff();
+            clientErrorOff();
+
             /* istanbul ignore next */
-            if (error) {
-                this._logger.error(error);
+            if (clientError) {
+                this._logger.error(clientError);
             }
         }
     }
@@ -169,9 +224,13 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
     private _flush(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this._client.flush(this.flushTimeout, (err: AnyKafkaError) => {
+                // an error here means the flush failed. Individual messages can
+                // fail to be delivered and the flush still succeeds
                 /* istanbul ignore if */
                 if (err) reject(wrapError('Failed to flush messages', err));
-                else resolve();
+                else {
+                    resolve();
+                }
             });
         });
     }
@@ -185,11 +244,43 @@ export default class ProducerClient extends BaseClient<kafka.Producer> {
         if (this._hasClientEvents) return;
         this._hasClientEvents = true;
 
-        // for client event error logs.
+        // for client error logs.
         this._client.on('error' as any, this._logOrEmit('client:error'));
 
-        // for event error logs.
+        // for client event error logs.
         this._client.on('event.error', this._logOrEmit('client:error'));
+
+        // message delivery statistics
+        this._client.on('delivery-report', (err, report) => {
+            if (this.deliveryReportConfig) {
+                const { batchNumber, msgNumber } = report.opaque as DeliveryReportOpaque;
+                const currBatchStats: DeliveryReportBatchStats | undefined
+                    = this.deliveryReportStats[batchNumber];
+
+                if (currBatchStats) {
+                    currBatchStats.received++;
+                    if (err) {
+                        currBatchStats.errors++;
+                        if (this.deliveryReportConfig.on_error !== 'ignore') {
+                            this.deliveryReportConfig.on_error === 'throw'
+                                ? this._events.emit(`delivery-report:batch:${batchNumber}`, err, report, currBatchStats)
+                                : this._logger.error(err, `failed delivery for message ${msgNumber} of batch ${batchNumber}. Report: ${report}`);
+                        }
+                    }
+
+                    if (currBatchStats.received === currBatchStats.expected) {
+                        this.deliveryReportConfig.wait
+                            ? this._events.emit(`delivery-report:batch:${batchNumber}`, report, currBatchStats)
+                            : this._logger.debug(`All ${currBatchStats.received} delivery reports received for batch ${batchNumber}: ${currBatchStats}`);
+                        delete this.deliveryReportStats[batchNumber];
+                    }
+                } else {
+                    // there should only ever be one callback per this._client.produce()
+                    // call, so this should never happen
+                    this._logger.warn(`Received delivery report for message, but stats do not exist for batch ${batchNumber}.`);
+                }
+            }
+        });
     }
 
     /**

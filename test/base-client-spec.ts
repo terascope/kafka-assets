@@ -123,7 +123,7 @@ describe('Base Client (internal)', () => {
             off();
 
             expect(listener).toHaveBeenCalledTimes(1);
-            expect(listener).toHaveBeenCalledWith(null);
+            expect(listener).toHaveBeenCalledWith(null, []);
             expect(events.listenerCount('test:once:off')).toBe(0);
 
             // @ts-expect-error because it is private
@@ -143,7 +143,7 @@ describe('Base Client (internal)', () => {
             await client.disconnect();
 
             expect(listener).toHaveBeenCalledTimes(1);
-            expect(listener).toHaveBeenCalledWith(null);
+            expect(listener).toHaveBeenCalledWith(null, []);
             expect(events.listenerCount('test:once:close')).toBe(0);
 
             // @ts-expect-error because it is private
@@ -163,7 +163,7 @@ describe('Base Client (internal)', () => {
             events.emit('test:once:event');
 
             expect(listener).toHaveBeenCalledTimes(1);
-            expect(listener).toHaveBeenCalledWith(null);
+            expect(listener).toHaveBeenCalledWith(null, []);
             expect(events.listenerCount('test:once:event')).toBe(0);
 
             // @ts-expect-error because it is private
@@ -184,7 +184,7 @@ describe('Base Client (internal)', () => {
             events.emit('test:once:event-error', err);
 
             expect(listener).toHaveBeenCalledTimes(1);
-            expect(listener).toHaveBeenCalledWith(err);
+            expect(listener).toHaveBeenCalledWith(err, []);
             expect(events.listenerCount('test:once:event-error')).toBe(0);
 
             // @ts-expect-error because it is private

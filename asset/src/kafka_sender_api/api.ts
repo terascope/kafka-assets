@@ -11,6 +11,7 @@ import { APIFactory, ConnectionConfig } from '@terascope/job-components';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from './sender.js';
 import { KafkaSenderAPIConfig } from './interfaces.js';
+import { ProducerTopicConfig, ProducerGlobalConfig } from '@confluentinc/kafka-javascript';
 
 // Defaults are based off of librdkafka defaults.
 // https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md
@@ -31,12 +32,41 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
-        // Since we don't validate this key with convict
-        // we don't have the benefit of setting a default. So we set it here
-        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) {
-            config.rdkafka_options = {};
+        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) throw new Error(`Parameter rdkafka_options must be provided and be of type Object, got ${getTypeOf(config.rdkafka_options)}`);
+        if (config.delivery_report) {
+            if (isNil(config.delivery_report.wait) || !isBoolean(config.delivery_report.wait)) throw new Error(`Parameter delivery_report.wait must be provided and be of type boolean, got ${getTypeOf(config.delivery_report.wait)}`);
+            if (isNil(config.delivery_report.error_only) || !isBoolean(config.delivery_report.error_only)) throw new Error(`Parameter delivery_report.error_only must be provided and be of type boolean, got ${getTypeOf(config.delivery_report.error_only)}`);
+            if (isNil(config.delivery_report.on_error) || !['log', 'throw', 'ignore'].includes(config.delivery_report.on_error)) throw new Error(`Parameter delivery_report.on_error must be provided and be one of ['log', 'throw', 'ignore'], got ${getTypeOf(config.delivery_report.on_error)}`);
         }
 
+        // cross-field validation
+        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = config.rdkafka_options;
+        const report = config.delivery_report;
+        if (rd_opts.dr_cb === true && config.required_acks !== 0) {
+            this.logger.warn('KafkaSenderApi config has dr_cb enabled, but required_acks set to 0.'
+                + 'Delivery reports will only guarantee the message was sent.');
+        }
+        if (rd_opts.dr_msg_cb === true && config.required_acks !== 0) {
+            this.logger.warn('KafkaSenderApi config has dr_msg_cb enabled, but required_acks set to 0.'
+                + 'Delivery reports will only guarantee the message was sent.');
+        }
+
+        if (report) {
+            if (rd_opts.dr_cb === false && rd_opts.dr_msg_cb === false) {
+                throw new Error('Parameter delivery_report is set but neither the `dr_cb` or `dr_msg_cb`'
+                    + ' option are set to true within `rdkafka_options');
+            }
+            if (report.wait === false && report.on_error === 'throw') {
+                throw new Error('If parameter delivery_report.on_error is `throw` then delivery_report.wait must be `true`');
+            }
+            if (report.wait === true && report.error_only === true) {
+                throw new Error('If parameter delivery_report.error_only is `true` then delivery_report.wait must be `false`');
+            }
+            if (rd_opts['delivery.report.only.error'] != null && report.error_only != null) {
+                throw new Error('If parameter delivery_report.error_only is set then `delivery.report.only.error`'
+                    + ' can not be set on rdkafka_options');
+            }
+        }
         return config;
     }
 

@@ -82,7 +82,7 @@ export const schema = {
         format: 'duration'
     },
     required_acks: {
-        doc: 'The number of required broker acknowledgements for a given request, set to -1 for all.',
+        doc: 'The number of required broker acknowledgements for a given request, set to 1 for leader only, -1 for all, 0 for none.',
         default: 1,
         format: 'int'
     },
@@ -94,25 +94,31 @@ export const schema = {
                 throw new Error('Invalid parameter rdkafka_options, it must be an object');
             }
         }
+    },
+    delivery_report: {
+        doc: 'Configure actions to take when receiving delivery reports for each message.'
+            + ' Either the `dr_cb` or `dr_msg_cb` option must be set to true within `rdkafka_options`'
+            + ' to receive delivery reports.',
+        default: undefined,
+        format: (val: any) => {
+            if (!val) return;
+            if (!isPlainObject(val)) {
+                throw new Error('Invalid parameter delivery_report, it must be an object if defined');
+            }
+            if (typeof val.wait !== 'boolean') {
+                throw new Error('Invalid parameter delivery_report.wait, it must be a boolean');
+            }
+            if (typeof val.error_only !== 'boolean') {
+                throw new Error('Invalid parameter delivery_report.error_only, it must be a boolean');
+            }
+            if (typeof val.on_error !== 'string' || !['log', 'throw', 'ignore'].includes(val.on_error)) {
+                throw new Error('Invalid parameter delivery_report.on_error, it must be one of [\'log\', \'throw\', \'ignore\']');
+            }
+        }
     }
 };
 
 export default class Schema extends BaseSchema<Record<string, any>> {
-    // This validation function is a workaround for the limitations of convict when
-    // parsing configs that have periods `.` within its key values.
-    // https://github.com/mozilla/node-convict/issues/250
-    // This will pull `rdkafka_options` out before convict validation
-    // https://github.com/terascope/kafka-assets/pull/1071
-    validate(config: Record<string, any>): any {
-        const { rdkafka_options, ...parsedConfig } = config;
-        const results = super.validate(parsedConfig);
-
-        return {
-            ...results,
-            rdkafka_options
-        };
-    }
-
     build(): Record<string, any> {
         return schema;
     }

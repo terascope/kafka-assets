@@ -36,6 +36,7 @@ export interface ProduceMessage {
     data: Buffer;
     key: Buffer | string | null;
     timestamp: number | null;
+    opaque: DeliveryReportOpaque | null;
 }
 
 export interface ProducerClientConfig {
@@ -43,6 +44,7 @@ export interface ProducerClientConfig {
     logger: Logger;
     maxBufferLength: number;
     maxBufferKilobyteSize: number;
+    deliveryReportConfig?: DeliveryReportConfig;
 }
 
 export interface FatalError extends Error {
@@ -56,3 +58,36 @@ export type ConsumeFn = (
 export type ProduceFn = (
     fn: (msg: KafkaMessage) => DataEntity
 ) => (msg: KafkaMessage) => void;
+
+export interface DeliveryReportOpaque {
+    batchNumber: number;
+    msgNumber: number;
+}
+
+export interface DeliveryReportStats {
+    [batchNumber: number]: DeliveryReportBatchStats;
+}
+
+export interface DeliveryReportBatchStats {
+    received: number;
+    errors: number;
+    expected: number;
+}
+
+export type DeliveryReportConfig = {
+    /**
+     * Wait for all delivery reports before continuing to next batch of messages
+     */
+    wait: boolean;
+    /**
+     * Only receive delivery reports for failed messages. `wait` must be false.
+     * This setting overrides the `delivery.report.only.error` field in `rdkafka_options`.
+     */
+    error_only: boolean;
+
+    /**
+     * Action to take when a delivery report indicates an error with a message.
+     * If the `throw` option is chosen `wait` must be true.
+     */
+    on_error: 'log' | 'throw' | 'ignore';
+} | undefined;

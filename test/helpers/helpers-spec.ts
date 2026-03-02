@@ -30,7 +30,7 @@ describe('wrapError helper', () => {
             const wrappedError = wrapError('Failure', err);
 
             const error = wrapError('Double Failure', wrappedError);
-            expect(error.message).toEqual('Double Failure, caused by error: Uh oh, code: -174, desc: "Revoked partitions (rebalance_cb)"');
+            expect(error.message).toEqual('Double Failure, caused by error: Failure, caused by error: Uh oh, code: -174, desc: "Revoked partitions (rebalance_cb)"');
         });
     });
 

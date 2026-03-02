@@ -35,8 +35,7 @@ function getErrorCause(err: any): string {
     if (isString(err)) return `${causedBy}${err}`;
 
     if (err._wrapped) {
-        const parts = err.message.split(causedBy);
-        return parts.length > 1 ? `${causedBy}${parts[1]}` : err.message;
+        return `${causedBy}${err.message}`;
     }
 
     let message = causedBy;

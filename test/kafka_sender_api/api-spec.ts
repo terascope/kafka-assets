@@ -143,21 +143,12 @@ describe('kafka_sender_api', () => {
         await expect(test.create(connection, {})).rejects.toThrow('Invalid value for configuration property "queue.buffering.max.kbytes"');
     });
 
-    it('should default to empty object when setting rdkafka_options to non object', async () => {
+    it('should throw when setting rdkafka_options to non object', async () => {
         const config = {
             _name: API_NAME,
             topic: 'hello2',
             rdkafka_options: 'false'
         };
-        const test = await makeTest(config);
-        const sender = await test.create(connection, {});
-
-        expect(sender.config.rdkafka_options).toEqual({});
-
-        expect(sender.send).toBeDefined();
-        expect(sender.verify).toBeDefined();
-
-        const fetchedSender = test.get(connection);
-        expect(fetchedSender).toBeDefined();
+        await expect(makeTest(config)).rejects.toThrow('Invalid parameter rdkafka_options, it must be an object');
     });
 });

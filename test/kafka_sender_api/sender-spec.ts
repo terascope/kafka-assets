@@ -1,12 +1,14 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
+import { SpiedFunction } from 'jest-mock';
+import { execSync } from 'node:child_process';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, APIFactoryRegistry } from '@terascope/job-components';
-import { DataEntity } from '@terascope/core-utils';
+import { DataEntity, pDelay } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces.js';
 import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender.js';
-import { kafkaBrokers, senderTopic } from '../helpers/config.js';
+import { kafkaBrokers, kafkaPort, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 import { readData } from '../helpers/kafka-data.js';
 import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'terafoundation_kafka_connector/src/interfaces.js';
@@ -47,7 +49,7 @@ describe('KafkaRouteSender', () => {
         topic,
     };
 
-    async function makeTest(apiConfig: Record<string, any> = {}) {
+    async function makeTest(apiConfig: Partial<KafkaSenderAPIConfig> = {}) {
         const apiSender = Object.assign({}, defaultConfigs, apiConfig);
         const job = newTestJobConfig({
             apis: [apiSender],
@@ -476,6 +478,344 @@ describe('KafkaRouteSender', () => {
                 const end = now + 1000;
                 expect(time).toBeWithin(start, end);
             });
+        });
+    });
+
+    describe('delivery-reports', () => {
+        let loggerDebugSpy: SpiedFunction;
+        let loggerErrorSpy: SpiedFunction;
+        afterEach(() => {
+            if (loggerDebugSpy) {
+                loggerDebugSpy.mockRestore();
+            }
+            if (loggerErrorSpy) {
+                loggerErrorSpy.mockRestore();
+            }
+        });
+
+        it('can throw on delivery report errors', async () => {
+            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
+
+            const sender = await makeTest(
+                {
+                    topic,
+                    delivery_report: {
+                        wait: true,
+                        error_only: false,
+                        on_error: 'throw'
+                    },
+                    rdkafka_options: {
+                        dr_cb: true,
+                        'message.timeout.ms': 2000,
+                        'request.timeout.ms': 5000,
+                        'socket.timeout.ms': 5000,
+                        retries: 0,
+                        'retry.backoff.ms': 100,
+                        'linger.ms': 0,
+                        'batch.num.messages': 1
+                    }
+                }
+            );
+
+            const obj1 = { hello: 'world' };
+
+            const data = [];
+            for (let i = 0; i < 2; i++) {
+                data.push(DataEntity.make(obj1, { 'standard:route': topicMeta }));
+            }
+
+            const promise = sender.send(data);
+
+            try {
+                await promise;
+                throw new Error('Promise should not have resolved');
+            } catch (err) {
+                expect(err).toHaveProperty(
+                    'message',
+                    'Delivery report error received for batchNumber 1, msgNumber 2, err Error: Local: Message timed out'
+                );
+            } finally {
+                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                    + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
+            }
+        });
+
+        it('can ignore delivery-report errors', async () => {
+            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
+            const sender = await makeTest(
+                {
+                    topic,
+                    delivery_report: {
+                        wait: true,
+                        error_only: false,
+                        on_error: 'ignore'
+                    },
+                    rdkafka_options: {
+                        dr_cb: true,
+                        'message.timeout.ms': 2000,
+                        'request.timeout.ms': 5000,
+                        'socket.timeout.ms': 5000,
+                        retries: 0,
+                        'retry.backoff.ms': 100,
+                        'linger.ms': 0,
+                        'batch.num.messages': 1
+                    }
+                }
+            );
+
+            const obj1 = { hello: 'world' };
+
+            const data = [];
+            for (let i = 0; i < 2; i++) {
+                data.push(DataEntity.make(obj1, { 'standard:route': topicMeta }));
+            }
+
+            loggerDebugSpy = jest.spyOn(sender.logger, 'debug');
+            loggerErrorSpy = jest.spyOn(sender.logger, 'error');
+            await sender.send(data);
+
+            expect(loggerErrorSpy).not.toHaveBeenCalled();
+            expect(loggerDebugSpy).toHaveBeenLastCalledWith(
+                'All 2 delivery reports received for batchNumber 1. Stats: {"received":2,"errors":1,"expected":2}'
+            );
+
+            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
+        });
+
+        it('eventually logs all reports received if `wait` is false', async () => {
+            const sender = await makeTest({
+                delivery_report: {
+                    wait: false,
+                    error_only: false,
+                    on_error: 'log'
+                },
+                rdkafka_options: {
+                    dr_cb: true
+                }
+            });
+            const obj1 = { hello: 'world' };
+            const obj2 = { foo: 'bar' };
+
+            const data = [
+                DataEntity.make(obj1, { 'standard:route': topicMeta }),
+                DataEntity.make(obj2, { 'standard:route': topicMeta })
+            ];
+
+            loggerDebugSpy = jest.spyOn(sender.logger, 'debug');
+
+            await sender.send(data);
+            await sender.send(data);
+
+            await pDelay(500);
+
+            expect(loggerDebugSpy).toHaveBeenCalledWith(
+                expect.stringContaining('All 2 delivery reports received for batch 1')
+            );
+            expect(loggerDebugSpy).toHaveBeenCalledWith(
+                expect.stringContaining('All 2 delivery reports received for batch 2')
+            );
+            expect(sender.producer.deliveryReportStats).toEqual({});
+        });
+
+        it('will not wait for reports if `wait` is false', async () => {
+            const sender = await makeTest({
+                delivery_report: {
+                    wait: false,
+                    error_only: false,
+                    on_error: 'log'
+                },
+                rdkafka_options: {
+                    dr_cb: true
+                }
+            });
+            const obj1 = { hello: 'world' };
+            const obj2 = { foo: 'bar' };
+
+            const data = [
+                DataEntity.make(obj1, { 'standard:route': topicMeta }),
+                DataEntity.make(obj2, { 'standard:route': topicMeta })
+            ];
+
+            loggerDebugSpy = jest.spyOn(sender.logger, 'debug');
+
+            await sender.send(data);
+            expect(loggerDebugSpy).not.toHaveBeenCalledWith(
+                expect.stringContaining('All 2 delivery reports received for batch 1')
+            );
+
+            await sender.send(data);
+            expect(loggerDebugSpy).not.toHaveBeenCalledWith(
+                expect.stringContaining('All 2 delivery reports received for batch 2')
+            );
+        });
+
+        it('wait for and log all reports if wait is `true`', async () => {
+            const sender = await makeTest({
+                delivery_report: {
+                    wait: true,
+                    error_only: false,
+                    on_error: 'log'
+                },
+                rdkafka_options: {
+                    dr_cb: true
+                }
+            });
+            const obj1 = { hello: 'world' };
+            const obj2 = { foo: 'bar' };
+
+            const data = [
+                DataEntity.make(obj1, { 'standard:route': topicMeta }),
+                DataEntity.make(obj2, { 'standard:route': topicMeta })
+            ];
+
+            loggerDebugSpy = jest.spyOn(sender.logger, 'debug');
+
+            await sender.send(data);
+
+            expect(loggerDebugSpy).toHaveBeenCalledWith(
+                expect.stringContaining('All 2 delivery reports received for batchNumber 1')
+            );
+
+            await sender.send(data);
+            expect(loggerDebugSpy).toHaveBeenCalledWith(
+                expect.stringContaining('All 2 delivery reports received for batchNumber 2')
+            );
+            expect(sender.producer.deliveryReportStats).toEqual({});
+        });
+
+        it('logs errors and completes when wait is true and on_error is log', async () => {
+            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
+
+            const sender = await makeTest(
+                {
+                    topic,
+                    delivery_report: {
+                        wait: true,
+                        error_only: false,
+                        on_error: 'log'
+                    },
+                    rdkafka_options: {
+                        dr_cb: true,
+                        'message.timeout.ms': 2000,
+                        'request.timeout.ms': 5000,
+                        'socket.timeout.ms': 5000,
+                        retries: 0,
+                        'retry.backoff.ms': 100,
+                        'linger.ms': 0,
+                        'batch.num.messages': 1
+                    }
+                }
+            );
+
+            const data = [];
+            for (let i = 0; i < 2; i++) {
+                data.push(DataEntity.make({ hello: 'world' }, { 'standard:route': topicMeta }));
+            }
+
+            loggerErrorSpy = jest.spyOn(sender.logger, 'error');
+            loggerDebugSpy = jest.spyOn(sender.logger, 'debug');
+
+            try {
+                await sender.send(data);
+
+                expect(loggerErrorSpy).toHaveBeenCalled();
+                expect(loggerDebugSpy).toHaveBeenCalledWith(
+                    expect.stringContaining('All 2 delivery reports received for batchNumber 1')
+                );
+            } finally {
+                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                    + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
+            }
+        });
+
+        it('logs errors from delivery reports when wait is false and on_error is log', async () => {
+            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
+
+            const sender = await makeTest(
+                {
+                    topic,
+                    delivery_report: {
+                        wait: false,
+                        error_only: false,
+                        on_error: 'log'
+                    },
+                    rdkafka_options: {
+                        dr_cb: true,
+                        'message.timeout.ms': 2000,
+                        'request.timeout.ms': 5000,
+                        'socket.timeout.ms': 5000,
+                        retries: 0,
+                        'retry.backoff.ms': 100,
+                        'linger.ms': 0,
+                        'batch.num.messages': 1
+                    }
+                }
+            );
+
+            const data = [];
+            for (let i = 0; i < 2; i++) {
+                data.push(DataEntity.make({ hello: 'world' }, { 'standard:route': topicMeta }));
+            }
+
+            loggerErrorSpy = jest.spyOn(sender.logger, 'error');
+
+            try {
+                await sender.send(data);
+                await pDelay(6000);
+
+                expect(loggerErrorSpy).toHaveBeenCalled();
+            } finally {
+                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                    + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
+            }
+        });
+
+        it('ignores errors from delivery reports when wait is false and on_error is ignore', async () => {
+            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
+
+            const sender = await makeTest(
+                {
+                    topic,
+                    delivery_report: {
+                        wait: false,
+                        error_only: false,
+                        on_error: 'ignore'
+                    },
+                    rdkafka_options: {
+                        dr_cb: true,
+                        'message.timeout.ms': 2000,
+                        'request.timeout.ms': 5000,
+                        'socket.timeout.ms': 5000,
+                        retries: 0,
+                        'retry.backoff.ms': 100,
+                        'linger.ms': 0,
+                        'batch.num.messages': 1
+                    }
+                }
+            );
+
+            const data = [];
+            for (let i = 0; i < 2; i++) {
+                data.push(DataEntity.make({ hello: 'world' }, { 'standard:route': topicMeta }));
+            }
+
+            loggerErrorSpy = jest.spyOn(sender.logger, 'error');
+
+            try {
+                await sender.send(data);
+                await pDelay(6000);
+
+                expect(loggerErrorSpy).not.toHaveBeenCalled();
+            } finally {
+                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                    + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
+            }
         });
     });
 });
