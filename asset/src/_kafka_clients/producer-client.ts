@@ -99,7 +99,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         map?: (msg: any) => ProduceMessage,
     ): Promise<void> {
         let clientError: LibrdKafkaError | null = null;
-        let waitForAllReceived: Promise<null | Error> | undefined;
+        let waitForAllReceived: Promise<void> | undefined;
         let allReceivedOff = () => {};
 
         const clientErrorOff = this._once('client:error', (err) => {
@@ -141,7 +141,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                             this._logger.debug(
                                 `All ${report?.opaque?.msgNumber} delivery reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
                             );
-                            resolve(null);
+                            resolve();
                         }
                     });
                 });
@@ -201,10 +201,7 @@ export default class ProducerClient extends BaseClient<Producer> {
             }
 
             if (this.deliveryReportConfig?.wait) {
-                const deliveryReportError = await waitForAllReceived;
-                if (deliveryReportError instanceof Error) {
-                    throw deliveryReportError;
-                }
+                await waitForAllReceived;
             }
         } finally {
             allReceivedOff();

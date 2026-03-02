@@ -42,11 +42,11 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         // cross-field validation
         const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = config.rdkafka_options;
         const report = config.delivery_report;
-        if (rd_opts.dr_cb === true && config.required_acks !== 0) {
+        if (rd_opts.dr_cb === true && config.required_acks === 0) {
             this.logger.warn('KafkaSenderApi config has dr_cb enabled, but required_acks set to 0.'
                 + 'Delivery reports will only guarantee the message was sent.');
         }
-        if (rd_opts.dr_msg_cb === true && config.required_acks !== 0) {
+        if (rd_opts.dr_msg_cb === true && config.required_acks === 0) {
             this.logger.warn('KafkaSenderApi config has dr_msg_cb enabled, but required_acks set to 0.'
                 + 'Delivery reports will only guarantee the message was sent.');
         }
