@@ -123,7 +123,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         }
 
         try {
-            if (this.deliveryReportConfig) {
+            if (this.listenForReports) {
                 this.deliveryReportStats[batchNumber] = {
                     received: 0,
                     errors: 0,
