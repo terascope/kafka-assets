@@ -46,6 +46,89 @@ Example Job
 }
 ```
 
+### Example Delivery Report configuration
+
+A job with the following config would only receive delivery reports for failed messages, and would only log the error asynchronously. Since teraslice does not wait for reports the slice would be marked as complete.
+
+Example API config
+
+```json
+{
+    "apis" : [
+        {
+            "_name": "kafka_sender_api",
+            "topic": "test_topic_2",
+            "size": 10000,
+            "id_field": "uuid",
+            "timestamp_field": "created",
+            "_connection": "default",
+            "rdkafka_options": {
+                "dr_cb": true
+            },
+            "delivery_report": {
+                "wait": false,
+                "only_error": true,
+                "on_error": "log"
+            },
+        }
+    ]
+}
+```
+
+A job with the following config would log delivery reports for failed messages, as well as one log with delivery report statistics when all reports for a batch are received.
+
+Example API config
+
+```json
+{
+    "apis" : [
+        {
+            "_name": "kafka_sender_api",
+            "topic": "test_topic_2",
+            "size": 10000,
+            "id_field": "uuid",
+            "timestamp_field": "created",
+            "_connection": "default",
+            "rdkafka_options": {
+                "dr_cb": true
+            },
+            "delivery_report": {
+                "wait": false,
+                "only_error": false,
+                "on_error": "log"
+            },
+        }
+    ]
+}
+```
+
+A job with the following config would wait for all delivery reports before starting a new batch. This allows the sender to throw an error and fail a slice.
+
+Example API config
+
+```json
+{
+    "apis" : [
+        {
+            "_name": "kafka_sender_api",
+            "topic": "test_topic_2",
+            "size": 10000,
+            "id_field": "uuid",
+            "timestamp_field": "created",
+            "_connection": "default",
+            "rdkafka_options": {
+                "dr_cb": true
+            },
+            "delivery_report": {
+                "wait": true,
+                "only_error": false,
+                "on_error": "throw"
+            },
+        }
+    ]
+}
+```
+
 The custom processor for the job above
 
 ```javascript
@@ -169,7 +252,7 @@ apiManager.get('normalClient') === undefined
 
 ## Kafka Sender Instance
 
-The [sender api](https://terascope.github.io/teraslice/docs/packages/utils/api/interfaces/interfaces/RouteSenderAPI/) returned from the APIFactory's create method.
+The [sender api](https://terascope.github.io/teraslice/docs/packages/job-components/api/interfaces/misc/interfaces/RouteSenderAPI/) returned from the APIFactory's create method.
 
 ### send (async)
 
@@ -226,3 +309,7 @@ await api.send([
 | metadata_refresh | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. | String/Duration/Number | optional, defaults to `"5 minutes"` |
 | _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
 | rdkafka_options | [librdkafka defined settings](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific. **Settings here will override other settings.** See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for details on how settings are prioritized. | Object | optional, default to `{}` |
+| delivery_report | Configure actions to take when receiving delivery reports for each message. Either the `dr_cb` or `dr_msg_cb` option must be set to true within `rdkafka_options` to receive delivery reports. | DeliveryReportConfig \| undefined | optional, defaults to `undefined` |
+| delivery_report.wait | Wait for all delivery reports before continuing to next batch of messages | Boolean | required if `delivery_report` defined |
+| delivery_report.only_error | Only receive delivery reports for failed messages. `wait` must be false. This setting overrides the `delivery.report.only.error` field in `rdkafka_options`. | Boolean | required if `delivery_report` defined |
+| delivery_report.wait.on_error | Action to take when a delivery report indicates an error with a message. If the `throw` option is chosen `wait` must be true. | `log` \| `throw` \| `ignore` | required if `delivery_report` defined |
