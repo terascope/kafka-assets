@@ -23,6 +23,7 @@ export default class ProducerClient extends BaseClient<Producer> {
     private _bytesProduced = 0;
     private adminClient: IAdminClient;
     private deliveryReportConfig: DeliveryReportConfig | undefined;
+    private listenForReports: boolean;
     deliveryReportStats: DeliveryReportStats = {};
 
     constructor(client: Producer, adminClient: IAdminClient, config: ProducerClientConfig) {
@@ -31,6 +32,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         this._maxBufferKilobyteSize = config.maxBufferKilobyteSize;
         this.adminClient = adminClient;
         this.deliveryReportConfig = config.deliveryReportConfig;
+        this.listenForReports = config.deliveryReportConfig ? true : false;
     }
 
     /**
@@ -248,36 +250,38 @@ export default class ProducerClient extends BaseClient<Producer> {
         this._client.on('event.error', this._logOrEmit('client:error'));
 
         // message delivery statistics
-        this._client.on('delivery-report', (err, report) => {
-            if (this.deliveryReportConfig) {
+        if (this.listenForReports) {
+            this._client.on('delivery-report', (err, report) => {
                 const { batchNumber, msgNumber } = report.opaque as DeliveryReportOpaque;
                 const currBatchStats: DeliveryReportBatchStats | undefined
                     = this.deliveryReportStats[batchNumber];
 
-                if (currBatchStats) {
+                if (this.deliveryReportConfig && currBatchStats) {
+                    const { on_error, wait } = this.deliveryReportConfig;
                     currBatchStats.received++;
+
                     if (err) {
                         currBatchStats.errors++;
-                        if (this.deliveryReportConfig.on_error !== 'ignore') {
-                            this.deliveryReportConfig.on_error === 'throw'
+                        if (on_error !== 'ignore') {
+                            on_error === 'throw'
                                 ? this._events.emit(`delivery-report:batch:${batchNumber}`, err, report, currBatchStats)
                                 : this._logger.error(err, `failed delivery for message ${msgNumber} of batch ${batchNumber}. Report: ${report}`);
                         }
                     }
 
                     if (currBatchStats.received === currBatchStats.expected) {
-                        this.deliveryReportConfig.wait
+                        wait
                             ? this._events.emit(`delivery-report:batch:${batchNumber}`, report, currBatchStats)
                             : this._logger.debug(`All ${currBatchStats.received} delivery reports received for batch ${batchNumber}: ${currBatchStats}`);
                         delete this.deliveryReportStats[batchNumber];
                     }
                 } else {
-                    // there should only ever be one callback per this._client.produce()
-                    // call, so this should never happen
+                    // this.deliveryReportConfig && currBatchStats should always be defined
+                    // if we are listening for reports, so we should never get here.
                     this._logger.warn(`Received delivery report for message, but stats do not exist for batch ${batchNumber}.`);
                 }
-            }
-        });
+            });
+        }
     }
 
     /**

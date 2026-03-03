@@ -87,15 +87,15 @@ describe('Kafka Sender API Schema', () => {
         });
 
         it('should throw if delivery_report.wait is not a boolean', async () => {
-            await expect(makeTest({ delivery_report: { wait: 'yes', error_only: false, on_error: 'log' } as any })).toReject();
+            await expect(makeTest({ delivery_report: { wait: 'yes', only_error: false, on_error: 'log' } as any })).toReject();
         });
 
-        it('should throw if delivery_report.error_only is not a boolean', async () => {
-            await expect(makeTest({ delivery_report: { wait: true, error_only: 'yes', on_error: 'log' } as any })).toReject();
+        it('should throw if delivery_report.only_error is not a boolean', async () => {
+            await expect(makeTest({ delivery_report: { wait: true, only_error: 'yes', on_error: 'log' } as any })).toReject();
         });
 
         it('should throw if delivery_report.on_error is not a valid value', async () => {
-            await expect(makeTest({ delivery_report: { wait: true, error_only: false, on_error: 'invalid' } as any })).toReject();
+            await expect(makeTest({ delivery_report: { wait: true, only_error: false, on_error: 'invalid' } as any })).toReject();
         });
 
         it('should set the required_acks default to 1', async () => {

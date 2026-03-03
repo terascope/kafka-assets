@@ -229,7 +229,7 @@ describe('kafka_sender_api', () => {
         const config = {
             _name: API_NAME,
             topic: 'hello',
-            delivery_report: { wait: true, error_only: false, on_error: 'log' },
+            delivery_report: { wait: true, only_error: false, on_error: 'log' },
             rdkafka_options: { dr_cb: false, dr_msg_cb: false }
         };
         const test = await makeTest(config);
@@ -242,7 +242,7 @@ describe('kafka_sender_api', () => {
         const config = {
             _name: API_NAME,
             topic: 'hello',
-            delivery_report: { wait: false, error_only: false, on_error: 'throw' },
+            delivery_report: { wait: false, only_error: false, on_error: 'throw' },
             rdkafka_options: { dr_cb: true }
         };
         const test = await makeTest(config);
@@ -251,29 +251,29 @@ describe('kafka_sender_api', () => {
         );
     });
 
-    it('should throw when delivery_report.error_only is true but wait is also true', async () => {
+    it('should throw when delivery_report.only_error is true but wait is also true', async () => {
         const config = {
             _name: API_NAME,
             topic: 'hello',
-            delivery_report: { wait: true, error_only: true, on_error: 'log' },
+            delivery_report: { wait: true, only_error: true, on_error: 'log' },
             rdkafka_options: { dr_cb: true }
         };
         const test = await makeTest(config);
         await expect(test.create(connection, {})).rejects.toThrow(
-            'If parameter delivery_report.error_only is `true` then delivery_report.wait must be `false`'
+            'If parameter delivery_report.only_error is `true` then delivery_report.wait must be `false`'
         );
     });
 
-    it('should throw when both delivery_report.error_only and rdkafka delivery.report.only.error are set', async () => {
+    it('should throw when both delivery_report.only_error and rdkafka delivery.report.only.error are set', async () => {
         const config = {
             _name: API_NAME,
             topic: 'hello',
-            delivery_report: { wait: false, error_only: false, on_error: 'log' },
+            delivery_report: { wait: false, only_error: false, on_error: 'log' },
             rdkafka_options: { dr_cb: true, 'delivery.report.only.error': true }
         };
         const test = await makeTest(config);
         await expect(test.create(connection, {})).rejects.toThrow(
-            'If parameter delivery_report.error_only is set then `delivery.report.only.error`'
+            'If parameter delivery_report.only_error is set then `delivery.report.only.error`'
         );
     });
 
@@ -352,19 +352,19 @@ describe('kafka_sender_api', () => {
 
         it('should throw if delivery_report.wait is not a boolean', async () => {
             const test = await makeTest();
-            await expect(test.create(connection, { delivery_report: { wait: 'yes', error_only: false, on_error: 'log' } as any }))
+            await expect(test.create(connection, { delivery_report: { wait: 'yes', only_error: false, on_error: 'log' } as any }))
                 .rejects.toThrow('Parameter delivery_report.wait must be provided and be of type boolean');
         });
 
-        it('should throw if delivery_report.error_only is not a boolean', async () => {
+        it('should throw if delivery_report.only_error is not a boolean', async () => {
             const test = await makeTest();
-            await expect(test.create(connection, { delivery_report: { wait: true, error_only: 'yes', on_error: 'log' } as any }))
-                .rejects.toThrow('Parameter delivery_report.error_only must be provided and be of type boolean');
+            await expect(test.create(connection, { delivery_report: { wait: true, only_error: 'yes', on_error: 'log' } as any }))
+                .rejects.toThrow('Parameter delivery_report.only_error must be provided and be of type boolean');
         });
 
         it('should throw if delivery_report.on_error is not a valid value', async () => {
             const test = await makeTest();
-            await expect(test.create(connection, { delivery_report: { wait: true, error_only: false, on_error: 'bad' } as any }))
+            await expect(test.create(connection, { delivery_report: { wait: true, only_error: false, on_error: 'bad' } as any }))
                 .rejects.toThrow('Parameter delivery_report.on_error must be provided and be one of');
         });
     });

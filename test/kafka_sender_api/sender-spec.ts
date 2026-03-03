@@ -502,7 +502,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: true,
-                        error_only: false,
+                        only_error: false,
                         on_error: 'throw'
                     },
                     rdkafka_options: {
@@ -549,7 +549,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: true,
-                        error_only: false,
+                        only_error: false,
                         on_error: 'ignore'
                     },
                     rdkafka_options: {
@@ -589,7 +589,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest({
                 delivery_report: {
                     wait: false,
-                    error_only: false,
+                    only_error: false,
                     on_error: 'log'
                 },
                 rdkafka_options: {
@@ -624,7 +624,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest({
                 delivery_report: {
                     wait: false,
-                    error_only: false,
+                    only_error: false,
                     on_error: 'log'
                 },
                 rdkafka_options: {
@@ -656,7 +656,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest({
                 delivery_report: {
                     wait: true,
-                    error_only: false,
+                    only_error: false,
                     on_error: 'log'
                 },
                 rdkafka_options: {
@@ -695,7 +695,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: true,
-                        error_only: false,
+                        only_error: false,
                         on_error: 'log'
                     },
                     rdkafka_options: {
@@ -741,7 +741,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: false,
-                        error_only: false,
+                        only_error: false,
                         on_error: 'log'
                     },
                     rdkafka_options: {
@@ -784,7 +784,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: false,
-                        error_only: false,
+                        only_error: false,
                         on_error: 'ignore'
                     },
                     rdkafka_options: {

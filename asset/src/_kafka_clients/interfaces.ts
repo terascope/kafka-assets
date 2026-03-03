@@ -83,7 +83,7 @@ export type DeliveryReportConfig = {
      * Only receive delivery reports for failed messages. `wait` must be false.
      * This setting overrides the `delivery.report.only.error` field in `rdkafka_options`.
      */
-    error_only: boolean;
+    only_error: boolean;
 
     /**
      * Action to take when a delivery report indicates an error with a message.

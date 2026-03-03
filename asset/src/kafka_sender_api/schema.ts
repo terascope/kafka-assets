@@ -108,8 +108,8 @@ export const schema = {
             if (typeof val.wait !== 'boolean') {
                 throw new Error('Invalid parameter delivery_report.wait, it must be a boolean');
             }
-            if (typeof val.error_only !== 'boolean') {
-                throw new Error('Invalid parameter delivery_report.error_only, it must be a boolean');
+            if (typeof val.only_error !== 'boolean') {
+                throw new Error('Invalid parameter delivery_report.only_error, it must be a boolean');
             }
             if (typeof val.on_error !== 'string' || !['log', 'throw', 'ignore'].includes(val.on_error)) {
                 throw new Error('Invalid parameter delivery_report.on_error, it must be one of [\'log\', \'throw\', \'ignore\']');
