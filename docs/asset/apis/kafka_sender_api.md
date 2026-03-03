@@ -75,7 +75,7 @@ Example API config
 }
 ```
 
-A job with the following config would log delivery reports for failed messages, as well as one log with delivery report statistics when all reports for a batch are received.
+A job with the following config would create one error log for each delivery report where the message failed to be delivered, and would also create one debug log showing delivery report statistics once all reports for a batch are received.
 
 Example API config
 
@@ -99,6 +99,16 @@ Example API config
             },
         }
     ]
+}
+```
+
+Example statistics:
+
+```js
+{
+    received: 5000,
+    errors: 0,
+    expected: 5000
 }
 ```
 
