@@ -1,3 +1,4 @@
+import { ProducerTopicConfig, ProducerGlobalConfig } from '@confluentinc/kafka-javascript';
 import { BaseSchema } from '@terascope/job-components';
 import {
     isNumber,
@@ -119,6 +120,33 @@ export const schema = {
 };
 
 export default class Schema extends BaseSchema<Record<string, any>> {
+    validate(config: Record<string, any>): any {
+        const results = super.validate(config);
+
+        // cross-field validation
+        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = results.rdkafka_options;
+        const report = results.delivery_report;
+
+        if (report) {
+            if (rd_opts.dr_cb !== true && rd_opts.dr_msg_cb !== true) {
+                throw new Error('Parameter delivery_report is set but neither the `dr_cb` or `dr_msg_cb`'
+                    + ' option are set to true within `rdkafka_options.`');
+            }
+            if (report.wait === false && report.on_error === 'throw') {
+                throw new Error('If parameter delivery_report.on_error is `throw` then delivery_report.wait must be `true`.');
+            }
+            if (report.wait === true && report.only_error === true) {
+                throw new Error('If parameter delivery_report.only_error is `true` then delivery_report.wait must be `false`.');
+            }
+            if (rd_opts['delivery.report.only.error'] != null && report.only_error != null) {
+                throw new Error('If parameter delivery_report.only_error is set then `delivery.report.only.error`'
+                    + ' can not be set on rdkafka_options.');
+            }
+        }
+
+        return results;
+    }
+
     build(): Record<string, any> {
         return schema;
     }

@@ -225,58 +225,6 @@ describe('kafka_sender_api', () => {
         expect(sender).toBeDefined();
     });
 
-    it('should throw when delivery_report is set but dr_cb and dr_msg_cb are both false', async () => {
-        const config = {
-            _name: API_NAME,
-            topic: 'hello',
-            delivery_report: { wait: true, only_error: false, on_error: 'log' },
-            rdkafka_options: { dr_cb: false, dr_msg_cb: false }
-        };
-        const test = await makeTest(config);
-        await expect(test.create(connection, {})).rejects.toThrow(
-            'Parameter delivery_report is set but neither the `dr_cb` or `dr_msg_cb`'
-        );
-    });
-
-    it('should throw when delivery_report.on_error is throw but wait is false', async () => {
-        const config = {
-            _name: API_NAME,
-            topic: 'hello',
-            delivery_report: { wait: false, only_error: false, on_error: 'throw' },
-            rdkafka_options: { dr_cb: true }
-        };
-        const test = await makeTest(config);
-        await expect(test.create(connection, {})).rejects.toThrow(
-            'If parameter delivery_report.on_error is `throw` then delivery_report.wait must be `true`'
-        );
-    });
-
-    it('should throw when delivery_report.only_error is true but wait is also true', async () => {
-        const config = {
-            _name: API_NAME,
-            topic: 'hello',
-            delivery_report: { wait: true, only_error: true, on_error: 'log' },
-            rdkafka_options: { dr_cb: true }
-        };
-        const test = await makeTest(config);
-        await expect(test.create(connection, {})).rejects.toThrow(
-            'If parameter delivery_report.only_error is `true` then delivery_report.wait must be `false`'
-        );
-    });
-
-    it('should throw when both delivery_report.only_error and rdkafka delivery.report.only.error are set', async () => {
-        const config = {
-            _name: API_NAME,
-            topic: 'hello',
-            delivery_report: { wait: false, only_error: false, on_error: 'log' },
-            rdkafka_options: { dr_cb: true, 'delivery.report.only.error': true }
-        };
-        const test = await makeTest(config);
-        await expect(test.create(connection, {})).rejects.toThrow(
-            'If parameter delivery_report.only_error is set then `delivery.report.only.error`'
-        );
-    });
-
     describe('validateConfig field validation via per-create overrides', () => {
         it('should throw if topic is not a string', async () => {
             const test = await makeTest();

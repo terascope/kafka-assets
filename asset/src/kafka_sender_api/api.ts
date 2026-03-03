@@ -39,9 +39,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
             if (isNil(config.delivery_report.on_error) || !['log', 'throw', 'ignore'].includes(config.delivery_report.on_error)) throw new Error(`Parameter delivery_report.on_error must be provided and be one of ['log', 'throw', 'ignore'], got ${getTypeOf(config.delivery_report.on_error)}`);
         }
 
-        // cross-field validation
         const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = config.rdkafka_options;
-        const report = config.delivery_report;
         if (rd_opts.dr_cb === true && config.required_acks === 0) {
             this.logger.warn('KafkaSenderApi config has dr_cb enabled, but required_acks set to 0.'
                 + ' Delivery reports will only guarantee the message was sent.');
@@ -51,22 +49,6 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 + ' Delivery reports will only guarantee the message was sent.');
         }
 
-        if (report) {
-            if (rd_opts.dr_cb !== true && rd_opts.dr_msg_cb !== true) {
-                throw new Error('Parameter delivery_report is set but neither the `dr_cb` or `dr_msg_cb`'
-                    + ' option are set to true within `rdkafka_options.`');
-            }
-            if (report.wait === false && report.on_error === 'throw') {
-                throw new Error('If parameter delivery_report.on_error is `throw` then delivery_report.wait must be `true`.');
-            }
-            if (report.wait === true && report.only_error === true) {
-                throw new Error('If parameter delivery_report.only_error is `true` then delivery_report.wait must be `false`.');
-            }
-            if (rd_opts['delivery.report.only.error'] != null && report.only_error != null) {
-                throw new Error('If parameter delivery_report.only_error is set then `delivery.report.only.error`'
-                    + ' can not be set on rdkafka_options.');
-            }
-        }
         return config;
     }
 
