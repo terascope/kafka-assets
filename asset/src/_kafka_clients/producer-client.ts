@@ -121,7 +121,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         }
 
         try {
-            if (this.deliveryReportConfig && !this.deliveryReportConfig?.only_error) {
+            if (this.deliveryReportConfig && !this.deliveryReportConfig?.only_error && total > 0) {
                 this.deliveryReportStats[batchNumber] = {
                     received: 0,
                     errors: 0,
@@ -129,7 +129,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                 };
             }
 
-            if (this.deliveryReportConfig?.wait) {
+            if (this.deliveryReportConfig?.wait && total > 0) {
                 waitForAllReceived = new Promise((resolve, reject) => {
                     // fixme: this should have a timeout
                     allReceivedOff = this._once(`delivery-report:batch:${batchNumber}`, (err, args) => {
@@ -225,7 +225,7 @@ export default class ProducerClient extends BaseClient<Producer> {
             clientErrorOff();
 
             // cleanup stats if there was an error
-            if (this.deliveryReportConfig?.wait) {
+            if (this.deliveryReportStats[batchNumber]) {
                 delete this.deliveryReportStats[batchNumber];
             }
 
