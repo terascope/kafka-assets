@@ -23,7 +23,6 @@ export default class ProducerClient extends BaseClient<Producer> {
     private _bytesProduced = 0;
     private adminClient: IAdminClient;
     private deliveryReportConfig: DeliveryReportConfig | undefined;
-    private listenForReports: boolean;
     deliveryReportStats: DeliveryReportStats = {};
 
     constructor(client: Producer, adminClient: IAdminClient, config: ProducerClientConfig) {
@@ -32,7 +31,6 @@ export default class ProducerClient extends BaseClient<Producer> {
         this._maxBufferKilobyteSize = config.maxBufferKilobyteSize;
         this.adminClient = adminClient;
         this.deliveryReportConfig = config.deliveryReportConfig;
-        this.listenForReports = config.deliveryReportConfig ? true : false;
     }
 
     /**
@@ -111,7 +109,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         });
 
         const total = messages.length;
-        const endOfBatchIndex = (total - 1);
+        const endOfSliceIndex = (total - 1);
         const endOfBufferIndex = (this._maxBufferMsgLength - 1);
         // This is a counter that will track the bytes written in the current batch
         let currentBatchSizeInBytes = 0;
@@ -123,7 +121,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         }
 
         try {
-            if (this.listenForReports) {
+            if (this.deliveryReportConfig && !this.deliveryReportConfig?.only_error) {
                 this.deliveryReportStats[batchNumber] = {
                     received: 0,
                     errors: 0,
@@ -164,7 +162,12 @@ export default class ProducerClient extends BaseClient<Producer> {
                         + `Current batch size = ${currentBatchSizeInBytes / 1024} KB. Initiating queue flush to prevent overflow...`
                     );
 
-                    await Promise.race([this._try(() => this._flush(), 'produce', 0), waitForAllReceived]);
+                    const flushPromise = this._try(() => this._flush(), 'produce', 0);
+
+                    await (waitForAllReceived
+                        ? Promise.race([flushPromise, waitForAllReceived])
+                        : flushPromise);
+
                     currentBatchSizeInBytes = messageByteSize;
                 }
 
@@ -180,11 +183,17 @@ export default class ProducerClient extends BaseClient<Producer> {
                 );
 
                 // flush the messages at the end of each batch
-                if (i === endOfBatchIndex) {
+                if (i === endOfSliceIndex) {
                     this._logger.debug(
                         `End of message batch reached: Flushing the queue after processing ${total} messages. `
                     );
-                    await Promise.race([this._try(() => this._flush(), 'produce', 0), waitForAllReceived]);
+
+                    const flushPromise = this._try(() => this._flush(), 'produce', 0);
+
+                    await (waitForAllReceived
+                        ? Promise.race([flushPromise, waitForAllReceived])
+                        : flushPromise);
+
                     currentBatchSizeInBytes = 0; // Reset the batch size counter
                 /*
                 *    Flush the queue as the message buffer is reaching its size limit,
@@ -197,7 +206,13 @@ export default class ProducerClient extends BaseClient<Producer> {
                     this._logger.debug(
                         `Kafka producer max_buffer_size of ${this._maxBufferMsgLength} has been met, flushing queue to start new batch...`
                     );
-                    await Promise.race([this._try(() => this._flush(), 'produce', 0), waitForAllReceived]);
+
+                    const flushPromise = this._try(() => this._flush(), 'produce', 0);
+
+                    await (waitForAllReceived
+                        ? Promise.race([flushPromise, waitForAllReceived])
+                        : flushPromise);
+
                     currentBatchSizeInBytes = 0;
                 }
             }
@@ -208,6 +223,11 @@ export default class ProducerClient extends BaseClient<Producer> {
         } finally {
             allReceivedOff();
             clientErrorOff();
+
+            // cleanup stats if there was an error
+            if (this.deliveryReportConfig?.wait) {
+                delete this.deliveryReportStats[batchNumber];
+            }
 
             /* istanbul ignore next */
             if (clientError) {
@@ -250,13 +270,13 @@ export default class ProducerClient extends BaseClient<Producer> {
         this._client.on('event.error', this._logOrEmit('client:error'));
 
         // message delivery statistics
-        if (this.listenForReports) {
+        if (this.deliveryReportConfig) {
             this._client.on('delivery-report', (err, report) => {
                 const { batchNumber, msgNumber } = report.opaque as DeliveryReportOpaque;
                 const currBatchStats: DeliveryReportBatchStats | undefined
                     = this.deliveryReportStats[batchNumber];
 
-                if (this.deliveryReportConfig && currBatchStats) {
+                if (currBatchStats && this.deliveryReportConfig) {
                     const { on_error, wait } = this.deliveryReportConfig;
                     currBatchStats.received++;
 
@@ -276,9 +296,9 @@ export default class ProducerClient extends BaseClient<Producer> {
                         delete this.deliveryReportStats[batchNumber];
                     }
                 } else {
-                    // this.deliveryReportConfig && currBatchStats should always be defined
-                    // if we are listening for reports, so we should never get here.
-                    this._logger.warn(`Received delivery report for message, but stats do not exist for batch ${batchNumber}.`);
+                    if (err) {
+                        this._logger.error(err, `failed delivery for message ${msgNumber} of batch ${batchNumber}. Report: ${report}`);
+                    }
                 }
             });
         }
