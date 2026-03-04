@@ -48,6 +48,9 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
             this.logger.warn('KafkaSenderApi config has dr_msg_cb enabled, but required_acks set to 0.'
                 + ' Delivery reports will only guarantee the message was sent.');
         }
+        if (rd_opts.dr_cb !== true && rd_opts.dr_msg_cb !== true) {
+            rd_opts.dr_cb = true;
+        }
 
         return config;
     }

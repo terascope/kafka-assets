@@ -128,10 +128,6 @@ export default class Schema extends BaseSchema<Record<string, any>> {
         const report = results.delivery_report;
 
         if (report) {
-            if (rd_opts.dr_cb !== true && rd_opts.dr_msg_cb !== true) {
-                throw new Error('Parameter delivery_report is set but neither the `dr_cb` or `dr_msg_cb`'
-                    + ' option are set to true within `rdkafka_options.`');
-            }
             if (report.wait === false && report.on_error === 'throw') {
                 throw new Error('If parameter delivery_report.on_error is `throw` then delivery_report.wait must be `true`.');
             }
