@@ -127,6 +127,38 @@ describe('Kafka Sender API Schema', () => {
             })).toReject();
         });
 
+        it('should throw when delivery_report is set and dr_cb is false with dr_msg_cb not set', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_cb: false }
+            })).toReject();
+        });
+
+        it('should throw when delivery_report is set and dr_msg_cb is false with dr_cb not set', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_msg_cb: false }
+            })).toReject();
+        });
+
+        it('should not throw when delivery_report is set with dr_cb false but dr_msg_cb true', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_cb: false, dr_msg_cb: true }
+            })).toResolve();
+        });
+
+        it('should not throw when delivery_report is set with dr_msg_cb false but dr_cb true', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_msg_cb: false, dr_cb: true }
+            })).toResolve();
+        });
+
         it('should throw when delivery_report.on_error is throw but wait is false', async () => {
             await expect(makeTest({
                 topic: 'hello',

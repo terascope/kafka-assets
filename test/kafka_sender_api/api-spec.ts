@@ -225,6 +225,35 @@ describe('kafka_sender_api', () => {
         expect(sender).toBeDefined();
     });
 
+    it('should auto-set dr_cb to true when delivery_report is configured without explicit callbacks', async () => {
+        const config = {
+            _name: API_NAME,
+            topic: 'hello',
+            delivery_report: { wait: false, only_error: false, on_error: 'log' }
+        };
+        const test = await makeTest(config);
+        const sender = await test.create(connection, {});
+        expect(sender.config.rdkafka_options.dr_cb).toBe(true);
+    });
+
+    it('should not auto-set dr_cb when delivery_report is not configured', async () => {
+        const test = await makeTest();
+        const sender = await test.create(connection, {});
+        expect(sender.config.rdkafka_options.dr_cb).toBeUndefined();
+    });
+
+    it('should not auto-set dr_cb when delivery_report is configured and dr_msg_cb is already set', async () => {
+        const config = {
+            _name: API_NAME,
+            topic: 'hello',
+            delivery_report: { wait: false, only_error: false, on_error: 'log' },
+            rdkafka_options: { dr_msg_cb: true }
+        };
+        const test = await makeTest(config);
+        const sender = await test.create(connection, {});
+        expect(sender.config.rdkafka_options.dr_cb).toBeUndefined();
+    });
+
     describe('validateConfig field validation via per-create overrides', () => {
         it('should throw if topic is not a string', async () => {
             const test = await makeTest();

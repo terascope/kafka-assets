@@ -138,6 +138,12 @@ export default class Schema extends BaseSchema<Record<string, any>> {
                 throw new Error('If parameter delivery_report.only_error is set then `delivery.report.only.error`'
                     + ' can not be set on rdkafka_options.');
             }
+            if ((rd_opts.dr_cb === false && rd_opts.dr_msg_cb !== true)
+                || (rd_opts.dr_msg_cb === false && rd_opts.dr_cb !== true)
+            ) {
+                throw new Error('Parameter delivery_report needs either the `rdkafka_options.dr_cb` or `rdkafka_options.dr_msg_cb`'
+                    + ` callback to function, ${rd_opts.dr_cb === false ? 'rd_opts.dr_cb' : 'rd_opts.dr_msg_cb'} is set to false.`);
+            }
         }
 
         return results;
