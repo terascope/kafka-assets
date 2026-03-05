@@ -225,7 +225,7 @@ export default class ProducerClient extends BaseClient<Producer> {
             clientErrorOff();
 
             // cleanup stats if there was an error
-            if (this.deliveryReportStats[batchNumber]) {
+            if (this.deliveryReportConfig?.wait) {
                 delete this.deliveryReportStats[batchNumber];
             }
 
