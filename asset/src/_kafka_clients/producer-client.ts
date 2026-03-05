@@ -179,13 +179,13 @@ export default class ProducerClient extends BaseClient<Producer> {
                     message.data,
                     message.key,
                     message.timestamp,
-                    this.deliveryReportConfig ? message.opaque : null
+                    ...this.deliveryReportConfig ? [message.opaque] : []
                 );
 
-                // flush the messages at the end of each batch
+                // flush the messages at the end of each slice
                 if (i === endOfSliceIndex) {
                     this._logger.debug(
-                        `End of message batch reached: Flushing the queue after processing ${total} messages. `
+                        `End of message slice reached: Flushing the queue after processing ${total} messages. `
                     );
 
                     const flushPromise = this._try(() => this._flush(), 'produce', 0);
@@ -247,9 +247,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                 // fail to be delivered and the flush still succeeds
                 /* istanbul ignore if */
                 if (err) reject(wrapError('Failed to flush messages', err));
-                else {
-                    resolve();
-                }
+                else resolve();
             });
         });
     }
