@@ -49,7 +49,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 + ' Delivery reports will only guarantee the message was sent.');
         }
         if (config.delivery_report) {
-            if (!rd_opts.dr_cb && !rd_opts.dr_msg_cb) {
+            if (rd_opts.dr_cb === undefined && rd_opts.dr_msg_cb === undefined) {
                 rd_opts.dr_cb = true;
             }
         }

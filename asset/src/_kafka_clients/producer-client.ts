@@ -179,7 +179,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                     message.data,
                     message.key,
                     message.timestamp,
-                    message.opaque
+                    this.deliveryReportConfig ? message.opaque : null
                 );
 
                 // flush the messages at the end of each batch
