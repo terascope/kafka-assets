@@ -4,3 +4,7 @@ packages:
 
 onlyBuiltDependencies:
   - "@confluentinc/kafka-javascript"
+
+
+publicHoistPattern:
+  - "@confluentinc/kafka-javascript"
