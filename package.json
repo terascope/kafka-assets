@@ -12,16 +12,10 @@
     "license": "MIT",
     "author": "Terascope, LLC <info@terascope.io>",
     "type": "module",
-    "workspaces": {
-        "packages": [
-            "asset",
-            "packages/*"
-        ]
-    },
     "scripts": {
-        "asset:build": "yarn && yarn --cwd ./asset build",
+        "asset:build": "pnpm install && pnpm -C ./asset build",
         "build": "tsc --build",
-        "build:watch": "yarn build --watch",
+        "build:watch": "pnpm build --watch",
         "bump": "ts-scripts bump",
         "bump-asset": "ts-scripts bump-asset",
         "docker:limit": "./scripts/docker-limit-check.sh",
@@ -29,15 +23,16 @@
         "docker:saveImages": "ts-scripts images save",
         "docs": "ts-scripts docs",
         "lint": "eslint",
-        "lint:fix": "yarn lint --fix",
+        "lint:fix": "pnpm lint --fix",
         "publish:changed": "./scripts/publish.sh",
-        "setup": "yarn && yarn build --force",
+        "setup": "pnpm install && pnpm build --force",
         "test": "ts-scripts test asset --",
         "test:all": "ts-scripts test",
         "test:debug": "ts-scripts test --debug asset --",
         "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
+        "@jest/globals": "^30.2.0",
         "@terascope/core-utils": "~2.2.2",
         "@terascope/eslint-config": "~1.1.29",
         "@terascope/job-components": "~2.2.2",
@@ -52,16 +47,16 @@
         "jest": "~30.2.0",
         "jest-extended": "~7.0.0",
         "semver": "~7.7.4",
-        "terafoundation_kafka_connector": "~2.1.0",
+        "terafoundation_kafka_connector": "workspace:~",
         "teraslice-test-harness": "~2.2.2",
         "ts-jest": "~29.4.6",
         "typescript": "~5.9.3",
         "uuid": "~13.0.0"
     },
-    "packageManager": "yarn@4.6.0",
+    "packageManager": "pnpm@10.25.0",
     "engines": {
         "node": ">=22.0.0",
-        "yarn": ">=1.22.22"
+        "pnpm": ">=10.0.0"
     },
     "documentation": "https://terascope.github.io/kafka-assets",
     "terascope": {

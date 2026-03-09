@@ -28,7 +28,7 @@
     "react-dom": "^19.2.4",
     "react-markdown": "10.1.0"
   },
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "pnpm@10.25.0",
   "watch": {
     "start": {
       "patterns": [

@@ -15,8 +15,8 @@
     ],
     "scripts": {
         "build": "tsc --project ./tsconfig.json",
-        "build:watch": "yarn build --watch",
-        "prepare": "yarn build",
+        "build:watch": "pnpm build --watch",
+        "prepare": "pnpm build",
         "test": "ts-scripts test . --",
         "test:debug": "ts-scripts test --debug . --",
         "test:watch": "ts-scripts test --watch . --"
@@ -33,7 +33,7 @@
     },
     "engines": {
         "node": ">=22.0.0",
-        "yarn": ">=1.22.22"
+        "pnpm": ">=10.0.0"
     },
     "publishConfig": {
         "access": "public",

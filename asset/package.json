@@ -12,14 +12,9 @@
     "files": [
         "dist/src/**/*"
     ],
-    "workspaces": {
-        "nohoist": [
-            "**"
-        ]
-    },
     "scripts": {
         "build": "rm -rf dist; tsc --project ../tsconfig.json",
-        "test": "yarn --cwd ../ test"
+        "test": "pnpm -C ../ test"
     },
     "dependencies": {
         "@terascope/core-utils": "~2.2.2",
@@ -28,7 +23,7 @@
     },
     "engines": {
         "node": ">=22.0.0",
-        "yarn": ">=1.22.22"
+        "pnpm": ">=10.0.0"
     },
     "srcMain": "src/index.ts",
     "terascope": {}
