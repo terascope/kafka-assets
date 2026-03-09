@@ -29,9 +29,9 @@ publish() {
         echo "  $name@$currentVersion -> $targetVersion"
         if [ "$dryRun" == "false" ]; then
             if [ -n "$publishTag" ]; then
-                yarn npm publish --tag "$publishTag"
+                pnpm publish --tag "$publishTag"
             else
-                yarn npm publish
+                pnpm publish
             fi
         fi
     else
@@ -64,7 +64,7 @@ main() {
     projectDir="$(pwd)"
 
     echo "Check NPM Authentication"
-    yarn npm whoami
+    pnpm whoami
 
     for package in "${projectDir}/packages/"*; do
         cd "$package" || continue;
