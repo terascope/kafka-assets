@@ -8,7 +8,7 @@ The Terafoundation Kafka Connector facilitates a connection between a [terafound
 ## Installation
 
 ```bash
-npm install terafoundation_kafka_connector
+pnpm add terafoundation_kafka_connector
 ```
 
 **Note:** This connector is preinstalled in Teraslice.
