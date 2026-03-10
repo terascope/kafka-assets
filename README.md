@@ -44,7 +44,7 @@ This asset bundle requires a running Teraslice cluster. [Documentation](https://
 
 ```bash
 # Step 1: make sure you have teraslice-cli installed
-yarn global add teraslice-cli
+pnpm add -g teraslice-cli
 
 # Step 2:
 # teraslice-cli assets deploy <cluster_alias> <asset-name[@version]>
@@ -69,7 +69,7 @@ teraslice-cli assets deploy cluster2 --build
 To install from the root of your terafoundation based service.
 
 ```bash
-npm install terafoundation_kafka_connector
+pnpm add terafoundation_kafka_connector
 ```
 
 **Note:** The terafoundation connector is preinstalled in Teraslice
@@ -171,6 +171,12 @@ terafoundation:
 
 ## Development
 
+This project uses [pnpm](https://pnpm.io/). It is bundled with Node.js via [Corepack](https://nodejs.org/api/corepack.html), so no separate installation is needed:
+
+```bash
+corepack enable
+```
+
 ### Tests
 
 Run the kafka tests
@@ -184,7 +190,7 @@ Run the kafka tests
 - `KAFKA_BROKERS` - Defaults to `localhost:9092`
 
 ```bash
-yarn test
+pnpm test
 ```
 
 ### Build
@@ -194,7 +200,7 @@ Build a compiled asset bundle to deploy to a teraslice cluster.
 **Install Teraslice CLI:**
 
 ```bash
-yarn global add teraslice-cli
+pnpm add -g teraslice-cli
 ```
 
 ```bash

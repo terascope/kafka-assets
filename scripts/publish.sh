@@ -22,16 +22,16 @@ publish() {
     fi
 
     targetVersion="$(jq -r '.version' package.json)"
-    currentVersion="$(npm info --json 2> /dev/null | jq -r 'first(.[]) | .version // "0.0.0"')"
+    currentVersion="$(npm info --json 2> /dev/null | jq -r '.version // "0.0.0"')"
 
     if [ "$currentVersion" != "$targetVersion" ]; then
         echo "Publishing:"
         echo "  $name@$currentVersion -> $targetVersion"
         if [ "$dryRun" == "false" ]; then
             if [ -n "$publishTag" ]; then
-                yarn npm publish --tag "$publishTag"
+                pnpm publish --tag "$publishTag" --no-git-checks
             else
-                yarn npm publish
+                pnpm publish --no-git-checks
             fi
         fi
     else
@@ -64,7 +64,7 @@ main() {
     projectDir="$(pwd)"
 
     echo "Check NPM Authentication"
-    yarn npm whoami
+    pnpm whoami
 
     for package in "${projectDir}/packages/"*; do
         cd "$package" || continue;
