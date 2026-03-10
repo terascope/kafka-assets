@@ -56,7 +56,7 @@
     "packageManager": "pnpm@10.25.0",
     "engines": {
         "node": ">=22.0.0",
-        "pnpm": ">=10.0.0"
+        "pnpm": ">=10.25.0"
     },
     "documentation": "https://terascope.github.io/kafka-assets",
     "terascope": {
