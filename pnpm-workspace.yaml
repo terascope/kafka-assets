@@ -4,6 +4,7 @@ packages:
 
 onlyBuiltDependencies:
   - "@confluentinc/kafka-javascript"
+  - "unrs-resolver"
 
 
 publicHoistPattern:
