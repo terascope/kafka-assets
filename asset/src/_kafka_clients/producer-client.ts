@@ -21,6 +21,7 @@ export default class ProducerClient extends BaseClient<Producer> {
     private readonly _maxBufferKilobyteSize: number;
     private _hasClientEvents = false;
     private _bytesProduced = 0;
+    private _deliveryErrorCount = 0;
     private adminClient: IAdminClient;
     private deliveryReportConfig: DeliveryReportConfig | undefined;
     deliveryReportStats: DeliveryReportStats = {};
@@ -279,7 +280,9 @@ export default class ProducerClient extends BaseClient<Producer> {
                     currBatchStats.received++;
 
                     if (err) {
+                        this._deliveryErrorCount++;
                         currBatchStats.errors++;
+
                         if (on_error !== 'ignore') {
                             on_error === 'throw'
                                 ? this._events.emit(`delivery-report:batch:${batchNumber}`, err, report, currBatchStats)
@@ -307,5 +310,12 @@ export default class ProducerClient extends BaseClient<Producer> {
     */
     async getBytesProduced() {
         return this._bytesProduced;
+    }
+
+    /**
+     * Get the number of messages that resulted in delivery report errors
+    */
+    async getDeliveryErrorCount() {
+        return this._deliveryErrorCount;
     }
 }

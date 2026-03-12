@@ -81,6 +81,19 @@ export default class KafkaSender implements RouteSenderAPI {
                     this.set(labels, bytesProduced);
                 }
             );
+            context.apis.foundation.promMetrics.addGauge(
+                'kafka_produce_delivery_errors',
+                'Number of messages produced resulting in delivery errors',
+                ['op_name'],
+                async function collect() {
+                    const deliveryErrorCount = await producer.getDeliveryErrorCount();
+                    const labels = {
+                        op_name: config._op,
+                        ...context.apis.foundation.promMetrics.getDefaultLabels()
+                    };
+                    this.set(labels, deliveryErrorCount);
+                }
+            );
         }
         await this.producer.connect();
     }
