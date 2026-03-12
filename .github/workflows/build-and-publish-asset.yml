@@ -12,6 +12,7 @@ permissions:
   id-token: write  # Required for OIDC
   contents: write
   pages: write     # to deploy to Pages
+  
 jobs:
   call-master-asset-build:
     if: github.event.pull_request.merged == true && github.base_ref == 'master'

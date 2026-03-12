@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
-import { SpiedFunction } from 'jest-mock';
 import { execSync } from 'node:child_process';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, APIFactoryRegistry } from '@terascope/job-components';
@@ -482,8 +481,8 @@ describe('KafkaRouteSender', () => {
     });
 
     describe('delivery-reports', () => {
-        let loggerDebugSpy: SpiedFunction;
-        let loggerErrorSpy: SpiedFunction;
+        let loggerDebugSpy: any;
+        let loggerErrorSpy: any;
         afterEach(() => {
             if (loggerDebugSpy) {
                 loggerDebugSpy.mockRestore();
