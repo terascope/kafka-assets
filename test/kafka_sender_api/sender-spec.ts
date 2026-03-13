@@ -501,6 +501,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: true,
+                        waitTimeout: 10000,
                         only_error: false,
                         on_error: 'throw'
                     },
@@ -548,6 +549,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: true,
+                        waitTimeout: 10000,
                         only_error: false,
                         on_error: 'ignore'
                     },
@@ -655,6 +657,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest({
                 delivery_report: {
                     wait: true,
+                    waitTimeout: 10000,
                     only_error: false,
                     on_error: 'log'
                 },
@@ -694,6 +697,7 @@ describe('KafkaRouteSender', () => {
                     topic,
                     delivery_report: {
                         wait: true,
+                        waitTimeout: 10000,
                         only_error: false,
                         on_error: 'log'
                     },
@@ -724,6 +728,49 @@ describe('KafkaRouteSender', () => {
                 expect(loggerErrorSpy).toHaveBeenCalled();
                 expect(loggerDebugSpy).toHaveBeenCalledWith(
                     expect.stringContaining('All 2 delivery reports received for batchNumber 1')
+                );
+            } finally {
+                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                    + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
+            }
+        });
+
+        it('rejects with timeout error when waitTimeout is exceeded', async () => {
+            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
+
+            const sender = await makeTest(
+                {
+                    topic,
+                    delivery_report: {
+                        wait: true,
+                        waitTimeout: 1,
+                        only_error: false,
+                        on_error: 'log'
+                    },
+                    rdkafka_options: {
+                        dr_cb: true,
+                        'message.timeout.ms': 5000,
+                        'request.timeout.ms': 10000,
+                        'socket.timeout.ms': 10000,
+                        retries: 0,
+                        'retry.backoff.ms': 100,
+                        'linger.ms': 0,
+                        'batch.num.messages': 1
+                    }
+                }
+            );
+
+            const obj1 = { hello: 'world' };
+
+            const data = [];
+            for (let i = 0; i < 20; i++) {
+                data.push(DataEntity.make(obj1, { 'standard:route': topicMeta }));
+            }
+
+            try {
+                await expect(sender.send(data)).rejects.toThrow(
+                    'Timed out waiting for delivery reports for batch 1 after 1ms'
                 );
             } finally {
                 execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`

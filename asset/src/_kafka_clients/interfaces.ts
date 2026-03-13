@@ -76,15 +76,19 @@ export interface DeliveryReportBatchStats {
 
 export type DeliveryReportConfig = {
     /**
-     * Wait for all delivery reports before continuing to next batch of messages
+     * Wait for all delivery reports before continuing to next batch of messages.
+     * Requires `waitTimeout` to be set.
      */
     wait: boolean;
     /**
-     * Only receive delivery reports for failed messages. `wait` must be false.
+     * Timeout in milliseconds to wait for all delivery reports before rejecting.
+     */
+    waitTimeout: number | undefined;
+    /**
+     * Only receive delivery reports for failed messages. Must be false when `wait` is true.
      * This setting overrides the `delivery.report.only.error` field in `rdkafka_options`.
      */
     only_error: boolean;
-
     /**
      * Action to take when a delivery report indicates an error with a message.
      * If the `throw` option is chosen `wait` must be true.

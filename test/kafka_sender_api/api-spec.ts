@@ -333,15 +333,27 @@ describe('kafka_sender_api', () => {
                 .rejects.toThrow('Parameter delivery_report.wait must be provided and be of type boolean');
         });
 
+        it('should throw if delivery_report.waitTimeout is missing when wait is true', async () => {
+            const test = await makeTest();
+            await expect(test.create(connection, { delivery_report: { wait: true, only_error: false, on_error: 'log' } as any }))
+                .rejects.toThrow("Parameter delivery_report.waitTimeout must be provided if 'wait' is true and must be of type number");
+        });
+
+        it('should throw if delivery_report.waitTimeout is not a number when wait is true', async () => {
+            const test = await makeTest();
+            await expect(test.create(connection, { delivery_report: { wait: true, waitTimeout: 'long', only_error: false, on_error: 'log' } as any }))
+                .rejects.toThrow("Parameter delivery_report.waitTimeout must be provided if 'wait' is true and must be of type number");
+        });
+
         it('should throw if delivery_report.only_error is not a boolean', async () => {
             const test = await makeTest();
-            await expect(test.create(connection, { delivery_report: { wait: true, only_error: 'yes', on_error: 'log' } as any }))
+            await expect(test.create(connection, { delivery_report: { wait: true, waitTimeout: 10000, only_error: 'yes', on_error: 'log' } as any }))
                 .rejects.toThrow('Parameter delivery_report.only_error must be provided and be of type boolean');
         });
 
         it('should throw if delivery_report.on_error is not a valid value', async () => {
             const test = await makeTest();
-            await expect(test.create(connection, { delivery_report: { wait: true, only_error: false, on_error: 'bad' } as any }))
+            await expect(test.create(connection, { delivery_report: { wait: true, waitTimeout: 10000, only_error: false, on_error: 'bad' } as any }))
                 .rejects.toThrow('Parameter delivery_report.on_error must be provided and be one of');
         });
     });

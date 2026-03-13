@@ -109,6 +109,12 @@ export const schema = {
             if (typeof val.wait !== 'boolean') {
                 throw new Error('Invalid parameter delivery_report.wait, it must be a boolean');
             }
+            if (val.wait === true) {
+                if (typeof val.waitTimeout !== 'number' || val.waitTimeout <= 0) {
+                    throw new Error('Invalid parameter delivery_report.waitTimeout, if `wait` is'
+                        + ' true it must be a positive number');
+                }
+            }
             if (typeof val.only_error !== 'boolean') {
                 throw new Error('Invalid parameter delivery_report.only_error, it must be a boolean');
             }

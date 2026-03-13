@@ -131,6 +131,7 @@ Example API config
             },
             "delivery_report": {
                 "wait": true,
+                "waitTimeout": 120000,
                 "only_error": false,
                 "on_error": "throw"
             },
@@ -321,5 +322,6 @@ await api.send([
 | rdkafka_options | [librdkafka defined settings](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md) that are not subscription specific. **Settings here will override other settings.** See [Configuration Hierarchy](../../packages/terafoundation_kafka_connector/overview.md#configuration-hierarchy) for details on how settings are prioritized. | Object | optional, default to `{}` |
 | delivery_report | Configure actions to take when receiving delivery reports for each message. Either the `dr_cb` or `dr_msg_cb` option must be set to true within `rdkafka_options` to receive delivery reports. | DeliveryReportConfig \| undefined | optional, defaults to `undefined` |
 | delivery_report.wait | Wait for all delivery reports before continuing to next batch of messages | Boolean | required if `delivery_report` defined |
+| delivery_report.waitTimeout | Time allowed to wait for all delivery reports before failing the slice | Number | required if `delivery_report.wait` defined |
 | delivery_report.only_error | Only receive delivery reports for failed messages. `wait` must be false. This setting overrides the `delivery.report.only.error` field in `rdkafka_options`. | Boolean | required if `delivery_report` defined |
 | delivery_report.wait.on_error | Action to take when a delivery report indicates an error with a message. If the `throw` option is chosen `wait` must be true. | `log` \| `throw` \| `ignore` | required if `delivery_report` defined |

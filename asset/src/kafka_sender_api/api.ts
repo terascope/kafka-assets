@@ -35,6 +35,9 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) throw new Error(`Parameter rdkafka_options must be provided and be of type Object, got ${getTypeOf(config.rdkafka_options)}`);
         if (config.delivery_report) {
             if (isNil(config.delivery_report.wait) || !isBoolean(config.delivery_report.wait)) throw new Error(`Parameter delivery_report.wait must be provided and be of type boolean, got ${getTypeOf(config.delivery_report.wait)}`);
+            if (config.delivery_report.wait === true) {
+                if (isNil(config.delivery_report.waitTimeout) || !isNumber(config.delivery_report.waitTimeout)) throw new Error(`Parameter delivery_report.waitTimeout must be provided if 'wait' is true and must be of type number, got ${getTypeOf(config.delivery_report.waitTimeout)}`);
+            }
             if (isNil(config.delivery_report.only_error) || !isBoolean(config.delivery_report.only_error)) throw new Error(`Parameter delivery_report.only_error must be provided and be of type boolean, got ${getTypeOf(config.delivery_report.only_error)}`);
             if (isNil(config.delivery_report.on_error) || !['log', 'throw', 'ignore'].includes(config.delivery_report.on_error)) throw new Error(`Parameter delivery_report.on_error must be provided and be one of ['log', 'throw', 'ignore'], got ${getTypeOf(config.delivery_report.on_error)}`);
         }

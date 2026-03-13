@@ -131,9 +131,14 @@ export default class ProducerClient extends BaseClient<Producer> {
             }
 
             if (this.deliveryReportConfig?.wait && total > 0) {
+                const waitTimeout = this.deliveryReportConfig.waitTimeout;
                 waitForAllReceived = new Promise((resolve, reject) => {
-                    // fixme: this should have a timeout
+                    const timer = setTimeout(() => {
+                        reject(new Error(`Timed out waiting for delivery reports for batch ${batchNumber} after ${waitTimeout}ms`));
+                    }, waitTimeout);
+
                     allReceivedOff = this._once(`delivery-report:batch:${batchNumber}`, (err, args) => {
+                        clearTimeout(timer);
                         const [report, stats] = args;
                         if (err) {
                             const { msgNumber } = report.opaque;
