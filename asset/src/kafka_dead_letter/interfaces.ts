@@ -38,7 +38,7 @@ export interface KafkaDeadLetterConfig extends APIConfig {
     /**
      * Configure actions to take when receiving delivery reports for each message.
      * If neither the `dr_cb` or `dr_msg_cb` option are set within `rdkafka_options`
-     * `dr_cb: true` will add to the config`.
+     * `dr_cb: true` will be added to the config`.
      */
     delivery_report?: DeliveryReportConfig;
 }

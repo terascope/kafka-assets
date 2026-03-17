@@ -62,9 +62,6 @@ Example API config
             "id_field": "uuid",
             "timestamp_field": "created",
             "_connection": "default",
-            "rdkafka_options": {
-                "dr_cb": true
-            },
             "delivery_report": {
                 "wait": false,
                 "only_error": true,
@@ -89,9 +86,6 @@ Example API config
             "id_field": "uuid",
             "timestamp_field": "created",
             "_connection": "default",
-            "rdkafka_options": {
-                "dr_cb": true
-            },
             "delivery_report": {
                 "wait": false,
                 "only_error": false,
@@ -126,9 +120,6 @@ Example API config
             "id_field": "uuid",
             "timestamp_field": "created",
             "_connection": "default",
-            "rdkafka_options": {
-                "dr_cb": true
-            },
             "delivery_report": {
                 "wait": true,
                 "waitTimeout": 120000,
@@ -324,4 +315,4 @@ await api.send([
 | delivery_report.wait | Wait for all delivery reports before continuing to next batch of messages | Boolean | required if `delivery_report` defined |
 | delivery_report.waitTimeout | Time allowed to wait for all delivery reports before failing the slice | Number | required if `delivery_report.wait` defined |
 | delivery_report.only_error | Only receive delivery reports for failed messages. `wait` must be false. This setting overrides the `delivery.report.only.error` field in `rdkafka_options`. | Boolean | required if `delivery_report` defined |
-| delivery_report.wait.on_error | Action to take when a delivery report indicates an error with a message. If the `throw` option is chosen `wait` must be true. | `log` \| `throw` \| `ignore` | required if `delivery_report` defined |
+| delivery_report.on_error | Action to take when a delivery report indicates an error with a message. If the `throw` option is chosen `wait` must be true. | `log` \| `throw` \| `ignore` | required if `delivery_report` defined |

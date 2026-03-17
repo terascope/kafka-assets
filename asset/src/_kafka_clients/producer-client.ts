@@ -132,6 +132,14 @@ export default class ProducerClient extends BaseClient<Producer> {
 
             if (this.deliveryReportConfig?.wait && total > 0) {
                 const waitTimeout = this.deliveryReportConfig.waitTimeout;
+                /**
+                 * When waiting for delivery reports, we want a delivery report error to immediately
+                 * fail a slice, therefore we Promise.race() waitForAllReceived with any flush. If
+                 * there are no delivery errors flush will win the race and we either keep producing
+                 * or, if done producing, wait for all delivery reports to be received. If there is
+                 * an error we immediately stop flushing and throw, causing the slice to fail and we
+                 * retry the whole slice again.
+                 */
                 waitForAllReceived = new Promise((resolve, reject) => {
                     const timer = setTimeout(() => {
                         reject(new Error(`Timed out waiting for delivery reports for batch ${batchNumber} after ${waitTimeout}ms`));
@@ -151,6 +159,12 @@ export default class ProducerClient extends BaseClient<Producer> {
                         }
                     });
                 });
+
+                /** Suppress floating rejection if delivery report error received
+                 * before or between flush calls and before the final await after for-loop.
+                 * The final await of waitForAllReceived will still throw the error.
+                 */
+                waitForAllReceived.catch(() => {});
             }
             // Send the messages, after each buffer size is complete
             // flush the messages

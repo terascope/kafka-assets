@@ -98,8 +98,9 @@ export const schema = {
     },
     delivery_report: {
         doc: 'Configure actions to take when receiving delivery reports for each message.'
-            + ' Either the `dr_cb` or `dr_msg_cb` option must be set to true within `rdkafka_options`'
-            + ' to receive delivery reports.',
+            + ' If neither the `dr_cb` or `dr_msg_cb` option are set within `rdkafka_options`'
+            + ' then `dr_cb` will be set to `true`. Setting `dr_cb` or `dr_msg_cb` to `false`'
+            + ' without the other being `true` will result in an error.',
         default: undefined,
         format: (val: any) => {
             if (!val) return;
