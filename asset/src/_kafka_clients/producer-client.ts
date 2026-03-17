@@ -184,6 +184,7 @@ export default class ProducerClient extends BaseClient<Producer> {
 
                     const flushPromise = this._try(() => this._flush(), 'produce', 0);
 
+                    // See comment for why race is used on waitForAllReceived above
                     await (waitForAllReceived
                         ? Promise.race([flushPromise, waitForAllReceived])
                         : flushPromise);
@@ -210,6 +211,7 @@ export default class ProducerClient extends BaseClient<Producer> {
 
                     const flushPromise = this._try(() => this._flush(), 'produce', 0);
 
+                    // See comment for why race is used on waitForAllReceived above
                     await (waitForAllReceived
                         ? Promise.race([flushPromise, waitForAllReceived])
                         : flushPromise);
@@ -229,6 +231,7 @@ export default class ProducerClient extends BaseClient<Producer> {
 
                     const flushPromise = this._try(() => this._flush(), 'produce', 0);
 
+                    // See comment for why race is used on waitForAllReceived above
                     await (waitForAllReceived
                         ? Promise.race([flushPromise, waitForAllReceived])
                         : flushPromise);
