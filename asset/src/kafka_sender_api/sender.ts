@@ -18,6 +18,8 @@ export default class KafkaSender implements RouteSenderAPI {
     producer: ProducerClient;
     context: Context;
     adminClient: IAdminClient;
+    batchNumber: number;
+    msgNumber: number;
     readonly hasConnected = false;
     readonly config: KafkaSenderAPIConfig = {};
     readonly isWildcard: boolean;
@@ -35,7 +37,8 @@ export default class KafkaSender implements RouteSenderAPI {
             logger: config.logger,
             topic: config.topicOverride || config.topic,
             maxBufferLength: config.max_buffer_size,
-            maxBufferKilobyteSize: config.max_buffer_kbytes_size
+            maxBufferKilobyteSize: config.max_buffer_kbytes_size,
+            deliveryReportConfig: config.delivery_report
         });
 
         this.config = config;
@@ -46,6 +49,8 @@ export default class KafkaSender implements RouteSenderAPI {
         this.logger = config.logger;
         this.context = context;
         this.adminClient = adminClient;
+        this.batchNumber = 1;
+        this.msgNumber = 1;
     }
 
     private tryCatch(fn: FN) {
@@ -76,6 +81,19 @@ export default class KafkaSender implements RouteSenderAPI {
                     this.set(labels, bytesProduced);
                 }
             );
+            context.apis.foundation.promMetrics.addGauge(
+                'kafka_produce_delivery_errors',
+                'Number of messages produced resulting in delivery errors',
+                ['op_name'],
+                async function collect() {
+                    const deliveryErrorCount = await producer.getDeliveryErrorCount();
+                    const labels = {
+                        op_name: config._op,
+                        ...context.apis.foundation.promMetrics.getDefaultLabels()
+                    };
+                    this.set(labels, deliveryErrorCount);
+                }
+            );
         }
         await this.producer.connect();
     }
@@ -92,7 +110,9 @@ export default class KafkaSender implements RouteSenderAPI {
             await this.verify();
         }
 
-        await this.producer.produce(records, this.mapper);
+        await this.producer.produce(records, this.batchNumber, this.mapper);
+        this.batchNumber++;
+        this.msgNumber = 1;
         return records.length;
     }
 
@@ -101,9 +121,10 @@ export default class KafkaSender implements RouteSenderAPI {
         const timestamp = this.getTimestamp(msg);
         const data = msg.toBuffer();
         const topic = this.getRouteTopic(msg);
+        const opaque = { batchNumber: this.batchNumber, msgNumber: this.msgNumber++ };
 
         return {
-            timestamp, key, data, topic
+            timestamp, key, data, topic, opaque
         };
     }
 

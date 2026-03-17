@@ -16,6 +16,8 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
     const exampleData = fs.readFileSync(filePath, 'utf8');
 
     const data: Record<string, any>[] = [];
+    let batchNumber = 1;
+    let msgNumber = 1;
 
     const messages = exampleData.trim()
         .split('\n')
@@ -54,12 +56,21 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
     logger.debug(`loading ${messages.length} into topic: ${topic}...`);
 
     client.flushTimeout = 5000;
-    await client.produce(messages, (_data) => ({
-        topic,
-        key: null,
-        data: _data,
-        timestamp: Date.now()
-    }));
+    await client.produce(messages, batchNumber, (_data) => {
+        const msg = {
+            topic,
+            key: null,
+            data: _data,
+            timestamp: Date.now(),
+            opaque: {
+                batchNumber,
+                msgNumber
+            }
+        };
+        msgNumber++;
+        return msg;
+    });
+    batchNumber++;
 
     logger.debug('DONE loading messages');
 

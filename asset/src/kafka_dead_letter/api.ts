@@ -12,6 +12,8 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     producer!: ProducerClient;
     collector!: Collector<ProduceMessage>;
     admin!: IAdminClient;
+    private batchNumber = 1;
+    private msgNumber = 1;
 
     async initialize(): Promise<void> {
         await super.initialize();
@@ -24,7 +26,8 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
             logger,
             topic: this.apiConfig.topic,
             maxBufferLength: this.apiConfig.max_buffer_size,
-            maxBufferKilobyteSize: this.apiConfig.max_buffer_kbytes_size
+            maxBufferKilobyteSize: this.apiConfig.max_buffer_kbytes_size,
+            deliveryReportConfig: this.apiConfig.delivery_report
         });
 
         this.collector = new Collector({
@@ -37,7 +40,9 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
 
     async shutdown(): Promise<void> {
         const batch = this.collector.flushAll();
-        await this.producer.produce(batch);
+        await this.producer.produce(batch, this.batchNumber);
+        this.batchNumber++;
+        this.msgNumber = 1;
 
         await this.producer.disconnect();
         this.admin.disconnect();
@@ -63,11 +68,15 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
                 error: parseError(err, true)
             };
 
-            const msg = {
+            const msg: ProduceMessage = {
                 timestamp: Date.now(),
                 data: Buffer.from(JSON.stringify(data)),
                 key: null,
-                topic: null
+                topic: null,
+                opaque: {
+                    batchNumber: this.batchNumber,
+                    msgNumber: this.msgNumber++
+                }
             };
 
             this.collector.add(msg);
@@ -76,7 +85,9 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
 
     async onSliceFinalizing(): Promise<void> {
         const batch = this.collector.flushAll();
-        await this.producer.produce(batch);
+        await this.producer.produce(batch, this.batchNumber);
+        this.batchNumber++;
+        this.msgNumber = 1;
     }
 
     private clientConfig() {

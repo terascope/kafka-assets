@@ -11,6 +11,7 @@ import { APIFactory, ConnectionConfig } from '@terascope/job-components';
 import { KafkaSenderConfig } from '../kafka_sender/interfaces.js';
 import KafkaRouteSender from './sender.js';
 import { KafkaSenderAPIConfig } from './interfaces.js';
+import { ProducerTopicConfig, ProducerGlobalConfig } from '@confluentinc/kafka-javascript';
 
 // Defaults are based off of librdkafka defaults.
 // https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md
@@ -31,10 +32,29 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
-        // Since we don't validate this key with convict
-        // we don't have the benefit of setting a default. So we set it here
-        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) {
-            config.rdkafka_options = {};
+        if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) throw new Error(`Parameter rdkafka_options must be provided and be of type Object, got ${getTypeOf(config.rdkafka_options)}`);
+        if (config.delivery_report) {
+            if (isNil(config.delivery_report.wait) || !isBoolean(config.delivery_report.wait)) throw new Error(`Parameter delivery_report.wait must be provided and be of type boolean, got ${getTypeOf(config.delivery_report.wait)}`);
+            if (config.delivery_report.wait === true) {
+                if (isNil(config.delivery_report.waitTimeout) || !isNumber(config.delivery_report.waitTimeout)) throw new Error(`Parameter delivery_report.waitTimeout must be provided if 'wait' is true and must be of type number, got ${getTypeOf(config.delivery_report.waitTimeout)}`);
+            }
+            if (isNil(config.delivery_report.only_error) || !isBoolean(config.delivery_report.only_error)) throw new Error(`Parameter delivery_report.only_error must be provided and be of type boolean, got ${getTypeOf(config.delivery_report.only_error)}`);
+            if (isNil(config.delivery_report.on_error) || !['log', 'throw', 'ignore'].includes(config.delivery_report.on_error)) throw new Error(`Parameter delivery_report.on_error must be provided and be one of ['log', 'throw', 'ignore'], got ${getTypeOf(config.delivery_report.on_error)}`);
+        }
+
+        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = config.rdkafka_options;
+        if (rd_opts.dr_cb === true && config.required_acks === 0) {
+            this.logger.warn('KafkaSenderApi config has dr_cb enabled, but required_acks set to 0.'
+                + ' Delivery reports will only guarantee the message was sent.');
+        }
+        if (rd_opts.dr_msg_cb === true && config.required_acks === 0) {
+            this.logger.warn('KafkaSenderApi config has dr_msg_cb enabled, but required_acks set to 0.'
+                + ' Delivery reports will only guarantee the message was sent.');
+        }
+        if (config.delivery_report) {
+            if (rd_opts.dr_cb === undefined && rd_opts.dr_msg_cb === undefined) {
+                rd_opts.dr_cb = true;
+            }
         }
 
         return config;

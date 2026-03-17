@@ -15,11 +15,13 @@ export default class KafkaAdmin {
         });
     }
 
-    async ensureTopic(topic: string): Promise<void> {
+    async ensureTopic(topic: string | kafka.NewTopic): Promise<void> {
         logger.debug(`ensuring topic "${topic}"...`);
 
+        const topicName = typeof topic === 'string' ? topic : topic.topic;
+
         try {
-            await this.deleteTopic(topic);
+            await this.deleteTopic(topicName);
             await pDelay(500);
         } catch (err) {
             if (!isKafkaError(err) || err.code !== ERR_UNKNOWN_TOPIC_OR_PART) {
@@ -29,17 +31,23 @@ export default class KafkaAdmin {
 
         await this.createTopic(topic);
 
-        logger.debug(`ensured topic "${topic}" is new`);
+        logger.debug(`ensured topic "${topicName}" is new`);
     }
 
-    private createTopic(topic: string) {
+    private createTopic(topic: string | kafka.NewTopic) {
         return new Promise<void>((resolve, reject) => {
-            this._client.createTopic({
-                topic,
-                num_partitions: 1,
-                replication_factor: 1,
-                config: {},
-            }, (err) => {
+            let newTopic: kafka.NewTopic;
+            if (typeof topic === 'string') {
+                newTopic = {
+                    topic,
+                    num_partitions: 1,
+                    replication_factor: 1,
+                    config: {},
+                };
+            } else {
+                newTopic = topic;
+            }
+            this._client.createTopic(newTopic, (err) => {
                 if (err) reject(err);
                 else resolve();
             });

@@ -65,6 +65,49 @@ describe('Kafka Sender API Schema', () => {
             await expect(makeTest({ max_buffer_size: -1231 })).toReject();
         });
 
+        it('should throw if max_buffer_size is a non-number non-undefined value', async () => {
+            await expect(makeTest({ max_buffer_size: 'large' as any })).toReject();
+        });
+
+        it('should throw if max_buffer_kbytes_size is not a positive number', async () => {
+            await expect(makeTest({ max_buffer_kbytes_size: -1 })).toReject();
+            await expect(makeTest({ max_buffer_kbytes_size: 0 })).toReject();
+        });
+
+        it('should throw if max_buffer_kbytes_size is a non-number non-undefined value', async () => {
+            await expect(makeTest({ max_buffer_kbytes_size: 'large' as any })).toReject();
+        });
+
+        it('should accept a valid positive max_buffer_kbytes_size', async () => {
+            await expect(makeTest({ topic: 'test', max_buffer_kbytes_size: 1000 })).toResolve();
+        });
+
+        it('should throw if delivery_report is not a plain object', async () => {
+            await expect(makeTest({ delivery_report: 'invalid' as any })).toReject();
+        });
+
+        it('should throw if delivery_report.wait is not a boolean', async () => {
+            await expect(makeTest({ delivery_report: { wait: 'yes', only_error: false, on_error: 'log' } as any })).toReject();
+        });
+
+        it('should throw if delivery_report.waitTimeout is missing when wait is true', async () => {
+            await expect(makeTest({ delivery_report: { wait: true, only_error: false, on_error: 'log' } as any })).toReject();
+        });
+
+        it('should throw if delivery_report.waitTimeout is not a positive number when wait is true', async () => {
+            await expect(makeTest({ delivery_report: { wait: true, waitTimeout: 0, only_error: false, on_error: 'log' } as any })).toReject();
+            await expect(makeTest({ delivery_report: { wait: true, waitTimeout: -1, only_error: false, on_error: 'log' } as any })).toReject();
+            await expect(makeTest({ delivery_report: { wait: true, waitTimeout: 'long', only_error: false, on_error: 'log' } as any })).toReject();
+        });
+
+        it('should throw if delivery_report.only_error is not a boolean', async () => {
+            await expect(makeTest({ delivery_report: { wait: true, waitTimeout: 10000, only_error: 'yes', on_error: 'log' } as any })).toReject();
+        });
+
+        it('should throw if delivery_report.on_error is not a valid value', async () => {
+            await expect(makeTest({ delivery_report: { wait: true, waitTimeout: 10000, only_error: false, on_error: 'invalid' } as any })).toReject();
+        });
+
         it('should set the required_acks default to 1', async () => {
             const apiManager = await makeTest({
                 _name: 'kafka_sender_api',
@@ -84,6 +127,70 @@ describe('Kafka Sender API Schema', () => {
         it('should allow valid rdkafka_options config', async () => {
             await expect(makeTest({ topic: 'test', rdkafka_options: { 'queue.buffering.max.kbytes': 540000 } })).toResolve();
             await expect(makeTest({ topic: 'test', rdkafka_options: {} })).toResolve();
+        });
+
+        it('should throw when delivery_report is set but dr_cb and dr_msg_cb are both false', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, waitTimeout: 10000, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_cb: false, dr_msg_cb: false }
+            })).toReject();
+        });
+
+        it('should throw when delivery_report is set and dr_cb is false with dr_msg_cb not set', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, waitTimeout: 10000, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_cb: false }
+            })).toReject();
+        });
+
+        it('should throw when delivery_report is set and dr_msg_cb is false with dr_cb not set', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, waitTimeout: 10000, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_msg_cb: false }
+            })).toReject();
+        });
+
+        it('should not throw when delivery_report is set with dr_cb false but dr_msg_cb true', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, waitTimeout: 10000, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_cb: false, dr_msg_cb: true }
+            })).toResolve();
+        });
+
+        it('should not throw when delivery_report is set with dr_msg_cb false but dr_cb true', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, waitTimeout: 10000, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_msg_cb: false, dr_cb: true }
+            })).toResolve();
+        });
+
+        it('should throw when delivery_report.on_error is throw but wait is false', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: false, only_error: false, on_error: 'throw' },
+                rdkafka_options: { dr_cb: true }
+            })).toReject();
+        });
+
+        it('should throw when delivery_report.only_error is true but wait is also true', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: true, waitTimeout: 10000, only_error: true, on_error: 'log' },
+                rdkafka_options: { dr_cb: true }
+            })).toReject();
+        });
+
+        it('should throw when both delivery_report.only_error and rdkafka delivery.report.only.error are set', async () => {
+            await expect(makeTest({
+                topic: 'hello',
+                delivery_report: { wait: false, only_error: false, on_error: 'log' },
+                rdkafka_options: { dr_cb: true, 'delivery.report.only.error': true }
+            })).toReject();
         });
     });
 });

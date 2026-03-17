@@ -1,3 +1,4 @@
+import { ProducerTopicConfig, ProducerGlobalConfig } from '@confluentinc/kafka-javascript';
 import { BaseSchema } from '@terascope/job-components';
 import {
     isNumber,
@@ -82,7 +83,7 @@ export const schema = {
         format: 'duration'
     },
     required_acks: {
-        doc: 'The number of required broker acknowledgements for a given request, set to -1 for all.',
+        doc: 'The number of required broker acknowledgements for a given request, set to 1 for leader only, -1 for all, 0 for none.',
         default: 1,
         format: 'int'
     },
@@ -94,23 +95,65 @@ export const schema = {
                 throw new Error('Invalid parameter rdkafka_options, it must be an object');
             }
         }
+    },
+    delivery_report: {
+        doc: 'Configure actions to take when receiving delivery reports for each message.'
+            + ' If neither the `dr_cb` or `dr_msg_cb` option are set within `rdkafka_options`'
+            + ' then `dr_cb` will be set to `true`. Setting `dr_cb` or `dr_msg_cb` to `false`'
+            + ' without the other being `true` will result in an error.',
+        default: undefined,
+        format: (val: any) => {
+            if (!val) return;
+            if (!isPlainObject(val)) {
+                throw new Error('Invalid parameter delivery_report, it must be an object if defined');
+            }
+            if (typeof val.wait !== 'boolean') {
+                throw new Error('Invalid parameter delivery_report.wait, it must be a boolean');
+            }
+            if (val.wait === true) {
+                if (typeof val.waitTimeout !== 'number' || val.waitTimeout <= 0) {
+                    throw new Error('Invalid parameter delivery_report.waitTimeout, if `wait` is'
+                        + ' true it must be a positive number');
+                }
+            }
+            if (typeof val.only_error !== 'boolean') {
+                throw new Error('Invalid parameter delivery_report.only_error, it must be a boolean');
+            }
+            if (typeof val.on_error !== 'string' || !['log', 'throw', 'ignore'].includes(val.on_error)) {
+                throw new Error('Invalid parameter delivery_report.on_error, it must be one of [\'log\', \'throw\', \'ignore\']');
+            }
+        }
     }
 };
 
 export default class Schema extends BaseSchema<Record<string, any>> {
-    // This validation function is a workaround for the limitations of convict when
-    // parsing configs that have periods `.` within its key values.
-    // https://github.com/mozilla/node-convict/issues/250
-    // This will pull `rdkafka_options` out before convict validation
-    // https://github.com/terascope/kafka-assets/pull/1071
     validate(config: Record<string, any>): any {
-        const { rdkafka_options, ...parsedConfig } = config;
-        const results = super.validate(parsedConfig);
+        const results = super.validate(config);
 
-        return {
-            ...results,
-            rdkafka_options
-        };
+        // cross-field validation
+        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = results.rdkafka_options;
+        const report = results.delivery_report;
+
+        if (report) {
+            if (report.wait === false && report.on_error === 'throw') {
+                throw new Error('If parameter delivery_report.on_error is `throw` then delivery_report.wait must be `true`.');
+            }
+            if (report.wait === true && report.only_error === true) {
+                throw new Error('If parameter delivery_report.only_error is `true` then delivery_report.wait must be `false`.');
+            }
+            if (rd_opts['delivery.report.only.error'] != null && report.only_error != null) {
+                throw new Error('If parameter delivery_report.only_error is set then `delivery.report.only.error`'
+                    + ' can not be set on rdkafka_options.');
+            }
+            if ((rd_opts.dr_cb === false && rd_opts.dr_msg_cb !== true)
+                || (rd_opts.dr_msg_cb === false && rd_opts.dr_cb !== true)
+            ) {
+                throw new Error('Parameter delivery_report needs either the `rdkafka_options.dr_cb` or `rdkafka_options.dr_msg_cb`'
+                    + ` callback to function, ${rd_opts.dr_cb === false ? 'rd_opts.dr_cb' : 'rd_opts.dr_msg_cb'} is set to false.`);
+            }
+        }
+
+        return results;
     }
 
     build(): Record<string, any> {

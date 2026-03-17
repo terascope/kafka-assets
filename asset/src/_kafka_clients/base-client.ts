@@ -146,7 +146,7 @@ export default class BaseClient<T extends kafka.Client<any>> {
     }
 
     /**
-     * A safe once event listener that will return an error first
+     * A safe once event listener that will return an error first.
      * Guaranteed to call the callback at least once
      * @returns an off function to the event listener
     */
@@ -156,19 +156,19 @@ export default class BaseClient<T extends kafka.Client<any>> {
         const cb = once(fn);
         const handler = (...args: any) => {
             if (args[0] && isError(args[0])) {
-                cb(args[0]);
+                cb(args[0], args.slice(1));
                 off();
                 return;
             }
-            cb(null, ...args);
+            cb(null, args);
             off();
         };
 
         this._events.once(event, handler);
 
-        off = once(() => {
+        off = once((...args: any) => {
             this._events.removeListener(event, handler);
-            cb(null);
+            cb(null, args);
             this._cleanup = this._cleanup.filter((f) => f !== off);
         });
 
