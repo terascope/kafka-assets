@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { v4 as uuidv4 } from 'uuid';
 import { debugLogger, castArray } from '@terascope/core-utils';
 import kafka from '@confluentinc/kafka-javascript';
-import { kafkaBrokers } from './config.js';
+import { kafkaBrokers, sslRdkafkaOptions } from './config.js';
 import { ProducerClient, ConsumerClient } from '../../asset/src/_kafka_clients/index.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -38,10 +38,12 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
         'topic.metadata.refresh.interval.ms': -1,
         'log.connection.close': false,
         'metadata.broker.list': castArray(kafkaBrokers).join(','),
+        ...sslRdkafkaOptions,
     }, {});
 
     const adminClient = kafka.AdminClient.create({
-        'metadata.broker.list': castArray(kafkaBrokers).join(',')
+        'metadata.broker.list': castArray(kafkaBrokers).join(','),
+        ...sslRdkafkaOptions,
     });
 
     const client = new ProducerClient(producer, adminClient, {
@@ -90,6 +92,7 @@ export async function readData(topic: string, size: number): Promise<any[]> {
         rebalance_cb: true,
         'group.id': uuidv4(),
         'metadata.broker.list': castArray(kafkaBrokers).join(','),
+        ...sslRdkafkaOptions,
     }, {
         'auto.offset.reset': 'smallest'
     });

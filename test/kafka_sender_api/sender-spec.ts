@@ -7,7 +7,7 @@ import { DataEntity, pDelay } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces.js';
 import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender.js';
-import { kafkaBrokers, kafkaPort, senderTopic } from '../helpers/config.js';
+import { kafkaBrokers, connectorConfig, kafkaPort, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 import { readData } from '../helpers/kafka-data.js';
 import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'terafoundation_kafka_connector/src/interfaces.js';
@@ -27,7 +27,7 @@ describe('KafkaRouteSender', () => {
     const kafkaConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: kafkaBrokers,
+            ...connectorConfig,
         },
         async createClient(config, logger, settings) {
             const result = await Connector.createClient(

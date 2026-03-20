@@ -7,7 +7,7 @@ import { Logger, DataEntity } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import { readData } from '../helpers/kafka-data.js';
-import { kafkaBrokers, deadLetterTopic } from '../helpers/config.js';
+import { kafkaBrokers, connectorConfig, deadLetterTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,7 +20,7 @@ describe('Kafka Dead Letter', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: kafkaBrokers,
+            ...connectorConfig,
         },
         createClient(config: any, logger: Logger, settings: any) {
             return Connector.createClient(config, logger, settings);

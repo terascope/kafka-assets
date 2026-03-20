@@ -9,7 +9,7 @@ import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import KafkaSender from '../../asset/src/kafka_sender/processor.js';
 import { readData } from '../helpers/kafka-data.js';
-import { kafkaBrokers, senderTopic } from '../helpers/config.js';
+import { kafkaBrokers, connectorConfig, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'packages/terafoundation_kafka_connector/src/interfaces.js';
 
@@ -25,7 +25,7 @@ describe('Kafka Sender', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: kafkaBrokers,
+            ...connectorConfig,
         },
         async createClient(config, logger, settings) {
             const result = await Connector.createClient(
