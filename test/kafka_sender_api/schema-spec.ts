@@ -4,7 +4,7 @@ import { ValidatedJobConfig, TestClientConfig } from '@terascope/job-components'
 import { Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig, DEFAULT_API_NAME } from '../../asset/src/kafka_sender_api/interfaces.js';
-import { kafkaBrokers, connectorConfig } from '../helpers/config.js';
+import { connectorConfig } from '../helpers/config.js';
 
 describe('Kafka Sender API Schema', () => {
     let harness: WorkerTestHarness;

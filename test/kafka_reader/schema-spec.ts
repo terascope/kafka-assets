@@ -8,7 +8,7 @@ import { Logger } from '@terascope/core-utils';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import Schema from '../../asset/src/kafka_reader/schema.js';
-import { kafkaBrokers, connectorConfig } from '../helpers/config.js';
+import { connectorConfig } from '../helpers/config.js';
 
 // increase the timeout because CI has been failing a bit
 jest.setTimeout(15_000);

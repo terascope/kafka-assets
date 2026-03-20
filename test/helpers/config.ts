@@ -15,20 +15,24 @@ export const encryptKafka = ENCRYPT_KAFKA === 'true';
 
 export const connectorConfig = {
     brokers: kafkaBrokers,
-    ...(encryptKafka ? {
-        security_protocol: 'ssl' as const,
-        ssl_ca_location: path.join(CERT_PATH, 'CAs/rootCA.pem'),
-        ssl_certificate_location: path.join(CERT_PATH, 'kafka-keypair.pem'),
-        ssl_key_location: path.join(CERT_PATH, 'kafka-keypair.pem'),
-    } : {})
+    ...(encryptKafka
+        ? {
+            security_protocol: 'ssl' as const,
+            ssl_ca_location: path.join(CERT_PATH, 'CAs/rootCA.pem'),
+            ssl_certificate_location: path.join(CERT_PATH, 'kafka-keypair.pem'),
+            ssl_key_location: path.join(CERT_PATH, 'kafka-keypair.pem'),
+        }
+        : {})
 };
 
-export const sslRdkafkaOptions = encryptKafka ? {
-    'security.protocol': 'ssl' as const,
-    'ssl.ca.location': path.join(CERT_PATH, 'CAs/rootCA.pem'),
-    'ssl.certificate.location': path.join(CERT_PATH, 'kafka-keypair.pem'),
-    'ssl.key.location': path.join(CERT_PATH, 'kafka-keypair.pem'),
-} : {};
+export const sslRdkafkaOptions = encryptKafka
+    ? {
+        'security.protocol': 'ssl' as const,
+        'ssl.ca.location': path.join(CERT_PATH, 'CAs/rootCA.pem'),
+        'ssl.certificate.location': path.join(CERT_PATH, 'kafka-keypair.pem'),
+        'ssl.key.location': path.join(CERT_PATH, 'kafka-keypair.pem'),
+    }
+    : {};
 
 export const fetcherTopic = 'kafka-test-fetcher';
 export const fetcherGroup = uuidv4();

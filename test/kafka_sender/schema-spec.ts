@@ -6,7 +6,7 @@ import {
 import { Logger } from '@terascope/core-utils';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
-import { kafkaBrokers, connectorConfig } from '../helpers/config.js';
+import { connectorConfig } from '../helpers/config.js';
 
 describe('Kafka Sender Schema', () => {
     let harness: WorkerTestHarness;

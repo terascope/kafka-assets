@@ -7,7 +7,7 @@ import Connector from 'terafoundation_kafka_connector';
 import { FatalError } from '../../asset/src/_kafka_clients/index.js';
 import KafkaFetcher from '../../asset/src/kafka_reader/fetcher.js';
 import { loadData } from '../helpers/kafka-data.js';
-import { kafkaBrokers, connectorConfig, fetcherTopic, fetcherGroup } from '../helpers/config.js';
+import { connectorConfig, fetcherTopic, fetcherGroup } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 
 const logger = debugLogger('test-kafka-fetcher');

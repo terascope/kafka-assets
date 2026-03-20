@@ -7,7 +7,7 @@ import { Logger, DataEntity } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import { readData } from '../helpers/kafka-data.js';
-import { kafkaBrokers, connectorConfig, deadLetterTopic } from '../helpers/config.js';
+import { connectorConfig, deadLetterTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
