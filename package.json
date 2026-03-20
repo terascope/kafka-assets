@@ -29,7 +29,7 @@
         "test": "ts-scripts test asset --",
         "test:all": "ts-scripts test",
         "test:debug": "ts-scripts test --debug asset --",
-        "test:encrypted": "ENCRYPT_KAFKA=true ts-scripts test asset -- --testPathIgnorePatterns=version-sync-spec,generic-asset-spec,base-client-spec,helpers/helpers-spec,kafka_dead_letter/schema-spec,kafka_reader/slicer-spec",
+        "test:encrypted": "ENCRYPT_KAFKA=true ts-scripts test asset -- --testPathIgnorePatterns version-sync-spec generic-asset-spec base-client-spec helpers/helpers-spec kafka_dead_letter/schema-spec kafka_reader/slicer-spec",
         "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
