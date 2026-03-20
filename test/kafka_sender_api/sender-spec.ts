@@ -7,7 +7,7 @@ import { DataEntity, pDelay } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces.js';
 import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender.js';
-import { kafkaBrokers, connectorConfig, kafkaPort, senderTopic } from '../helpers/config.js';
+import { connectorConfig, encryptKafka, kafkaPort, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 import { readData } from '../helpers/kafka-data.js';
 import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'terafoundation_kafka_connector/src/interfaces.js';
@@ -481,6 +481,15 @@ describe('KafkaRouteSender', () => {
     });
 
     describe('delivery-reports', () => {
+        const kafkaConfigsCmd = `docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            + (encryptKafka ? ' --command-config /tmp/kafka-ssl.properties' : '');
+
+        beforeAll(() => {
+            if (encryptKafka) {
+                execSync(`docker exec ts_test_kafka bash -c "printf 'security.protocol=SSL\\nssl.truststore.type=PEM\\nssl.truststore.location=/etc/kafka/secrets/CAs/rootCA.pem\\nssl.keystore.type=PEM\\nssl.keystore.location=/etc/kafka/secrets/kafka-keypair.pem\\n' > /tmp/kafka-ssl.properties"`);
+            }
+        });
+
         let loggerDebugSpy: any;
         let loggerErrorSpy: any;
         afterEach(() => {
@@ -493,7 +502,7 @@ describe('KafkaRouteSender', () => {
         });
 
         it('can throw on delivery report errors', async () => {
-            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            execSync(kafkaConfigsCmd
                 + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
 
             const sender = await makeTest(
@@ -536,13 +545,13 @@ describe('KafkaRouteSender', () => {
                     'Delivery report error received for batchNumber 1, msgNumber 2, err Error: Local: Message timed out'
                 );
             } finally {
-                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                execSync(kafkaConfigsCmd
                     + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
             }
         });
 
         it('can ignore delivery-report errors', async () => {
-            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            execSync(kafkaConfigsCmd
                 + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
             const sender = await makeTest(
                 {
@@ -582,7 +591,7 @@ describe('KafkaRouteSender', () => {
                 'All 2 delivery reports received for batchNumber 1. Stats: {"received":2,"errors":1,"expected":2}'
             );
 
-            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            execSync(kafkaConfigsCmd
                 + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
         });
 
@@ -689,7 +698,7 @@ describe('KafkaRouteSender', () => {
         });
 
         it('logs errors and completes when wait is true and on_error is log', async () => {
-            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            execSync(kafkaConfigsCmd
                 + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
 
             const sender = await makeTest(
@@ -730,13 +739,13 @@ describe('KafkaRouteSender', () => {
                     expect.stringContaining('All 2 delivery reports received for batchNumber 1')
                 );
             } finally {
-                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                execSync(kafkaConfigsCmd
                     + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
             }
         });
 
         it('rejects with timeout error when waitTimeout is exceeded', async () => {
-            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            execSync(kafkaConfigsCmd
                 + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
 
             const sender = await makeTest(
@@ -773,13 +782,13 @@ describe('KafkaRouteSender', () => {
                     'Timed out waiting for delivery reports for batch 1 after 1ms'
                 );
             } finally {
-                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                execSync(kafkaConfigsCmd
                     + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
             }
         });
 
         it('logs errors from delivery reports when wait is false and on_error is log', async () => {
-            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            execSync(kafkaConfigsCmd
                 + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
 
             const sender = await makeTest(
@@ -816,13 +825,13 @@ describe('KafkaRouteSender', () => {
 
                 expect(loggerErrorSpy).toHaveBeenCalled();
             } finally {
-                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                execSync(kafkaConfigsCmd
                     + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
             }
         });
 
         it('ignores errors from delivery reports when wait is false and on_error is ignore', async () => {
-            execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+            execSync(kafkaConfigsCmd
                 + ' --entity-type clients --entity-default --alter --add-config producer_byte_rate=1');
 
             const sender = await makeTest(
@@ -859,7 +868,7 @@ describe('KafkaRouteSender', () => {
 
                 expect(loggerErrorSpy).not.toHaveBeenCalled();
             } finally {
-                execSync(`docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
+                execSync(kafkaConfigsCmd
                     + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');
             }
         });
