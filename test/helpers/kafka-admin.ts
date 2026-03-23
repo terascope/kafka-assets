@@ -2,7 +2,7 @@ import { debugLogger, pDelay, castArray } from '@terascope/core-utils';
 import kafka from '@confluentinc/kafka-javascript';
 import { ERR_UNKNOWN_TOPIC_OR_PART } from '../../asset/src/_kafka_helpers/error-codes.js';
 import { isKafkaError } from '../../asset/src/_kafka_helpers/index.js';
-import { kafkaBrokers } from './config.js';
+import { kafkaBrokers, sslRdkafkaOptions } from './config.js';
 
 const logger = debugLogger('test-kafka-admin');
 
@@ -12,6 +12,7 @@ export default class KafkaAdmin {
     constructor() {
         this._client = kafka.AdminClient.create({
             'metadata.broker.list': castArray(kafkaBrokers).join(','),
+            ...sslRdkafkaOptions,
         });
     }
 

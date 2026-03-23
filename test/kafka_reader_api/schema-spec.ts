@@ -3,7 +3,7 @@ import { newTestJobConfig, WorkerTestHarness } from 'teraslice-test-harness';
 import { ValidatedJobConfig, TestClientConfig } from '@terascope/job-components';
 import { Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
-import { kafkaBrokers } from '../helpers/config.js';
+import { connectorConfig } from '../helpers/config.js';
 
 describe('Kafka Reader API Schema', () => {
     let harness: WorkerTestHarness;
@@ -11,7 +11,7 @@ describe('Kafka Reader API Schema', () => {
     const clientConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: kafkaBrokers,
+            ...connectorConfig,
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);

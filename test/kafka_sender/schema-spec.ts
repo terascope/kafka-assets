@@ -6,7 +6,7 @@ import {
 import { Logger } from '@terascope/core-utils';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
-import { kafkaBrokers } from '../helpers/config.js';
+import { connectorConfig } from '../helpers/config.js';
 
 describe('Kafka Sender Schema', () => {
     let harness: WorkerTestHarness;
@@ -15,7 +15,7 @@ describe('Kafka Sender Schema', () => {
     const kafkaConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: kafkaBrokers,
+            ...connectorConfig,
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);

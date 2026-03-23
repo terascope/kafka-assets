@@ -4,7 +4,7 @@ import { TestClientConfig } from '@terascope/job-components';
 import { Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaReaderAPI } from '../../asset/src/kafka_reader_api/interfaces.js';
-import { kafkaBrokers, fetcherAPITopic, fetcherGroup } from '../helpers/config.js';
+import { connectorConfig, fetcherAPITopic, fetcherGroup } from '../helpers/config.js';
 import { loadData } from '../helpers/kafka-data.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 
@@ -24,7 +24,7 @@ describe('kafka_reader_api', () => {
     const kafkaConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: kafkaBrokers,
+            ...connectorConfig,
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);

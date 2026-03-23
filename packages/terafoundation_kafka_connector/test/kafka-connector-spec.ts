@@ -7,7 +7,7 @@ import {
     KafkaProducerSettings,
     KafkaAdminSettings
 } from '../src/interfaces.js';
-import { kafkaBrokers } from './config.js';
+import { connectorConfig } from './config.js';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
@@ -16,9 +16,7 @@ function addFormats(): void {
 }
 
 describe('Kafka Connector', () => {
-    const config: KafkaConnectorConfig = {
-        brokers: kafkaBrokers
-    };
+    const config: KafkaConnectorConfig = connectorConfig;
 
     addFormats();
 

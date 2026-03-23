@@ -4,7 +4,7 @@ import { TestClientConfig } from '@terascope/job-components';
 import { Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPI } from '../../asset/src/kafka_sender_api/interfaces.js';
-import { kafkaBrokers, senderTopic } from '../helpers/config.js';
+import { connectorConfig, senderTopic } from '../helpers/config.js';
 
 describe('kafka_sender_api', () => {
     jest.setTimeout(15 * 1000);
@@ -18,7 +18,7 @@ describe('kafka_sender_api', () => {
     const kafkaConfig: TestClientConfig = {
         type: 'kafka',
         config: {
-            brokers: kafkaBrokers,
+            ...connectorConfig,
         },
         async createClient(config: any, logger: Logger, settings: any) {
             const result = await Connector.createClient(config, logger, settings);
