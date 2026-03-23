@@ -18,6 +18,7 @@
         "build:watch": "pnpm build --watch",
         "prepare": "pnpm build",
         "test": "ts-scripts test . --",
+        "test:encrypted": "ENCRYPT_KAFKA=true ts-scripts test . -- --testPathIgnorePatterns helpers-spec",
         "test:debug": "ts-scripts test --debug . --",
         "test:watch": "ts-scripts test --watch . --"
     },
