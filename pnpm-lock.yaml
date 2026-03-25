@@ -21,8 +21,8 @@ importers:
         specifier: ~2.3.2
         version: 2.3.2
       '@terascope/scripts':
-        specifier: ~2.3.4
-        version: 2.3.4(typescript@5.9.3)
+        specifier: file:./terascope-scripts-2.3.5.tgz
+        version: file:terascope-scripts-2.3.5.tgz(typescript@5.9.3)
       '@types/fs-extra':
         specifier: ~11.0.4
         version: 11.0.4
@@ -56,6 +56,9 @@ importers:
       terafoundation_kafka_connector:
         specifier: workspace:~
         version: link:packages/terafoundation_kafka_connector
+      teraslice-client-js:
+        specifier: ^2.3.2
+        version: 2.3.2
       teraslice-test-harness:
         specifier: ~2.4.0
         version: 2.4.0
@@ -94,8 +97,8 @@ importers:
         specifier: ~2.3.2
         version: 2.3.2
       '@terascope/scripts':
-        specifier: ~2.3.4
-        version: 2.3.4(typescript@5.9.3)
+        specifier: file:../../terascope-scripts-2.3.5.tgz
+        version: file:terascope-scripts-2.3.5.tgz(typescript@5.9.3)
       '@types/convict':
         specifier: ~6.1.6
         version: 6.1.6
@@ -606,8 +609,9 @@ packages:
     resolution: {integrity: sha512-pff6Rk8O2nnURWS0b3ra5XHKM61BwZjw5BX48VIUfXbsMKtG3y++sHypiqZ9aDiaMIrxt2eSJXsUJzJHCMpSiQ==}
     engines: {node: '>=22.0.0', pnpm: '>=10.25.0'}
 
-  '@terascope/scripts@2.3.4':
-    resolution: {integrity: sha512-x5g+d0+WzhBAGqs+ivqNhz1/62BW6Vts4lq6doJmbOO9MfO0jQKw7r49eJ0RQt5ERF/6Ul7rKNLm/3sfdcF7Bg==}
+  '@terascope/scripts@file:terascope-scripts-2.3.5.tgz':
+    resolution: {integrity: sha512-OIURLwn+Z88k16hOy9LXqADTR1w54lJkylhrgPTQUS2WF6lBp0AunXXbd3hBmo+QVg9kMGXFRf3xQ7sq+soOTw==, tarball: file:terascope-scripts-2.3.5.tgz}
+    version: 2.3.5
     engines: {node: '>=22.0.0', pnpm: '>=10.25.0'}
     hasBin: true
     peerDependencies:
@@ -1002,6 +1006,10 @@ packages:
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+
+  auto-bind@5.0.1:
+    resolution: {integrity: sha512-ooviqdwwgfIfNmDwo94wlshcdzfO64XV0Cg6oDsDYBJfITDz1EngD2z7DkbvCWn+XIMsIqW27sEVF6qcpJrRcg==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -3224,6 +3232,10 @@ packages:
   teex@1.0.1:
     resolution: {integrity: sha512-eYE6iEI62Ni1H8oIa7KlDU6uQBtqr4Eajni3wX7rpfXD8ysFx8z0+dri+KWEPWpBsxXfxu58x/0jvTVT1ekOSg==}
 
+  teraslice-client-js@2.3.2:
+    resolution: {integrity: sha512-E0M8ZK6AiGgOqrI0N5tuHW/VrLpblFRlEJtJbQROLRuLhHg/gY2KOlrMOCualSTzxPMoLklBedK7tNuRaWLzlw==}
+    engines: {node: '>=22.0.0', pnpm: '>=10.25.0'}
+
   teraslice-test-harness@2.4.0:
     resolution: {integrity: sha512-QLDQRgHtbT+N5efkzoLBqngbXofrc2is9llwWqCpxw9n0Ps0z0v+C/3B5uYFfEAxJb5ah6cb2XTgR65aSDuXlA==}
     engines: {node: '>=22.0.0', pnpm: '>=10.25.0'}
@@ -4270,7 +4282,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@terascope/scripts@2.3.4(typescript@5.9.3)':
+  '@terascope/scripts@file:terascope-scripts-2.3.5.tgz(typescript@5.9.3)':
     dependencies:
       '@kubernetes/client-node': 1.4.0
       '@terascope/core-utils': 2.3.2
@@ -4737,6 +4749,8 @@ snapshots:
   async-function@1.0.0: {}
 
   asynckit@0.4.0: {}
+
+  auto-bind@5.0.1: {}
 
   available-typed-arrays@1.0.7:
     dependencies:
@@ -7351,6 +7365,15 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
+
+  teraslice-client-js@2.3.2:
+    dependencies:
+      '@terascope/core-utils': 2.3.2
+      '@terascope/types': 2.3.1
+      auto-bind: 5.0.1
+      got: 14.6.6
+    transitivePeerDependencies:
+      - supports-color
 
   teraslice-test-harness@2.4.0:
     dependencies:
