@@ -30,7 +30,7 @@
         "@terascope/job-components": "~2.3.2",
         "@terascope/scripts": "~2.3.4",
         "@types/convict": "~6.1.6",
-        "convict": "~6.2.4"
+        "convict": "~6.2.5"
     },
     "engines": {
         "node": ">=22.0.0",
