@@ -21,8 +21,8 @@ importers:
         specifier: ~2.3.2
         version: 2.3.2
       '@terascope/scripts':
-        specifier: file:./terascope-scripts-2.3.5.tgz
-        version: file:terascope-scripts-2.3.5.tgz(typescript@5.9.3)
+        specifier: ~2.3.4
+        version: 2.3.6(typescript@5.9.3)
       '@types/fs-extra':
         specifier: ~11.0.4
         version: 11.0.4
@@ -97,8 +97,8 @@ importers:
         specifier: ~2.3.2
         version: 2.3.2
       '@terascope/scripts':
-        specifier: file:../../terascope-scripts-2.3.5.tgz
-        version: file:terascope-scripts-2.3.5.tgz(typescript@5.9.3)
+        specifier: ~2.3.4
+        version: 2.3.6(typescript@5.9.3)
       '@types/convict':
         specifier: ~6.1.6
         version: 6.1.6
@@ -609,9 +609,8 @@ packages:
     resolution: {integrity: sha512-pff6Rk8O2nnURWS0b3ra5XHKM61BwZjw5BX48VIUfXbsMKtG3y++sHypiqZ9aDiaMIrxt2eSJXsUJzJHCMpSiQ==}
     engines: {node: '>=22.0.0', pnpm: '>=10.25.0'}
 
-  '@terascope/scripts@file:terascope-scripts-2.3.5.tgz':
-    resolution: {integrity: sha512-OIURLwn+Z88k16hOy9LXqADTR1w54lJkylhrgPTQUS2WF6lBp0AunXXbd3hBmo+QVg9kMGXFRf3xQ7sq+soOTw==, tarball: file:terascope-scripts-2.3.5.tgz}
-    version: 2.3.5
+  '@terascope/scripts@2.3.6':
+    resolution: {integrity: sha512-FN3GUTVqlXjQtBG9lVlIkVP4onagfRkKBIRwZzIE709NP+dkuhiOTDgsi7PNvZ16/Fi+3eRTyGlpznlPwLPRvg==}
     engines: {node: '>=22.0.0', pnpm: '>=10.25.0'}
     hasBin: true
     peerDependencies:
@@ -4282,7 +4281,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@terascope/scripts@file:terascope-scripts-2.3.5.tgz(typescript@5.9.3)':
+  '@terascope/scripts@2.3.6(typescript@5.9.3)':
     dependencies:
       '@kubernetes/client-node': 1.4.0
       '@terascope/core-utils': 2.3.2
