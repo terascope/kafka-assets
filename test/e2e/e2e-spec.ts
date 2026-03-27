@@ -5,8 +5,7 @@ import TerasliceClient from 'teraslice-client-js';
 import { v4 as uuidv4 } from 'uuid';
 import { loadData, readData } from '../helpers/kafka-data.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
-
-// const describeE2E = process.env.TEST_TERASLICE === 'true' ? describe : describe.skip;
+import config from './config.js';
 
 describe('Kafka Assets e2e', () => {
     jest.setTimeout(120 * 1000);
@@ -14,13 +13,13 @@ describe('Kafka Assets e2e', () => {
     let client: TerasliceClient;
 
     beforeAll(async () => {
-        client = new TerasliceClient({ host: process.env.TERASLICE_HOST! });
+        client = new TerasliceClient({ host: config.TERASLICE_HOST });
     });
 
     describe('asset upload', () => {
         it('should upload the asset bundle', async () => {
             const result = await client.assets.upload(
-                fs.createReadStream(process.env.ASSET_ZIP_PATH!)
+                fs.createReadStream(config.ASSET_ZIP_PATH)
             );
 
             expect(result.asset_id).toBeDefined();
