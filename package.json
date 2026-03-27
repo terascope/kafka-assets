@@ -30,7 +30,7 @@
         "test:all": "ts-scripts test -- --testPathIgnorePatterns=test/e2e",
         "test:debug": "ts-scripts test --debug asset --",
         "test:encrypted": "ENCRYPT_KAFKA=true ts-scripts test -- --testPathIgnorePatterns 'version-sync-spec|generic-asset-spec|base-client-spec|helpers/helpers-spec|kafka_dead_letter/schema-spec|kafka_reader/slicer-spec|test/e2e'",
-        "test:e2e": "earl assets build --overwrite && ASSET_ZIP_PATH=$(ls ./build/*.zip | head -1) TEST_TERASLICE=true ts-scripts test -- --testPathPatterns=test/e2e",
+        "test:e2e": "earl assets build --overwrite && ASSET_ZIP_PATH=$(./scripts/asset-zip-path.sh) TEST_TERASLICE=true ts-scripts test -- --testPathPatterns=test/e2e",
         "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
@@ -50,7 +50,7 @@
         "jest-extended": "~7.0.0",
         "semver": "~7.7.4",
         "terafoundation_kafka_connector": "workspace:~",
-        "teraslice-client-js": "^2.3.2",
+        "teraslice-client-js": "~2.3.2",
         "teraslice-test-harness": "~2.4.0",
         "ts-jest": "~29.4.6",
         "typescript": "~5.9.3",
