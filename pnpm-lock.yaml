@@ -57,7 +57,7 @@ importers:
         specifier: workspace:~
         version: link:packages/terafoundation_kafka_connector
       teraslice-client-js:
-        specifier: ^2.3.2
+        specifier: ~2.3.2
         version: 2.3.2
       teraslice-test-harness:
         specifier: ~2.4.0
