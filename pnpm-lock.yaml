@@ -23,6 +23,9 @@ importers:
       '@terascope/scripts':
         specifier: ~2.3.4
         version: 2.3.6(typescript@5.9.3)
+      '@terascope/types':
+        specifier: ~2.3.1
+        version: 2.3.1
       '@types/fs-extra':
         specifier: ~11.0.4
         version: 11.0.4
