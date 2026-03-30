@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import 'jest-extended';
 import fs from 'node:fs';
-import TerasliceClient from 'teraslice-client-js';
+import { TerasliceClient, Job } from 'teraslice-client-js';
 import { v4 as uuidv4 } from 'uuid';
 import { loadData, readData } from '../helpers/kafka-data.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
@@ -39,7 +39,7 @@ describe('Kafka Assets e2e', () => {
         const consumerGroup = `e2e-group-${uuidv4()}`;
 
         const admin = new KafkaAdmin();
-        let ex: any;
+        let job: Job;
         let exampleData: Record<string, any>[];
 
         beforeAll(async () => {
@@ -52,9 +52,9 @@ describe('Kafka Assets e2e', () => {
         afterAll(async () => {
             admin.disconnect();
 
-            if (ex) {
+            if (job) {
                 try {
-                    await ex.stop();
+                    await job.stop();
                 } catch (_err) {
                     // job may already be stopped
                 }
@@ -62,7 +62,7 @@ describe('Kafka Assets e2e', () => {
         });
 
         it('should pipe records end to end', async () => {
-            ex = await client.jobs.submit({
+            job = await client.jobs.submit({
                 name: 'e2e-kafka-pipeline',
                 lifecycle: 'persistent',
                 workers: 1,
@@ -93,7 +93,7 @@ describe('Kafka Assets e2e', () => {
                 ]
             });
 
-            await ex.waitForStatus('running');
+            await job.waitForStatus('running');
 
             // Poll until we have all expected messages (up to 6 × 10s = 60s)
             let consumed: any[] = [];
@@ -102,8 +102,7 @@ describe('Kafka Assets e2e', () => {
                 if (consumed.length >= exampleData.length) break;
             }
 
-            await ex.stop();
-            ex = null;
+            await job.stop();
 
             expect(consumed).toBeArrayOfSize(exampleData.length);
             for (let i = 0; i < exampleData.length; i++) {
