@@ -10,5 +10,5 @@ on:
       - master
 jobs:
   call-asset-test-workflow:
-    uses: terascope/workflows/.github/workflows/asset-test.yml@asset-e2e
+    uses: terascope/workflows/.github/workflows/asset-test.yml@main
     secrets: inherit
