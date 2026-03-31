@@ -16,10 +16,10 @@ permissions:
 jobs:
   call-master-asset-build:
     if: github.event.pull_request.merged == true && github.base_ref == 'master'
-    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@asset-e2e
+    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@main
     secrets: inherit
 
   call-prerelease-asset-build:
     if: github.event.pull_request.merged == true && startsWith(github.base_ref, 'release/kafka-assets-v')
-    uses: terascope/workflows/.github/workflows/prerelease-asset-build-and-publish.yml@asset-e2e
+    uses: terascope/workflows/.github/workflows/prerelease-asset-build-and-publish.yml@main
     secrets: inherit
