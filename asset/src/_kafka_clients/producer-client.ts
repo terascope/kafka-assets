@@ -1,12 +1,12 @@
 import {
     IAdminClient, LibrdKafkaError, Producer, TopicDescription
 } from '@confluentinc/kafka-javascript';
+import { pRetry } from '@terascope/core-utils';
 import {
     DeliveryReportConfig, DeliveryReportOpaque, DeliveryReportBatchStats,
     DeliveryReportStats, ProduceMessage, ProducerClientConfig
 } from './interfaces.js';
-import { wrapError, AnyKafkaError, isKafkaError } from '../_kafka_helpers/index.js';
-import { ERR__QUEUE_FULL, ERR__TIMED_OUT } from '../_kafka_helpers/error-codes.js';
+import { wrapError, AnyKafkaError } from '../_kafka_helpers/index.js';
 import BaseClient from './base-client.js';
 
 /**
@@ -18,8 +18,6 @@ export default class ProducerClient extends BaseClient<Producer> {
     // one minute
     flushTimeout = 60000;
 
-    private readonly _maxBufferMsgLength: number;
-    private readonly _maxBufferKilobyteSize: number;
     private _hasClientEvents = false;
     private _bytesProduced = 0;
     private _deliveryErrorCount = 0;
@@ -29,8 +27,6 @@ export default class ProducerClient extends BaseClient<Producer> {
 
     constructor(client: Producer, adminClient: IAdminClient, config: ProducerClientConfig) {
         super(client, config.topic, config.logger);
-        this._maxBufferMsgLength = config.maxBufferLength;
-        this._maxBufferKilobyteSize = config.maxBufferKilobyteSize;
         this.adminClient = adminClient;
         this.deliveryReportConfig = config.deliveryReportConfig;
     }
@@ -112,9 +108,6 @@ export default class ProducerClient extends BaseClient<Producer> {
 
         const total = messages.length;
         const endOfSliceIndex = (total - 1);
-        // This is a counter that will track the bytes written in the current batch
-        let currentBatchSizeInBytes = 0;
-        const maxQueueByteSize = this._maxBufferKilobyteSize * 1024;
 
         this._logger.debug(`Kafka producing ${total} messages...`);
 
@@ -165,65 +158,39 @@ export default class ProducerClient extends BaseClient<Producer> {
                 waitForAllReceived.catch(() => {});
             }
 
-            // Queue protection uses two layers:
-            //   1. Proactive: we track cumulative byte size ourselves and flush before
-            //      we expect the internal queue to fill up (check below).
-            //   2. Reactive: if produce() still throws ERR__QUEUE_FULL (e.g. a single
-            //      message is larger than expected, or timing caused the queue to fill
-            //      between our check and the call), we flush and retry (inner while loop).
             for (let i = 0; i < total; i++) {
                 const msg = messages[i];
                 const message: ProduceMessage = (map == null) ? msg : map(msg);
-                const messageByteSize = Buffer.byteLength(message.data);
 
-                this._bytesProduced += messageByteSize;
-                currentBatchSizeInBytes += messageByteSize;
+                this._bytesProduced += Buffer.byteLength(message.data);
 
-                // Proactively flush when the tracked batch size reaches the kbyte limit,
-                // to prevent the internal queue from filling up.
-                if (currentBatchSizeInBytes >= maxQueueByteSize) {
-                    this._logger.warn(
-                        `Kafka producer queue size exceeded limit: max_buffer_kbytes_size = ${this._maxBufferKilobyteSize} KB, `
-                        + `Current batch size = ${currentBatchSizeInBytes / 1024} KB. Initiating queue flush to prevent overflow...`
+                await pRetry(async () => {
+                    this._client.produce(
+                        message.topic || this._topic,
+                        // This is the partition. There may be use cases where
+                        // we'll need to control this.
+                        null,
+                        message.data,
+                        message.key,
+                        message.timestamp,
+                        ...this.deliveryReportConfig ? [message.opaque] : []
                     );
-                    await this._flushWithRetry(waitForAllReceived);
-                    currentBatchSizeInBytes = messageByteSize;
-                }
-
-                // Wrap produce in a retry loop: if the internal queue is full despite the
-                // proactive flush above, flush and retry until the produce succeeds.
-                let produced = false;
-                while (!produced) {
-                    try {
-                        this._client.produce(
-                            message.topic || this._topic,
-                            // This is the partition. There may be use cases where
-                            // we'll need to control this.
-                            null,
-                            message.data,
-                            message.key,
-                            message.timestamp,
-                            ...this.deliveryReportConfig ? [message.opaque] : []
-                        );
-                        produced = true;
-                    } catch (err) {
-                        if (isKafkaError(err) && err.code === ERR__QUEUE_FULL) {
-                            this._logger.warn('Kafka producer queue is full, flushing before retrying produce...');
-                            await this._flushWithRetry(waitForAllReceived);
-                            currentBatchSizeInBytes = messageByteSize;
-                        } else {
-                            throw err;
-                        }
-                    }
-                }
+                }, {
+                    retries: 30,
+                    backoff: 2,
+                    logError: this._logger.error.bind(this._logger),
+                    matches: [/queue full/i]
+                });
 
                 // Flush at the end of each slice to ensure all buffered messages are sent.
                 if (i === endOfSliceIndex) {
                     this._logger.debug(
-                        `End of message slice reached: Flushing the queue after processing ${total} messages. `
+                        `End of message slice reached: Flushing the queue after processing ${total} messages.`
                     );
-                    await this._flushWithRetry(waitForAllReceived);
-                    currentBatchSizeInBytes = 0;
+                    const flushPromise = this._try(() => this._flush(), 'produce', 30);
+                    await (waitForAllReceived
+                        ? Promise.race([flushPromise, waitForAllReceived])
+                        : flushPromise);
                 }
             }
 
@@ -244,70 +211,6 @@ export default class ProducerClient extends BaseClient<Producer> {
                 this._logger.error(clientError);
             }
         }
-    }
-
-    /**
-     * Flush the producer queue with automatic retry on timeout.
-     *
-     * librdkafka's flush() can time out if there are more messages in flight than
-     * it can confirm within `flushTimeout`. Rather than treating every timeout as
-     * a hard failure, we check whether the queue actually shrank during the flush:
-     *   - If it shrank → progress is being made, so retry the flush.
-     *   - If it didn't shrink → something is genuinely stuck, so throw.
-     *
-     * Before each attempt we snapshot the queue size via `_getQueueByteSize()` so
-     * we have a baseline to compare against after a timeout.
-     *
-     * If `waitForAllReceived` is provided (delivery-report mode) it is raced
-     * against each flush so a delivery error short-circuits immediately instead
-     * of waiting for the full flush timeout to expire.
-    */
-    private async _flushWithRetry(waitForAllReceived?: Promise<void>): Promise<void> {
-        while (true) {
-            const preFlushQueueBytes = await this._getQueueByteSize();
-            const flushPromise = this._try(() => this._flush(), 'produce', 0);
-            try {
-                // See comment for why race is used on waitForAllReceived above
-                await (waitForAllReceived
-                    ? Promise.race([flushPromise, waitForAllReceived])
-                    : flushPromise);
-                return;
-            } catch (err) {
-                if (isKafkaError(err) && err.code === ERR__TIMED_OUT) {
-                    const postFlushQueueBytes = await this._getQueueByteSize();
-                    if (postFlushQueueBytes < preFlushQueueBytes) {
-                        this._logger.warn(
-                            `Flush timed out but made progress (${preFlushQueueBytes} -> ${postFlushQueueBytes} bytes queued), retrying flush...`
-                        );
-                    } else {
-                        throw new Error(
-                            `Flush timed out and made no progress: queue size unchanged at ${postFlushQueueBytes} bytes`
-                        );
-                    }
-                } else {
-                    throw err;
-                }
-            }
-        }
-    }
-
-    /**
-     * Awaits the next librdkafka stats event and returns the number of bytes
-     * currently held in the producer's internal send queue (`msg_size`).
-     *
-     * librdkafka emits 'event.stats' on the interval set by `statistics.interval.ms`
-     * (configured to 100ms in KafkaSenderApi). The stats payload is a JSON string
-     * containing a nested `message` field which is itself a JSON string — hence the
-     * double parse. `msg_size` reflects bytes not yet acknowledged by the broker,
-     * so it drops to 0 once everything has been successfully sent and confirmed.
-    */
-    private _getQueueByteSize(): Promise<number> {
-        return new Promise((resolve) => {
-            (this._client as any).once('event.stats', (s: any) => {
-                const stats = typeof s === 'string' ? JSON.parse(s) : s;
-                resolve(JSON.parse(stats.message).msg_size);
-            });
-        });
     }
 
     /**
