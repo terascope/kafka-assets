@@ -145,6 +145,9 @@ export default class Schema extends BaseSchema<Record<string, any>> {
                 throw new Error('If parameter delivery_report.only_error is set then `delivery.report.only.error`'
                     + ' can not be set on rdkafka_options.');
             }
+            if (report.only_error === true && report.on_error !== 'log') {
+                throw new Error('If parameter delivery_report.only_error is true then delivery_report.on_error must be `log`');
+            }
             if ((rd_opts.dr_cb === false && rd_opts.dr_msg_cb !== true)
                 || (rd_opts.dr_msg_cb === false && rd_opts.dr_cb !== true)
             ) {

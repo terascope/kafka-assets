@@ -542,7 +542,7 @@ describe('KafkaRouteSender', () => {
             } catch (err) {
                 expect(err).toHaveProperty(
                     'message',
-                    'Delivery report error received for batchNumber 1, msgNumber 2, err Error: Local: Message timed out'
+                    'Delivery-report: error received for batchNumber 1, msgNumber 2, err Error: Local: Message timed out'
                 );
             } finally {
                 execSync(kafkaConfigsCmd
@@ -588,7 +588,7 @@ describe('KafkaRouteSender', () => {
 
             expect(loggerErrorSpy).not.toHaveBeenCalled();
             expect(loggerDebugSpy).toHaveBeenLastCalledWith(
-                'All 2 delivery reports received for batchNumber 1. Stats: {"received":2,"errors":1,"expected":2}'
+                'Delivery-report: all 2 reports received for batchNumber 1. Stats: {"received":2,"errors":1,"expected":2}'
             );
 
             execSync(kafkaConfigsCmd
@@ -622,10 +622,10 @@ describe('KafkaRouteSender', () => {
             await pDelay(500);
 
             expect(loggerDebugSpy).toHaveBeenCalledWith(
-                expect.stringContaining('All 2 delivery reports received for batch 1')
+                expect.stringContaining('Delivery-report: all 2 reports received for batch 1')
             );
             expect(loggerDebugSpy).toHaveBeenCalledWith(
-                expect.stringContaining('All 2 delivery reports received for batch 2')
+                expect.stringContaining('Delivery-report: all 2 reports received for batch 2')
             );
             expect(sender.producer.deliveryReportStats).toEqual({});
         });
@@ -653,12 +653,12 @@ describe('KafkaRouteSender', () => {
 
             await sender.send(data);
             expect(loggerDebugSpy).not.toHaveBeenCalledWith(
-                expect.stringContaining('All 2 delivery reports received for batch 1')
+                expect.stringContaining('Delivery-report: all 2 reports received for batch 1')
             );
 
             await sender.send(data);
             expect(loggerDebugSpy).not.toHaveBeenCalledWith(
-                expect.stringContaining('All 2 delivery reports received for batch 2')
+                expect.stringContaining('Delivery-report: all 2 reports received for batch 2')
             );
         });
 
@@ -687,12 +687,12 @@ describe('KafkaRouteSender', () => {
             await sender.send(data);
 
             expect(loggerDebugSpy).toHaveBeenCalledWith(
-                expect.stringContaining('All 2 delivery reports received for batchNumber 1')
+                expect.stringContaining('Delivery-report: all 2 reports received for batchNumber 1')
             );
 
             await sender.send(data);
             expect(loggerDebugSpy).toHaveBeenCalledWith(
-                expect.stringContaining('All 2 delivery reports received for batchNumber 2')
+                expect.stringContaining('Delivery-report: all 2 reports received for batchNumber 2')
             );
             expect(sender.producer.deliveryReportStats).toEqual({});
         });
@@ -736,7 +736,7 @@ describe('KafkaRouteSender', () => {
 
                 expect(loggerErrorSpy).toHaveBeenCalled();
                 expect(loggerDebugSpy).toHaveBeenCalledWith(
-                    expect.stringContaining('All 2 delivery reports received for batchNumber 1')
+                    expect.stringContaining('Delivery-report: all 2 reports received for batchNumber 1')
                 );
             } finally {
                 execSync(kafkaConfigsCmd
@@ -779,7 +779,7 @@ describe('KafkaRouteSender', () => {
 
             try {
                 await expect(sender.send(data)).rejects.toThrow(
-                    'Timed out waiting for delivery reports for batch 1 after 1ms'
+                    /^Delivery-report: waitTimeout exceeded for batch 1:/
                 );
             } finally {
                 execSync(kafkaConfigsCmd
