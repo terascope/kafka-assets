@@ -122,6 +122,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         }
 
         try {
+            // If only_error is true or there are no messages we will not gather batch stats
             if (this.deliveryReportConfig && !this.deliveryReportConfig?.only_error && total > 0) {
                 this.deliveryReportStats[batchNumber] = {
                     received: 0,
@@ -142,7 +143,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                  */
                 waitForAllReceived = new Promise((resolve, reject) => {
                     const timer = setTimeout(() => {
-                        reject(new Error(`Timed out waiting for delivery reports for batch ${batchNumber} after ${waitTimeout}ms`));
+                        reject(new Error(`Delivery-report: waitTimeout exceeded for batch ${batchNumber}: ${waitTimeout}ms.`));
                     }, waitTimeout);
 
                     allReceivedOff = this._once(`delivery-report:batch:${batchNumber}`, (err, args) => {
@@ -150,10 +151,10 @@ export default class ProducerClient extends BaseClient<Producer> {
                         const [report, stats] = args;
                         if (err) {
                             const { msgNumber } = report.opaque;
-                            reject(new Error(`Delivery report error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
+                            reject(new Error(`Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
                         } else {
                             this._logger.debug(
-                                `All ${report?.opaque?.msgNumber} delivery reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
+                                `Delivery-report: all ${report?.opaque?.msgNumber} reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
                             );
                             resolve();
                         }
@@ -296,6 +297,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                 const { batchNumber, msgNumber } = report.opaque as DeliveryReportOpaque;
                 const currBatchStats: DeliveryReportBatchStats | undefined
                     = this.deliveryReportStats[batchNumber];
+                const errLogMsg = `Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}. Report: ${JSON.stringify(report)}`;
 
                 if (currBatchStats && this.deliveryReportConfig) {
                     const { on_error, wait } = this.deliveryReportConfig;
@@ -308,19 +310,20 @@ export default class ProducerClient extends BaseClient<Producer> {
                         if (on_error !== 'ignore') {
                             on_error === 'throw'
                                 ? this._events.emit(`delivery-report:batch:${batchNumber}`, err, report, currBatchStats)
-                                : this._logger.error(err, `failed delivery for message ${msgNumber} of batch ${batchNumber}. Report: ${report}`);
+                                : this._logger.error(err, errLogMsg);
                         }
                     }
 
                     if (currBatchStats.received === currBatchStats.expected) {
                         wait
                             ? this._events.emit(`delivery-report:batch:${batchNumber}`, report, currBatchStats)
-                            : this._logger.debug(`All ${currBatchStats.received} delivery reports received for batch ${batchNumber}: ${currBatchStats}`);
+                            : this._logger.debug(`Delivery-report: all ${currBatchStats.received} reports received for batch ${batchNumber}: ${JSON.stringify(currBatchStats)}`);
                         delete this.deliveryReportStats[batchNumber];
                     }
                 } else {
+                    // currBatchStats will not exist when only_error is true. on_error must be log.
                     if (err) {
-                        this._logger.error(err, `failed delivery for message ${msgNumber} of batch ${batchNumber}. Report: ${report}`);
+                        this._logger.error(err, errLogMsg);
                     }
                 }
             });
