@@ -45,6 +45,7 @@ export interface ProducerClientConfig {
     maxBufferLength: number;
     maxBufferKilobyteSize: number;
     deliveryReportConfig?: DeliveryReportConfig;
+    queue_backpressure_strategy?: 'threshold_flush' | 'retry_on_full';
 }
 
 export interface FatalError extends Error {

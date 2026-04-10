@@ -20,6 +20,7 @@ export default class ProducerClient extends BaseClient<Producer> {
 
     private readonly _maxBufferMsgLength: number;
     private readonly _maxBufferKilobyteSize: number;
+    private readonly _queueBackpressureStrategy: 'threshold_flush' | 'retry_on_full';
     private _hasClientEvents = false;
     private _bytesProduced = 0;
     private _deliveryErrorCount = 0;
@@ -32,6 +33,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         super(client, config.topic, config.logger);
         this._maxBufferMsgLength = config.maxBufferLength;
         this._maxBufferKilobyteSize = config.maxBufferKilobyteSize;
+        this._queueBackpressureStrategy = config.queue_backpressure_strategy ?? 'threshold_flush';
         this.adminClient = adminClient;
         this.deliveryReportConfig = config.deliveryReportConfig;
     }
@@ -82,7 +84,8 @@ export default class ProducerClient extends BaseClient<Producer> {
     }
 
     /**
-     * Produce messages and flush after the queue is full
+     * Dispatches to produceV1 or produceV2 based on the queue_backpressure_strategy
+     * set at construction time.
      *
      * @param messages - an array of data or an array of pre-built kafka messages
      * @param batchNumber - a number representing the number of batches (slices for
@@ -97,6 +100,40 @@ export default class ProducerClient extends BaseClient<Producer> {
         map: (msg: T) => ProduceMessage,
     ): Promise<void>;
     async produce(
+        messages: any[],
+        batchNumber: number,
+        map?: (msg: any) => ProduceMessage,
+    ): Promise<void> {
+        if (this._queueBackpressureStrategy === 'retry_on_full') {
+            return map != null
+                ? this.produceV2(messages, batchNumber, map)
+                : this.produceV2(messages, batchNumber);
+        }
+        return map != null
+            ? this.produceV1(messages, batchNumber, map)
+            : this.produceV1(messages, batchNumber);
+    }
+
+    /**
+     * Produce messages and flush after the queue is full (threshold_flush strategy).
+     *
+     * > **NOTE:** This is the `threshold_flush` implementation. When making changes here,
+     * > ensure the same change is applied to {@link produceV2} if it also applies to the
+     * > `retry_on_full` strategy, and vice-versa.
+     *
+     * @param messages - an array of data or an array of pre-built kafka messages
+     * @param batchNumber - a number representing the number of batches (slices for
+     *                      teraslice jobs) since the client was created.
+     * @param [map] - a function to format a message for kafka
+     *                (used to avoid having to make over the data multiple times)
+    */
+    async produceV1(messages: ProduceMessage[], batchNumber: number): Promise<void>;
+    async produceV1<T>(
+        messages: T[],
+        batchNumber: number,
+        map: (msg: T) => ProduceMessage,
+    ): Promise<void>;
+    async produceV1(
         messages: any[],
         batchNumber: number,
         map?: (msg: any) => ProduceMessage,

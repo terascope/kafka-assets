@@ -38,7 +38,8 @@ export default class KafkaSender implements RouteSenderAPI {
             topic: config.topicOverride || config.topic,
             maxBufferLength: config.max_buffer_size,
             maxBufferKilobyteSize: config.max_buffer_kbytes_size,
-            deliveryReportConfig: config.delivery_report
+            deliveryReportConfig: config.delivery_report,
+            queue_backpressure_strategy: config.queue_backpressure_strategy
         });
 
         this.config = config;
@@ -110,11 +111,7 @@ export default class KafkaSender implements RouteSenderAPI {
             await this.verify();
         }
 
-        if (this.config.queue_backpressure_strategy === 'retry_on_full') {
-            await this.producer.produceV2(records, this.batchNumber, this.mapper);
-        } else {
-            await this.producer.produce(records, this.batchNumber, this.mapper);
-        }
+        await this.producer.produce(records, this.batchNumber, this.mapper);
         this.batchNumber++;
         this.msgNumber = 1;
         return records.length;
