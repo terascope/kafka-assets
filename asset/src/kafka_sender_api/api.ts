@@ -81,12 +81,6 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 'batch.num.messages': kafkaConfig.size,
                 'topic.metadata.refresh.interval.ms': kafkaConfig.metadata_refresh,
                 'log.connection.close': false,
-                // Emit librdkafka stats events every 100ms when using retry_on_full strategy.
-                // Without this, no 'event.stats' events fire and the flush-retry logic in
-                // ProducerClient would hang indefinitely.
-                ...(kafkaConfig.queue_backpressure_strategy === 'retry_on_full'
-                    ? { 'statistics.interval.ms': 100 }
-                    : {}),
                 // librdkafka >1.0.0 changed the default broker acknowledgement
                 // to all brokers, but this has performance issues
                 'request.required.acks': kafkaConfig.required_acks,
