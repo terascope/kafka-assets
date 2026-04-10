@@ -1,7 +1,7 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "6.3.0",
+    "version": "6.3.1",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "homepage": "https://github.com/terascope/kafka-assets",
@@ -29,8 +29,8 @@
         "test": "ts-scripts test asset -- --testPathIgnorePatterns=test/e2e",
         "test:all": "ts-scripts test -- --testPathIgnorePatterns=test/e2e",
         "test:debug": "ts-scripts test --debug asset --",
-        "test:encrypted": "ENCRYPT_KAFKA=true ts-scripts test -- --testPathIgnorePatterns 'version-sync-spec|generic-asset-spec|base-client-spec|helpers/helpers-spec|kafka_dead_letter/schema-spec|kafka_reader/slicer-spec|test/e2e'",
         "test:e2e": "earl assets build --overwrite && ASSET_ZIP_PATH=$(./scripts/asset-zip-path.sh) TEST_TERASLICE=true ts-scripts test -- --testPathPatterns=test/e2e",
+        "test:encrypted": "ENCRYPT_KAFKA=true ts-scripts test -- --testPathIgnorePatterns 'version-sync-spec|generic-asset-spec|base-client-spec|helpers/helpers-spec|kafka_dead_letter/schema-spec|kafka_reader/slicer-spec|test/e2e'",
         "test:watch": "ts-scripts test --watch asset --"
     },
     "devDependencies": {
