@@ -598,7 +598,6 @@ export default class ProducerClient extends BaseClient<Producer> {
                 }, {
                     retries: Infinity,
                     backoff: 2,
-                    logError: this._logger.warn.bind(this._logger),
                     matches: [/queue full/i]
                 });
 
