@@ -96,6 +96,14 @@ export const schema = {
             }
         }
     },
+    queue_backpressure_strategy: {
+        doc: 'Controls how the producer handles backpressure from a full internal queue. '
+            + '"threshold_flush" (default) proactively flushes when message count or byte-size '
+            + 'thresholds are reached. "retry_on_full" retries each produce call with exponential '
+            + 'backoff when librdkafka returns a queue-full error, then flushes once at end of slice.',
+        default: 'threshold_flush',
+        format: ['threshold_flush', 'retry_on_full']
+    },
     delivery_report: {
         doc: 'Configure actions to take when receiving delivery reports for each message.'
             + ' If neither the `dr_cb` or `dr_msg_cb` option are set within `rdkafka_options`'

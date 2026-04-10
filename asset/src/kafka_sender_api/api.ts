@@ -32,6 +32,7 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
         if (isNil(config.metadata_refresh) || !isNumber(config.metadata_refresh)) throw new Error(`Parameter metadata_refresh must be provided and be of type number, got ${getTypeOf(config.metadata_refresh)}`);
         if (isNil(config.required_acks) || !isNumber(config.required_acks)) throw new Error(`Parameter required_acks must be provided and be of type number, got ${getTypeOf(config.required_acks)}`);
         if (isNil(config.logger)) throw new Error(`Parameter logger must be provided and be of type Logger, got ${getTypeOf(config.logger)}`);
+        if (isNotNil(config.queue_backpressure_strategy) && !['threshold_flush', 'retry_on_full'].includes(config.queue_backpressure_strategy)) throw new Error(`Parameter queue_backpressure_strategy must be either "threshold_flush" or "retry_on_full", got ${config.queue_backpressure_strategy}`);
         if (isNil(config.rdkafka_options) || !isObjectEntity(config.rdkafka_options)) throw new Error(`Parameter rdkafka_options must be provided and be of type Object, got ${getTypeOf(config.rdkafka_options)}`);
         if (config.delivery_report) {
             if (isNil(config.delivery_report.wait) || !isBoolean(config.delivery_report.wait)) throw new Error(`Parameter delivery_report.wait must be provided and be of type boolean, got ${getTypeOf(config.delivery_report.wait)}`);
@@ -80,11 +81,12 @@ export default class KafkaSenderApi extends APIFactory<KafkaRouteSender, KafkaSe
                 'batch.num.messages': kafkaConfig.size,
                 'topic.metadata.refresh.interval.ms': kafkaConfig.metadata_refresh,
                 'log.connection.close': false,
-                // Emit librdkafka stats events every 100ms so that _getQueueByteSize()
-                // can read the actual in-memory queue size when deciding whether a flush
-                // made progress. Without this, no 'event.stats' events fire and the
-                // flush-retry logic in ProducerClient would hang indefinitely.
-                'statistics.interval.ms': 100,
+                // Emit librdkafka stats events every 100ms when using retry_on_full strategy.
+                // Without this, no 'event.stats' events fire and the flush-retry logic in
+                // ProducerClient would hang indefinitely.
+                ...(kafkaConfig.queue_backpressure_strategy === 'retry_on_full'
+                    ? { 'statistics.interval.ms': 100 }
+                    : {}),
                 // librdkafka >1.0.0 changed the default broker acknowledgement
                 // to all brokers, but this has performance issues
                 'request.required.acks': kafkaConfig.required_acks,
