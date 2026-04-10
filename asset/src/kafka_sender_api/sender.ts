@@ -110,7 +110,11 @@ export default class KafkaSender implements RouteSenderAPI {
             await this.verify();
         }
 
-        await this.producer.produce(records, this.batchNumber, this.mapper);
+        if (this.config.queue_backpressure_strategy === 'retry_on_full') {
+            await this.producer.produceV2(records, this.batchNumber, this.mapper);
+        } else {
+            await this.producer.produce(records, this.batchNumber, this.mapper);
+        }
         this.batchNumber++;
         this.msgNumber = 1;
         return records.length;
