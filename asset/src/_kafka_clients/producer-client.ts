@@ -161,6 +161,7 @@ export default class ProducerClient extends BaseClient<Producer> {
         }
 
         try {
+            // If only_error is true or there are no messages we will not gather batch stats
             if (this.deliveryReportConfig && !this.deliveryReportConfig?.only_error && total > 0) {
                 this.deliveryReportStats[batchNumber] = {
                     received: 0,
@@ -181,7 +182,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                  */
                 waitForAllReceived = new Promise((resolve, reject) => {
                     const timer = setTimeout(() => {
-                        reject(new Error(`Timed out waiting for delivery reports for batch ${batchNumber} after ${waitTimeout}ms`));
+                        reject(new Error(`Delivery-report: waitTimeout exceeded for batch ${batchNumber}: ${waitTimeout}ms.`));
                     }, waitTimeout);
 
                     allReceivedOff = this._once(`delivery-report:batch:${batchNumber}`, (err, args) => {
@@ -189,10 +190,10 @@ export default class ProducerClient extends BaseClient<Producer> {
                         const [report, stats] = args;
                         if (err) {
                             const { msgNumber } = report.opaque;
-                            reject(new Error(`Delivery report error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
+                            reject(new Error(`Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
                         } else {
                             this._logger.debug(
-                                `All ${report?.opaque?.msgNumber} delivery reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
+                                `Delivery-report: all ${report?.opaque?.msgNumber} reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
                             );
                             resolve();
                         }
