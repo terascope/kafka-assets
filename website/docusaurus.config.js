@@ -44,7 +44,26 @@ module.exports = {
             }
         ]
     ],
-    plugins: [],
+    plugins: [
+        // @docusaurus/theme-mermaid@3.10.0 introduced optional ELK layout support.
+        // Webpack tries to resolve the dynamic import('@mermaid-js/layout-elk') during
+        // module graph construction (before dead-code elimination), so we alias it to
+        // false (empty module) to prevent a "Module not found" error when it's not installed.
+        function elkLayoutAlias() {
+            return {
+                name: 'elk-layout-alias',
+                configureWebpack() {
+                    return {
+                        resolve: {
+                            alias: {
+                                '@mermaid-js/layout-elk': false,
+                            },
+                        },
+                    };
+                },
+            };
+        },
+    ],
     markdown: {
         mermaid: true,
         parseFrontMatter: async (params) => {
