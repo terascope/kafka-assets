@@ -304,6 +304,10 @@ export default class ProducerClient extends BaseClient<Producer> {
      * in a pRetry that backs off and retries when librdkafka returns a "queue full"
      * error, then a single flush is issued at the end of the slice.
      *
+     * > **NOTE:** This is the `retry_on_full` implementation. When making changes here,
+     * > ensure the same change is applied to {@link produceV1} if it also applies to the
+     * > `threshold_flush` strategy, and vice-versa.
+     *
      * @param messages - an array of data or an array of pre-built kafka messages
      * @param batchNumber - a number representing the number of batches (slices for
      *                      teraslice jobs) since the client was created.

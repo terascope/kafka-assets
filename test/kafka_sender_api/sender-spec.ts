@@ -112,7 +112,7 @@ describe('KafkaRouteSender', () => {
 
     // Run for both strategies to ensure produceV1 (threshold_flush) and
     // produceV2 (retry_on_full) both correctly deliver messages end-to-end.
-    // The topic is re-ensured between iterations because readData starts from
+    // The topic runs 'ensureTopic' between iterations because readData starts from
     // offset 0 with a fresh consumer group, so previous iterations' messages
     // would inflate the count.
     it.each([
