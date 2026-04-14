@@ -423,16 +423,14 @@ export default class ProducerClient extends BaseClient<Producer> {
                     this._logger.debug(
                         `End of message slice reached: Flushing the queue after processing ${total} messages.`
                     );
+                    if (totalFailedCalls > 0) {
+                        this._logger.warn(`Writes to the Kafka producer queue were retried ${totalFailedCalls} times for slice ${this.slice_num}`);
+                    }
+                    this._logger.debug(`Produce calls totals for slice number ${this.slice_num}: totalProduceCalls=${totalProduceCalls}, totalFailedCalls=${totalFailedCalls}, totalSuccessfulCalls=${totalSuccessfulCalls}`);
                     const flushPromise = this._try(() => this._flush(), 'produce', 30);
                     await (waitForAllReceived
                         ? Promise.race([flushPromise, waitForAllReceived])
                         : flushPromise);
-
-                    this._logger.info(`Produce calls totals for slice number ${this.slice_num}:\n`
-                        + `- totalProduceCalls ${totalProduceCalls}`
-                        + `- totalFailedCalls ${totalFailedCalls}`
-                        + `- totalSuccessfulCalls ${totalSuccessfulCalls}`
-                    );
                 }
             }
 
