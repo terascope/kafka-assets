@@ -59,4 +59,12 @@ export interface KafkaSenderConfig extends OpConfig {
      * `dr_cb: true` will be added to the config`.
      */
     delivery_report?: DeliveryReportConfig;
+    /**
+     * Controls how the producer handles backpressure from a full internal queue.
+     * "threshold_flush" proactively flushes when message count or byte-size thresholds are reached.
+     * "retry_on_full" retries each produce call with exponential backoff on queue-full errors,
+     * then flushes once at the end of each slice.
+     * Defaults to "threshold_flush".
+    */
+    queue_backpressure_strategy?: 'threshold_flush' | 'retry_on_full';
 }

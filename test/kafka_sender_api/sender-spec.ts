@@ -110,8 +110,17 @@ describe('KafkaRouteSender', () => {
         expect(producerMetadataCalls).toEqual(1);
     });
 
-    it('can send data to a topic', async () => {
-        const sender = await makeTest();
+    // Run for both strategies to ensure produceV1 (threshold_flush) and
+    // produceV2 (retry_on_full) both correctly deliver messages end-to-end.
+    // The topic runs 'ensureTopic' between iterations because readData starts from
+    // offset 0 with a fresh consumer group, so previous iterations' messages
+    // would inflate the count.
+    it.each([
+        { strategy: 'threshold_flush' as const },
+        { strategy: 'retry_on_full' as const }
+    ])('can send data to a topic ($strategy)', async ({ strategy }) => {
+        await admin.ensureTopic(topic);
+        const sender = await makeTest({ queue_backpressure_strategy: strategy });
         const obj1 = { hello: 'world' };
         const obj2 = { foo: 'bar' };
 
@@ -480,7 +489,15 @@ describe('KafkaRouteSender', () => {
         });
     });
 
-    describe('delivery-reports', () => {
+    // Run delivery-report tests for both produce implementations:
+    // - produceV1 is used when queue_backpressure_strategy is 'threshold_flush' (default)
+    // - produceV2 is used when queue_backpressure_strategy is 'retry_on_full'
+    // The delivery-report handling code is shared, but describe.each ensures both
+    // produce code paths are exercised with every delivery-report scenario.
+    describe.each([
+        { strategy: 'threshold_flush' as const },
+        { strategy: 'retry_on_full' as const }
+    ])('delivery-reports ($strategy)', ({ strategy }) => {
         const kafkaConfigsCmd = `docker exec ts_test_kafka /opt/kafka/bin/kafka-configs.sh  --bootstrap-server localhost:${kafkaPort}`
             + (encryptKafka ? ' --command-config /tmp/kafka-ssl.properties' : '');
 
@@ -508,6 +525,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest(
                 {
                     topic,
+                    queue_backpressure_strategy: strategy,
                     delivery_report: {
                         wait: true,
                         waitTimeout: 10000,
@@ -556,6 +574,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest(
                 {
                     topic,
+                    queue_backpressure_strategy: strategy,
                     delivery_report: {
                         wait: true,
                         waitTimeout: 10000,
@@ -597,6 +616,7 @@ describe('KafkaRouteSender', () => {
 
         it('eventually logs all reports received if `wait` is false', async () => {
             const sender = await makeTest({
+                queue_backpressure_strategy: strategy,
                 delivery_report: {
                     wait: false,
                     only_error: false,
@@ -632,6 +652,7 @@ describe('KafkaRouteSender', () => {
 
         it('will not wait for reports if `wait` is false', async () => {
             const sender = await makeTest({
+                queue_backpressure_strategy: strategy,
                 delivery_report: {
                     wait: false,
                     only_error: false,
@@ -664,6 +685,7 @@ describe('KafkaRouteSender', () => {
 
         it('wait for and log all reports if wait is `true`', async () => {
             const sender = await makeTest({
+                queue_backpressure_strategy: strategy,
                 delivery_report: {
                     wait: true,
                     waitTimeout: 10000,
@@ -704,6 +726,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest(
                 {
                     topic,
+                    queue_backpressure_strategy: strategy,
                     delivery_report: {
                         wait: true,
                         waitTimeout: 10000,
@@ -751,6 +774,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest(
                 {
                     topic,
+                    queue_backpressure_strategy: strategy,
                     delivery_report: {
                         wait: true,
                         waitTimeout: 1,
@@ -794,6 +818,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest(
                 {
                     topic,
+                    queue_backpressure_strategy: strategy,
                     delivery_report: {
                         wait: false,
                         only_error: false,
@@ -837,6 +862,7 @@ describe('KafkaRouteSender', () => {
             const sender = await makeTest(
                 {
                     topic,
+                    queue_backpressure_strategy: strategy,
                     delivery_report: {
                         wait: false,
                         only_error: false,

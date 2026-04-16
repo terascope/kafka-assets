@@ -38,7 +38,8 @@ export default class KafkaSender implements RouteSenderAPI {
             topic: config.topicOverride || config.topic,
             maxBufferLength: config.max_buffer_size,
             maxBufferKilobyteSize: config.max_buffer_kbytes_size,
-            deliveryReportConfig: config.delivery_report
+            deliveryReportConfig: config.delivery_report,
+            queue_backpressure_strategy: config.queue_backpressure_strategy
         });
 
         this.config = config;
