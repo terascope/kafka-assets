@@ -35,10 +35,10 @@
     },
     "devDependencies": {
         "@jest/globals": "^30.3.0",
-        "@terascope/core-utils": "~2.5.0",
+        "@terascope/core-utils": "~2.5.1",
         "@terascope/eslint-config": "~1.1.29",
-        "@terascope/job-components": "~2.5.0",
-        "@terascope/scripts": "~2.6.0",
+        "@terascope/job-components": "~2.6.0",
+        "@terascope/scripts": "~2.6.1",
         "@terascope/types": "~2.5.0",
         "@types/fs-extra": "~11.0.4",
         "@types/jest": "~30.0.0",
@@ -51,11 +51,11 @@
         "jest-extended": "~7.0.0",
         "semver": "~7.7.4",
         "terafoundation_kafka_connector": "workspace:~",
-        "teraslice-client-js": "~2.5.0",
-        "teraslice-test-harness": "~2.6.0",
+        "teraslice-client-js": "~2.5.1",
+        "teraslice-test-harness": "~2.7.0",
         "ts-jest": "~29.4.9",
         "typescript": "~5.9.3",
-        "uuid": "~13.0.0"
+        "uuid": "~14.0.0"
     },
     "packageManager": "pnpm@10.25.0",
     "engines": {

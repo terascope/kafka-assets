@@ -17,8 +17,8 @@
         "test": "pnpm -C ../ test"
     },
     "dependencies": {
-        "@terascope/core-utils": "~2.5.0",
-        "@terascope/job-components": "~2.5.0",
+        "@terascope/core-utils": "~2.5.1",
+        "@terascope/job-components": "~2.6.0",
         "@terascope/types": "~2.5.0"
     },
     "engines": {
