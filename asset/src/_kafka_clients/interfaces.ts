@@ -63,7 +63,7 @@ export type ProduceFn = (
 export interface DeliveryReportOpaque {
     batchNumber: number;
     msgNumber: number;
-    metadata?: DataEntityMetadata & Record<string, unknown>;
+    sourceMetadata?: DataEntityMetadata & Record<string, unknown>;
 }
 
 export interface DeliveryReportStats {

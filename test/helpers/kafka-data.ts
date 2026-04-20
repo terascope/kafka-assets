@@ -67,7 +67,7 @@ export async function loadData(topic: string, fileName: string): Promise<Record<
             opaque: {
                 batchNumber,
                 msgNumber,
-                metadata: { _createTime: Date.now() }
+                sourceMetadata: { _createTime: Date.now() }
             }
         };
         msgNumber++;

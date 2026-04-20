@@ -125,7 +125,7 @@ export default class KafkaSender implements RouteSenderAPI {
         const opaque = {
             batchNumber: this.batchNumber,
             msgNumber: this.msgNumber++,
-            metadata: msg.getMetadata()
+            sourceMetadata: msg.getMetadata()
         };
 
         return {
