@@ -122,7 +122,11 @@ export default class KafkaSender implements RouteSenderAPI {
         const timestamp = this.getTimestamp(msg);
         const data = msg.toBuffer();
         const topic = this.getRouteTopic(msg);
-        const opaque = { batchNumber: this.batchNumber, msgNumber: this.msgNumber++ };
+        const opaque = {
+            batchNumber: this.batchNumber,
+            msgNumber: this.msgNumber++,
+            metadata: msg.getMetadata()
+        };
 
         return {
             timestamp, key, data, topic, opaque

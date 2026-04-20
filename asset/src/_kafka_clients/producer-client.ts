@@ -189,8 +189,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                         clearTimeout(timer);
                         const [report, stats] = args;
                         if (err) {
-                            const { msgNumber } = report.opaque;
-                            reject(new Error(`Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
+                            reject(new Error(`Delivery-report: error received: ${JSON.stringify(report)},\n err ${err}`));
                         } else {
                             this._logger.debug(
                                 `Delivery-report: all ${report?.opaque?.msgNumber} reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
@@ -370,8 +369,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                         clearTimeout(timer);
                         const [report, stats] = args;
                         if (err) {
-                            const { msgNumber } = report.opaque;
-                            reject(new Error(`Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
+                            reject(new Error(`Delivery-report: error received: ${JSON.stringify(report)},\n err ${err}`));
                         } else {
                             this._logger.debug(
                                 `Delivery-report: all ${report?.opaque?.msgNumber} reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
