@@ -3,7 +3,7 @@ import {
     OperationAPI
 } from '@terascope/job-components';
 import kafka, { IAdminClient } from '@confluentinc/kafka-javascript';
-import { parseError, Collector } from '@terascope/core-utils';
+import { parseError, Collector, DataEntity } from '@terascope/core-utils';
 import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
@@ -52,6 +52,11 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
     async createAPI(): Promise<DeadLetterAPIFn> {
         return (input: any, err: Error) => {
             let record: string;
+            let sourceMetadata = {};
+
+            if (DataEntity.isDataEntity(input)) {
+                sourceMetadata = input.getMetadata();
+            }
 
             if (input && Buffer.isBuffer(input)) {
                 record = input.toString('utf8');
@@ -59,6 +64,10 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
                 try {
                     record = JSON.stringify(input);
                 } catch (_err) {
+                    // TODO: JSON.stringify() only fails on circular references or BigInts.
+                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#exceptions
+                    // Not handling these cases will result in an uncaught error
+                    // when calling stringify() on msg.data below.
                     record = input;
                 }
             }
@@ -75,7 +84,8 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
                 topic: null,
                 opaque: {
                     batchNumber: this.batchNumber,
-                    msgNumber: this.msgNumber++
+                    msgNumber: this.msgNumber++,
+                    sourceMetadata
                 }
             };
 
