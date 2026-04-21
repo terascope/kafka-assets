@@ -90,3 +90,7 @@ website/node_modules
 website/i18n/*
 website/.yarn/install-state.gz
 docs/packages/*/api
+
+# developer tools
+.vscode/*
+!.vscode/extensions.json
