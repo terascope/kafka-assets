@@ -88,13 +88,14 @@ are sent to topic "failed_record_topic" at the end of the slice
 
 ## Parameters
 
-| Configuration | Description | Type |  Notes |
+| Configuration | Description | Type | Notes |
 | --------- | -------- | ------ | ------ |
-| \_name| Name of api operation, it must reflect the exact name of the file | String | required |
+| \_name | Name of api operation, it must reflect the exact name of the file | String | required |
 | topic | Name of the Kafka topic to send records | String | required |
 | size | How many messages will be batched and sent to kafka together. | Number | optional, defaults to `10000` |
 | compression | Type of compression to use on record sent to topic, may be set to `none`, `gzip`, `snappy`, `lz4` and `inherit` | String | optional, defaults to `gzip` |
 | wait | How long to wait for size messages to become available on the producer, in milliseconds. | String/Duration/Number | optional, defaults to `500` |
 | _connection | Name of the kafka connection to use when sending data | String | optional, defaults to the 'default' connection in the kafka terafoundation connector config |
+| max_buffer_size | Maximum number of messages allowed on the producer queue | Number | defaults to 100000 |
+| max_buffer_kbytes_size | Maximum total message size sum in kilobytes allowed on the producer queue | Number | defaults to 1048576 |
 | metadata_refresh | How often the producer will poll the broker for metadata information. Set to -1 to disable polling. | String/Duration/Number | optional, defaults to `"5 minutes"` |
-| _encoding | Used for specifying the data encoding type when using DataEntity.fromBuffer. May be set to `json` or `raw` | String | optional, defaults to `json` |
