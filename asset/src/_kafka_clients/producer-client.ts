@@ -489,10 +489,10 @@ export default class ProducerClient extends BaseClient<Producer> {
         // message delivery statistics
         if (this.deliveryReportConfig) {
             this._client.on('delivery-report', (err, report) => {
-                const { batchNumber, msgNumber } = report.opaque as DeliveryReportOpaque;
+                const { batchNumber } = report.opaque as DeliveryReportOpaque;
                 const currBatchStats: DeliveryReportBatchStats | undefined
                     = this.deliveryReportStats[batchNumber];
-                const errLogMsg = `Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}. Report: ${JSON.stringify(report)}`;
+                const errLogMsg = `Delivery-report: error received: ${JSON.stringify(report)}`;
 
                 if (currBatchStats && this.deliveryReportConfig) {
                     const { on_error, wait } = this.deliveryReportConfig;
