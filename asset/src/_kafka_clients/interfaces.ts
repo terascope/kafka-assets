@@ -1,4 +1,4 @@
-import { Logger, DataEncoding, DataEntity } from '@terascope/core-utils';
+import { Logger, DataEncoding, DataEntity, DataEntityMetadata } from '@terascope/core-utils';
 import { KafkaMessage } from '../_kafka_helpers/index.js';
 
 export interface OffsetByPartition {
@@ -63,6 +63,7 @@ export type ProduceFn = (
 export interface DeliveryReportOpaque {
     batchNumber: number;
     msgNumber: number;
+    sourceMetadata: DataEntityMetadata & Record<string, unknown>;
 }
 
 export interface DeliveryReportStats {

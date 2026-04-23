@@ -560,7 +560,7 @@ describe('KafkaRouteSender', () => {
             } catch (err) {
                 expect(err).toHaveProperty(
                     'message',
-                    'Delivery-report: error received for batchNumber 1, msgNumber 2, err Error: Local: Message timed out'
+                    expect.stringContaining('Delivery-report: error received:')
                 );
             } finally {
                 execSync(kafkaConfigsCmd
@@ -849,6 +849,10 @@ describe('KafkaRouteSender', () => {
                 await pDelay(6000);
 
                 expect(loggerErrorSpy).toHaveBeenCalled();
+                expect(loggerErrorSpy).toHaveBeenCalledWith(
+                    expect.any(Error),
+                    expect.stringContaining('"standard:route":"h"')
+                );
             } finally {
                 execSync(kafkaConfigsCmd
                     + ' --entity-type clients --entity-default --alter  --delete-config producer_byte_rate');

@@ -189,8 +189,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                         clearTimeout(timer);
                         const [report, stats] = args;
                         if (err) {
-                            const { msgNumber } = report.opaque;
-                            reject(new Error(`Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
+                            reject(new Error(`Delivery-report: error received: ${JSON.stringify(report)},\n err ${err}`));
                         } else {
                             this._logger.debug(
                                 `Delivery-report: all ${report?.opaque?.msgNumber} reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
@@ -370,8 +369,7 @@ export default class ProducerClient extends BaseClient<Producer> {
                         clearTimeout(timer);
                         const [report, stats] = args;
                         if (err) {
-                            const { msgNumber } = report.opaque;
-                            reject(new Error(`Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}, err ${err}`));
+                            reject(new Error(`Delivery-report: error received: ${JSON.stringify(report)},\n err ${err}`));
                         } else {
                             this._logger.debug(
                                 `Delivery-report: all ${report?.opaque?.msgNumber} reports received for batchNumber ${batchNumber}. Stats: ${JSON.stringify(stats)}`
@@ -491,10 +489,10 @@ export default class ProducerClient extends BaseClient<Producer> {
         // message delivery statistics
         if (this.deliveryReportConfig) {
             this._client.on('delivery-report', (err, report) => {
-                const { batchNumber, msgNumber } = report.opaque as DeliveryReportOpaque;
+                const { batchNumber } = report.opaque as DeliveryReportOpaque;
                 const currBatchStats: DeliveryReportBatchStats | undefined
                     = this.deliveryReportStats[batchNumber];
-                const errLogMsg = `Delivery-report: error received for batchNumber ${batchNumber}, msgNumber ${msgNumber}. Report: ${JSON.stringify(report)}`;
+                const errLogMsg = `Delivery-report: error received: ${JSON.stringify(report)}`;
 
                 if (currBatchStats && this.deliveryReportConfig) {
                     const { on_error, wait } = this.deliveryReportConfig;
