@@ -11,6 +11,9 @@
         "Operations": [
             "asset/operations/kafka_reader",
             "asset/operations/kafka_sender"
+        ],
+        "Librdkafka Logging": [
+            "asset/librdkafka_logging"
         ]
     },
     "packages": {
