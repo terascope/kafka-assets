@@ -486,6 +486,11 @@ export default class ProducerClient extends BaseClient<Producer> {
         // for client event error logs.
         this._client.on('event.error', this._logOrEmit('client:error'));
 
+        /* istanbul ignore next */
+        this._client.on('event.log', (msg) => {
+            this._logger.info(msg);
+        });
+
         // message delivery statistics
         if (this.deliveryReportConfig) {
             this._client.on('delivery-report', (err, report) => {
