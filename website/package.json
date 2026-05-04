@@ -17,11 +17,11 @@
     "npm-watch": "^0.13.0"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.10.0",
-    "@docusaurus/mdx-loader": "^3.10.0",
-    "@docusaurus/preset-classic": "^3.10.0",
-    "@docusaurus/theme-common": "^3.10.0",
-    "@docusaurus/theme-mermaid": "^3.10.0",
+    "@docusaurus/core": "^3.10.1",
+    "@docusaurus/mdx-loader": "^3.10.1",
+    "@docusaurus/preset-classic": "^3.10.1",
+    "@docusaurus/theme-common": "^3.10.1",
+    "@docusaurus/theme-mermaid": "^3.10.1",
     "@mdx-js/react": "^3.1.1",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",
