@@ -465,7 +465,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * will cause it back off longer
     */
     private _startRebalance(msg: string) {
-        this._logger.trace(`starting a rebalance ${msg}`);
+        this._logger.info(`starting a rebalance ${msg}`);
 
         this._incBackOff();
         this._rebalancing = true;
@@ -485,21 +485,21 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _endRebalance(msg: string) {
         if (this._rebalanceTimeout) clearTimeout(this._rebalanceTimeout);
 
-        this._logger.trace(`rebalance ended ${msg}`);
+        this._logger.info(`rebalance ended ${msg}`);
         this._rebalancing = false;
         this._events.emit('rebalance:end');
     }
 
     private _handleRebalance(err: KafkaError | undefined, assignments: TopicPartition[]) {
         if (err && err.code === ERR__ASSIGN_PARTITIONS) {
-            this._logger.debug(`got new assignments ${formatTopar(assignments)}`);
+            this._logger.info(`got new assignments ${formatTopar(assignments)}`);
             this._assignments = assignments;
             this._endRebalance('due to new assignments');
         } else if (err && err.code === ERR__REVOKE_PARTITIONS) {
-            this._logger.debug(`revoking assignments ${formatTopar(assignments)}`);
+            this._logger.info(`revoking assignments ${formatTopar(assignments)}`);
             this._startRebalance('due to revoked assignments');
         } else {
-            this._logger.debug('kafka consumer rebalance', { err, assignments });
+            this._logger.info('kafka consumer rebalance', { err, assignments });
         }
     }
 
