@@ -36,6 +36,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     /** last known assignments */
     protected _assignments: TopicPartition[] = [];
 
+    private _rebalanceCount = 0;
     private _pendingOffsets: CountPerPartition = {};
     private _rebalanceTimeout: NodeJS.Timeout | undefined;
     private rollbackOnFailure = false;
@@ -192,6 +193,13 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     */
     async getBytesConsumed() {
         return this._bytesConsumed;
+    }
+
+    /**
+     * Get the number of times a rebalance has been triggered
+    */
+    getRebalanceCount() {
+        return this._rebalanceCount;
     }
 
     /**
@@ -467,6 +475,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _startRebalance(msg: string) {
         this._logger.debug(`starting a rebalance ${msg}`);
 
+        this._rebalanceCount++;
         this._incBackOff();
         this._rebalancing = true;
         this._events.emit('rebalance:start');
