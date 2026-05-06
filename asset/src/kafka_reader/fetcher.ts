@@ -55,6 +55,21 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
                     };
                     this.set(labels, bytesConsumed);
                 });
+            let prevRebalanceCount = 0;
+            await this.context.apis.foundation.promMetrics.addCounter(
+                'kafka_rebalance_total',
+                'Number of times the kafka consumer has triggered a rebalance',
+                ['op_name'],
+                async function collect() {
+                    const count = consumer.getRebalanceCount();
+                    const newCount = count - prevRebalanceCount;
+                    prevRebalanceCount = count;
+                    const labels = {
+                        op_name: opConfig._op,
+                        ...context.apis.foundation.promMetrics.getDefaultLabels()
+                    };
+                    if (newCount > 0) this.inc(labels, newCount);
+                });
         }
     }
 
