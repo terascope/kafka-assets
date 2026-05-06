@@ -465,7 +465,7 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
      * will cause it back off longer
     */
     private _startRebalance(msg: string) {
-        this._logger.info(`starting a rebalance ${msg}`);
+        this._logger.debug(`starting a rebalance ${msg}`);
 
         this._incBackOff();
         this._rebalancing = true;
@@ -485,19 +485,19 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
     private _endRebalance(msg: string) {
         if (this._rebalanceTimeout) clearTimeout(this._rebalanceTimeout);
 
-        this._logger.info(`rebalance ended ${msg}`);
+        this._logger.debug(`rebalance ended ${msg}`);
         this._rebalancing = false;
         this._events.emit('rebalance:end');
     }
 
     private _handleRebalance(err: KafkaError | undefined, assignments: TopicPartition[]) {
         if (err && err.code === ERR__ASSIGN_PARTITIONS) {
-            this._logger.info(`got new assignments ${formatTopar(assignments)}`);
+            this._logger.warn(`received new partition assignments ${formatPartitions(assignments)}`);
             this._assignments = assignments;
-            this._endRebalance('due to new assignments');
+            this._endRebalance('due to new partition assignments');
         } else if (err && err.code === ERR__REVOKE_PARTITIONS) {
-            this._logger.info(`revoking assignments ${formatTopar(assignments)}`);
-            this._startRebalance('due to revoked assignments');
+            this._logger.warn(`revoking partition assignments: ${formatPartitions(assignments)}`);
+            this._startRebalance('due to revoked partition assignments');
         } else {
             this._logger.info('kafka consumer rebalance', { err, assignments });
         }
@@ -553,6 +553,10 @@ export default class ConsumerClient extends BaseClient<kafka.KafkaConsumer> {
         }
         throw error;
     }
+}
+
+function formatPartitions(assignments: TopicPartition[]) {
+    return `[${assignments.map((a) => a.partition).join(', ')}]`;
 }
 
 function formatTopar(input: TopicPartition[] | TopicPartition) {
