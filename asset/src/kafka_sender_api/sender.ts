@@ -106,10 +106,6 @@ export default class KafkaSender implements RouteSenderAPI {
 
     async send(data: Iterable<DataEntity>): Promise<number> {
         const records = Array.isArray(data) ? data : Array.from(data);
-        if (this.config._op !== 'routed_sender') {
-            // routed_sender instead calls verify(route) for every record
-            await this.verify();
-        }
 
         await this.producer.produce(records, this.batchNumber, this.mapper);
         this.batchNumber++;

@@ -65,6 +65,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
         );
 
         this.api = api;
+        await this.api.verify();
     }
 
     async onBatch(batch: DataEntity[]): Promise<DataEntity[]> {
