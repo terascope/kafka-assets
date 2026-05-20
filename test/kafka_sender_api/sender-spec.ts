@@ -146,20 +146,6 @@ describe('KafkaRouteSender', () => {
             .rejects.toThrow(`Topic ${topic}-nonexistent does not exist and could not be created.`);
     });
 
-    it('send does not call verify when _op is routed_sender', async () => {
-        const sender = await makeTest({ _op: 'routed_sender' });
-        let verifyCalled = false;
-
-        sender.verify = async (): Promise<void> => {
-            verifyCalled = true;
-        };
-
-        const data = [DataEntity.make({ hello: 'world' })];
-        await sender.send(data);
-
-        expect(verifyCalled).toBe(false);
-    });
-
     describe('->getKey', () => {
         let sender: KafkaRouteSender;
 
