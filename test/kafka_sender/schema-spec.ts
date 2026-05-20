@@ -7,10 +7,12 @@ import { Logger } from '@terascope/core-utils';
 import { WorkerTestHarness } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import { connectorConfig } from '../helpers/config.js';
+import KafkaAdmin from '../helpers/kafka-admin.js';
 
 describe('Kafka Sender Schema', () => {
-    let harness: WorkerTestHarness;
     const connectionEndpoint = 'default';
+    const topic = 'hello';
+    let harness: WorkerTestHarness;
 
     const kafkaConfig: TestClientConfig = {
         type: 'kafka',
@@ -45,8 +47,16 @@ describe('Kafka Sender Schema', () => {
         await harness.initialize();
     }
 
+    const admin = new KafkaAdmin();
+
+    beforeAll(async () => admin.ensureTopic(topic));
+
     afterEach(async () => {
         if (harness) await harness.shutdown();
+    });
+
+    afterAll(async () => {
+        admin.disconnect();
     });
 
     describe('when validating the schema', () => {
@@ -59,7 +69,7 @@ describe('Kafka Sender Schema', () => {
         });
 
         it('should not throw an error if valid config is given', async () => {
-            const apiConfig = { _name: 'kafka_sender_api', topic: 'hello' };
+            const apiConfig = { _name: 'kafka_sender_api', topic };
             await expect(makeTest({
                 _op: 'kafka_sender',
                 _api_name: 'kafka_sender_api'
