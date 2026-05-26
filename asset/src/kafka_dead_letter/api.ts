@@ -17,7 +17,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
 
     async initialize(): Promise<void> {
         await super.initialize();
-        const logger = this.logger.child({ module: 'kafka-producer' });
+        const logger = this.context.apis.foundation.makeLogger({ module: 'kafka-dead-letter' });
 
         this.admin = await this.createAdminClient();
         const client = await this.createClient();
