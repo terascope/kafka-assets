@@ -1,4 +1,4 @@
-import { Fetcher, isPromAvailable, makeExContextLogger } from '@terascope/job-components';
+import { Fetcher, isPromAvailable } from '@terascope/job-components';
 import { DataEntity, Logger } from '@terascope/core-utils';
 import { KafkaReaderAPIConfig, KafkaReaderAPI } from '../kafka_reader_api/interfaces.js';
 import { KafkaReaderConfig } from './interfaces.js';
@@ -11,8 +11,7 @@ export default class KafkaFetcher extends Fetcher<KafkaReaderConfig> {
     async initialize(): Promise<void> {
         await super.initialize();
 
-        // TODO: This should be in the context but doesn't seem to work at the moment
-        const kafkaLogger: Logger = makeExContextLogger(this.context, this.executionConfig, 'kafka-consumer');
+        const kafkaLogger: Logger = this.context.apis.foundation.makeLogger({ module: 'kafka-consumer' });
 
         const apiName = this.opConfig._api_name;
         const apiConfig = this.executionConfig.apis.find((config) => config._name === apiName);
