@@ -2,7 +2,7 @@ import {
     DataEntity,
     Logger
 } from '@terascope/core-utils';
-import { makeExContextLogger, Context, BatchProcessor } from '@terascope/job-components';
+import { Context, BatchProcessor } from '@terascope/job-components';
 import { ExecutionConfig } from '@terascope/types';
 import { KafkaSenderConfig } from './interfaces.js';
 import { KafkaSenderAPI } from '../kafka_sender_api/interfaces.js';
@@ -40,8 +40,7 @@ export default class KafkaSender extends BatchProcessor<KafkaSenderConfig> {
     async initialize(): Promise<void> {
         await super.initialize();
 
-        // TODO: This should be in the context but doesn't seem to work at the moment
-        const kafkaLogger: Logger = makeExContextLogger(this.context, this.executionConfig, 'kafka-producer');
+        const kafkaLogger: Logger = this.context.apis.foundation.makeLogger({ module: 'kafka-producer' });
 
         const apiName = this.opConfig._api_name;
         const apiConfig = this.executionConfig.apis.find(

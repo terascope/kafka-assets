@@ -23,7 +23,7 @@ export default class KafkaAdmin {
 
         try {
             await this.deleteTopic(topicName);
-            await pDelay(500);
+            await this.waitForTopicDeletion(topicName);
         } catch (err) {
             if (!isKafkaError(err) || err.code !== ERR_UNKNOWN_TOPIC_OR_PART) {
                 throw err;
@@ -33,6 +33,23 @@ export default class KafkaAdmin {
         await this.createTopic(topic);
 
         logger.debug(`ensured topic "${topicName}" is new`);
+    }
+
+    private async waitForTopicDeletion(topicName: string): Promise<void> {
+        while (true) {
+            const topics = await this.listTopics();
+            if (!topics.includes(topicName)) return;
+            await pDelay(100);
+        }
+    }
+
+    async listTopics(): Promise<string[]> {
+        return new Promise<string[]>((resolve, reject) => {
+            this._client.listTopics((err, topics) => {
+                if (err) reject(err);
+                else resolve(topics);
+            });
+        });
     }
 
     private createTopic(topic: string | kafka.NewTopic) {
