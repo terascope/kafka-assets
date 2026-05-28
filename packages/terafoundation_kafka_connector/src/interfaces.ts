@@ -40,23 +40,18 @@ export interface KafkaProducerSettings extends KafkaClientSettings {
 }
 
 export interface KafkaAdminSettings extends KafkaClientSettings {
-    options: KafkaClientOptions;
+    options: { type: 'admin' };
     rdkafka_options?: RDKafkaOptions;
 }
-
-export interface KafkaClientOptions {
-    type: ClientType;
-}
-
-export interface KafkaProducerOptions extends KafkaClientOptions {
+export interface KafkaProducerOptions {
+    type: 'producer';
     poll_interval?: number;
 }
 
-export interface KafkaConsumerOptions extends KafkaClientOptions {
+export interface KafkaConsumerOptions {
+    type: 'consumer';
     group?: string;
 }
-
-export type ClientType = 'producer' | 'consumer' | 'admin';
 
 export interface KafkaConsumerResult {
     client: kafka.KafkaConsumer;
