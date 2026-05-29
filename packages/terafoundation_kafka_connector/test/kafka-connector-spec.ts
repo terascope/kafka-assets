@@ -2,12 +2,9 @@ import convict from 'convict';
 import { debugLogger, formats } from '@terascope/core-utils';
 import connector from '../src/index.js';
 import {
-    KafkaConnectorConfig,
-    KafkaConsumerSettings,
-    KafkaProducerSettings,
-    KafkaAdminSettings
-} from '../src/interfaces.js';
-import { connectorConfig } from './config.js';
+    KafkaConnectorConfig, KafkaConsumerSettings, KafkaProducerSettings,
+    KafkaAdminSettings, connectorConfig
+} from '../src/index.js';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
@@ -33,7 +30,7 @@ describe('Kafka Connector', () => {
                     debug: 'broker',
                 },
             })
-                .getProperties();
+                .getProperties() as KafkaConsumerSettings;
 
             // Don't know how/why `config` is used in the connecter - might be
             // legacy reasons. Without it, there is potential for connector to
@@ -43,7 +40,7 @@ describe('Kafka Connector', () => {
             //   undefined:9092/bootstrap: failed: err: Local: Host resolution
             //   failure: (errno: Bad address)
 
-            connector.createClient(config, logger, settings as KafkaConsumerSettings)
+            connector.createClient(config, logger, settings)
                 .then((conn) => {
                     conn.client.once('ready', (client) => {
                         logger.trace(client, 'connected');

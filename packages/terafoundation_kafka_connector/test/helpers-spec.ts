@@ -3,7 +3,7 @@ import {
     getConsumerOptions,
     getProducerOptions,
     getAdminOptions
-} from '../src/helpers.js';
+} from '../src/utils.js';
 import {
     KafkaConnectorConfig,
     KafkaConsumerSettings,
@@ -545,7 +545,8 @@ describe('Kafka Helpers', () => {
             };
 
             const producer = getProducerOptions(config, pSettings);
-            const consumer = getProducerOptions(config, cSettings);
+            const consumer = getConsumerOptions(config, cSettings);
+
             expect(producer.clientOptions['queue.buffering.max.messages']).toBe(120000);
             expect(producer.clientOptions['queue.buffering.max.kbytes']).toBe(1248576);
             // This is a consumer specific setting but will still override as the

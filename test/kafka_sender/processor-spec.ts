@@ -4,14 +4,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TestClientConfig } from '@terascope/job-components';
-import { DataEntity, parseJSON } from '@terascope/core-utils';
+import { DataEntity, parseJSON, Logger } from '@terascope/core-utils';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import Connector from 'terafoundation_kafka_connector';
 import KafkaSender from '../../asset/src/kafka_sender/processor.js';
 import { readData } from '../helpers/kafka-data.js';
 import { connectorConfig, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
-import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'packages/terafoundation_kafka_connector/src/interfaces.js';
+import { KafkaConnectorConfig, KafkaProducerSettings } from 'packages/terafoundation_kafka_connector/src/interfaces.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -27,12 +27,16 @@ describe('Kafka Sender', () => {
         config: {
             ...connectorConfig,
         },
-        async createClient(config, logger, settings) {
+        async createClient(
+            config,
+            logger: Logger,
+            settings
+        ) {
             const result = await Connector.createClient(
                 config as KafkaConnectorConfig,
                 logger,
                 settings as unknown as KafkaProducerSettings
-            ) as KafkaProducerResult;
+            );
             return result;
         }
     };

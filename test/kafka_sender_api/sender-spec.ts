@@ -3,14 +3,14 @@ import 'jest-extended';
 import { execSync } from 'node:child_process';
 import { WorkerTestHarness, newTestJobConfig } from 'teraslice-test-harness';
 import { TestClientConfig, APIFactoryRegistry } from '@terascope/job-components';
-import { DataEntity, pDelay } from '@terascope/core-utils';
+import { DataEntity, pDelay, Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig } from '../../asset/src/kafka_sender_api/interfaces.js';
 import KafkaRouteSender from '../../asset/src/kafka_sender_api/sender.js';
 import { connectorConfig, encryptKafka, kafkaPort, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
 import { readData } from '../helpers/kafka-data.js';
-import { KafkaConnectorConfig, KafkaProducerSettings, KafkaProducerResult } from 'terafoundation_kafka_connector/src/interfaces.js';
+import { KafkaConnectorConfig, KafkaProducerSettings } from 'terafoundation_kafka_connector/src/interfaces.js';
 
 type KafkaAPI = APIFactoryRegistry<KafkaRouteSender, KafkaSenderAPIConfig>;
 
@@ -24,23 +24,26 @@ describe('KafkaRouteSender', () => {
     let harness: WorkerTestHarness;
     let producerMetadataCalls = 0;
 
-    const kafkaConfig: TestClientConfig = {
+    const clientConfig: TestClientConfig = {
         type: 'kafka',
         config: {
             ...connectorConfig,
         },
-        async createClient(config, logger, settings) {
+        async createClient(
+            config,
+            logger: Logger,
+            settings
+        ) {
             const result = await Connector.createClient(
                 config as KafkaConnectorConfig,
                 logger,
                 settings as unknown as KafkaProducerSettings
-            ) as KafkaProducerResult;
+            );
             return result;
-        },
-        endpoint: 'default'
+        }
     };
 
-    const clients = [kafkaConfig];
+    const clients = [clientConfig];
     const API_NAME = 'kafka_sender_api';
 
     const defaultConfigs = {
