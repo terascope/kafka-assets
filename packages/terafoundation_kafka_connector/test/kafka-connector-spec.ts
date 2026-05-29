@@ -2,12 +2,9 @@ import convict from 'convict';
 import { debugLogger, formats } from '@terascope/core-utils';
 import connector from '../src/index.js';
 import {
-    KafkaConnectorConfig,
-    KafkaConsumerSettings,
-    KafkaProducerSettings,
-    KafkaAdminSettings
+    KafkaConnectorConfig, KafkaConsumerSettings, KafkaProducerSettings,
+    KafkaAdminSettings, connectorConfig
 } from '../src/index.js';
-import { connectorConfig } from '../src/index.js';
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
