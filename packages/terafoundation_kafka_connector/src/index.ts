@@ -21,5 +21,5 @@ const connector = {
 
 export default connector;
 export * from './interfaces.js';
-export * from './test-helpers';
+export * from './test-helpers/index.js';
 export * from './client/index.js';
