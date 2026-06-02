@@ -29,7 +29,7 @@
     "react-dom": "^19.2.6",
     "react-markdown": "10.1.0"
   },
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@11.3.0",
   "watch": {
     "start": {
       "patterns": [

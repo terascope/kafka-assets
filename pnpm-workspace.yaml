@@ -2,8 +2,10 @@ packages:
   - 'asset'
   - 'packages/*'
 
-onlyBuiltDependencies:
-  - "@confluentinc/kafka-javascript"
+allowBuilds:
+  '@confluentinc/kafka-javascript': true
+  dtrace-provider: true
+  unrs-resolver: true
 
 publicHoistPattern:
   - "@confluentinc/kafka-javascript"
