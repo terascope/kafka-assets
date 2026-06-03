@@ -57,10 +57,10 @@
         "typescript": "~5.9.3",
         "uuid": "~14.0.0"
     },
-    "packageManager": "pnpm@10.25.0",
+    "packageManager": "pnpm@11.3.0",
     "engines": {
         "node": ">=22.0.0",
-        "pnpm": ">=10.25.0"
+        "pnpm": ">=11.3.0"
     },
     "documentation": "https://terascope.github.io/kafka-assets",
     "terascope": {
