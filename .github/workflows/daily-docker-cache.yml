@@ -2,7 +2,7 @@ name: Daily Docker Cache
 
 on:
   schedule:
-    - cron: '0 10 30 * 1-5' # Monday - Friday at 3:30am Arizona Time
+    - cron: '30 10 * * 1-5' # Monday - Friday at 3:30am Arizona Time
   workflow_dispatch:
 
 permissions: {}
