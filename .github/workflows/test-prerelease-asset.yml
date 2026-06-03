@@ -9,7 +9,15 @@ on:
     branches:
       - 'release/kafka-assets-v*'
 
+permissions: {}
+
 jobs:
   call-asset-test-workflow:
-    uses: terascope/workflows/.github/workflows/prerelease-asset-test.yml@92c8f6b6312803300b0f36ba6b38d8007d7f471f
-    secrets: inherit
+    uses: terascope/workflows/.github/workflows/prerelease-asset-test.yml@d2864085b6d36798749fce3dd549dae10283f76a
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

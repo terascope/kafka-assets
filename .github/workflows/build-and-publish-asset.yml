@@ -8,18 +8,26 @@ on:
     types:
       - closed
 
-permissions:
-  id-token: write  # Required for OIDC
-  contents: write
-  pages: write     # to deploy to Pages
+permissions: {}
   
 jobs:
   call-master-asset-build:
     if: github.event.pull_request.merged == true && github.base_ref == 'master'
-    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@92c8f6b6312803300b0f36ba6b38d8007d7f471f
-    secrets: inherit
+    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@d2864085b6d36798749fce3dd549dae10283f76a
+    permissions:
+      id-token: write  # Required for OIDC
+      contents: read
+      pages: write     # to deploy to Pages
+    secrets:
+      RELEASES_PRIVATE_KEY: ${{ secrets.RELEASES_PRIVATE_KEY }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
   call-prerelease-asset-build:
     if: github.event.pull_request.merged == true && startsWith(github.base_ref, 'release/kafka-assets-v')
-    uses: terascope/workflows/.github/workflows/prerelease-asset-build-and-publish.yml@92c8f6b6312803300b0f36ba6b38d8007d7f471f
-    secrets: inherit
+    uses: terascope/workflows/.github/workflows/prerelease-asset-build-and-publish.yml@d2864085b6d36798749fce3dd549dae10283f76a
+    permissions:
+      id-token: write  # Required for OIDC
+      contents: read
+    secrets:
+      RELEASES_PRIVATE_KEY: ${{ secrets.RELEASES_PRIVATE_KEY }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
