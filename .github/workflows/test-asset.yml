@@ -5,15 +5,19 @@ on:
   push:
     branches:
       - master
+      - 'release/kafka-assets-v*'
   pull_request:
     branches:
       - master
+      - 'release/kafka-assets-v*'
 
 permissions: {}
 
 jobs:
   call-asset-test-workflow:
-    uses: terascope/workflows/.github/workflows/asset-test.yml@d2864085b6d36798749fce3dd549dae10283f76a
+    uses: terascope/workflows/.github/workflows/asset-test.yml@0f818323dfaceab17bcfeda3e135e2b19d987691
+    with:
+      teraslice-cli-version: ${{ (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.base_ref, 'release/')) && 'prerelease' || 'latest' }}
     permissions:
       actions: read
       contents: read
