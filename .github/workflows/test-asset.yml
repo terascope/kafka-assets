@@ -15,9 +15,9 @@ permissions: {}
 
 jobs:
   call-asset-test-workflow:
-    uses: terascope/workflows/.github/workflows/asset-test.yml@0f818323dfaceab17bcfeda3e135e2b19d987691
+    uses: terascope/workflows/.github/workflows/asset-test.yml@ce327af249470d5d00c81e9e80dc714c860ac5bb
     with:
-      teraslice-cli-version: ${{ (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.base_ref, 'release/')) && 'prerelease' || 'latest' }}
+      teraslice-cli-version: ${{ (startsWith(github.ref, 'refs/heads/release/kafka-assets-v') || startsWith(github.base_ref, 'release/kafka-assets-v')) && 'prerelease' || 'latest' }}
     permissions:
       actions: read
       contents: read
