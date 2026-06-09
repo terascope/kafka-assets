@@ -38,7 +38,7 @@
         "@terascope/core-utils": "~2.11.1",
         "@terascope/eslint-config": "~1.2.1",
         "@terascope/job-components": "~2.13.1",
-        "@terascope/scripts": "~2.16.1",
+        "@terascope/scripts": "~2.17.1",
         "@terascope/types": "~2.11.0",
         "@types/fs-extra": "~11.0.4",
         "@types/jest": "~30.0.0",

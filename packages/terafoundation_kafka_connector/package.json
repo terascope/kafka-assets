@@ -28,7 +28,7 @@
     "devDependencies": {
         "@terascope/core-utils": "~2.11.1",
         "@terascope/job-components": "~2.13.1",
-        "@terascope/scripts": "~2.16.1",
+        "@terascope/scripts": "~2.17.1",
         "@types/convict": "~6.1.6",
         "convict": "~6.2.5"
     },
