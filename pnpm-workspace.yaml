@@ -11,6 +11,11 @@ blockExoticSubdeps: true
 
 minimumReleaseAge: 1440 # 1 day
 
+minimumReleaseAgeExclude:
+  - '@terascope/*'
+  - teraslice-client-js
+  - teraslice-test-harness
+ 
 trustPolicy: no-downgrade
 
 trustPolicyExclude:
