@@ -113,7 +113,8 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
                 'queue.buffering.max.ms': this.apiConfig.wait,
                 'batch.num.messages': this.apiConfig.size,
                 'topic.metadata.refresh.interval.ms': this.apiConfig.metadata_refresh,
-                'log.connection.close': false
+                'log.connection.close': false,
+                ...this.apiConfig.rdkafka_options
             } as Record<string, any>,
             autoconnect: false
         } as ConnectionConfig;
