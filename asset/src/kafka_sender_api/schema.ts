@@ -75,7 +75,8 @@ export const schema = {
             } else if (val !== undefined) {
                 throw new Error(`Invalid parameter max_buffer_kbytes_size, it must be a number or undefined, got ${getTypeOf(val)}`);
             }
-        }
+        },
+        deprecated: 'kafka_sender_api: "max_buffer_kbytes_size" is deprecated, use rdkafka_options["queue.buffering.max.kbytes"] instead'
     },
     metadata_refresh: {
         doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
@@ -139,8 +140,8 @@ export default class Schema extends BaseSchema<Record<string, any>> {
         const results = super.validate(config);
 
         // cross-field validation
-        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = results.rdkafka_options;
-        const report = results.delivery_report;
+        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = results.config.rdkafka_options;
+        const report = results.config.delivery_report;
 
         if (report) {
             if (report.wait === false && report.on_error === 'throw') {

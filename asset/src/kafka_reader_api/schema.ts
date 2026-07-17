@@ -47,7 +47,8 @@ export const schema = {
             'and the group will rebalance in order to reassign the partitions to another member.',
         ].join(' '),
         default: undefined,
-        format: 'optional_duration'
+        format: 'optional_duration',
+        deprecated: 'kafka_reader_api: "max_poll_interval" is deprecated, use rdkafka_options["max.poll.interval.ms"] instead'
     },
     _connection: {
         doc: 'The Kafka consumer connection to use.',
@@ -97,8 +98,8 @@ export default class Schema extends BaseSchema<KafkaReaderAPIConfig> {
         const results = super.validate(parsedConfig);
 
         return {
-            ...results,
-            rdkafka_options
+            config: { ...results.config, rdkafka_options },
+            warnings: results.warnings
         };
     }
 
