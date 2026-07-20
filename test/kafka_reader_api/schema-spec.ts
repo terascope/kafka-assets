@@ -1,9 +1,10 @@
 import 'jest-extended';
 import { newTestJobConfig, WorkerTestHarness } from 'teraslice-test-harness';
-import { ValidatedJobConfig, TestClientConfig } from '@terascope/job-components';
+import { ValidatedJobConfig, TestClientConfig, TestContext } from '@terascope/job-components';
 import { Logger } from '@terascope/core-utils';
 import Connector from 'terafoundation_kafka_connector';
 import { connectorConfig } from '../helpers/config.js';
+import Schema from '../../asset/src/kafka_reader_api/schema.js';
 
 describe('Kafka Reader API Schema', () => {
     let harness: WorkerTestHarness;
@@ -72,6 +73,53 @@ describe('Kafka Reader API Schema', () => {
         it('should allow valid rdkafka_options config', async () => {
             await expect(makeTest({ topic: 'test', group: 'testgroup', rdkafka_options: { 'queued.max.messages.kbytes': 540000 } })).toResolve();
             await expect(makeTest({ topic: 'test', group: 'testgroup', rdkafka_options: {} })).toResolve();
+        });
+    });
+
+    describe('when validating deprecated fields', () => {
+        const context = new TestContext('kafka-reader-api');
+        const schema = new Schema(context, 'api');
+
+        afterAll(() => {
+            context.apis.foundation.getSystemEvents().removeAllListeners();
+        });
+
+        function deprecatedFields(config: Record<string, any>): string[] {
+            const { warnings } = schema.validate({
+                _name: 'kafka_reader_api',
+                topic: 'test',
+                group: 'testgroup',
+                ...config
+            });
+            return warnings.map((warning: any) => warning.reason.reason.field);
+        }
+
+        it('should not emit warnings when no deprecated fields are set', () => {
+            expect(deprecatedFields({})).toEqual([]);
+        });
+
+        it('should warn when offset_reset is set', () => {
+            expect(deprecatedFields({ offset_reset: 'earliest' })).toContain('offset_reset');
+        });
+
+        it('should warn when max_poll_interval is set', () => {
+            expect(deprecatedFields({ max_poll_interval: 300000 })).toContain('max_poll_interval');
+        });
+
+        it('should warn when partition_assignment_strategy is set', () => {
+            expect(deprecatedFields({ partition_assignment_strategy: 'range' })).toContain('partition_assignment_strategy');
+        });
+
+        it('should include a description telling the user to use rdkafka_options', () => {
+            const { warnings } = schema.validate({
+                _name: 'kafka_reader_api',
+                topic: 'test',
+                group: 'testgroup',
+                offset_reset: 'earliest'
+            });
+
+            expect(warnings[0].reason.reason.description)
+                .toBe('kafka_reader_api: "offset_reset" is deprecated, use rdkafka_options["auto.offset.reset"] instead');
         });
     });
 });
