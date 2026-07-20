@@ -20,7 +20,8 @@ export const schema = {
     offset_reset: {
         doc: 'How offset resets should be handled when there are no valid offsets for the consumer group.',
         default: 'smallest',
-        format: ['smallest', 'earliest', 'beginning', 'largest', 'latest', 'error']
+        format: ['smallest', 'earliest', 'beginning', 'largest', 'latest', 'error'],
+        deprecated: 'kafka_reader_api: "offset_reset" is deprecated, use rdkafka_options["auto.offset.reset"] instead'
     },
     size: {
         doc: 'How many records to read before a slice is considered complete.',
@@ -47,7 +48,8 @@ export const schema = {
             'and the group will rebalance in order to reassign the partitions to another member.',
         ].join(' '),
         default: undefined,
-        format: 'optional_duration'
+        format: 'optional_duration',
+        deprecated: 'kafka_reader_api: "max_poll_interval" is deprecated, use rdkafka_options["max.poll.interval.ms"] instead'
     },
     _connection: {
         doc: 'The Kafka consumer connection to use.',
@@ -73,7 +75,8 @@ export const schema = {
     partition_assignment_strategy: {
         doc: 'Name of partition assignment strategy to use when elected group leader assigns partitions to group members.',
         default: '',
-        format: ['range', 'roundrobin', 'cooperative-sticky', '']
+        format: ['range', 'roundrobin', 'cooperative-sticky', ''],
+        deprecated: 'kafka_reader_api: "partition_assignment_strategy" is deprecated, use rdkafka_options["partition.assignment.strategy"] instead'
     },
     rdkafka_options: {
         doc: 'librdkafka defined settings that are not subscription specific. Settings here will override other settings.',
@@ -97,8 +100,8 @@ export default class Schema extends BaseSchema<KafkaReaderAPIConfig> {
         const results = super.validate(parsedConfig);
 
         return {
-            ...results,
-            rdkafka_options
+            config: { ...results.config, rdkafka_options },
+            warnings: results.warnings
         };
     }
 

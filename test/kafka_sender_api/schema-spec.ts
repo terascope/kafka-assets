@@ -1,9 +1,10 @@
 import 'jest-extended';
 import { newTestJobConfig, WorkerTestHarness } from 'teraslice-test-harness';
-import { ValidatedJobConfig, TestClientConfig } from '@terascope/job-components';
+import { ValidatedJobConfig, TestClientConfig, TestContext } from '@terascope/job-components';
 import { Logger } from '@terascope/core-utils';
-import Connector from 'terafoundation_kafka_connector';
 import { KafkaSenderAPIConfig, DEFAULT_API_NAME } from '../../asset/src/kafka_sender_api/interfaces.js';
+import Connector from 'terafoundation_kafka_connector';
+import Schema from '../../asset/src/kafka_sender_api/schema.js';
 import { connectorConfig } from '../helpers/config.js';
 
 describe('Kafka Sender API Schema', () => {
@@ -191,6 +192,67 @@ describe('Kafka Sender API Schema', () => {
                 delivery_report: { wait: false, only_error: false, on_error: 'log' },
                 rdkafka_options: { dr_cb: true, 'delivery.report.only.error': true }
             })).toReject();
+        });
+    });
+
+    describe('when validating deprecated fields', () => {
+        const context = new TestContext('kafka-sender-api');
+        const schema = new Schema(context, 'api');
+
+        afterAll(() => {
+            context.apis.foundation.getSystemEvents().removeAllListeners();
+        });
+
+        function deprecatedFields(config: Record<string, any>): string[] {
+            const { warnings } = schema.validate({
+                _name: DEFAULT_API_NAME,
+                topic: 'test',
+                ...config
+            });
+            return warnings.map((warning: any) => warning.reason.reason.field);
+        }
+
+        it('should not emit warnings when no deprecated fields are set', () => {
+            expect(deprecatedFields({})).toEqual([]);
+        });
+
+        it('should warn when compression is set', () => {
+            expect(deprecatedFields({ compression: 'gzip' })).toContain('compression');
+        });
+
+        it('should warn when wait is set', () => {
+            expect(deprecatedFields({ wait: 500 })).toContain('wait');
+        });
+
+        it('should warn when size is set', () => {
+            expect(deprecatedFields({ size: 1000 })).toContain('size');
+        });
+
+        it('should warn when max_buffer_size is set', () => {
+            expect(deprecatedFields({ max_buffer_size: 1000 })).toContain('max_buffer_size');
+        });
+
+        it('should warn when max_buffer_kbytes_size is set', () => {
+            expect(deprecatedFields({ max_buffer_kbytes_size: 1000 })).toContain('max_buffer_kbytes_size');
+        });
+
+        it('should warn when metadata_refresh is set', () => {
+            expect(deprecatedFields({ metadata_refresh: '5 minutes' })).toContain('metadata_refresh');
+        });
+
+        it('should warn when required_acks is set', () => {
+            expect(deprecatedFields({ required_acks: 1 })).toContain('required_acks');
+        });
+
+        it('should include a description telling the user to use rdkafka_options', () => {
+            const { warnings } = schema.validate({
+                _name: DEFAULT_API_NAME,
+                topic: 'test',
+                compression: 'gzip'
+            });
+
+            expect(warnings[0].reason.reason.description)
+                .toBe('kafka_sender_api: "compression" is deprecated, use rdkafka_options["compression.codec"] instead');
         });
     });
 });

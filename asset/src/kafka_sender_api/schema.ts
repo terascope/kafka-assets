@@ -37,12 +37,14 @@ export const schema = {
     compression: {
         doc: 'Type of compression to use',
         default: 'gzip',
-        format: ['none', 'gzip', 'snappy', 'lz4', 'inherit']
+        format: ['none', 'gzip', 'snappy', 'lz4', 'inherit'],
+        deprecated: 'kafka_sender_api: "compression" is deprecated, use rdkafka_options["compression.codec"] instead'
     },
     wait: {
         doc: 'How long to wait for `size` messages to become available on the producer.',
         default: 500,
-        format: 'duration'
+        format: 'duration',
+        deprecated: 'kafka_sender_api: "wait" is deprecated, use rdkafka_options["queue.buffering.max.ms"] instead'
     },
     size: {
         doc: 'How many messages will be batched and sent to kafka together.',
@@ -53,7 +55,8 @@ export const schema = {
             } else {
                 throw new Error(`Invalid parameter size, it must be a number, got ${getTypeOf(val)}`);
             }
-        }
+        },
+        deprecated: 'kafka_sender_api: "size" is deprecated, use rdkafka_options["batch.num.messages"] instead'
     },
     max_buffer_size: {
         doc: 'Maximum number of messages allowed on the producer queue. A value of 0 disables this limit.',
@@ -64,7 +67,8 @@ export const schema = {
             } else if (val !== undefined) {
                 throw new Error(`Invalid parameter max_buffer_size, it must be a number or undefined, got ${getTypeOf(val)}`);
             }
-        }
+        },
+        deprecated: 'kafka_sender_api: "max_buffer_size" is deprecated, use rdkafka_options["queue.buffering.max.messages"] instead'
     },
     max_buffer_kbytes_size: {
         doc: 'Maximum total message size sum in kilobytes allowed on the producer queue.',
@@ -75,17 +79,20 @@ export const schema = {
             } else if (val !== undefined) {
                 throw new Error(`Invalid parameter max_buffer_kbytes_size, it must be a number or undefined, got ${getTypeOf(val)}`);
             }
-        }
+        },
+        deprecated: 'kafka_sender_api: "max_buffer_kbytes_size" is deprecated, use rdkafka_options["queue.buffering.max.kbytes"] instead'
     },
     metadata_refresh: {
         doc: 'How often the producer will poll the broker for metadata information. Set to -1 to disable polling.',
         default: '5 minutes',
-        format: 'duration'
+        format: 'duration',
+        deprecated: 'kafka_sender_api: "metadata_refresh" is deprecated, use rdkafka_options["topic.metadata.refresh.interval.ms"] instead'
     },
     required_acks: {
         doc: 'The number of required broker acknowledgements for a given request, set to 1 for leader only, -1 for all, 0 for none.',
         default: 1,
-        format: 'int'
+        format: 'int',
+        deprecated: 'kafka_sender_api: "required_acks" is deprecated, use rdkafka_options["request.required.acks"] instead'
     },
     rdkafka_options: {
         doc: 'librdkafka defined settings that are not subscription specific. Settings here will override other settings.',
@@ -139,8 +146,8 @@ export default class Schema extends BaseSchema<Record<string, any>> {
         const results = super.validate(config);
 
         // cross-field validation
-        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = results.rdkafka_options;
-        const report = results.delivery_report;
+        const rd_opts: ProducerTopicConfig & ProducerGlobalConfig = results.config.rdkafka_options;
+        const report = results.config.delivery_report;
 
         if (report) {
             if (report.wait === false && report.on_error === 'throw') {
