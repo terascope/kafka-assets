@@ -26,9 +26,9 @@
         "@confluentinc/kafka-javascript": "~1.10.0"
     },
     "devDependencies": {
-        "@terascope/core-utils": "~2.15.0",
-        "@terascope/job-components": "~2.17.0",
-        "@terascope/scripts": "~2.22.0",
+        "@terascope/core-utils": "~2.16.0",
+        "@terascope/job-components": "~2.18.0",
+        "@terascope/scripts": "~2.23.0",
         "@types/convict": "~6.1.6",
         "convict": "~6.2.5"
     },
