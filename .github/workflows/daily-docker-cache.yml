@@ -9,7 +9,7 @@ permissions: {}
 
 jobs:
   call-refresh-docker-cache-workflow:
-    uses: terascope/workflows/.github/workflows/refresh-docker-cache.yml@ee93e5655fd79976999f2c665ac1b6d7e334ec3b
+    uses: terascope/workflows/.github/workflows/refresh-docker-cache.yml@b7b03054122f0f4c73a15f523bb224588552f55c
     permissions:
       actions: write
       contents: read
