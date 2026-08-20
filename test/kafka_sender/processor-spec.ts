@@ -11,7 +11,7 @@ import KafkaSender from '../../asset/src/kafka_sender/processor.js';
 import { readData } from '../helpers/kafka-data.js';
 import { connectorConfig, senderTopic } from '../helpers/config.js';
 import KafkaAdmin from '../helpers/kafka-admin.js';
-import { KafkaConnectorConfig, KafkaProducerSettings } from 'packages/terafoundation_kafka_connector/src/interfaces.js';
+import { KafkaConnectorConfig, KafkaProducerSettings } from 'terafoundation_kafka_connector';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
