@@ -31,12 +31,17 @@ describe('Kafka Dead Letter', () => {
 
     const clients = [clientConfig];
 
+    const circular: Record<string, any> = { bad: 'circular' };
+    circular.self = circular;
+
     const badRecords = [
         Buffer.from('bad buffer'),
         'bad string',
         { bad: 'object' },
         DataEntity.make({ bad: 'entity' }),
         null,
+        circular,
+        { bad: 'bigint', value: 10n },
     ];
 
     const job = newTestJobConfig({
@@ -107,5 +112,23 @@ describe('Kafka Dead Letter', () => {
             expect(expected).toHaveProperty('error');
             expect(expected).toHaveProperty('record');
         }
+    });
+
+    it('should safely serialize records with circular references', () => {
+        const circularRecord = consumed.find(
+            (msg) => typeof msg.record === 'string' && msg.record.includes('"bad":"circular"')
+        );
+
+        expect(circularRecord).toBeDefined();
+        expect(circularRecord!.record).toInclude('[Circular]');
+    });
+
+    it('should safely serialize records containing BigInt values', () => {
+        const bigIntRecord = consumed.find(
+            (msg) => typeof msg.record === 'string' && msg.record.includes('"bad":"bigint"')
+        );
+
+        expect(bigIntRecord).toBeDefined();
+        expect(bigIntRecord!.record).toInclude('"value":"10"');
     });
 });

@@ -8,6 +8,25 @@ import { DeadLetterAPIFn } from '@terascope/types';
 import { KafkaDeadLetterConfig } from './interfaces.js';
 import { ProducerClient, ProduceMessage } from '../_kafka_clients/index.js';
 
+/**
+ * Builds a `JSON.stringify` replacer that makes any value serializable.
+ * `JSON.stringify` throws on `BigInt` values and on circular references, so we
+ * convert `BigInt` to a string and replace circular references with a marker.
+ * A fresh `WeakSet` is created per call so references from a previous record
+ * aren't falsely flagged as circular.
+ */
+function makeSafeReplacer() {
+    const seen = new WeakSet<object>();
+    return (_key: string, value: unknown) => {
+        if (typeof value === 'bigint') return value.toString();
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) return '[Circular]';
+            seen.add(value);
+        }
+        return value;
+    };
+}
+
 export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig> {
     producer!: ProducerClient;
     collector!: Collector<ProduceMessage>;
@@ -61,15 +80,9 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
             if (input && Buffer.isBuffer(input)) {
                 record = input.toString('utf8');
             } else {
-                try {
-                    record = JSON.stringify(input);
-                } catch (_err) {
-                    // TODO: JSON.stringify() only fails on circular references or BigInts.
-                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#exceptions
-                    // Not handling these cases will result in an uncaught error
-                    // when calling stringify() on msg.data below.
-                    record = input;
-                }
+                // The replacer handles the only two cases where stringify throws:
+                // BigInt values and circular references.
+                record = JSON.stringify(input, makeSafeReplacer());
             }
 
             const data = {
@@ -79,7 +92,7 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
 
             const msg: ProduceMessage = {
                 timestamp: Date.now(),
-                data: Buffer.from(JSON.stringify(data)),
+                data: Buffer.from(JSON.stringify(data, makeSafeReplacer())),
                 key: null,
                 topic: null,
                 opaque: {
