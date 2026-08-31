@@ -366,7 +366,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__TIMED_OUT') as any as KafkaError;
                 error.code = codes.ERR__TIMED_OUT;
 
-                const fn = jest.fn<any>(() => 'howdy').mockRejectedValueOnce(error);
+                const fn = jest.fn<() => any>(() => 'howdy').mockRejectedValueOnce(error);
 
                 // @ts-expect-error because it is private
                 const result = await client._try(async () => fn(), 'commit');
@@ -385,7 +385,7 @@ describe('Base Client (internal)', () => {
                 const okError = new Error('KAFKA_NO_OFFSET_STORED') as any as KafkaError;
                 okError.code = codes.KAFKA_NO_OFFSET_STORED;
 
-                const fn = jest.fn<any>(() => 'howdy')
+                const fn = jest.fn<() => any>(() => 'howdy')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(okError);
 
@@ -402,7 +402,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__RESOLVE') as any as KafkaError;
                 error.code = codes.ERR__RESOLVE;
 
-                const fn = jest.fn<any>(() => 'hello')
+                const fn = jest.fn<() => any>(() => 'hello')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error);
 
@@ -423,7 +423,7 @@ describe('Base Client (internal)', () => {
 
                 const error = new Error('Fatal Error');
 
-                const fn = jest.fn<any>(() => 'hi')
+                const fn = jest.fn<() => any>(() => 'hi')
                     .mockRejectedValueOnce(retryable)
                     .mockRejectedValueOnce(retryable)
                     .mockRejectedValueOnce(error);
@@ -445,7 +445,7 @@ describe('Base Client (internal)', () => {
                 const error = new Error('ERR__WAIT_CACHE') as any as KafkaError;
                 error.code = codes.ERR__WAIT_CACHE;
 
-                const fn = jest.fn<any>(() => 'hi')
+                const fn = jest.fn<() => any>(() => 'hi')
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error)
                     .mockRejectedValueOnce(error);
