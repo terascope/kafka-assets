@@ -13,7 +13,7 @@ permissions: {}
 jobs:
   call-asset-build:
     if: github.event.pull_request.merged == true
-    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@b7b03054122f0f4c73a15f523bb224588552f55c
+    uses: terascope/workflows/.github/workflows/asset-build-and-publish.yml@1a5d64fcdb79d88443f0eb9468a9bd8117cc4bea
     with:
       teraslice-cli-version: ${{ startsWith(github.base_ref, 'release/kafka-assets-v') && 'prerelease' || 'latest' }}
     permissions:
