@@ -1,7 +1,7 @@
 {
     "name": "kafka-asset-bundle",
     "displayName": "Kafka Asset Bundle",
-    "version": "6.10.1",
+    "version": "6.10.2",
     "private": true,
     "description": "A bundle of Kafka operations and processors for Teraslice",
     "homepage": "https://github.com/terascope/kafka-assets",
@@ -42,7 +42,7 @@
         "@terascope/types": "~2.16.1",
         "@types/fs-extra": "~11.0.4",
         "@types/jest": "~30.0.0",
-        "@types/node": "~26.5.0",
+        "@types/node": "~26.5.1",
         "@types/semver": "~7.8.0",
         "bunyan": "~1.8.15",
         "eslint": "~9.39.3",
@@ -57,7 +57,7 @@
         "typescript": "~6.0.3",
         "uuid": "~14.0.2"
     },
-    "packageManager": "pnpm@11.3.0",
+    "packageManager": "pnpm@12.3.4+sha512.961aa41fb077da3a04a441d9f8e15ebc0c96da8ef710b2eb67bf9ee7cb0610eabd48f1fd85f51cffe73846785fa0f87c56a3a872a1d893f8446741b5cce45457",
     "engines": {
         "node": ">=22.0.0",
         "pnpm": ">=11.3.0"
