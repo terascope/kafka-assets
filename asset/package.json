@@ -23,7 +23,7 @@
     },
     "engines": {
         "node": ">=22.0.0",
-        "pnpm": ">=11.3.0"
+        "pnpm": ">=12.4.1"
     },
     "srcMain": "src/index.ts",
     "terascope": {}
