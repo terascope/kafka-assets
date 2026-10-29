@@ -30,15 +30,12 @@ describe('Kafka Fetcher', () => {
 
     const clients = [clientConfig];
 
-    // FIXME: I needed to set deadletter to log on both
-    // Turns out it will set to throw if I only set it on op.
     const job = newTestJobConfig({
         max_retries: 3,
         operations: [
             {
                 _op: 'kafka_reader',
-                _api_name: 'kafka_reader_api',
-                _dead_letter_action: 'log'
+                _api_name: 'kafka_reader_api'
             },
             {
                 _op: 'noop'
