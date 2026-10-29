@@ -21,6 +21,13 @@ export default class KafkaAdmin {
 
         const topicName = typeof topic === 'string' ? topic : topic.topic;
 
+        await this.ensureTopicDeleted(topicName);
+        await this.createTopic(topic);
+
+        logger.debug(`ensured topic "${topicName}" is new`);
+    }
+
+    async ensureTopicDeleted(topicName: string): Promise<void> {
         try {
             await this.deleteTopic(topicName);
             await this.waitForTopicDeletion(topicName);
@@ -29,10 +36,6 @@ export default class KafkaAdmin {
                 throw err;
             }
         }
-
-        await this.createTopic(topic);
-
-        logger.debug(`ensured topic "${topicName}" is new`);
     }
 
     private async waitForTopicDeletion(topicName: string): Promise<void> {
