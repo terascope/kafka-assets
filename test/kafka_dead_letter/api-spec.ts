@@ -185,7 +185,8 @@ describe('Kafka Dead Letter', () => {
         });
 
         it('should create the topic on initialize if settings allow', async () => {
-            await expect(makeHarness().initialize()).toResolve();
+            // not using expect().toResolve() so the rejection reason is shown on failure
+            await makeHarness().initialize();
 
             const topics = await admin.listTopics();
             expect(topics).toContain(missingTopic);
