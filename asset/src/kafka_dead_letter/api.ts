@@ -55,6 +55,14 @@ export default class KafkaDeadLetter extends OperationAPI<KafkaDeadLetterConfig>
         });
 
         await this.producer.connect();
+
+        // connect() calls getMetadata(topic) internally, which will try to create
+        // the topic if it doesn't exist. This may not be allowed by the broker or
+        // client config, so we must still check if the topic exists afterwards.
+        const topicCreated = await this.producer.doesTopicExist(this.apiConfig.topic);
+        if (!topicCreated) {
+            throw new Error(`Topic ${this.apiConfig.topic} does not exist and could not be created.`);
+        }
     }
 
     async shutdown(): Promise<void> {

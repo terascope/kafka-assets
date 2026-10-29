@@ -131,4 +131,75 @@ describe('Kafka Dead Letter', () => {
         expect(bigIntRecord).toBeDefined();
         expect(bigIntRecord!.record).toInclude('"value":"10"');
     });
+
+    describe('when the topic does not exist', () => {
+        const missingTopic = `${deadLetterTopic}-missing`;
+
+        let missingHarness: WorkerTestHarness | undefined;
+
+        function makeHarness(rdkafkaOptions: Record<string, any> = {}) {
+            const missingJob = newTestJobConfig({
+                apis: [
+                    {
+                        _name: 'kafka_dead_letter',
+                        topic: missingTopic,
+                    }
+                ],
+                operations: [
+                    {
+                        _op: 'test-reader',
+                        passthrough_slice: true
+                    },
+                    {
+                        _op: 'noop',
+                        _dead_letter_action: 'kafka_dead_letter'
+                    }
+                ],
+            });
+
+            missingHarness = new WorkerTestHarness(missingJob, {
+                clients: [{
+                    ...clientConfig,
+                    config: {
+                        ...clientConfig.config,
+                        rdkafka_options: rdkafkaOptions
+                    }
+                }]
+            });
+            return missingHarness;
+        }
+
+        beforeEach(async () => {
+            await admin.ensureTopicDeleted(missingTopic);
+        });
+
+        afterEach(async () => {
+            if (missingHarness) {
+                await missingHarness.shutdown().catch(() => {});
+                missingHarness = undefined;
+            }
+        });
+
+        afterAll(async () => {
+            await admin.ensureTopicDeleted(missingTopic);
+        });
+
+        it('should create the topic on initialize if settings allow', async () => {
+            await expect(makeHarness().initialize()).toResolve();
+
+            const topics = await admin.listTopics();
+            expect(topics).toContain(missingTopic);
+        });
+
+        it('should throw on initialize if the topic could not be created', async () => {
+            // the test broker allows auto topic creation, so disable it on the client instead
+            const harnessWithoutAutoCreate = makeHarness({ 'allow.auto.create.topics': false });
+
+            await expect(harnessWithoutAutoCreate.initialize())
+                .rejects.toThrow(`Topic ${missingTopic} does not exist and could not be created.`);
+
+            const topics = await admin.listTopics();
+            expect(topics).not.toContain(missingTopic);
+        });
+    });
 });
