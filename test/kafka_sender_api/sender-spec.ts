@@ -641,17 +641,23 @@ describe('KafkaRouteSender', () => {
                 DataEntity.make(obj2, { 'standard:route': topicMeta })
             ];
 
-            loggerDebugSpy = jest.spyOn(sender.logger, 'debug');
+            // Hold back delivery reports so send() can only resolve if it isn't waiting on them
+            const client = (sender.producer as any)._client;
+            const originalEmit = client.emit.bind(client);
+            jest.spyOn(client, 'emit').mockImplementation((event: any, ...args: any[]) => {
+                if (event === 'delivery-report') return true;
+                return originalEmit(event, ...args);
+            });
 
             await sender.send(data);
-            expect(loggerDebugSpy).not.toHaveBeenCalledWith(
-                expect.stringContaining('Delivery-report: all 2 reports received for batch 1')
-            );
+            expect(sender.producer.deliveryReportStats[1]).toEqual({
+                received: 0, errors: 0, expected: 2
+            });
 
             await sender.send(data);
-            expect(loggerDebugSpy).not.toHaveBeenCalledWith(
-                expect.stringContaining('Delivery-report: all 2 reports received for batch 2')
-            );
+            expect(sender.producer.deliveryReportStats[2]).toEqual({
+                received: 0, errors: 0, expected: 2
+            });
         });
 
         it('wait for and log all reports if wait is `true`', async () => {
