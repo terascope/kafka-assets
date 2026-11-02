@@ -90,21 +90,6 @@ export const schema = {
 };
 
 export default class Schema extends BaseSchema<KafkaReaderAPIConfig> {
-    // This validation function is a workaround for the limitations of convict when
-    // parsing configs that have periods `.` within its key values.
-    // https://github.com/mozilla/node-convict/issues/250
-    // This will pull `rdkafka_options` out before convict validation
-    // https://github.com/terascope/kafka-assets/pull/1071
-    validate(config: Record<string, any>): any {
-        const { rdkafka_options, ...parsedConfig } = config;
-        const results = super.validate(parsedConfig);
-
-        return {
-            config: { ...results.config, rdkafka_options },
-            warnings: results.warnings
-        };
-    }
-
     build(): Record<string, any> {
         return schema;
     }
