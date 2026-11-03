@@ -12,15 +12,6 @@ updates:
       - busma13
       - sotojn
     # ignore:
-    #   - dependency-name: convict
-    #     versions:
-    #       - '> 4.4.1'
-    #   - dependency-name: '@types/convict'
-    #     versions:
-    #       - '> 4.2.1'
-    #   - dependency-name: '@types/node'
-    #     versions:
-    #       - '>= 17.0.0'
   - package-ecosystem: npm
     directory: '/website'
     schedule:

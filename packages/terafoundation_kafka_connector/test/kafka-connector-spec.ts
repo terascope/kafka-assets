@@ -1,5 +1,4 @@
-import convict from 'convict';
-import { debugLogger, formats } from '@terascope/core-utils';
+import { debugLogger } from '@terascope/core-utils';
 import connector from '../src/index.js';
 import {
     KafkaConnectorConfig, KafkaConsumerSettings, KafkaProducerSettings,
@@ -8,19 +7,13 @@ import {
 
 const logger = debugLogger('terafoundation-kafka-connector');
 
-function addFormats(): void {
-    formats.forEach(convict.addFormat);
-}
-
 describe('Kafka Connector', () => {
     const config: KafkaConnectorConfig = connectorConfig;
-
-    addFormats();
 
     describe('when using a consumer', () => {
         // Not sure if should be enabled by default since depends on a kafka broker.
         it('will connect automatically by default', () => new Promise((resolve) => {
-            const settings = convict(connector.config_schema()).load({
+            const settings: KafkaConsumerSettings = {
                 options: {
                     type: 'consumer',
                     group: 'terascope-1',
@@ -29,16 +22,7 @@ describe('Kafka Connector', () => {
                     event_cb: true,
                     debug: 'broker',
                 },
-            })
-                .getProperties() as KafkaConsumerSettings;
-
-            // Don't know how/why `config` is used in the connecter - might be
-            // legacy reasons. Without it, there is potential for connector to
-            // hang/delay since `metadata.broker.list` will be undefined and:
-            //
-            //   Trace: BROKERFAIL [thrd:undefined:9092/bootstrap]:
-            //   undefined:9092/bootstrap: failed: err: Local: Host resolution
-            //   failure: (errno: Bad address)
+            };
 
             connector.createClient(config, logger, settings)
                 .then((conn) => {
@@ -53,7 +37,7 @@ describe('Kafka Connector', () => {
         }));
 
         it('can be configured to not automatically connect', () => new Promise((resolve, reject) => {
-            const settings = convict(connector.config_schema()).load({
+            const settings: KafkaConsumerSettings = {
                 autoconnect: false,
                 options: {
                     type: 'consumer',
@@ -62,10 +46,9 @@ describe('Kafka Connector', () => {
                 rdkafka_options: {
                     'client.id': 'test-client-123'
                 }
-            })
-                .getProperties();
+            };
 
-            connector.createClient(config, logger, settings as KafkaConsumerSettings)
+            connector.createClient(config, logger, settings)
                 .then((conn) => {
                     expect(conn.client.isConnected()).toBe(false);
 
@@ -87,7 +70,7 @@ describe('Kafka Connector', () => {
     describe('when using a producer', () => {
         // Not sure if should be enabled by default since depends on a kafka broker.
         it('will connect automatically by default', () => new Promise((resolve) => {
-            const settings = convict(connector.config_schema()).load({
+            const settings: KafkaProducerSettings = {
                 options: {
                     type: 'producer',
                 },
@@ -95,17 +78,9 @@ describe('Kafka Connector', () => {
                     event_cb: true,
                     debug: 'broker',
                 },
-            })
-                .getProperties();
+            };
 
-            // Don't know how/why `config` is used in the connecter - might be
-            // legacy reasons. Without it, there is potential for connector to
-            // hang/delay since `metadata.broker.list` will be undefined and:
-            //
-            //   Trace: BROKERFAIL [thrd:undefined:9092/bootstrap]:
-            //   undefined:9092/bootstrap: failed: err: Local: Host resolution
-            //   failure: (errno: Bad address)
-            connector.createClient(config, logger, settings as KafkaProducerSettings)
+            connector.createClient(config, logger, settings)
                 .then((conn) => {
                     conn.client.once('ready', (client) => {
                         logger.trace(client, 'connected');
@@ -118,7 +93,7 @@ describe('Kafka Connector', () => {
         }));
 
         it('can be configured to not automatically connect', () => new Promise((resolve, reject) => {
-            const settings = convict(connector.config_schema()).load({
+            const settings: KafkaProducerSettings = {
                 autoconnect: false,
                 options: {
                     type: 'producer',
@@ -126,10 +101,9 @@ describe('Kafka Connector', () => {
                 rdkafka_options: {
                     'client.id': 'test-client-123'
                 }
-            })
-                .getProperties();
+            };
 
-            connector.createClient(config, logger, settings as KafkaProducerSettings)
+            connector.createClient(config, logger, settings)
                 .then((conn) => {
                     expect(conn.client.isConnected()).toBe(false);
 
@@ -150,21 +124,16 @@ describe('Kafka Connector', () => {
 
     describe('when using an admin client', () => {
         it('can create an admin client', async () => {
-            const settings = convict(connector.config_schema()).load({
+            const settings: KafkaAdminSettings = {
                 options: {
                     type: 'admin',
                 },
                 rdkafka_options: {
                     'client.id': 'test-admin-client'
                 }
-            })
-                .getProperties();
+            };
 
-            const conn = await connector.createClient(
-                config,
-                logger,
-                settings as KafkaAdminSettings
-            );
+            const conn = await connector.createClient(config, logger, settings);
 
             expect(conn.client).toBeDefined();
             expect(conn.logger).toBe(logger);
@@ -175,7 +144,7 @@ describe('Kafka Connector', () => {
 
     describe('when using an unsupported client type', () => {
         it('should throw an error', async () => {
-            const settings = convict(connector.config_schema()).load({
+            const settings = {
                 options: {
                     type: 'wrong',
                 },
@@ -183,11 +152,10 @@ describe('Kafka Connector', () => {
                     event_cb: true,
                     debug: 'broker',
                 },
-            })
-                .getProperties();
+            };
 
             await expect(
-                () => connector.createClient(config, logger, settings as any)
+                () => connector.createClient(config, logger, settings)
             ).rejects.toThrow('Unsupported client type of wrong');
         });
     });

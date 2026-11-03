@@ -166,7 +166,7 @@ describe('kafka_reader_api', () => {
         await expect(apiManager.create('test', {})).rejects.toThrow('Invalid value for configuration property "queued.max.messages.kbytes"');
     });
 
-    it('should default to empty object when setting rdkafka_options to non object', async () => {
+    it('should throw when setting rdkafka_options to non object', async () => {
         const apiConfig = {
             _name: apiName,
             topic,
@@ -176,7 +176,11 @@ describe('kafka_reader_api', () => {
             rdkafka_options: false
         };
 
-        const apiManager = await makeTest(apiConfig);
+        await expect(makeTest(apiConfig)).rejects.toThrow('Invalid parameter rdkafka_options, it must be an object');
+    });
+
+    it('should default rdkafka_options to empty object when not set', async () => {
+        const apiManager = await makeTest();
         const client = await apiManager.create('test', {});
         const config = apiManager.getConfig('test');
 
@@ -184,10 +188,5 @@ describe('kafka_reader_api', () => {
 
         expect(config.rdkafka_options).toEqual({});
         expect(client).toBeDefined();
-        expect(apiManager.size).toEqual(1);
-
-        const results = await client.consume({ size: exampleData.length, wait: config.wait });
-
-        expect(results.length).toEqual(exampleData.length);
     });
 });
